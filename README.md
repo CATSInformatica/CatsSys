@@ -2,10 +2,10 @@
 
     Sistema administrativo do CATS utilizando Zend Framework 2
 
-    clonar o projeto
+    Clonar o projeto
     > git clone https://github.com/marciodojr/catsSys.git
 
-    instalar as bibliotecas externas
+    Instalar as bibliotecas externas
     > COMPOSER_PROCESS_TIMEOUT=2000 composer install
 
     Criar arquivo local.php em ./config/autoload/
@@ -41,5 +41,5 @@
 
     > php -S localhost:8000 -t public/ public/index.php
 
-    > acessar página no navegador
+    Acessar página no navegador
     localhost:8000
