@@ -24,9 +24,9 @@
                        'user'     => '',
                        'password' => '',
                        'dbname'   => '',
-                   )
-               )
-           )
+                   ),
+               ),
+           ),
        ),
     );
 
@@ -59,3 +59,8 @@
 
     Acessar página no navegador
     localhost:8000
+
+    Gravar entidades no banco de dados a partir de objetos PHP
+    
+    ./vendor/bin/doctrine-module orm:validate-schema
+    ./vendor/bin/doctrine-module orm:schema-tool:create
