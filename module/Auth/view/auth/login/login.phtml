@@ -5,7 +5,7 @@
         <h2> Hello from loginAction of LoginController! </h2>
         <hr>
         <?php
-        echo $this->messages;
+        echo $this->message;
         ?>
     </div>
     <div class="col-xs-6 col-md-4">
@@ -44,7 +44,7 @@
         </div>
         <?php
         echo $this->formSubmit($form->get('submit')
-                        ->setAttribute('class', 'btn btn-default'));
+                        ->setAttribute('class', 'btn btn-primary btn-lg'));
         ?>
         <?php echo $this->form()->closeTag(); ?>
         <?php

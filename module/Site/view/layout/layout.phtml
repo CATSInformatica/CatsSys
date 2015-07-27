@@ -14,18 +14,16 @@
 
         <!-- Le styles -->
         <?php
-        echo $this->headLink(array('rel' => 'shortcut icon', 'type' => 'image/vnd.microsoft.icon', 'href' => $this->basePath() . '/img/favicon.ico'))
-                ->prependStylesheet($this->basePath('bootstrap-3.3.5-dist/css/bootstrap-theme.min.css'))
-                ->prependStylesheet($this->basePath('bootstrap-3.3.5-dist/css/bootstrap.min.css'))
+        echo $this->headLink(array(
+                    'rel' => 'shortcut icon',
+                    'type' => 'image/vnd.microsoft.icon',
+                    'href' => $this->basePath() . '/img/favicon.ico'))
+                ->appendStylesheet($this->basePath('bootstrap-3.3.5-dist/css/bootstrap.min.css'));
+//                ->appendStylesheet($this->basePath('bootstrap-3.3.5-dist/css/bootstrap-theme.min.css'));
         ?>
-        <style>
-            body > .container, body > .container-fluid {
-                padding-top: 60px;
-            }
-        </style>
     </head>
     <body>
-        <nav class="navbar navbar-inverse navbar-fixed-top">
+        <nav class="navbar navbar-inverse navbar-top">
             <div class='container'>
                 <div class="navbar-header">
                     <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
@@ -51,9 +49,13 @@
         <div class="container-fluid">
             <?php echo $this->content; ?>
         </div>
-        <footer class='footer'>
+        <footer class='footer navbar-fixed-bottom'>
             <div class='container'>
-                <p>&copy; XXXX - <?php echo date('Y') ?> XD. <?php echo $this->translate('All rights reserved.') ?></p>
+                <p>
+                    &copy <?php echo date('Y') ?> CATS.
+                    <br>Todos os direitos reservados.
+                    <br> Site construído pelo grupo de informática do CATS.
+                </p>
             </div>
         </footer>
         <?php

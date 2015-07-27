@@ -58,9 +58,8 @@ return array(
                 'identity_class' => 'Auth\Entity\User',
                 'identity_property' => 'usrName',
                 'credential_property' => 'usrPassword',
-                'credential_callable' => function(Entity\User $user, $passGiven){
-                    if($user->getUsrPassword() == sha1($passGiven . $user->getUsrPasswordSalt())
-                            && $user->getUsrActive() == 1) {
+                'credential_callable' => function(Entity\User $user, $passGiven) {
+                    if ($user->getUsrPassword() == sha1($passGiven . $user->getUsrPasswordSalt()) && $user->getUsrActive() == 1) {
                         return true;
                     }
                     return false;
@@ -85,4 +84,25 @@ return array(
             ),
         ),
     ),
+    'session' => array(
+        'config' => array(
+            'class' => 'Zend\Session\Config\SessionConfig',
+            'options' => array(
+                'name' => 'familiacats',
+                'use_cookies' => true,
+                'cookie_lifetime' => 0,
+                'cookie_httponly' => true,
+                'cookie_secure' => false,
+                'remember_me_seconds' => 1800, // remember me for 12 hours
+                'gc_maxlifetime' => 1800,
+            )
+        ),
+        'storage' => 'Zend\Session\Storage\SessionArrayStorage',
+        'validators' => array(
+            array(
+                'Zend\Session\Validator\RemoteAddr',
+                'Zend\Session\Validator\HttpUserAgent',
+            )
+        )
+    )
 );

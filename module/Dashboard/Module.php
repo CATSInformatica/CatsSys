@@ -6,17 +6,15 @@
  * and open the template in the editor.
  */
 
+namespace Dashboard;
+
 /**
  * Description of Module
  *
  * @author marcio
  */
-
-namespace Auth;
-
 class Module
 {
-
     public function getConfig()
     {
         return include __DIR__ . '/config/module.config.php';
@@ -29,17 +27,6 @@ class Module
                 'namespaces' => array(
                     __NAMESPACE__ => __DIR__ . '/src/' . __NAMESPACE__,
                 ),
-            ),
-        );
-    }
-
-    public function getServiceConfig()
-    {
-        return array(
-            'factories' => array(
-                'Zend\Authentication\AuthenticationService' => function($serviceManager) {
-                    return $serviceManager->get('doctrine.authenticationservice.orm_default');
-                },
             ),
         );
     }

@@ -9,7 +9,7 @@ return array(
     // This should be an array of module namespaces used in the application.
     'modules' => array(
         // zend developer tools helper to see doctrine operations and database MER
-        'ZendDeveloperTools',
+//        'ZendDeveloperTools',
         // ORM mappers
         'DoctrineModule',
         'DoctrineORMModule',
@@ -17,6 +17,8 @@ return array(
         'Site',
         //Authentication and Authorization Module
         'Auth',
+        //area de configuração do sistema
+        'Dashboard',
     ),
 
     // These are various options for the listeners attached to the ModuleManager
