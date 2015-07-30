@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Auth\Provider;
+namespace Database\Provider;
 
 /**
  * Description of ProvidesEntityManager

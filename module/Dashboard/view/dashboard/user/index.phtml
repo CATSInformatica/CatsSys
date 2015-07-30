@@ -1,0 +1,38 @@
+<div class="container-fluid">
+    <h1>Welcome to User's Controller Index!</h1>
+
+    <?php echo $this->message; ?>
+    <hr>
+
+    <div class="table-responsive">
+        <table class='table'>
+            <thead>
+                <tr>
+                    <th>#</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Password Salt</th>
+                    <th>Email</th>
+                    <th>Active</th>
+                    <th>Registration Date</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->users as $user): ?>
+                    <tr>
+                        <td><?php echo $this->escapeHtml($user->getUsrId()); ?></td>
+                        <td><?php echo $this->escapeHtml($user->getUsrName()); ?></td>
+                        <td><?php echo $this->escapeHtml($user->getUsrPassword()); ?></td>
+                        <td><?php echo $this->escapeHtml($user->getUsrPasswordSalt()); ?></td>
+                        <td><?php echo $this->escapeHtml($user->getUsrEmail()); ?></td>
+                        <td><?php echo $user->getUsrActive() ? 'TRUE' : 'FALSE'; ?></td>
+                        <td><?php
+                            echo $this->escapeHtml($user->getUsrRegistrationDate()
+                                            ->format('d/m/Y'));
+                            ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>

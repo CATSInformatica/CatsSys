@@ -21,7 +21,7 @@ use Zend\Session\SessionManager;
 /*
  * traits
  */
-use Auth\Provider\ProvidesEntityManager;
+use Database\Provider\ProvidesEntityManager;
 
 /**
  * Description of LoginController
@@ -84,11 +84,7 @@ class LoginController extends AbstractActionController
                 $sessionManager->rememberMe(); //check module.config.php
             }
             $message = 'Usuário autenticado com sucesso.';
-            $this->redirect()->toRoute('dashboard/default', array(
-                'controller' => 'index',
-                'action' => 'index',
-                )
-            );
+            $this->redirect()->toRoute('dashboard/default');
         } else {
             $message = 'Crendenciais inválidas.';
         }
@@ -117,11 +113,7 @@ class LoginController extends AbstractActionController
         $sessionManager = new SessionManager();
         $sessionManager->forgetMe();
 
-        return $this->redirect()->toRoute('auth/default', array(
-                    'controller' => 'login',
-                    'action' => 'login',
-                        )
-        );
+        return $this->redirect()->toRoute('auth/default');
     }
 
 }

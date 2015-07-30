@@ -6,6 +6,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Dashboard\Controller\Index' => 'Dashboard\Controller\IndexController',
+            'Dashboard\Controller\User' => 'Dashboard\Controller\UserController',
         )
     ),
     'router' => array(
@@ -31,6 +32,7 @@ return array(
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                             'defaults' => array(
+                                'action' => 'index',
                             ),
                         ),
                     ),

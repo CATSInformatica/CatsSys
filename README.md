@@ -64,3 +64,13 @@
     
     ./vendor/bin/doctrine-module orm:validate-schema
     ./vendor/bin/doctrine-module orm:schema-tool:create
+
+    Criar objetos php a partir de entidades do banco de dados
+    
+    a. convert-mapping    
+    ./vendor/doctrine/doctrine-module/bin/doctrine-module orm:convert-mapping --namespace="Database\\Entity\\" --force  --from-database annotation ./module/Database/src/
+    
+    it will export “annotation” mapping information into ./module/Database/src/
+    b. generate-entities
+    ./vendor/doctrine/doctrine-module/bin/doctrine-module orm:generate-entities ./module/Database/src/ --generate-annotations=true
+    

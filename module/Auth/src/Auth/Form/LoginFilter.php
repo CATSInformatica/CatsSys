@@ -44,7 +44,7 @@ class LoginFilter extends InputFilter
 //                    'options' => array(
 //                        'object_repository' => 
 //                            $sm->get('Doctrine\ORM\EntityManager')
-//                                ->getRepository('Auth\Entity\User'),
+//                                ->getRepository('Database\Entity\User'),
 //                        'fields' => 'usrName',
 //                    ),
 //                ),

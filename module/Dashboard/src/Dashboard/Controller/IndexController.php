@@ -10,7 +10,7 @@ namespace Dashboard\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Auth\Provider\ProvidesEntityManager;
+use Database\Provider\ProvidesEntityManager;
 
 /**
  * Description of IndexController
@@ -21,43 +21,13 @@ class IndexController extends AbstractActionController
 {
 
     use ProvidesEntityManager; // doctrine entity manager
-//    protected function createUser()
-//    {
-//
-//        $em = $this->getEntityManager();
-//
-//        $user = new User();
-//        $user->setUsrName("manuel@hotmail.com")
-//                ->setUsrEmail("manuel@hotmail.com")
-//                ->setUsrPasswordSalt(
-//                        substr(str_shuffle("!@#$%*()_+{}:|0123456789ab"
-//                                        . "cdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNO"
-//                                        . "PQRSTUVWXYZ"), 0, 39))
-//                ->setUsrPassword('123456789')
-//                ->setUsrActive(true);
-//
-//        $em->persist($user);
-//        $em->flush();
-//
-//        var_dump($user->getUsrId());
-//    }
 
     public function indexAction()
-    {
-        $auth = $this->getServiceLocator()
-                ->get('Zend\Authentication\AuthenticationService');
-        if ($auth->hasIdentity()) {
-
-            $em = $this->getEntityManager();
-            $users = $em->getRepository('Auth\Entity\User')
-                    ->findAll();
-            $message = $this->params()
-                    ->fromQuery('message', 'foo');
-            
-        }
+    {   
+        $message = 'Welcome to Dashboard.';
+        
         return new ViewModel(array(
-            'message' => $message,
-            'users' => $users,
+            'message' => $message
         ));
     }
 
