@@ -1,0 +1,35 @@
+
+
+<div class="container">
+    <h1>Role index</h1>
+    <hr>
+
+    <?php if (!empty($this->error)): ?>
+        <?php echo $this->error; ?>
+    <?php else: ?>
+
+        <div class="table-responsive">
+            <table class='table'>
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Role Name</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->roles as $role): ?>
+                        <tr>
+                            <td><?php echo $this->escapeHtml($role->getRoleId()); ?></td>
+                            <td><?php echo $this->escapeHtml($role->getRoleName()); ?></td>
+                            <td><a  href='<?php echo $this->url('dashboard/default', array('controller' => 'role', 'action' => 'edit', 'id' => $role->getRoleId())); ?>'>Edit</a></td>
+                            <td><a  href='<?php echo $this->url('dashboard/default', array('controller' => 'role', 'action' => 'delete', 'id' => $role->getRoleId())); ?>'>Delete</a></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+</div>
+
+
+

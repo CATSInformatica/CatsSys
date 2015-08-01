@@ -7,6 +7,7 @@ return array(
         'invokables' => array(
             'Dashboard\Controller\Index' => 'Dashboard\Controller\IndexController',
             'Dashboard\Controller\User' => 'Dashboard\Controller\UserController',
+            'Dashboard\Controller\Role' => 'Dashboard\Controller\RoleController',
         )
     ),
     'router' => array(

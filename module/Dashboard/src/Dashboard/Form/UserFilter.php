@@ -70,7 +70,7 @@ class UserFilter extends InputFilter
                     'options' => array(
                         'encoding' => 'UTF-8',
                         'min' => 6,
-                        'max' => 12,
+                        'max' => 20,
                     ),
                 ),
             ),

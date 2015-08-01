@@ -56,7 +56,7 @@ class Module
         $role = Acl::DEFAULT_ROLE; // The default role is guest $acl
         if ($auth->hasIdentity()) {
             $user = $auth->getIdentity();
-            $role = 'member';
+            $role = 'admin';
         }
         $resource = $routeMatch->getParam('controller');
         $privilege = $routeMatch->getParam('action');

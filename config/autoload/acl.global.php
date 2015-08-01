@@ -28,6 +28,9 @@ return array(
                     'delete' => 'admin',
                     'edit' => 'admin',
                 ),
+                'Dashboard\Controller\Role' => array(
+                    'all' => 'admin',
+                )
             )
         )
     )

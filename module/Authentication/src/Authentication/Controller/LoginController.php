@@ -22,7 +22,6 @@ use Zend\Session\SessionManager;
  * traits
  */
 use Database\Provider\ProvidesEntityManager;
-use Authentication\Provider\ProvidesAuthentication;
 
 /**
  * Description of LoginController
@@ -34,7 +33,7 @@ class LoginController extends AbstractActionController
 
     use ProvidesEntityManager;
 
-use ProvidesAuthentication;
+    protected $auth;
 
     /**
      * Faz a autenticação de usuários
@@ -115,6 +114,15 @@ use ProvidesAuthentication;
         }
 
         return $this->redirect()->toRoute('authentication/default');
+    }
+
+    protected function hasIdentity()
+    {
+        if (null == $this->auth) {
+            $this->auth = $this->getServiceLocator()->get('Zend\Authentication\AuthenticationService');
+        }
+        
+        return $this->auth->hasIdentity();
     }
 
 }

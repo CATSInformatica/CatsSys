@@ -9,15 +9,11 @@ use Database\Entity\User;
 use Dashboard\Form\UserForm;
 use Dashboard\Form\UserFilter;
 use Zend\Crypt\Password\Bcrypt;
-use Authentication\Provider\ProvidesAuthentication;
-use Authorization\Acl\Acl;
 
 class UserController extends AbstractActionController
 {
 
-    use ProvidesAuthentication;
-
-use ProvidesEntityManager;
+    use ProvidesEntityManager;
 
     public function __construct()
     {

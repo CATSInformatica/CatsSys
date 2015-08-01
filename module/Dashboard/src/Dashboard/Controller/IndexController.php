@@ -11,7 +11,6 @@ namespace Dashboard\Controller;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Database\Provider\ProvidesEntityManager;
-use Authentication\Provider\ProvidesAuthentication;
 /**
  * Description of IndexController
  *
@@ -21,7 +20,6 @@ class IndexController extends AbstractActionController
 {
 
     use ProvidesEntityManager; // doctrine entity manager
-    use ProvidesAuthentication; // check if identity exists
 
     public function indexAction()
     {
