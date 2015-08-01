@@ -20,16 +20,18 @@
             <tbody>
                 <?php foreach ($this->users as $user): ?>
                     <tr>
-                        <td><?php echo $this->escapeHtml($user->getUsrId()); ?></td>
-                        <td><?php echo $this->escapeHtml($user->getUsrName()); ?></td>
-                        <td><?php echo $this->escapeHtml($user->getUsrPassword()); ?></td>
-                        <td><?php echo $this->escapeHtml($user->getUsrPasswordSalt()); ?></td>
-                        <td><?php echo $this->escapeHtml($user->getUsrEmail()); ?></td>
-                        <td><?php echo $user->getUsrActive() ? 'TRUE' : 'FALSE'; ?></td>
+                        <td><?php echo $this->escapeHtml($user->getUserId()); ?></td>
+                        <td><?php echo $this->escapeHtml($user->getUserName()); ?></td>
+                        <td><?php echo $this->escapeHtml($user->getUserPassword()); ?></td>
+                        <td><?php echo $this->escapeHtml($user->getUserPasswordSalt()); ?></td>
+                        <td><?php echo $this->escapeHtml($user->getUserEmail()); ?></td>
+                        <td><?php echo $user->getUserActive() ? 'TRUE' : 'FALSE'; ?></td>
                         <td><?php
-                            echo $this->escapeHtml($user->getUsrRegistrationDate()
+                            echo $this->escapeHtml($user->getUserRegistrationDate()
                                             ->format('d/m/Y'));
                             ?></td>
+                        <td><a  href='<?php echo $this->url('dashboard/default', array('controller' => 'user', 'action' => 'edit', 'id' => $user->getUserId())); ?>'>Edit</a></td>
+                        <td><a  href='<?php echo $this->url('dashboard/default', array('controller' => 'user', 'action' => 'delete', 'id' => $user->getUserId())); ?>'>Delete</a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

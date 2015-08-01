@@ -51,7 +51,7 @@
         // view helper
         $user = $this->identity();
         if ($user):
-            echo 'Logged in as ' . $this->escapeHtml($user->getUsrName());
+            echo 'Logged in as ' . $this->escapeHtml($user->getUserName());
             ?>
             | <a href="<?php echo $this->url('auth/default', array('controller' => 'login', 'action' => 'logout')); ?>">
                 <?php echo $this->translate('Logout'); ?>

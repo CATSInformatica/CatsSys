@@ -31,14 +31,14 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="user_password", type="string", length=40, nullable=false)
+     * @ORM\Column(name="user_password", type="string", length=60, nullable=false)
      */
     private $userPassword;
 
     /**
      * @var string
      *
-     * @ORM\Column(name="user_password_salt", type="string", length=40, nullable=false)
+     * @ORM\Column(name="user_password_salt", type="string", length=60, nullable=false)
      */
     private $userPasswordSalt;
 
@@ -76,6 +76,7 @@ class User
     public function __construct()
     {
         $this->groupGroup = new \Doctrine\Common\Collections\ArrayCollection();
+        $this->userRegistrationDate = new \DateTime();
     }
 
 

@@ -39,6 +39,10 @@ class LoginController extends AbstractActionController
      */
     public function loginAction()
     {
+        if ($this->identity()) {
+            $this->redirect()->toRoute('dashboard/default');
+        }
+
         $loginForm = new LoginForm();
 
         $message = null;
@@ -54,6 +58,7 @@ class LoginController extends AbstractActionController
             if ($loginForm->isValid()) {
                 $data = $loginForm->getData();
                 $message = $this->userAuthentication($data);
+                $this->redirect()->toRoute('dashboard/default');
             }
         }
 
@@ -66,6 +71,7 @@ class LoginController extends AbstractActionController
 
     protected function userAuthentication($data)
     {
+
         $message = null;
         $authService = $this->getServiceLocator()
                 ->get('Zend\Authentication\AuthenticationService');
@@ -81,10 +87,9 @@ class LoginController extends AbstractActionController
             $authService->getStorage()->write($identity);
             if ($data['rememberme']) {
                 $sessionManager = new SessionManager();
-                $sessionManager->rememberMe(); //check module.config.php
+                $sessionManager->rememberMe();
             }
             $message = 'Usuário autenticado com sucesso.';
-            $this->redirect()->toRoute('dashboard/default');
         } else {
             $message = 'Crendenciais inválidas.';
         }

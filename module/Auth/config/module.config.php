@@ -60,9 +60,12 @@ return array(
                 'credential_property' => 'userPassword',
                 'credential_callable' => function(
                     \Database\Entity\User $user, $passGiven) {
-                    if ($user->getUserPassword() 
-                            == sha1($passGiven . $user->getUserPasswordSalt()) 
-                            && $user->getUserActive() == 1) {
+                    
+                    $bcrypt = new \Zend\Crypt\Password\Bcrypt();
+                    $bcrypt->setSalt($user->getUserPasswordSalt());
+                    $isUser = $bcrypt->verify($passGiven, $user->getUserPassword());
+                    
+                    if ($isUser && $user->getUserActive()) {
                         return true;
                     }
                     return false;
