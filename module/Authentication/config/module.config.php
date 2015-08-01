@@ -6,22 +6,22 @@
  * and open the template in the editor.
  */
 
-namespace Auth;
+namespace Authentication;
 
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Auth\Controller\Login' => 'Auth\Controller\LoginController',
+            'Authentication\Controller\Login' => 'Authentication\Controller\LoginController',
         )
     ),
     'router' => array(
         'routes' => array(
-            'auth' => array(
+            'authentication' => array(
                 'type' => 'Literal',
                 'options' => array(
-                    'route' => '/auth',
+                    'route' => '/authentication',
                     'defaults' => array(
-                        '__NAMESPACE__' => 'Auth\Controller',
+                        '__NAMESPACE__' => 'Authentication\Controller',
                         'controller' => 'login',
                         'action' => 'login',
                     ),
@@ -46,7 +46,7 @@ return array(
     ),
     'view_manager' => array(
         'template_path_stack' => array(
-            'auth' => __DIR__ . '/../view',
+            'authentication' => __DIR__ . '/../view',
         ),
         'display_exceptions' => true,
     ),

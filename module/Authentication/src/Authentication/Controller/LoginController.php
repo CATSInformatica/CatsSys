@@ -10,18 +10,19 @@
  * 
  */
 
-namespace Auth\Controller;
+namespace Authentication\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Auth\Form\LoginFilter;
-use Auth\Form\LoginForm;
+use Authentication\Form\LoginFilter;
+use Authentication\Form\LoginForm;
 use Zend\Session\SessionManager;
 
 /*
  * traits
  */
 use Database\Provider\ProvidesEntityManager;
+use Authentication\Provider\ProvidesAuthentication;
 
 /**
  * Description of LoginController
@@ -33,13 +34,15 @@ class LoginController extends AbstractActionController
 
     use ProvidesEntityManager;
 
+use ProvidesAuthentication;
+
     /**
      * Faz a autenticação de usuários
      * @return ViewModel
      */
     public function loginAction()
     {
-        if ($this->identity()) {
+        if ($this->hasIdentity()) {
             $this->redirect()->toRoute('dashboard/default');
         }
 
@@ -51,14 +54,15 @@ class LoginController extends AbstractActionController
 
         if ($request->isPost()) {
             $loginForm->setInputFilter(new LoginFilter(
-                    $this->getServiceLocator())
-            );
+                    $this->getServiceLocator()
+            ));
             $loginForm->setData($request->getPost());
 
             if ($loginForm->isValid()) {
                 $data = $loginForm->getData();
-                $message = $this->userAuthentication($data);
-                $this->redirect()->toRoute('dashboard/default');
+                $this->userAuthentication($data) ?
+                                $this->redirect()->toRoute('dashboard/default') :
+                                $message = 'Credenciais inválidas.';
             }
         }
 
@@ -72,27 +76,21 @@ class LoginController extends AbstractActionController
     protected function userAuthentication($data)
     {
 
-        $message = null;
-        $authService = $this->getServiceLocator()
-                ->get('Zend\Authentication\AuthenticationService');
-
-        $adapter = $authService->getAdapter();
+        $adapter = $this->auth->getAdapter();
         $adapter->setIdentityValue($data['username']);
         $adapter->setCredentialValue($data['password']);
-        $authResult = $authService->authenticate();
+        $authResult = $this->auth->authenticate();
 
         if ($authResult->isValid()) {
             $identity = $authResult->getIdentity();
-//            $authService->clearIdentity();
-            $authService->getStorage()->write($identity);
+            $this->auth->getStorage()->write($identity);
             if ($data['rememberme']) {
                 $sessionManager = new SessionManager();
                 $sessionManager->rememberMe();
             }
-            $message = 'Usuário autenticado com sucesso.';
-        } else {
-            $message = 'Crendenciais inválidas.';
+            return true;
         }
+        return false;
 
 //        if ($result->isValid()) {
 //            $session_user->getManager()->getStorage()->clear('user');
@@ -106,19 +104,17 @@ class LoginController extends AbstractActionController
 //            
 //            // Redirect to page after login failure
 //        }
-        return $message;
     }
 
     public function logoutAction()
     {
-        $auth = $this->getServiceLocator()
-                ->get('Zend\Authentication\AuthenticationService');
+        if ($this->hasIdentity()) {
+            $this->auth->clearIdentity();
+            $sessionManager = new SessionManager();
+            $sessionManager->forgetMe();
+        }
 
-        $auth->clearIdentity();
-        $sessionManager = new SessionManager();
-        $sessionManager->forgetMe();
-
-        return $this->redirect()->toRoute('auth/default');
+        return $this->redirect()->toRoute('authentication/default');
     }
 
 }

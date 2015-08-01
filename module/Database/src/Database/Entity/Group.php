@@ -41,21 +41,6 @@ class Group
     /**
      * @var \Doctrine\Common\Collections\Collection
      *
-     * @ORM\ManyToMany(targetEntity="Database\Entity\AccessItem", inversedBy="groupGroup")
-     * @ORM\JoinTable(name="group_has_access_item",
-     *   joinColumns={
-     *     @ORM\JoinColumn(name="group_group_id", referencedColumnName="group_id")
-     *   },
-     *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="access_item_access_item_id", referencedColumnName="access_item_id")
-     *   }
-     * )
-     */
-    private $accessItemAccessItem;
-
-    /**
-     * @var \Doctrine\Common\Collections\Collection
-     *
      * @ORM\ManyToMany(targetEntity="Database\Entity\User", inversedBy="groupGroup")
      * @ORM\JoinTable(name="group_has_user",
      *   joinColumns={
@@ -73,7 +58,6 @@ class Group
      */
     public function __construct()
     {
-        $this->accessItemAccessItem = new \Doctrine\Common\Collections\ArrayCollection();
         $this->userUser = new \Doctrine\Common\Collections\ArrayCollection();
     }
 
@@ -134,40 +118,6 @@ class Group
     public function getGroupsParent()
     {
         return $this->groupsParent;
-    }
-
-    /**
-     * Add accessItemAccessItem
-     *
-     * @param \Database\Entity\AccessItem $accessItemAccessItem
-     *
-     * @return Group
-     */
-    public function addAccessItemAccessItem(\Database\Entity\AccessItem $accessItemAccessItem)
-    {
-        $this->accessItemAccessItem[] = $accessItemAccessItem;
-
-        return $this;
-    }
-
-    /**
-     * Remove accessItemAccessItem
-     *
-     * @param \Database\Entity\AccessItem $accessItemAccessItem
-     */
-    public function removeAccessItemAccessItem(\Database\Entity\AccessItem $accessItemAccessItem)
-    {
-        $this->accessItemAccessItem->removeElement($accessItemAccessItem);
-    }
-
-    /**
-     * Get accessItemAccessItem
-     *
-     * @return \Doctrine\Common\Collections\Collection
-     */
-    public function getAccessItemAccessItem()
-    {
-        return $this->accessItemAccessItem;
     }
 
     /**

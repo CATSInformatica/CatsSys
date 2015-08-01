@@ -12,7 +12,7 @@
  * @author marcio
  */
 
-namespace Auth;
+namespace Authentication;
 
 class Module
 {

@@ -59,7 +59,7 @@ class User
     /**
      * @var \DateTime
      *
-     * @ORM\Column(name="user_registration_date", type="datetime", nullable=true)
+     * @ORM\Column(name="user_registration_date", type="datetime", nullable=false)
      */
     private $userRegistrationDate;
 

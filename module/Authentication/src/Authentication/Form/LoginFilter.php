@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Auth\Form;
+namespace Authentication\Form;
 
 use Zend\InputFilter\InputFilter;
 

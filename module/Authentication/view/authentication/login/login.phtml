@@ -12,7 +12,7 @@
         <?php
         $form = $this->form;
 
-        $form->setAttribute('action', $this->url('auth/default', array('controller' => 'login', 'action' => 'login'))
+        $form->setAttribute('action', $this->url('authentication/default', array('controller' => 'login', 'action' => 'login'))
         );
 
         $form->prepare();
@@ -53,7 +53,7 @@
         if ($user):
             echo 'Logged in as ' . $this->escapeHtml($user->getUserName());
             ?>
-            | <a href="<?php echo $this->url('auth/default', array('controller' => 'login', 'action' => 'logout')); ?>">
+            | <a href="<?php echo $this->url('authentication/default', array('controller' => 'login', 'action' => 'logout')); ?>">
                 <?php echo $this->translate('Logout'); ?>
             </a> 
             <?php
@@ -62,7 +62,7 @@
         endif;
         ?>
         <p>
-            <a href="<?php echo $this->url('auth/default', array('controller' => 'registration', 'action' => 'forgotten-password')); ?>"><?php echo $this->translate('Forgotten Password'); ?></a>
+            <a href="<?php echo $this->url('authentication/default', array('controller' => 'registration', 'action' => 'forgotten-password')); ?>"><?php echo $this->translate('Forgotten Password'); ?></a>
         </p>
     </div>
 </div>

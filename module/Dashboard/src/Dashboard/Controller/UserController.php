@@ -3,29 +3,21 @@
 namespace Dashboard\Controller;
 
 use Database\Provider\ProvidesEntityManager;
-use Zend\Authentication\AuthenticationService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 use Database\Entity\User;
 use Dashboard\Form\UserForm;
 use Dashboard\Form\UserFilter;
 use Zend\Crypt\Password\Bcrypt;
-
-// Doctrine Entity manager
-//use Doctrine\ORM\Tools\Setup;
-//use Doctrine\ORM\EntityManager;
-// Doctrine Annotations
-//use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-//use DoctrineORMModule\Stdlib\Hydrator\DoctrineEntity;
-//use DoctrineORMModule\Form\Annotation\AnnotationBuilder as DoctrineAnnotationBuilder;
-// for the form
-//use Zend\Form\Element;
-
+use Authentication\Provider\ProvidesAuthentication;
+use Authorization\Acl\Acl;
 
 class UserController extends AbstractActionController
 {
 
-    use ProvidesEntityManager;
+    use ProvidesAuthentication;
+
+use ProvidesEntityManager;
 
     public function __construct()
     {
@@ -35,12 +27,6 @@ class UserController extends AbstractActionController
     // R -retrieve 	CRUD
     public function indexAction()
     {
-        $auth = new AuthenticationService();
-
-        if (!$auth->hasIdentity()) {
-            return $this->redirect()->toRoute('auth/default');
-        }
-//        echo __CLASS__;
         $entityManager = $this->getEntityManager();
         $users = $entityManager->getRepository('Database\Entity\User')->findAll();
 
@@ -141,7 +127,7 @@ class UserController extends AbstractActionController
                                 ->toRoute('dashboard/default', array(
                                     'controller' => 'user',
                                     'action' => 'index'
-                                ));
+                ));
             }
         }
         return new ViewModel(array('form' => $form, 'id' => $id));

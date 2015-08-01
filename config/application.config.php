@@ -15,8 +15,10 @@ return array(
         'DoctrineORMModule',
         //First Application Module
         'Site',
-        //Authentication and Authorization Module
-        'Auth',
+        //Authentication Module
+        'Authentication',
+        //Authorizarion Module
+        'Authorization',
         //area de configuração do sistema
         'Dashboard',
         // Entity Module
