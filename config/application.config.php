@@ -23,7 +23,6 @@ return array(
         'Dashboard',
         // Entity Module
         'Database',
-        
     ),
 
     // These are various options for the listeners attached to the ModuleManager

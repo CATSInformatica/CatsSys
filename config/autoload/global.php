@@ -1,4 +1,5 @@
 <?php
+
 /**
  * Global Configuration Override
  *
@@ -10,7 +11,6 @@
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
-
 return array(
     'doctrine' => array(
         'connection' => array(
@@ -18,8 +18,12 @@ return array(
             'orm_default' => array(
                 'driverClass' => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
                 'params' => array(
-                    'host'     => 'localhost',
-                    'port'     => '3306',
+                    'host' => 'localhost',
+                    'port' => '3306',
+                    'charset' => 'utf8', // extra
+                    'driverOptions' => array(
+                        1002 => 'SET NAMES utf8'
+                    )
                 )
             )
         )
