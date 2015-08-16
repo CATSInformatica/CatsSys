@@ -10,7 +10,7 @@ namespace Dashboard\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Database\Provider\ProvidesEntityManager;
+use Database\Service\EntityManagerService;
 /**
  * Description of IndexController
  *
@@ -19,7 +19,7 @@ use Database\Provider\ProvidesEntityManager;
 class IndexController extends AbstractActionController
 {
 
-    use ProvidesEntityManager; // doctrine entity manager
+    use EntityManagerService; // doctrine entity manager
 
     public function indexAction()
     {

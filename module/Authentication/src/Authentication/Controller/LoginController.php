@@ -12,16 +12,17 @@
 
 namespace Authentication\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
-use Authentication\Form\LoginFilter;
-use Authentication\Form\LoginForm;
-use Zend\Session\SessionManager;
-
 /*
  * traits
  */
-use Database\Provider\ProvidesEntityManager;
+
+use Authentication\Form\LoginFilter;
+use Authentication\Form\LoginForm;
+use Database\Service\EntityManagerService;
+use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Session\Container;
+use Zend\Session\SessionManager;
+use Zend\View\Model\ViewModel;
 
 /**
  * Description of LoginController
@@ -31,9 +32,7 @@ use Database\Provider\ProvidesEntityManager;
 class LoginController extends AbstractActionController
 {
 
-    use ProvidesEntityManager;
-
-    protected $auth;
+    use EntityManagerService;
 
     /**
      * Faz a autenticação de usuários
@@ -41,14 +40,8 @@ class LoginController extends AbstractActionController
      */
     public function loginAction()
     {
-        if ($this->hasIdentity()) {
-            $this->redirect()->toRoute('dashboard/default');
-        }
-
         $loginForm = new LoginForm();
-
         $message = null;
-
         $request = $this->getRequest();
 
         if ($request->isPost()) {
@@ -74,55 +67,58 @@ class LoginController extends AbstractActionController
 
     protected function userAuthentication($data)
     {
-
-        $adapter = $this->auth->getAdapter();
+        $auth = $this->getServiceLocator()->get('Zend\Authentication\AuthenticationService');
+        $adapter = $auth->getAdapter();
         $adapter->setIdentityValue($data['username']);
         $adapter->setCredentialValue($data['password']);
-        $authResult = $this->auth->authenticate();
+        $authResult = $auth->authenticate();
 
         if ($authResult->isValid()) {
             $identity = $authResult->getIdentity();
-            $this->auth->getStorage()->write($identity);
+            $auth->getStorage()->write($identity);
+
             if ($data['rememberme']) {
                 $sessionManager = new SessionManager();
                 $sessionManager->rememberMe();
             }
+
+            // store user roles in a session container
+            $userContainer = new Container('User');
+            $userContainer->offsetSet('id', $identity->getUserId());
+
+            $userRoles = $identity->getRole()->toArray();
+
+            $roleNames = array();
+
+            foreach ($userRoles as $userRole) {
+                $roleNames[] = $userRole->getRoleName();
+            }
+
+            $userContainer->offsetSet('activeRole', $roleNames[0]);
+            $userContainer->offsetSet('allRoles', $roleNames);
+
+
             return true;
         }
         return false;
-
-//        if ($result->isValid()) {
-//            $session_user->getManager()->getStorage()->clear('user');
-//
-//            $session = new Container('User');
-//            $session->offsetSet('email', $data['email']);
-//
-//            $this->flashMessenger()->addMessage(array('success' => 'Login Success.'));
-//            // Redirect to page after successful login
-//        } else {
-//            
-//            // Redirect to page after login failure
-//        }
     }
 
     public function logoutAction()
     {
-        if ($this->hasIdentity()) {
-            $this->auth->clearIdentity();
+        $auth = $this->getServiceLocator()->get('Zend\Authentication\AuthenticationService');
+        if ($auth->hasIdentity()) {
+            $auth->clearIdentity();
+
+            // remove user data
+            $userContainer = new Container('User');
+            $userContainer->getManager()->getStorage()->clear('User');
+
+            // forget-me
             $sessionManager = new SessionManager();
             $sessionManager->forgetMe();
         }
 
         return $this->redirect()->toRoute('authentication/default');
-    }
-
-    protected function hasIdentity()
-    {
-        if (null == $this->auth) {
-            $this->auth = $this->getServiceLocator()->get('Zend\Authentication\AuthenticationService');
-        }
-        
-        return $this->auth->hasIdentity();
     }
 
 }

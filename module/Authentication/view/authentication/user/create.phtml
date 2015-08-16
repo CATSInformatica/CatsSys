@@ -1,0 +1,66 @@
+<div class='container'>
+
+    <div class="row">
+        <h2> Hello from create Action of UserController! </h2>
+        <hr>
+    </div>
+    <div class="col-xs-6 col-md-4">
+        <?php
+        $form = $this->form;
+
+        $form->prepare();
+        echo $this->form()->openTag($form);
+        ?>
+        <div class='form-group'>
+            <label for='username'>Nome de usuário</label>
+            <?php
+            echo $this->formRow($form->get('user_name')
+                            ->setAttribute('class', 'form-control')
+            );
+            ?>
+        </div>
+        
+        <div class='form-group'>
+            <label for='username'>E-mail</label>
+            <?php
+            echo $this->formRow($form->get('user_email')
+                            ->setAttribute('class', 'form-control')
+            );
+            ?>
+        </div>
+        
+        <div class='form-group'>
+            <label for='username'>Confirmação de E-mail</label>
+            <?php
+            echo $this->formRow($form->get('user_email_confirm')
+                            ->setAttribute('class', 'form-control')
+            );
+            ?>
+        </div>
+        
+        
+        <div class='form-group'>
+            <label for='username'>Senha</label>
+            <?php
+            echo $this->formRow($form->get('user_password')
+                            ->setAttribute('class', 'form-control')
+            );
+            ?>
+        </div>
+        
+        
+        <div class='form-group'>
+            <label for='password'>Confirmação de senha</label>
+            <?php
+            echo $this->formRow($form->get('user_password_confirm')
+                            ->setAttribute('class', 'form-control')
+            );
+            ?>
+        </div>
+        <?php
+        echo $this->formSubmit($form->get('submit')
+                        ->setAttribute('class', 'btn btn-primary btn-lg'));
+        ?>
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+</div>

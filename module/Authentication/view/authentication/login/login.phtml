@@ -1,68 +1,65 @@
 
-<div class='container'>
 
-    <div class="row">
-        <h2> Hello from loginAction of LoginController! </h2>
-        <hr>
-        <?php
-        echo $this->message;
-        ?>
-    </div>
-    <div class="col-xs-6 col-md-4">
+<div class = "container">
+    <div class="wrapper">
+        
         <?php
         $form = $this->form;
-
-        $form->setAttribute('action', $this->url('authentication/default', array('controller' => 'login', 'action' => 'login'))
-        );
-
         $form->prepare();
         echo $this->form()->openTag($form);
         ?>
-        <div class='form-group'>
-            <label for='username'>Email</label>
-            <?php
-            echo $this->formRow($form->get('username')
-                            ->setAttribute('class', 'form-control')
-            );
-            ?>
-        </div>
-        <div class='form-group'>
-            <label for='password'>Senha</label>
-            <?php
-            echo $this->formRow($form->get('password')
-                            ->setAttribute('class', 'form-control')
-            );
-            ?>
-        </div>
-        <div class='checkbox'>
-            <label>
-                <?php
-                echo $this->formRow($form->get('rememberme'));
-                ?>
-                Remember Me?
-            </label>
-        </div>
+        
+        <h3 class="form-signin-heading">Welcome Back! Please Sign In</h3>
+
         <?php
-        echo $this->formSubmit($form->get('submit')
-                        ->setAttribute('class', 'btn btn-primary btn-lg'));
+        echo $this->formRow($form->get('username'));
+        echo $this->formRow($form->get('password'));
+        echo $this->formRow($form->get('rememberme')) . ' ' . 'Continuar conectado?';
+        echo '<br><br>';
+        echo $this->formSubmit($form->get('submit')) . '<br>';
+        echo $this->message;
         ?>
-        <?php echo $this->form()->closeTag(); ?>
-        <?php
-        // view helper
-        $user = $this->identity();
-        if ($user):
-            echo 'Logged in as ' . $this->escapeHtml($user->getUserName());
-            ?>
-            | <a href="<?php echo $this->url('authentication/default', array('controller' => 'login', 'action' => 'logout')); ?>">
-                <?php echo $this->translate('Logout'); ?>
-            </a> 
-            <?php
-        else:
-            echo $this->translate('Not logged in');
-        endif;
-        ?>
-        <p>
-            <a href="<?php echo $this->url('authentication/default', array('controller' => 'registration', 'action' => 'forgotten-password')); ?>"><?php echo $this->translate('Forgotten Password'); ?></a>
-        </p>
+
     </div>
 </div>
+
+<style>
+
+    .wrapper {    
+        margin-top: 80px;
+        margin-bottom: 20px;
+    }
+
+    .form-signin {
+        max-width: 420px;
+        padding: 30px 38px 66px;
+        margin: 0 auto;
+        background-color: #eee;
+        border: 3px solid rgba(0,0,0,0.1);  
+    }
+
+    .form-signin-heading {
+        text-align:center;
+        margin-bottom: 30px;
+    }
+
+    .form-control {
+        position: relative;
+        font-size: 16px;
+        height: auto;
+        padding: 10px;
+    }
+
+    input[type="text"] {
+        margin-bottom: 0px;
+        border-bottom-left-radius: 0;
+        border-bottom-right-radius: 0;
+    }
+
+    input[type="password"] {
+        margin-bottom: 20px;
+        border-top-left-radius: 0;
+        border-top-right-radius: 0;
+    }
+
+</style>

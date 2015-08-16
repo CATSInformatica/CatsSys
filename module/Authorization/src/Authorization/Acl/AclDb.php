@@ -14,17 +14,9 @@ namespace Authorization\Acl;
  * @author marcio
  */
 use Zend\Permissions\Acl\Acl as ZendAcl,
-    Zend\Permissions\Acl\Role\GenericRole as Role,
+    Zend\Permissions\Acl\Role\GenericRole,
     Zend\Permissions\Acl\Resource\GenericResource as Resource;
 
-/**
- * Class to handle Acl
- *
- * This class is for loading ACL defined in a database
- *
- * @copyright Copyright (c) 2005-2013 LightSoft 2005 Ltd. Bulgaria
- * @license https://github.com/coolcsn/CsnAuthorization/blob/master/LICENSE BSDLicense
- */
 class AclDb extends ZendAcl
 {
 
@@ -41,7 +33,8 @@ class AclDb extends ZendAcl
      */
     public function __construct($entityManager)
     {
-        $roles = $entityManager->getRepository('Database\Entity\Role')->findAll();
+        // verify ...
+        $roles = $entityManager->getRepository('Database\Entity\Role')->findBy([], ['roleId' => 'asc']);
         $resources = $entityManager->getRepository('Database\Entity\Resource')->findAll();
         $privileges = $entityManager->getRepository('Database\Entity\Privilege')->findAll();
 
@@ -53,20 +46,21 @@ class AclDb extends ZendAcl
      * Adds Roles to ACL
      *
      * @param array $roles
-     * @return CsnAuthorization\Acl\AclDb
+     * @return Authorization\Acl\AclDb
      */
     protected function _addRoles($roles)
     {
         foreach ($roles as $role) {
-            if (!$this->hasRole($role->getName())) {
-                $parents = $role->getParents()->toArray();
+            if (!$this->hasRole($role->getRoleName())) {
+                $parents = $role->getRole()->toArray();
                 $parentNames = array();
                 foreach ($parents as $parent) {
-                    $parentNames[] = $parent->getName();
+                    $parentNames[] = $parent->getRoleName();
                 }
-                $this->addRole(new Role($role->getName()), $parentNames);
+                $this->addRole(new GenericRole($role->getRoleName()), $parentNames);
             }
         }
+
         return $this;
     }
 
@@ -81,16 +75,21 @@ class AclDb extends ZendAcl
     protected function _addAclRules($resources, $privileges)
     {
         foreach ($resources as $resource) {
-            if (!$this->hasResource($resource->getName())) {
-                $this->addResource(new Resource($resource->getName()));
+            if (!$this->hasResource($resource->getResourceName())) {
+                $this->addResource(new Resource($resource->getResourceName()));
             }
         }
 
         foreach ($privileges as $privilege) {
-            if ($privilege->getPermissionAllow()) {
-                $this->allow($privilege->getRole()->getName(), $privilege->getResource()->getName(), $privilege->getName());
+
+            if ($privilege->getPrivilegePermissionAllow()) {
+                $this->allow(
+                        $privilege->getRole()->getRoleName(),
+                        $privilege->getResource()->getResourceName(),
+                        ($privilege->getPrivilegeName() != 'all') ? $privilege->getPrivilegeName() : null
+                );
             } else {
-                $this->deny($privilege->getRole()->getName(), $privilege->getResource()->getName(), $privilege->getName());
+                $this->deny($privilege->getRole()->getRoleName(), $privilege->getResource()->getResourceName(), $privilege->getPrivilegeName());
             }
         }
         return $this;

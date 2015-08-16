@@ -12,6 +12,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Authentication\Controller\Login' => 'Authentication\Controller\LoginController',
+            'Authentication\Controller\User' => 'Authentication\Controller\UserController',
         )
     ),
     'router' => array(
@@ -52,43 +53,34 @@ return array(
     ),
     // Doctrine configuration
     'doctrine' => array(
+        'configuration' => array(
+            'orm_default' => array(
+                'generate_proxies' => true,
+            ),
+        ),
         'authentication' => array(
             'orm_default' => array(
                 'object_manager' => 'Doctrine\ORM\EntityManager',
-                'identity_class' => 'Database\Entity\User',
+                'identity_class' => 'Authentication\Entity\User',
                 'identity_property' => 'userName',
                 'credential_property' => 'userPassword',
-                'credential_callable' => function(
-                    \Database\Entity\User $user, $passGiven) {
-                    
-                    $bcrypt = new \Zend\Crypt\Password\Bcrypt();
-                    $bcrypt->setSalt($user->getUserPasswordSalt());
-                    $isUser = $bcrypt->verify($passGiven, $user->getUserPassword());
-                    
-                    if ($isUser && $user->getUserActive()) {
-                        return true;
-                    }
-                    return false;
-                },
+                'credential_callable' => 'Authentication\Service\UserService::verifyHashedPassword',
             ),
         ),
-//        'driver' => array(
-//            // defines an annotation driver with two paths, and names it
-//            __NAMESPACE__ . '_driver' => array(
-//                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
-//                'cache' => 'array',
-//                'paths' => array(
-//                    __DIR__ . '/../src/' . __NAMESPACE__ . '/Entity',
-//                ),
-//            ),
-//            // default metadata driver, aggregates all other drivers into a single one.
-//            // Override `orm_default` only if you know what you're doing
-//            'orm_default' => array(
-//                'drivers' => array(
-//                    __NAMESPACE__ . '\Entity' => __NAMESPACE__ . '_driver',
-//                )
-//            ),
-//        ),
+        'driver' => array(
+            'authentication_driver' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => array(
+                    __DIR__ . '/../src/Authentication/Entity',
+                ),
+            ),
+            'orm_default' => array(
+                'drivers' => array(
+                    'Authentication\Entity' => 'authentication_driver',
+                ),
+            ),
+        ),
     ),
     'session' => array(
         'config' => array(
@@ -100,7 +92,7 @@ return array(
                 'cookie_httponly' => true,
                 'cookie_secure' => false,
                 'remember_me_seconds' => 1800, // remember me for 12 hours
-                'gc_maxlifetime' => 1800,
+                'gc_maxlifetime' => 10,
             )
         ),
         'storage' => 'Zend\Session\Storage\SessionArrayStorage',

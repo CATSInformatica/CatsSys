@@ -18,7 +18,7 @@ use Zend\InputFilter\InputFilter;
 class LoginFilter extends InputFilter
 {
     public function __construct($sm)
-    {
+    {   
         $this->add(array(
             'name' => 'username', //usr_name
             'required' => true,

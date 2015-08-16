@@ -1,0 +1,38 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle('CatsSys'); ?>
+
+
+        <?php
+        echo $this->headMeta()
+                ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+                ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+
+        <!-- Le styles -->
+        <?php
+        echo $this->headLink(array(
+                    'rel' => 'shortcut icon',
+                    'type' => 'image/vnd.microsoft.icon',
+                    'href' => $this->basePath() . '/img/favicon.ico'))
+                // Bootstrap core
+                ->appendStylesheet($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/css/bootstrap.min.css'))
+                // Custom Fonts
+                ->appendStylesheet($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/font-awesome/css/font-awesome.min.css'));
+        ?>
+    </head>
+    <body>
+        <?php echo $this->content; ?>
+
+        <?php
+        echo $this->inlineScript()
+                // Bootstrap js
+                ->prependFile($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/js/bootstrap.min.js'))
+                // JQuery
+                ->prependFile($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/js/jquery.js'));
+        ?>
+    </body>
+</html>

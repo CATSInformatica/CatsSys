@@ -6,8 +6,6 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Dashboard\Controller\Index' => 'Dashboard\Controller\IndexController',
-            'Dashboard\Controller\User' => 'Dashboard\Controller\UserController',
-            'Dashboard\Controller\Role' => 'Dashboard\Controller\RoleController',
         )
     ),
     'router' => array(
@@ -47,5 +45,13 @@ return array(
             'dashboard' => __DIR__ . '/../view',
         ),
         'display_exceptions' => true,
+        'strategies' => array(
+            'ViewJsonStrategy',
+        ),
+    ),
+    'view_helpers' => array(
+        'invokables' => array(
+            'userInfo' => 'Dashboard\View\Helper\UserInfo',
+        )
     ),
 );

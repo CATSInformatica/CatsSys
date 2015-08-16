@@ -9,7 +9,7 @@ return array(
     // This should be an array of module namespaces used in the application.
     'modules' => array(
         // zend developer tools helper to see doctrine operations and database MER
-        'ZendDeveloperTools',
+//        'ZendDeveloperTools',
         // ORM mappers
         'DoctrineModule',
         'DoctrineORMModule',
@@ -17,11 +17,11 @@ return array(
         'Site',
         //Authentication Module
         'Authentication',
-        //Authorizarion Module
+//        //Authorizarion Module
         'Authorization',
-        //area de configuração do sistema
+//        //area de configuração do sistema
         'Dashboard',
-        // Entity Module
+//        // Entity Module
         'Database',
     ),
 

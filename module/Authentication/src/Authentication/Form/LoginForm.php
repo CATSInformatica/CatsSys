@@ -17,18 +17,27 @@ use Zend\Form\Form;
  */
 class LoginForm extends Form
 {
+
     public function __construct($name = null)
     {
         parent::__construct('login');
-        
-        $this->setAttribute('method', 'post')
+
+
+
+        $this->setAttributes(array(
+                    'method' => 'post',
+                    'action' => '/authentication/login',
+                    'class' => 'form-signin',
+                ))
                 // user_name
                 ->add(array(
                     'name' => 'username',
                     'attributes' => array(
                         'type' => 'text',
-                        'placeholder' => 'Username',
+                        'placeholder' => 'Usuário',
+                        'class' => 'form-control',
                         'id' => 'username',
+                        'autofocus' => '',
                     ),
                 ))
                 // user_password
@@ -36,14 +45,16 @@ class LoginForm extends Form
                     'name' => 'password',
                     'attributes' => array(
                         'type' => 'password',
-                        'placeholder' => 'Password',
+                        'placeholder' => 'Senha',
                         'id' => 'password',
+                        'class' => 'form-control',
                     )
                 ))
                 // Remember Me checkbox
                 ->add(array(
                     'name' => 'rememberme',
                     'type' => 'checkbox',
+                    'class' => 'form-control',
                 ))
                 // Submit Button
                 ->add(array(
@@ -52,7 +63,9 @@ class LoginForm extends Form
                         'type' => 'submit',
                         'value' => 'Login',
                         'id' => 'submitbutton',
+                        'class' => 'btn btn-primary btn-lg',
                     ),
-                ));
+        ));
     }
+
 }

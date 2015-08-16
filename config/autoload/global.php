@@ -28,4 +28,10 @@ return array(
             )
         )
     ),
+    'module_layouts' => array(        
+        'Dashboard' => 'layout/dashboard-layout.phtml',
+        'Authorization' => 'layout/dashboard-layout.phtml',
+        'Authentication' => 'layout/login-layout.phtml',
+        'Site' => 'layout/layout.phtml',
+    ),
 );
