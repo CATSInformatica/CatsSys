@@ -9,9 +9,9 @@
             <thead>
                 <tr>
                     <th>#</th>
-                        <th>Username</th>
-                        <th>Password</th>
-                        <th>Password Salt</th>
+                    <th>Username</th>
+                    <th>Password</th>
+                    <th>Password Salt</th>
                     <th>Email</th>
                     <th>Active</th>
                     <th>Registration Date</th>
@@ -22,24 +22,24 @@
                 <?php foreach ($this->users as $user): ?>
                     <tr>
                         <td><?php echo $this->escapeHtml($user->getUserId()); ?></td>
-                            <td><?php echo $this->escapeHtml($user->getUserName()); ?></td>
-                            <td><?php echo $this->escapeHtml($user->getUserPassword()); ?></td>
-                            <td><?php echo $this->escapeHtml($user->getUserPasswordSalt()); ?></td>
+                        <td><?php echo $this->escapeHtml($user->getUserName()); ?></td>
+                        <td><?php echo $this->escapeHtml($user->getUserPassword()); ?></td>
+                        <td><?php echo $this->escapeHtml($user->getUserPasswordSalt()); ?></td>
                         <td><?php echo $this->escapeHtml($user->getUserEmail()); ?></td>
                         <td><?php echo $user->getUserActive() ? 'TRUE' : 'FALSE'; ?></td>
                         <td><?php
                             echo $this->escapeHtml($user->getUserRegistrationDate()
                                             ->format('d/m/Y'));
                             ?></td>
-                        <td>
-                            <ul class='list-group'>
+                        <td class="text-center">
+                            <div class="btn-toolbar" role="toolbar" aria-label="...">
                                 <?php foreach ($user->getRole()->toArray() as $role): ?>
-                                    <li class='list-group-item'><?php echo $this->escapeHtml($role->getRoleName()); ?></li>
-                                    <?php endforeach; ?>
-                            </ul>
+                                    <button type="button" class="btn btn-primary"><?php echo $this->escapeHtml($role->getRoleName()); ?></button>
+                                <?php endforeach; ?>
+                            </div>
                         </td>
-                            <td><a  href='<?php echo $this->url('authentication/default', array('controller' => 'user', 'action' => 'edit', 'id' => $user->getUserId())); ?>'>Edit</a></td>
-                            <td><a  href='<?php echo $this->url('authentication/default', array('controller' => 'user', 'action' => 'delete', 'id' => $user->getUserId())); ?>'>Delete</a></td>                        
+                        <td><a class="btn btn-danger"  href='<?php echo $this->url('authentication/default', array('controller' => 'user', 'action' => 'edit', 'id' => $user->getUserId())); ?>'>Edit</a></td>
+                        <td><a class="btn btn-danger"  href='<?php echo $this->url('authentication/default', array('controller' => 'user', 'action' => 'delete', 'id' => $user->getUserId())); ?>'>Delete</a></td>                        
                     </tr>
                 <?php endforeach; ?>
             </tbody>

@@ -15,13 +15,13 @@ use Zend\InputFilter\InputFilter;
  *
  * @author marcio
  */
-class RoleFilter extends InputFilter
+class ResourceFilter extends InputFilter
 {
 
     public function __construct()
     {
         $this->add(array(
-            'name' => 'role_name',
+            'name' => 'resource_name',
             'required' => true,
             'filters' => array(
                 array('name' => 'StripTags'),
@@ -33,14 +33,10 @@ class RoleFilter extends InputFilter
                     'options' => array(
                         'encoding' => 'UTF-8',
                         'min' => 4,
-                        'max' => 200,
+                        'max' => 50,
                     ),
                 ),
             ),
-        ));
-        $this->add(array(
-            'name' => 'role_parent',
-            'required' => false,
         ));
     }
 

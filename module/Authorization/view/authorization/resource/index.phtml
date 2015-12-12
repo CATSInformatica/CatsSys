@@ -1,0 +1,35 @@
+<div class="container">
+    <h1>Resource index</h1>
+    <hr>
+
+    <?php if (!empty($this->message)): ?>
+        <?php echo $this->message; ?>
+    <?php else: ?>
+
+        <div class="table-responsive">
+            <table class='table'>
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Resource Name</th>
+                        <th></th>
+                         <th></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->resources as $resource): ?>
+                        <tr>
+                            <td><?php echo $this->escapeHtml($resource->getResourceId()); ?></td>
+                            <td class="text-center"><?php echo $this->escapeHtml($resource->getResourceName()); ?></td>
+                            <td><a class="btn btn-danger"  href='<?php echo $this->url('authorization/default', array('controller' => 'resource', 'action' => 'edit', 'id' => $resource->getResourceId())); ?>'>Edit</a></td>
+                            <td><a class="btn btn-danger"  href='<?php echo $this->url('authorization/default', array('controller' => 'resource', 'action' => 'delete', 'id' => $resource->getResourceId())); ?>'>Delete</a></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php endif; ?>
+</div>
+
+
+

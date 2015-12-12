@@ -21,9 +21,9 @@
            'connection' => array(
                'orm_default' => array(
                    'params' => array(
-                       'user'     => '',
-                       'password' => '',
-                       'dbname'   => '',
+                       'user'     => 'root',
+                       'password' => 'root',
+                       'dbname'   => 'catssys',
                    ),
                ),
            ),
@@ -43,34 +43,9 @@
     File > New Project
     > (PHP Aplication with Existing Sources)
     > (Selecionar a pasta clonada do github, escolher a versão 5.5 do PHP)
-    > Run as = PHP Built-in Web Server, hostname = localhost, port = 8000, script = public/index.php
-    
-    Após o projeto estar criado acessar
-    > Clique com o botão direito do mouse em catsSys e vá em properties
-    > Em Sources selecione a opção WebRoot na pasta public
-
-    Para executar o projeto
-    > Selecione o Browser e clique em Run Project
-
-
-    Rodar o servidor php local
-
-    > php -S localhost:8000 -t public/ public/index.php
-
-    Acessar página no navegador
-    localhost:8000
 
     Gravar entidades no banco de dados a partir de objetos PHP
     
-    ./vendor/bin/doctrine-module orm:validate-schema
-    ./vendor/bin/doctrine-module orm:schema-tool:create
-
-    Criar objetos php a partir de entidades do banco de dados
-    
-    a. convert-mapping    
-    ./vendor/doctrine/doctrine-module/bin/doctrine-module orm:convert-mapping --namespace="Database\\Entity\\" --force  --from-database annotation ./module/Database/src/
-    
-    it will export “annotation” mapping information into ./module/Database/src/
-    b. generate-entities
-    ./vendor/doctrine/doctrine-module/bin/doctrine-module orm:generate-entities ./module/Database/src/ --generate-annotations=true
-    
+    php public/index.php orm:validate-schema
+    php public/index.php orm:schema-tool:create
+    php doctrine orm:schema-tool:update

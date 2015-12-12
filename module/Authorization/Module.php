@@ -48,52 +48,52 @@ class Module
     // WORKING the main engine for ACL
     public function onRoute(EventInterface $e) // Event manager of the app
     {
-//        $application = $e->getApplication();
-//        $routeMatch = $e->getRouteMatch();
-//        $sm = $application->getServiceManager();
-//
-//        // Authentication
-//        $auth = $sm->get('Zend\Authentication\AuthenticationService');
-//
-//        /**
-//         * 
-//         * @Todo check if session container 'User' still exists
-//         * 
-//         */
-//        $UserContainer = new Container('User');
-//
-//        //Authorization with database (check module.config.php)
-//        $acl = $sm->get('acl');
-//
-//        // everyone is guest untill it gets logged in        
-//        $role = AclDb::DEFAULT_ROLE;
-//
-//        if ($UserContainer->id) {
-//            $role = $UserContainer->activeRole;
-//        }
-//
-//        $resource = $routeMatch->getParam('controller');
-//        $privilege = $routeMatch->getParam('action');
-//
-//        if (!$acl->hasResource($resource)) {
-//            throw new \Exception('Resource ' . $resource . ' not defined');
-//        }
-//
-//        if (!$acl->isAllowed($role, $resource, $privilege)) {
-//
-//            // Get acl configuration to redirect route
-//            $response = $e->getResponse();
-//            $config = $sm->get('config');
-//            $redirect_route = $config['acl']['redirect_route'];
-//
-//            $url = $e->getRouter()->assemble($redirect_route['params'], $redirect_route['options']);
-//            $response->getHeaders()->addHeaderLine('Location', $url);
-//
-//            // The HTTP response status code 302 Found is a common way of performing a redirection.
-//            $response->setStatusCode(302);
-//            $response->sendHeaders();
-//            exit;
-//        }
+        $application = $e->getApplication();
+        $routeMatch = $e->getRouteMatch();
+        $sm = $application->getServiceManager();
+
+        // Authentication
+        $auth = $sm->get('Zend\Authentication\AuthenticationService');
+
+        /**
+         * 
+         * @Todo check if session container 'User' still exists
+         * 
+         */
+        $UserContainer = new Container('User');
+
+        //Authorization with database (check module.config.php)
+        $acl = $sm->get('acl');
+
+        // everyone is guest untill it gets logged in        
+        $role = AclDb::DEFAULT_ROLE;
+
+        if ($UserContainer->id) {
+            $role = $UserContainer->activeRole;
+        }
+
+        $resource = $routeMatch->getParam('controller');
+        $privilege = $routeMatch->getParam('action');
+
+        if (!$acl->hasResource($resource)) {
+            throw new \Exception('Resource ' . $resource . ' not defined');
+        }
+
+        if (!$acl->isAllowed($role, $resource, $privilege)) {
+
+            // Get acl configuration to redirect route
+            $response = $e->getResponse();
+            $config = $sm->get('config');
+            $redirect_route = $config['acl']['redirect_route'];
+
+            $url = $e->getRouter()->assemble($redirect_route['params'], $redirect_route['options']);
+            $response->getHeaders()->addHeaderLine('Location', $url);
+
+            // The HTTP response status code 302 Found is a common way of performing a redirection.
+            $response->setStatusCode(302);
+            $response->sendHeaders();
+            exit;
+        }
     }
 
 }

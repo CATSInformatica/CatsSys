@@ -34,9 +34,9 @@ class AclDb extends ZendAcl
     public function __construct($entityManager)
     {
         // verify ...
-        $roles = $entityManager->getRepository('Database\Entity\Role')->findBy([], ['roleId' => 'asc']);
-        $resources = $entityManager->getRepository('Database\Entity\Resource')->findAll();
-        $privileges = $entityManager->getRepository('Database\Entity\Privilege')->findAll();
+        $roles = $entityManager->getRepository('Authorization\Entity\Role')->findBy([], ['roleId' => 'asc']);
+        $resources = $entityManager->getRepository('Authorization\Entity\Resource')->findAll();
+        $privileges = $entityManager->getRepository('Authorization\Entity\Privilege')->findAll();
 
         $this->_addRoles($roles)
                 ->_addAclRules($resources, $privileges);

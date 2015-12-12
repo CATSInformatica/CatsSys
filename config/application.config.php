@@ -7,9 +7,23 @@
  */
 return array(
     // This should be an array of module namespaces used in the application.
-    'modules' => array(
+    'modules' => getenv('APP_ENV') == 'production' ? array(
+        // ORM mappers
+        'DoctrineModule',
+        'DoctrineORMModule',
+        //First Application Module
+        'Site',
+        //Authentication Module
+        'Authentication',
+//        //Authorizarion Module
+        'Authorization',
+//        //area de configuração do sistema
+        'Dashboard',
+//        // Entity Module
+        'Database',
+    ): array(
         // zend developer tools helper to see doctrine operations and database MER
-//        'ZendDeveloperTools',
+        'ZendDeveloperTools',
         // ORM mappers
         'DoctrineModule',
         'DoctrineORMModule',
@@ -33,7 +47,7 @@ return array(
         // Module class.
         'module_paths' => array(
             './module',
-            './vendor',
+            './../vendor',
         ),
 
         // An array of paths from which to glob configuration files after

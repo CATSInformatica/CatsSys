@@ -36,7 +36,7 @@ class Role
      * @var Collection
      *
      * @ORM\ManyToMany(targetEntity="\Authentication\Entity\User", inversedBy="role")
-     * @ORM\JoinTable(name="role_has_user",
+     * @ORM\JoinTable(name="user_has_role",
      *   joinColumns={
      *     @ORM\JoinColumn(name="role_id", referencedColumnName="role_id")
      *   },
@@ -51,7 +51,7 @@ class Role
      * @var Collection
      *
      * @ORM\ManyToMany(targetEntity="\Authorization\Entity\Role", inversedBy="role")
-     * @ORM\JoinTable(name="roles_parents",
+     * @ORM\JoinTable(name="role_parents",
      *   joinColumns={
      *     @ORM\JoinColumn(name="role_id", referencedColumnName="role_id")
      *   },

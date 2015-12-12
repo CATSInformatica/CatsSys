@@ -17,6 +17,8 @@ return array(
         'invokables' => array(
             'Authorization\Controller\Index' => 'Authorization\Controller\IndexController',
             'Authorization\Controller\Role' => 'Authorization\Controller\RoleController',
+            'Authorization\Controller\Resource' => 'Authorization\Controller\ResourceController',
+            'Authorization\Controller\Privilege' => 'Authorization\Controller\PrivilegeController',
         )
     ),
     'router' => array(

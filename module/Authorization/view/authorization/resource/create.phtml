@@ -1,0 +1,31 @@
+<?php
+
+echo $this->message;
+?>
+
+<div class='container'>
+
+    <div class="row">
+        <h2> Create a new Resource</h2>
+        <hr>
+    </div>
+    <div class="col-xs-6 col-md-4">
+        <?php
+        $resourceForm = $this->form;
+
+        $resourceForm->prepare();
+        echo $this->form()->openTag($resourceForm);
+        ?>
+        <div class='form-group'>
+            <label for='resource_name'>Resource Name</label>
+            <?php
+            echo $this->formRow($resourceForm->get('resource_name'));
+            ?>
+        </div>
+        <?php
+        echo $this->formSubmit($resourceForm->get('Submit'));
+        ?>
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+</div>
+

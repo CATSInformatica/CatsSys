@@ -26,15 +26,18 @@
                 ->appendStylesheet($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/font-awesome/css/font-awesome.min.css'));
         ?>
         <style rel="text/css">
-            .btn {border-radius: 0 !important;}
-        </style>
+            
+            .btn {
+                border-radius: 0 !important;
+            }
 
-        <!-- HTML5 Shim and Respond.js IE8 support of HTML5 elements and media queries -->
-        <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-        <!--[if lt IE 9]>
-            <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
-            <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
-        <![endif]-->
+            footer {
+                position: relative;
+                padding: 15px;
+                background: #FFF;
+                color: #000;
+            }
+        </style>
     </head>
     <body
 
@@ -110,6 +113,15 @@
                                 <li>
                                     <a href="<?php echo $this->url('authorization/default', array('controller' => 'role', 'action' => 'create')) ?>">Create New Role</a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo $this->url('authorization/default', array('controller' => 'resource', 'action' => 'index')) ?>">Show Resources</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('authorization/default', array('controller' => 'resource', 'action' => 'create')) ?>">Create New Resource</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('authorization/default', array('controller' => 'privilege', 'action' => 'index')) ?>">Show Privileges</a>
+                                </li>
                             </ul>
                         </li>
                     </ul>
@@ -139,22 +151,26 @@
 
                     <?php echo $this->content; ?>
                 </div>
+
+
+                <footer>
+                    <div class="row">
+                        <div class="col-sm-6">
+                            <p>
+                                &copy <?php echo date('Y') ?> CATS.
+                                <br>Todos os direitos reservados.
+                                <br> Site construído pelo grupo de informática do CATS.
+                            </p>
+                        </div>
+                    </div>
+                </footer>
+
             </div>
             <!-- / Wrapper -->
 
-            <footer class='footer navbar-bottom'>
-                <div class='container'>
-                    <p>
-                        &copy <?php echo date('Y') ?> CATS.
-                        <br>Todos os direitos reservados.
-                        <br> Site construído pelo grupo de informática do CATS.
-                    </p>
-                </div>
-            </footer>
-
             <?php
             echo $this->inlineScript()
-                ->prependFile($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/js/bootstrap.min.js'))
+                    ->prependFile($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/js/bootstrap.min.js'))
                     // JQuery
                     ->prependFile($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/js/jquery.js'));
             ?>
@@ -203,6 +219,5 @@
                 });
 
             </script>
-
     </body>
 </html>
