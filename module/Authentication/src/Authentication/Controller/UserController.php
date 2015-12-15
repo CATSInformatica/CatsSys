@@ -10,15 +10,12 @@ use Authentication\Form\UserForm;
 use Authentication\Form\UserFilter;
 use Authentication\Service\UserService;
 
-class UserController extends AbstractActionController
-{
+class UserController extends AbstractActionController {
 
     use EntityManagerService;
 
     // R -retrieve 	CRUD
-    public function indexAction()
-    {
-        $this->layout('layout/dashboard-layout');
+    public function indexAction() {
         $entityManager = $this->getEntityManager();
         $users = $entityManager->getRepository('Authentication\Entity\User')->findAll();
 
@@ -27,9 +24,7 @@ class UserController extends AbstractActionController
     }
 
 //    // C -Create
-    public function createAction()
-    {
-        $this->layout('layout/dashboard-layout');
+    public function createAction() {
         $userForm = new UserForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -54,8 +49,7 @@ class UserController extends AbstractActionController
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                return $this->redirect()->toRoute('authentication/default', array(
-                            'controller' => 'user',
+                return $this->redirect()->toRoute('authentication/user', array(
                             'action' => 'index',
                 ));
             }
@@ -65,13 +59,10 @@ class UserController extends AbstractActionController
     }
 
     // Edit
-    public function editAction()
-    {
-        $this->layout('layout/dashboard-layout');
+    public function editAction() {
         $id = $this->params()->fromRoute('id');
         if (!$id) {
-            return $this->redirect()->toRoute('authentication/default', array(
-                        'controller' => 'user',
+            return $this->redirect()->toRoute('authentication/user', array(
                         'action' => 'index',
             ));
         }
@@ -124,13 +115,10 @@ class UserController extends AbstractActionController
 
 //
 //    // D -Delete
-    public function deleteAction()
-    {
-        $this->layout('layout/dashboard-layout');
+    public function deleteAction() {
         $id = $this->params()->fromRoute('id');
         if (!$id) {
-            return $this->redirect()->toRoute('authentication/default', array(
-                        'controller' => 'user',
+            return $this->redirect()->toRoute('authentication/user', array(
                         'action' => 'index',
             ));
         }
@@ -143,14 +131,12 @@ class UserController extends AbstractActionController
             $entityManager->flush();
         } catch (\Exception $ex) {
             echo $ex->getMessage();
-            $this->redirect()->toRoute('authentication/default', array(
-                'controller' => 'user',
+            $this->redirect()->toRoute('authentication/user', array(
                 'action' => 'index',
             ));
         }
 
-        return $this->redirect()->toRoute('authentication/default', array(
-                    'controller' => 'user',
+        return $this->redirect()->toRoute('authentication/user', array(
                     'action' => 'index',
         ));
     }

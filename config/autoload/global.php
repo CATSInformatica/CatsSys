@@ -28,10 +28,10 @@ return array(
             )
         )
     ),
-    'module_layouts' => array(        
-        'Dashboard' => 'layout/dashboard-layout.phtml',
-        'Authorization' => 'layout/dashboard-layout.phtml',
-        'Authentication' => 'layout/login-layout.phtml',
-        'Site' => 'layout/layout.phtml',
-    ),
+    'module_layouts' => array(
+        'Site' => 'layout/layout',
+        'Authentication' => 'application/layout',
+        'Authorization' => 'application/layout',
+        'UMS' => 'application/layout',
+    )
 );

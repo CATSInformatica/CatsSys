@@ -38,8 +38,8 @@
                                 <?php endforeach; ?>
                             </div>
                         </td>
-                        <td><a class="btn btn-danger"  href='<?php echo $this->url('authentication/default', array('controller' => 'user', 'action' => 'edit', 'id' => $user->getUserId())); ?>'>Edit</a></td>
-                        <td><a class="btn btn-danger"  href='<?php echo $this->url('authentication/default', array('controller' => 'user', 'action' => 'delete', 'id' => $user->getUserId())); ?>'>Delete</a></td>                        
+                        <td><a class="btn btn-danger"  href='<?php echo $this->url('authentication/user', array('action' => 'edit', 'id' => $user->getUserId())); ?>'>Edit</a></td>
+                        <td><a class="btn btn-danger"  href='<?php echo $this->url('authentication/user', array('action' => 'delete', 'id' => $user->getUserId())); ?>'>Delete</a></td>                        
                     </tr>
                 <?php endforeach; ?>
             </tbody>

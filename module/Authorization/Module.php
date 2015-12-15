@@ -42,7 +42,7 @@ class Module
     {
         $application = $e->getApplication();
         $em = $application->getEventManager();
-        $em->attach('route', array($this, 'onRoute'), -100);
+//        $em->attach('route', array($this, 'onRoute'), -100);
     }
 
     // WORKING the main engine for ACL

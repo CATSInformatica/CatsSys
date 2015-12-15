@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Dashboard\View\Helper;
+namespace UMS\View\Helper;
 
 use Zend\Session\Container;
 use Zend\View\Helper\AbstractHelper;

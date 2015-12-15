@@ -1,22 +1,21 @@
 <?php
 
-namespace Dashboard;
+namespace UMS;
 
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Dashboard\Controller\Index' => 'Dashboard\Controller\IndexController',
+            'UMS\Controller\Index' => 'UMS\Controller\IndexController',
         )
     ),
     'router' => array(
         'routes' => array(
-            'dashboard' => array(
+            'ums' => array(
                 'type' => 'Literal',
                 'options' => array(
-                    'route' => '/dashboard',
+                    'route' => '/ums',
                     'defaults' => array(
-                        '__NAMESPACE__' => 'Dashboard\Controller',
-                        'controller' => 'index',
+                        'controller' => 'UMS\Controller\Index',
                         'action' => 'index',
                     ),
                 ),
@@ -25,11 +24,10 @@ return array(
                     'default' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/[:controller[/:action[/:id]]]',
+                            'route' => '/default[/:action]',
                             'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'controller' => 'UMS\Controller\Index',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id' => '[0-9][0-9]*',
                             ),
                             'defaults' => array(
                                 'action' => 'index',
@@ -41,17 +39,16 @@ return array(
         ),
     ),
     'view_manager' => array(
-        'template_path_stack' => array(
-            'dashboard' => __DIR__ . '/../view',
+        'template_map' => array(
+            'application/layout' => __DIR__ . '/../view/layout/application-layout.phtml',
         ),
-        'display_exceptions' => true,
-        'strategies' => array(
-            'ViewJsonStrategy',
+        'template_path_stack' => array(
+            __DIR__ . '/../view',
         ),
     ),
     'view_helpers' => array(
         'invokables' => array(
-            'userInfo' => 'Dashboard\View\Helper\UserInfo',
+            'userInfo' => 'UMS\View\Helper\UserInfo',
         )
     ),
 );

@@ -1,6 +1,5 @@
 <?php
 
-
 namespace Site;
 
 return array(
@@ -58,7 +57,7 @@ return array(
         ),
     ),
     'translator' => array(
-        'locale' => 'pt_BR',
+        'locale' => 'en_US',
         'translation_file_patterns' => array(
             array(
                 'type' => 'gettext',
@@ -69,7 +68,7 @@ return array(
     ),
     'controllers' => array(
         'invokables' => array(
-            'Site\Controller\Index' => 'Site\Controller\IndexController'
+            'Site\Controller\Index' => Controller\IndexController::class
         ),
     ),
     'view_manager' => array(
@@ -79,8 +78,7 @@ return array(
         'not_found_template' => 'error/404',
         'exception_template' => 'error/index',
         'template_map' => array(
-//            'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
-            'site/index/index' => __DIR__ . '/../view/site/index/index.phtml',
+            'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
             'error/404' => __DIR__ . '/../view/error/404.phtml',
             'error/index' => __DIR__ . '/../view/error/index.phtml',
         ),

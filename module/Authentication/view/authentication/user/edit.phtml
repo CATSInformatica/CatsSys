@@ -1,20 +1,14 @@
 <div class='container'>
 
-    <div class="row">
-        <h2> Hello from createAction of UserController! </h2>
-        <hr>
-    </div>
     <div class="col-xs-6 col-md-4">
         <?php
         $form = $this->form;
 
-        $form->setAttribute('action', $this->url('authentication/default', array(
+        $form->setAttribute('action', $this->url('authentication/user', array(
                     'controller' => 'user',
                     'action' => 'edit',
                     'id' => $this->id,
-                        )
-                )
-        );
+        )));
 
         $form->prepare();
         echo $this->form()->openTag($form);

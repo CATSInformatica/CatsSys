@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Dashboard;
+namespace UMS;
 
 /**
  * Description of Module

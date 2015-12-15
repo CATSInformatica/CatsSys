@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Dashboard\Controller;
+namespace UMS\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -24,7 +24,7 @@ class IndexController extends AbstractActionController
     public function indexAction()
     {
         
-        $message = 'Welcome to Dashboard.';
+        $message = 'Welcome to UMS.';
         
         return new ViewModel(array(
             'message' => $message

@@ -28,8 +28,7 @@ return array(
                 'options' => array(
                     'route' => '/authorization',
                     'defaults' => array(
-                        '__NAMESPACE__' => 'Authorization\Controller',
-                        'controller' => 'index',
+                        'controller' => 'Authorization\Controller\Index',
                         'action' => 'index',
                     ),
                 ),
@@ -42,6 +41,7 @@ return array(
                             'constraints' => array(
                                 'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+'
                             ),
                             'defaults' => array(
                             ),
@@ -72,12 +72,10 @@ return array(
             ),
         ),
     ),
-    
     'view_manager' => array(
         'template_path_stack' => array(
-            'authorization' => __DIR__ . '/../view',
+            __DIR__ . '/../view',
         ),
-        'display_exceptions' => true,
     ),
     'service_manager' => array(
         'factories' => array(

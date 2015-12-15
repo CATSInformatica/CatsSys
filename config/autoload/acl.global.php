@@ -36,9 +36,9 @@
 //            |           5 | Site\Controller\Index           |
 //            |           6 | Authentication\Controller\Login |
 //            |           7 | Authorization\Controller\Index  |
-//            |           8 | Dashboard\Controller\Index      |
-//            |           9 | Dashboard\Controller\User       |
-//            |          10 | Dashboard\Controller\Role       |
+//            |           8 | UMS\Controller\Index            |
+//            |           9 | UMS\Controller\User             |
+//            |          10 | UMS\Controller\Role             |
 //            +-------------+---------------------------------+
 
 
@@ -82,16 +82,16 @@ return array(
 //                'Authorization\Controller\Index' => array(
 //                    'all' => 'guest',
 //                ),
-//                'Dashboard\Controller\Index' => array(
+//                'UMS\Controller\Index' => array(
 //                    'index' => 'guest',
 //                ),
-//                'Dashboard\Controller\User' => array(
+//                'UMS\Controller\User' => array(
 //                    'index' => 'member',
 //                    'create' => 'admin',
 //                    'delete' => 'admin',
 //                    'edit' => 'admin',
 //                ),
-//                'Dashboard\Controller\Role' => array(
+//                'UMS\Controller\Role' => array(
 //                    'all' => 'admin',
 //                )
 //            )

@@ -29,8 +29,7 @@ use Zend\View\Model\ViewModel;
  *
  * @author marcio
  */
-class LoginController extends AbstractActionController
-{
+class LoginController extends AbstractActionController {
 
     use EntityManagerService;
 
@@ -38,8 +37,8 @@ class LoginController extends AbstractActionController
      * Faz a autenticação de usuários
      * @return ViewModel
      */
-    public function loginAction()
-    {
+    public function loginAction() {
+        $this->layout('login/layout');
         $loginForm = new LoginForm();
         $message = null;
         $request = $this->getRequest();
@@ -52,9 +51,9 @@ class LoginController extends AbstractActionController
 
             if ($loginForm->isValid()) {
                 $data = $loginForm->getData();
-                $this->userAuthentication($data) ?
-                                $this->redirect()->toRoute('dashboard/default') :
-                                $message = 'Credenciais inválidas.';
+                return $this->userAuthentication($data) ?
+                        $this->redirect()->toRoute('ums/default') :
+                        $message = 'Credenciais inválidas.';
             }
         }
 
@@ -65,8 +64,7 @@ class LoginController extends AbstractActionController
         ));
     }
 
-    protected function userAuthentication($data)
-    {
+    protected function userAuthentication($data) {
         $auth = $this->getServiceLocator()->get('Zend\Authentication\AuthenticationService');
         $adapter = $auth->getAdapter();
         $adapter->setIdentityValue($data['username']);
@@ -103,8 +101,7 @@ class LoginController extends AbstractActionController
         return false;
     }
 
-    public function logoutAction()
-    {
+    public function logoutAction() {
         $auth = $this->getServiceLocator()->get('Zend\Authentication\AuthenticationService');
         if ($auth->hasIdentity()) {
             $auth->clearIdentity();
@@ -118,7 +115,7 @@ class LoginController extends AbstractActionController
             $sessionManager->forgetMe();
         }
 
-        return $this->redirect()->toRoute('authentication/default');
+        return $this->redirect()->toRoute('authentication/login');
     }
 
 }

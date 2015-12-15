@@ -23,21 +23,38 @@ return array(
                     'route' => '/authentication',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Authentication\Controller',
-                        'controller' => 'login',
+                        'controller' => 'Login',
                         'action' => 'login',
                     ),
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
-                    'default' => array(
+                    'login' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/[:controller[/:action[/:id]]]',
+                            'route' => '/login[/:action]',
                             'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'controller' => 'Authentication\Controller\Login',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                             'defaults' => array(
+                                'controller' => 'Authentication\Controller\Login',
+                                'action' => 'login',
+                            ),
+                        ),
+                    ),
+                    'user' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/user[/:action[/:id]]',
+                            'constraints' => array(
+                                'controller' => 'Authentication\Controller\User',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Authentication\Controller\User',
+                                'action' => 'index',
                             ),
                         ),
                     ),
@@ -46,8 +63,11 @@ return array(
         ),
     ),
     'view_manager' => array(
+        'template_map' => array(
+            'login/layout' => __DIR__ . '/../view/layout/login-layout.phtml',
+        ),
         'template_path_stack' => array(
-            'authentication' => __DIR__ . '/../view',
+            __DIR__ . '/../view/',
         ),
         'display_exceptions' => true,
     ),
