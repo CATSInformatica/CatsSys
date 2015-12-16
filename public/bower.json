@@ -1,0 +1,16 @@
+{
+  "name": "public",
+  "homepage": "https://github.com/marciodojr/catsSys",
+  "description": "CatsSys",
+  "main": "",
+  "moduleType": [],
+  "authors": [
+    "Márcio"
+  ],
+  "license": "GPL",
+  "dependencies": {
+    "AdminLTE": "admin-lte#~2.3.2",
+    "font-awesome": "~4.5.0",
+    "Ionicons": "ionicons#~2.0.1"
+  }
+}

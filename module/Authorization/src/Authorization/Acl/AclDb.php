@@ -39,7 +39,7 @@ class AclDb extends ZendAcl
         $privileges = $entityManager->getRepository('Authorization\Entity\Privilege')->findAll();
 
         $this->_addRoles($roles)
-                ->_addAclRules($resources, $privileges);
+                ->_addAclRoles($resources, $privileges);
     }
 
     /**
@@ -72,7 +72,7 @@ class AclDb extends ZendAcl
      * @return User\Acl
      * @throws \Exception
      */
-    protected function _addAclRules($resources, $privileges)
+    protected function _addAclRoles($resources, $privileges)
     {
         foreach ($resources as $resource) {
             if (!$this->hasResource($resource->getResourceName())) {

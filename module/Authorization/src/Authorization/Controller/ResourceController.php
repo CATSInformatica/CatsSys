@@ -60,8 +60,7 @@ class ResourceController extends AbstractActionController
                     $em->persist($resource);
                     $em->flush();
 
-                    return $this->redirect()->toRoute('authorization/default', array(
-                        'controller' => 'resource',
+                    return $this->redirect()->toRoute('authorization/resource', array(
                         'action' => 'index'
                     ));
                 } catch (Exception $ex) {

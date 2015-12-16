@@ -16,89 +16,109 @@
                     'rel' => 'shortcut icon',
                     'type' => 'image/vnd.microsoft.icon',
                     'href' => $this->basePath() . '/img/favicon.ico'))
-                // Bootstrap core
-                ->appendStylesheet($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/css/bootstrap.min.css'))
-                // Sb-admin theme
-                ->appendStylesheet($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/css/sb-admin.css'))
-                // Charts
-//                ->appendStylesheet($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/css/plugins/morris.css'))
-                // Custom Fonts
-                ->appendStylesheet($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/font-awesome/css/font-awesome.min.css'));
+                // Bootstrap
+                ->appendStylesheet($this->basePath('vendor/AdminLTE/bootstrap/css/bootstrap.min.css'))
+                // Font Awesome
+                ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'))
+                // Ionicons
+                ->appendStylesheet($this->basePath('vendor/Ionicons/css/ionicons.min.css'))
+                // Theme style
+                ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/AdminLTE.min.css'))
+                // AdminLTE Skins
+                ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/skins/skin-blue.min.css'));
         ?>
-        <style rel="text/css">
-
-            body {
-                background: #ffffff;
-            }
-            .btn {
-                border-radius: 0 !important;
-            }
-
-            footer {
-                position: relative;
-                padding: 15px;
-                background: #FFF;
-                color: #000;
-            }
-        </style>
     </head>
-    <body
+    <body class="skin-blue fixed">
 
         <!-- Wrapper -->
-        <div id='wrapper'>
+        <div class="wrapper">
 
-            <!-- Navigation -->
-            <nav class="navbar navbar-inverse navbar-fixed-top" role="navigation">
-                <!-- Brand and toggle get grouped for better mobile display -->
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle" data-toggle="collapse" data-target=".navbar-ex1-collapse">
+            <header class="main-header">
+
+                <a href="<?php echo $this->url('ums/default'); ?>" class="logo">
+                    <b>CATS</b>
+                </a>
+
+                <!-- Header Navbar: style can be found in header.less -->
+                <nav class="navbar navbar-static-top" role="navigation">
+
+                    <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                         <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="<?php echo $this->url('ums/default'); ?>">CatsSys</a>
-                </div>
-                <!-- Top Menu Items -->
-                <ul class="nav navbar-right top-nav">
-                    <li class="dropdown">
-                        <a href="#" class="dropdown-toggle" data-toggle="dropdown"><i class="fa fa-user"></i>
-                            <?php
-                            $userInfo = $this->userInfo();
-                            $userName = $userInfo['userName'];
-                            $userActiveRole = ucwords($userInfo['activeRole']);
-                            $userRoles = $userInfo['allRoles'];
-                            echo $userName . ' (<span class="active-role">' . $userActiveRole . '</span>)';
-                            ?>
-                            <b class="caret"></b></a>
-                        <ul class="dropdown-menu">
+                    </a>
 
-                            <?php foreach ($userInfo['allRoles'] as $userRole): ?>
+                    <!-- Navbar Right Menu -->
+                    <div class="navbar-custom-menu">
+                        <ul class="nav navbar-nav">
+                            <!-- User Account: style can be found in dropdown.less -->
+                            <li class="dropdown user user-menu">
+                                <a href="#" class="dropdown-toggle" data-toggle="dropdown">
+                                    <img src="/img/user.png" class="user-image" alt="User Image"/>
+                                    <span class="hidden-xs">Usuário</span>
+                                </a>
+
                                 <?php
-                                $userRole = ucwords($userRole);
-                                if ($userRole != $userActiveRole):
-                                    ?>
-                                    <li>
-                                        <a href="#"><i class="fa fa-fw fa-user"></i> <span class='role'><?php echo $userRole ?></span> </a>
+                                $userInfo = $this->userInfo();
+                                $userActiveRole = ucwords($userInfo['activeRole']);
+                                $userRoles = $userInfo['allRoles'];
+                                ?>
+                                <ul class="dropdown-menu">
+                                    <!-- User image -->
+                                    <li class="user-header">
+                                        <img src="/img/user.png" class="img-circle" alt="User Image" />
+                                        <p>
+                                            Usuário - <?php echo $userActiveRole; ?>
+                                            <small>Membro Desde Nov. 2011</small>
+                                        </p>
                                     </li>
-                                <?php endif; ?>
-                            <?php endforeach; ?>
-                        </ul>
-                    </li>
 
-                    <li>
-                        <a href="<?php echo $this->url('authentication/login', array('action' => 'logout')); ?>"><i class="fa fa-fw fa-power-off"></i> Log Out</a>
-                    </li>
-                </ul>
-                <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-                <div class="collapse navbar-collapse navbar-ex1-collapse">
-                    <ul class="nav navbar-nav side-nav">
+                                    <!-- Menu Body -->
+                                    <li class="user-body">
+                                        <?php foreach ($userInfo['allRoles'] as $userRole): ?>
+                                            <?php
+                                            $userRole = ucwords($userRole);
+                                            if ($userRole != $userActiveRole):
+                                                ?>
+                                                <div class="col-xs-3 text-center">
+                                                    <a href="#"><i class="fa fa-fw fa-user"></i> <span class='role'><?php echo $userRole ?></span> </a>
+                                                </div>
+
+                                            <?php endif; ?>
+                                        <?php endforeach; ?>
+                                    </li>
+                                    <!-- Menu Footer-->
+                                    <li class="user-footer">
+                                        <div class="pull-left">
+                                            <a href="#" class="btn btn-default btn-flat">Profile</a>
+                                        </div>
+                                        <div class="pull-right">
+                                            <a href="<?php echo $this->url('authentication/login', array('action' => 'logout')); ?>"  class="btn btn-default btn-flat">
+                                                <i class="fa fa-fw fa-power-off"></i>Sair </a>
+                                        </div>
+                                    </li>
+                                </ul>
+                            </li>
+                        </ul>
+                    </div>
+                </nav>
+            </header>
+            <!-- Left side column. contains the sidebar -->
+            <aside class="main-sidebar">
+                <!-- sidebar: style can be found in sidebar.less -->
+                <section class="sidebar">
+
+                    <!-- sidebar menu: : style can be found in sidebar.less -->
+
+                    <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
+                    <ul class="sidebar-menu">
                         <li>
                             <a href="<?php echo $this->url('ums/default', array('action' => 'index')) ?>"><i class="fa fa-fw fa-dashboard"></i> UMS</a>
                         </li>
                         <li>
-                            <a href="javascript:;" data-toggle="collapse" data-target="#authentication"><i class="fa fa-fw fa-arrows-v"></i> Authentication <i class="fa fa-fw fa-caret-down"></i></a>
-                            <ul id="authentication" class="collapse submenu">
+                            <a href="#">
+                                <i class="fa fa-fw fa-arrows-v"></i>
+                                <span>Authentication</span>
+                            </a>
+                            <ul class="treeview-menu">
                                 <li>
                                     <a href="<?php echo $this->url('authentication/user', array('action' => 'index')) ?>">Show All Users</a>
                                 </li>
@@ -108,88 +128,77 @@
                             </ul>
                         </li>
                         <li>
-                            <a href="javascript:;" data-toggle="collapse" data-target="#authorization"><i class="fa fa-fw fa-arrows-v"></i> Authorization <i class="fa fa-fw fa-caret-down"></i></a>
-                            <ul id="authorization" class="collapse submenu">
+                            <a href="#">
+                                <i class="fa fa-fw fa-arrows-v"></i>
+                                <span>Authorization</span>
+                            </a>
+                            <ul class="treeview-menu">
                                 <li>
-                                    <a href="<?php echo $this->url('authorization/default', array('controller' => 'role', 'action' => 'index')) ?>">Show Roles</a>
+                                    <a href="<?php echo $this->url('authorization/role', array('action' => 'index')) ?>">Ver Papéis</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $this->url('authorization/default', array('controller' => 'role', 'action' => 'create')) ?>">Create New Role</a>
+                                    <a href="<?php echo $this->url('authorization/role', array('action' => 'create')) ?>">Criar Papel</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $this->url('authorization/default', array('controller' => 'resource', 'action' => 'index')) ?>">Show Resources</a>
+                                    <a href="<?php echo $this->url('authorization/role', array('action' => 'add-role-to-user')) ?>">Associar Papel</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $this->url('authorization/default', array('controller' => 'resource', 'action' => 'create')) ?>">Create New Resource</a>
+                                    <a href="<?php echo $this->url('authorization/resource', array('action' => 'index')) ?>">Ver Recursos</a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $this->url('authorization/default', array('controller' => 'privilege', 'action' => 'index')) ?>">Show Privileges</a>
+                                    <a href="<?php echo $this->url('authorization/resource', array('action' => 'create')) ?>">Criar Recurso</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('authorization/privilege', array('action' => 'index')) ?>">Ver Privilégios</a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('authorization/privilege', array('action' => 'create')) ?>">Criar Privilégio</a>
                                 </li>
                             </ul>
                         </li>
                     </ul>
-                </div>
-                <!-- /.navbar-collapse -->
-            </nav>
-            <!-- / Navigation -->
+                    <!-- /.navbar-collapse -->
 
-            <div id="page-wrapper">
+                </section>
+                <!-- /.sidebar -->
+            </aside>
 
-                <div class="container-fluid">
+            <!-- Right side column. Contains the content of the page -->
+            <div class="content-wrapper">
 
-                    <!-- Page Heading -->
-                    <!--                    <div class="row">
-                                            <div class="col-lg-12">
-                                                <h1 class="page-header">
-                                                    {{Module}} <small> {{Controller}} / {{Action}} </small>
-                                                </h1>
-                                                <ol class="breadcrumb">
-                                                    <li class="active">
-                                                        <i class="fa fa-dashboard"></i> UMS
-                                                    </li>
-                                                </ol>
-                                            </div>
-                                        </div>-->
-                    <!-- /.row -->
+<!--                <section class="content-header">
+     Page title and breadcrumbs go here 
+</section> /.content-header -->
 
+                <!-- Main content -->
+                <section class="content">
                     <?php echo $this->content; ?>
+                </section><!-- /.content -->
+            </div><!-- /.right-side -->
 
-<!--                    <footer>
-                        <div class="row">
-                            <div class="col-sm-6 col-sm-offset-3">
-                                <p>
-                                    &copy <?php echo date('Y') ?> CATS.
-                                    <br>Todos os direitos reservados.
-                                    <br> Site construído pelo grupo de informática do CATS.
-                                </p>
-                            </div>
-                        </div>
-                    </footer>-->
-
+            <footer class="main-footer" style="display:none;">
+                <div class="pull-right hidden-xs">
+                    <b>Versão</b> 0.1
                 </div>
-
-            </div>
+                <strong>&copy 2003-<?php echo date('Y'); ?> <a href="http://www.familiacats.com.br/">CATS</a>.</strong> Todos os direitos reservados.
+            </footer>
         </div>
-        <!-- / Wrapper -->
 
         <?php
         echo $this->inlineScript()
-                ->prependFile($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/js/bootstrap.min.js'))
-                // JQuery
-                ->prependFile($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/js/jquery.js'));
+                // AdminLTE App
+                ->prependFile($this->basePath('vendor/AdminLTE/dist/js/app.min.js'))
+                // Bootstrap 3.3.5
+                ->prependFile($this->basePath('vendor/AdminLTE/bootstrap/js/bootstrap.min.js'))
+                // jQuery 2.1.4
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
         ?>
-
-
 
         <script>
             // change user active role
             $(document).ready(function () {
 
-                //css temporary change
-                $('.submenu').css({
-                    'border': '1px solid #333333',
-                    'background': '#444444'
-                });
+                $('.main-footer').show();
 
                 $('.role').on('click', function () {
                     var role = $(this);
@@ -198,7 +207,7 @@
                     });
 
                     $.ajax({
-                        url: '<?php echo $this->url('authorization/default', array('controller' => 'role', 'action' => 'changeActiveUserRole')); ?>',
+                        url: '<?php echo $this->url('authorization/role', array('action' => 'changeActiveUserRole')); ?>',
                         type: 'POST',
                         dataType: 'json',
                         async: true,

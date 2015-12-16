@@ -8,6 +8,8 @@
 
 namespace Authorization\Controller;
 
+use Authorization\Entity\Privilege;
+use Authorization\Form\PrivilegeForm;
 use Exception;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
@@ -17,17 +19,13 @@ use Zend\View\Model\ViewModel;
  *
  * @author marcio
  */
-class PrivilegeController extends AbstractActionController
-{
+class PrivilegeController extends AbstractActionController {
 
     use \Database\Service\EntityManagerService;
 
-    public function indexAction()
-    {
-        $em = $this->getEntityManager();
-
+    public function indexAction() {
         try {
-
+            $em = $this->getEntityManager();
             $privileges = $em->getRepository('\Authorization\Entity\Privilege')
                     ->findAll();
             return new ViewModel(array(
@@ -38,6 +36,82 @@ class PrivilegeController extends AbstractActionController
                 'message' => $ex->getCode() . ': ' . $ex->getMessage(),
             ));
         }
+    }
+
+    public function createAction() {
+
+        $request = $this->getRequest();
+
+        $em = $this->getEntityManager();
+        $roles = $em->getRepository('\Authorization\Entity\Role')->findAll();
+        $resources = $em->getRepository('\Authorization\Entity\Resource')->findAll();
+
+        $options = [];
+        foreach ($roles as $role) {
+            $options['roles'][$role->getRoleId()] = $role->getRoleName();
+        }
+
+        foreach ($resources as $resource) {
+            $options['resources'][$resource->getResourceId()] = $resource->getResourceName();
+        }
+
+        $form = new PrivilegeForm('privilege', $options);
+
+        if ($request->isPost()) {
+
+            $data = $request->getPost();
+            $em = $this->getEntityManager();
+
+            $privilege = new Privilege();
+
+            $privilege->setPrivilegeName($data['privilege_name'])
+                    ->setPrivilegePermissionAllow($data['privilege_permission_allow'])
+                    ->setResource($em->getReference('Authorization\Entity\Resource', $data['resource_id']))
+                    ->setRole($em->getReference('Authorization\Entity\Role', $data['role_id']));
+
+            try {
+                $em->persist($privilege);
+                $em->flush();
+
+                return $this->redirect()->toRoute('authorization/privilege', array(
+                            'action' => 'index'
+                ));
+            } catch (Exception $ex) {
+                return new ViewModel(array(
+                    'message' => $ex->getCode() . ': ' . $ex->getMessage(),
+                ));
+            }
+        }
+
+        return new ViewModel(array(
+            'form' => $form,
+        ));
+    }
+
+    public function deleteAction() {
+        $id = $this->params()->fromRoute('id');
+
+        if ($id) {
+            try {
+
+                $em = $this->getEntityManager();
+                $privilege = $em->getReference('Authorization\Entity\Privilege', $id);
+                $em->remove($privilege);
+                $em->flush();
+
+                return new ViewModel(array(
+                    'message' => 'Privilégio removido com sucesso.',
+                ));
+            } catch (Exception $ex) {
+                return new ViewModel(array(
+                    'message' => $ex->getCode() . ': ' . $ex->getMessage(),
+                ));
+            }
+        }
+
+        return new ViewModel(array(
+            'message' => 'Param id can\'t be empty',
+        ));
     }
 
 }

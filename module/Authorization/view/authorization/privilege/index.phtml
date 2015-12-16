@@ -15,7 +15,6 @@
                     <th class="text-center">Resource Name</th>
                     <th class="text-center">Role Name</th>
                     <th></th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -26,8 +25,7 @@
                         <td class="text-center"> <?php echo $this->escapeHtml($privilege->getPrivilegePermissionAllow() ? 'TRUE' : 'FALSE'); ?></td>
                         <td class="text-center"> <?php echo $this->escapeHtml($privilege->getResource()->getResourceName()); ?></td>
                         <td class="text-center"> <?php echo $this->escapeHtml($privilege->getRole()->getRoleName()); ?></td>
-                        <td class="text-center"> <a class="btn btn-danger" href="<?php echo $this->url('authorization/default', array('controller' => 'privilege', 'action' => 'edit')); ?>">Edit</a></td>
-                        <td class="text-center"> <a class="btn btn-danger" href="<?php echo $this->url('authorization/default', array('controller' => 'privilege', 'action' => 'delete')); ?>">Delete</a></td>
+                        <td class="text-center"> <a class="btn btn-danger" href="<?php echo $this->url('authorization/privilege', array('action' => 'delete', 'id' => $privilege->getPrivilegeId())); ?>">Delete</a></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

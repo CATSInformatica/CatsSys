@@ -18,8 +18,6 @@ class UserController extends AbstractActionController {
     public function indexAction() {
         $entityManager = $this->getEntityManager();
         $users = $entityManager->getRepository('Authentication\Entity\User')->findAll();
-
-
         return new ViewModel(array('users' => $users));
     }
 

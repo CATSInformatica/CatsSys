@@ -1,0 +1,53 @@
+<div class='container'>
+
+    <?php
+    echo $this->message;
+    ?>
+
+    <div class="row">
+        <h2> Criar um novo privilégio</h2>
+        <hr>
+    </div>
+    <div class="col-xs-6 col-md-4">
+        <?php
+        $form = $this->form;
+
+        $form->prepare();
+        echo $this->form()->openTag($form);
+        ?>
+        <div class='form-group'>
+            <label for='resource_name'>Nome do Privilégio</label>
+            <?php
+            echo $this->formRow($form->get('privilege_name'));
+            ?>
+        </div>
+
+        <div class='form-group'>
+            <label for='resource_id'>Recurso Associado</label>
+            <?php
+            echo $this->formRow($form->get('resource_id'));
+            ?>
+        </div>
+
+        <div class='form-group'>
+            <label for='role_id'>Papel Associado</label>
+            <?php
+            echo $this->formRow($form->get('role_id'));
+            ?>
+        </div>
+        
+        <div class='form-group'>
+            <?php
+            echo $this->formRow($form->get('privilege_permission_allow'));
+            ?>
+            <label for='privilege_permission_allow'>Permitir/Bloquear</label>
+        </div>
+
+        <?php
+        echo $this->formSubmit($form->get('Submit'));
+        ?>
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+</div>
+
+

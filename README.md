@@ -124,3 +124,8 @@
     php public/index.php orm:validate-schema
     php public/index.php orm:schema-tool:create
     php doctrine orm:schema-tool:update
+
+    Instalação do bower:
+        > sudo apt-get install npm
+        > sudo npm install -g bower
+        > sudo sudo ln -s /usr/bin/nodejs /usr/bin/node

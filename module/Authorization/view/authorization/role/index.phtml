@@ -16,7 +16,7 @@
                         <th class="text-center">Role Name</th>
                         <th class="text-center">Parent Roles</th>
                         <th></th>
-                         <th></th>
+                        <th></th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,12 +27,12 @@
                             <td class="text-center">
                                 <div class="btn-toolbar" role="toolbar" aria-label="...">
                                     <?php foreach ($role->getRole()->toArray() as $parentRole): ?>
-                                    <button type="button" class="btn btn-primary"><?php echo $this->escapeHtml($parentRole->getRoleName()); ?></button>
+                                        <button type="button" class="btn btn-primary"><?php echo $this->escapeHtml($parentRole->getRoleName()); ?></button>
                                     <?php endforeach; ?>
                                 </div>
                             </td>
-                            <td><a class="btn btn-danger"  href='<?php echo $this->url('authorization/default', array('controller' => 'role', 'action' => 'edit', 'id' => $role->getRoleId())); ?>'>Edit</a></td>
-                            <td><a class="btn btn-danger" href='<?php echo $this->url('authorization/default', array('controller' => 'role', 'action' => 'delete', 'id' => $role->getRoleId())); ?>'>Delete</a></td>
+                            <td><a class="btn btn-danger"  href='<?php echo $this->url('authorization/role', array('controller' => 'role', 'action' => 'edit', 'id' => $role->getRoleId())); ?>'>Edit</a></td>
+                            <td><a class="btn btn-danger" href='<?php echo $this->url('authorization/role', array('action' => 'delete', 'id' => $role->getRoleId())); ?>'>Delete</a></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

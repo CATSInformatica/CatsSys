@@ -55,8 +55,6 @@ class Privilege
      */
     private $role;
 
-
-
     /**
      * Get privilegeId
      *

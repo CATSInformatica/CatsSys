@@ -1,0 +1,35 @@
+<?php
+echo $this->message;
+?>
+
+<div class='container'>
+
+    <div class="row">
+        <h2> Associação de papel a usuários </h2>
+        <hr>
+    </div>
+    <div class="col-xs-6 col-md-4">
+        <?php
+        $form = $this->form;
+
+        $form->prepare();
+        echo $this->form()->openTag($form);
+        ?>
+        <div class='form-group'>
+            <label for='user_id'>Usuário</label>
+            <?php
+            echo $this->formRow($form->get('user_id'));
+            ?>
+        </div>
+        <div class='form-group'>
+            <label for='role_id'>Papel</label>
+            <?php
+            echo $this->formRow($form->get('role_id'));
+            ?>
+        </div>
+        <?php
+        echo $this->formSubmit($form->get('Submit'));
+        ?>
+        <?php echo $this->form()->closeTag(); ?>
+    </div>
+</div>

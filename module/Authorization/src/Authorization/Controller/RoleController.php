@@ -2,8 +2,10 @@
 
 namespace Authorization\Controller;
 
+use Authorization\Entity\Role as EntityRole;
 use Authorization\Form\RoleFilter;
 use Authorization\Form\RoleForm;
+use Authorization\Form\UserRoleForm;
 use Database\Service\EntityManagerService;
 use Exception;
 use Zend\Json\Json;
@@ -11,7 +13,6 @@ use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use Authorization\Entity\Role as EntityRole;
 
 /*
  * To change this license header, choose License Headers in Project Properties.
@@ -24,13 +25,11 @@ use Authorization\Entity\Role as EntityRole;
  *
  * @author marcio
  */
-class RoleController extends AbstractActionController
-{
+class RoleController extends AbstractActionController {
 
     use EntityManagerService;
 
-    public function indexAction()
-    {
+    public function indexAction() {
         $entityManager = $this->getEntityManager();
         try {
             $roles = $entityManager->getRepository('Authorization\Entity\Role')
@@ -50,8 +49,7 @@ class RoleController extends AbstractActionController
      * Done
      * @return ViewModel
      */
-    public function createAction()
-    {
+    public function createAction() {
         $request = $this->getRequest();
 
         $entityManager = $this->getEntityManager();
@@ -91,8 +89,7 @@ class RoleController extends AbstractActionController
                     $entityManager->persist($role);
                     $entityManager->flush();
 
-                    $this->redirect()->toRoute('authorization/default', array(
-                        'controller' => 'role',
+                    $this->redirect()->toRoute('authorization/role', array(
                         'action' => 'index',
                     ));
                 } catch (Exception $ex) {
@@ -108,8 +105,7 @@ class RoleController extends AbstractActionController
         ));
     }
 
-    public function editAction()
-    {
+    public function editAction() {
         $entityManager = $this->getEntityManager();
 
 //        $data = $entityManager->getReference('ATest', $id);
@@ -122,8 +118,7 @@ class RoleController extends AbstractActionController
 //        $entityManager->flush();
     }
 
-    public function deleteAction()
-    {
+    public function deleteAction() {
         $roleId = $this->params()->fromRoute('id');
 
         if ($roleId) {
@@ -147,8 +142,7 @@ class RoleController extends AbstractActionController
         ));
     }
 
-    public function changeActiveUserRoleAction()
-    {
+    public function changeActiveUserRoleAction() {
 
         $request = $this->getRequest();
 
@@ -174,6 +168,52 @@ class RoleController extends AbstractActionController
             'error' => true,
             'message' => 'Request without data.',
         ));
+    }
+
+    public function addRoleToUserAction() {
+        $request = $this->getRequest();
+        $em = $this->getEntityManager();
+
+        $roles = $em->getRepository('\Authorization\Entity\Role')->findAll();
+        $users = $em->getRepository('\Authentication\Entity\User')->findAll();
+
+        $options = [];
+        foreach ($roles as $role) {
+            $options['roles'][$role->getRoleId()] = $role->getRoleName();
+        }
+
+        foreach ($users as $user) {
+            $options['users'][$user->getUserId()] = $user->getUserName();
+        }
+
+        $form = new UserRoleForm('user-role', $options);
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
+
+            try {
+                $user = $em->getReference('Authentication\Entity\User', $data['user_id']);
+                $role = $em->getReference('Authorization\Entity\Role', $data['role_id']);
+                
+                $user->addRole($role);
+                $role->addUser($user);
+                $em->persist($user);
+                $em->persist($role);
+                $em->flush();
+
+                return $this->redirect()->toRoute('authentication/user', array(
+                            'action' => 'index'
+                ));
+            } catch (Exception $ex) {
+                return new ViewModel(array(
+                    'message' => $ex->getCode() . ': ' . $ex->getMessage(),
+                ));
+            }
+        }
+
+        return new ViewModel([
+            'form' => $form
+        ]);
     }
 
 }

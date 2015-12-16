@@ -21,8 +21,8 @@
                         <tr>
                             <td><?php echo $this->escapeHtml($resource->getResourceId()); ?></td>
                             <td class="text-center"><?php echo $this->escapeHtml($resource->getResourceName()); ?></td>
-                            <td><a class="btn btn-danger"  href='<?php echo $this->url('authorization/default', array('controller' => 'resource', 'action' => 'edit', 'id' => $resource->getResourceId())); ?>'>Edit</a></td>
-                            <td><a class="btn btn-danger"  href='<?php echo $this->url('authorization/default', array('controller' => 'resource', 'action' => 'delete', 'id' => $resource->getResourceId())); ?>'>Delete</a></td>
+                            <td><a class="btn btn-danger"  href='<?php echo $this->url('authorization/resource', array('action' => 'edit', 'id' => $resource->getResourceId())); ?>'>Edit</a></td>
+                            <td><a class="btn btn-danger"  href='<?php echo $this->url('authorization/resource', array('action' => 'delete', 'id' => $resource->getResourceId())); ?>'>Delete</a></td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

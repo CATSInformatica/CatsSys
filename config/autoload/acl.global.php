@@ -3,16 +3,16 @@
 //    +--------------+-------------+----------------+----------------------------+---------+
 //    | privilege_id | resource_id | privilege_name | privilege_permission_allow | role_id |
 //    +--------------+-------------+----------------+----------------------------+---------+
-//    |            1 |           5 | all            |                          1 |       1 |
-//    |            2 |           6 | login          |                          1 |       1 |
-//    |            3 |           6 | all            |                          1 |       2 |
-//    |            4 |           7 | all            |                          1 |       1 |
-//    |            5 |           8 | index          |                          1 |       1 |
-//    |            6 |           9 | index          |                          1 |       2 |
-//    |            7 |           9 | create         |                          1 |       3 |
-//    |            8 |           9 | delete         |                          1 |       3 |
-//    |            9 |           9 | edit           |                          1 |       3 |
-//    |           10 |          10 | all            |                          1 |       3 |
+//    |            1 |           5 | all            |                          1 |       0 |
+//    |            2 |           6 | login          |                          1 |       0 |
+//    |            3 |           6 | all            |                          1 |       1 |
+//    |            4 |           7 | all            |                          1 |       0 |
+//    |            5 |           8 | index          |                          1 |       0 |
+//    |            6 |           9 | index          |                          1 |       1 |
+//    |            7 |           9 | create         |                          1 |       2 |
+//    |            8 |           9 | delete         |                          1 |       2 |
+//    |            9 |           9 | edit           |                          1 |       2 |
+//    |           10 |          10 | all            |                          1 |       2 |
 //    +--------------+-------------+----------------+----------------------------+---------+
 
 
@@ -20,9 +20,9 @@
 //                        +---------+-----------+
 //                        | role_id | role_name |
 //                        +---------+-----------+
-//                        |       1 | guest     |
-//                        |       2 | member    |
-//                        |       3 | admin     |
+//                        |       0 | guest     |
+//                        |       1 | basic     |
+//                        |       2 | admin     |
 //                        +---------+-----------+
 
 
@@ -37,8 +37,8 @@
 //            |           6 | Authentication\Controller\Login |
 //            |           7 | Authorization\Controller\Index  |
 //            |           8 | UMS\Controller\Index            |
-//            |           9 | UMS\Controller\User             |
-//            |          10 | UMS\Controller\Role             |
+//            |           9 | Authentication\Controller\User  |
+//            |          10 | Authorization\Controller\Role   |
 //            +-------------+---------------------------------+
 
 
@@ -63,7 +63,6 @@ return array(
                 'name' => 'authorization', // display forbidden error,
             ),  
         ),
-        
         
 //        'roles' => array(
 //            'guest' => null,

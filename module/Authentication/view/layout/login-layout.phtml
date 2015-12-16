@@ -18,10 +18,10 @@
                     'rel' => 'shortcut icon',
                     'type' => 'image/vnd.microsoft.icon',
                     'href' => $this->basePath() . '/img/favicon.ico'))
-                // Bootstrap core
-                ->appendStylesheet($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/css/bootstrap.min.css'))
-                // Custom Fonts
-                ->appendStylesheet($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/font-awesome/css/font-awesome.min.css'));
+                // Bootstrap
+                ->appendStylesheet($this->basePath('vendor/AdminLTE/bootstrap/css/bootstrap.min.css'))
+                // Custom Icons
+                ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'));
         ?>
     </head>
     <body>
@@ -29,10 +29,10 @@
 
         <?php
         echo $this->inlineScript()
-                // Bootstrap js
-                ->prependFile($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/js/bootstrap.min.js'))
-                // JQuery
-                ->prependFile($this->basePath('vendor/startbootstrap-sb-admin-1.0.3/js/jquery.js'));
+                // Bootstrap 3.3.5
+                ->prependFile($this->basePath('vendor/AdminLTE/bootstrap/js/bootstrap.min.js'))
+                // jQuery 2.1.4
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
         ?>
     </body>
 </html>
