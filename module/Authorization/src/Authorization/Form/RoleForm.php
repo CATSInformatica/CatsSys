@@ -22,10 +22,6 @@ class RoleForm extends Form
     {
         parent::__construct('Role');
 
-//        $this->setAttributes(array(
-//            'action' =>,
-//        ));
-
         $this->add(array(
                     'name' => 'role_name',
                     'attributes' => array(

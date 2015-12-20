@@ -43,19 +43,19 @@ class UserForm extends Form
             ),
         ));
         
-        $this->add(array(
-            'name' => 'user_email',
-            'attributes' => array(
-                'type' => 'email',
-            ),
-        ));
-        
-        $this->add(array(
-            'name' => 'user_email_confirm',
-            'attributes' => array(
-                'type' => 'email',
-            ),
-        ));
+//        $this->add(array(
+//            'name' => 'user_email',
+//            'attributes' => array(
+//                'type' => 'email',
+//            ),
+//        ));
+//        
+//        $this->add(array(
+//            'name' => 'user_email_confirm',
+//            'attributes' => array(
+//                'type' => 'email',
+//            ),
+//        ));
 
         $this->add(array(
             'name' => 'submit',

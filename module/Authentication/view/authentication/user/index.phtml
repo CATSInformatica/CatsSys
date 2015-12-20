@@ -12,7 +12,6 @@
                     <th>Username</th>
                     <th>Password</th>
                     <th>Password Salt</th>
-                    <th>Email</th>
                     <th>Active</th>
                     <th>Registration Date</th>
                     <th>Roles</th>
@@ -25,7 +24,6 @@
                         <td><?php echo $this->escapeHtml($user->getUserName()); ?></td>
                         <td><?php echo $this->escapeHtml($user->getUserPassword()); ?></td>
                         <td><?php echo $this->escapeHtml($user->getUserPasswordSalt()); ?></td>
-                        <td><?php echo $this->escapeHtml($user->getUserEmail()); ?></td>
                         <td><?php echo $user->getUserActive() ? 'TRUE' : 'FALSE'; ?></td>
                         <td><?php
                             echo $this->escapeHtml($user->getUserRegistrationDate()

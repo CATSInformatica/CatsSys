@@ -10,19 +10,22 @@ use Authentication\Form\UserForm;
 use Authentication\Form\UserFilter;
 use Authentication\Service\UserService;
 
-class UserController extends AbstractActionController {
+class UserController extends AbstractActionController
+{
 
     use EntityManagerService;
 
     // R -retrieve 	CRUD
-    public function indexAction() {
+    public function indexAction()
+    {
         $entityManager = $this->getEntityManager();
         $users = $entityManager->getRepository('Authentication\Entity\User')->findAll();
         return new ViewModel(array('users' => $users));
     }
 
 //    // C -Create
-    public function createAction() {
+    public function createAction()
+    {
         $userForm = new UserForm();
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -41,7 +44,6 @@ class UserController extends AbstractActionController {
                 $user->setUserName($data['user_name'])
                         ->setUserPassword($pass['password'])
                         ->setUserPasswordSalt($pass['password_salt'])
-                        ->setUserEmail($data['user_email'])
                         ->setUserActive(true);
 
                 $entityManager->persist($user);
@@ -57,7 +59,8 @@ class UserController extends AbstractActionController {
     }
 
     // Edit
-    public function editAction() {
+    public function editAction()
+    {
         $id = $this->params()->fromRoute('id');
         if (!$id) {
             return $this->redirect()->toRoute('authentication/user', array(
@@ -77,7 +80,6 @@ class UserController extends AbstractActionController {
         $form = new UserForm();
 
         $form->get('user_name')->setValue($user->getUserName());
-        $form->get('user_email')->setValue($user->getUserEmail());
 
         $request = $this->getRequest();
 
@@ -94,8 +96,7 @@ class UserController extends AbstractActionController {
 
             if ($form->isValid()) {
                 $pass = UserService::encryptPassword($data['user_password']);
-                $user->setUserEmail($data['user_email'])
-                        ->setUserPassword($pass['password'])
+                $user->setUserPassword($pass['password'])
                         ->setUserPasswordSalt($pass['password_salt']);
 
                 $entityManager->persist($user);
@@ -113,7 +114,8 @@ class UserController extends AbstractActionController {
 
 //
 //    // D -Delete
-    public function deleteAction() {
+    public function deleteAction()
+    {
         $id = $this->params()->fromRoute('id');
         if (!$id) {
             return $this->redirect()->toRoute('authentication/user', array(

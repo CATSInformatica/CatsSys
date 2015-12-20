@@ -7,7 +7,6 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-
 /**
  * User
  *
@@ -47,13 +46,6 @@ class User
     private $userPasswordSalt;
 
     /**
-     * @var string
-     *
-     * @ORM\Column(name="user_email", type="string", length=60, nullable=false)
-     */
-    private $userEmail;
-
-    /**
      * @var boolean
      *
      * @ORM\Column(name="user_active", type="boolean", nullable=false)
@@ -73,7 +65,7 @@ class User
      * @ORM\ManyToMany(targetEntity="Authorization\Entity\Role", mappedBy="user")
      */
     private $role;
-
+    
     /**
      * Constructor
      */
@@ -164,30 +156,6 @@ class User
     public function getUserPasswordSalt()
     {
         return $this->userPasswordSalt;
-    }
-
-    /**
-     * Set userEmail
-     *
-     * @param string $userEmail
-     *
-     * @return User
-     */
-    public function setUserEmail($userEmail)
-    {
-        $this->userEmail = $userEmail;
-
-        return $this;
-    }
-
-    /**
-     * Get userEmail
-     *
-     * @return string
-     */
-    public function getUserEmail()
-    {
-        return $this->userEmail;
     }
 
     /**

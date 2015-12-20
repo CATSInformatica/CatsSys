@@ -33,5 +33,6 @@ return array(
         'Authentication' => 'application/layout',
         'Authorization' => 'application/layout',
         'UMS' => 'application/layout',
+        'Recruitment' => 'application/layout',
     )
 );

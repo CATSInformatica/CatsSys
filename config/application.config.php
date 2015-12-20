@@ -8,12 +8,14 @@
  */
 return array(
     // This should be an array of module namespaces used in the application.
-    'modules' => getenv('APP_ENV') == 'production' ? array(
+    'modules' => getenv('APP_ENV') == 'development' ? array(
         // per-module layout
         'EdpModuleLayouts',
         // ORM mappers
         'DoctrineModule',
         'DoctrineORMModule',
+        // Database helper Module
+        'Database',
         //First Application Module
         'Site',
         //Authentication Module
@@ -22,13 +24,13 @@ return array(
         'Authorization',
         //User Management Space Module
         'UMS',
-        // Database helper Module
-        'Database',
+        // Recruitment Module
+        'Recruitment',
             ) : array(
         // per-module layout
         'EdpModuleLayouts',
         // zend developer tools helper to see doctrine operations and database MER
-//        'ZendDeveloperTools',
+        'ZendDeveloperTools',
         // ORM mappers
         'DoctrineModule',
         'DoctrineORMModule',
@@ -42,6 +44,8 @@ return array(
         'UMS',
         // Database helper Module
         'Database',
+        // Recruitment Module
+        'Recruitment',
             ),
     // These are various options for the listeners attached to the ModuleManager
     'module_listener_options' => array(

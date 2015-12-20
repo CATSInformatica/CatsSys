@@ -22,7 +22,7 @@ class UserService
     /**
      * Static function for checking hashed password (as required by Doctrine)
      *
-     * @param Database\Entity\User $user The identity object
+     * @param User $user The identity object
      * @param string $passwordGiven Password provided to be verified
      * @return boolean true if the password was correct, else, returns false
      */

@@ -39,23 +39,23 @@ class UserFilter extends InputFilter
                 ),
             ),
         ));
-        $this->add(array(
-            'name' => 'user_email',
-            'required' => true,
-            'validators' => array(
-                array(
-                    'name' => 'EmailAddress',
-                ),
-            ),
-        ));
-
-        $this->add(array(
-            'name' => 'user_email_confirm',
-            'required' => true,
-            'validators' => array(
-                new Identical('user_email')
-            ),
-        ));
+//        $this->add(array(
+//            'name' => 'user_email',
+//            'required' => true,
+//            'validators' => array(
+//                array(
+//                    'name' => 'EmailAddress',
+//                ),
+//            ),
+//        ));
+//
+//        $this->add(array(
+//            'name' => 'user_email_confirm',
+//            'required' => true,
+//            'validators' => array(
+//                new Identical('user_email')
+//            ),
+//        ));
 
         $this->add(array(
             'name' => 'user_password',

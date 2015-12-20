@@ -94,7 +94,7 @@ class Person
     /**
      *
      * @var DateTime
-     * @ORM\Column(name="person_birthday", type="datetime", nullable=false)
+     * @ORM\Column(name="person_birthday", type="date", nullable=false)
      */
     private $personBirthday;
 
@@ -112,6 +112,15 @@ class Person
      * )
      */
     private $addresses;
+    
+    /**
+     *
+     * @var User
+     * @ORM\OneToOne(targetEntity="\Authentication\Entity\User")
+     * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id")
+     */
+    private $user;
+    
 
     /**
      * Constructor

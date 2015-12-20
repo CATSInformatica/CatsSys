@@ -18,6 +18,8 @@
                     'href' => $this->basePath() . '/img/favicon.ico'))
                 // Bootstrap
                 ->appendStylesheet($this->basePath('vendor/AdminLTE/bootstrap/css/bootstrap.min.css'))
+                // Datepicker
+                ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/datepicker/datepicker3.css'))
                 // Font Awesome
                 ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'))
                 // Ionicons
@@ -115,8 +117,9 @@
                         </li>
                         <li>
                             <a href="#">
-                                <i class="fa fa-fw fa-arrows-v"></i>
-                                <span>Authentication</span>
+                                <i class="ion-ios-unlocked-outline"></i>
+                                <span>Autenticação</span>
+                                <i class="pull-right fa fa-circle-thin"></i>
                             </a>
                             <ul class="treeview-menu">
                                 <li>
@@ -129,8 +132,9 @@
                         </li>
                         <li>
                             <a href="#">
-                                <i class="fa fa-fw fa-arrows-v"></i>
-                                <span>Authorization</span>
+                                <i class="ion-ios-unlocked-outline"></i>
+                                <span>Autorização</span>
+                                <i class="pull-right fa fa-circle-thin"></i>
                             </a>
                             <ul class="treeview-menu">
                                 <li>
@@ -156,6 +160,23 @@
                                 </li>
                             </ul>
                         </li>
+
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-users"></i>
+                                <span>Processo Seletivo</span>
+                                <i class="pull-right fa fa-circle-thin"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="<?php echo $this->url('recruitment/recruitment', array('action' => 'index')); ?>"> Ver Processos Seletivos </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('recruitment/recruitment', array('action' => 'create')); ?>"> Criar Processo Seletivo </a>
+                                </li>
+                            </ul>
+                        </li>
+
                     </ul>
                     <!-- /.navbar-collapse -->
 
@@ -171,9 +192,9 @@
 </section> /.content-header -->
 
                 <!-- Main content -->
-                <section class="content">
-                    <?php echo $this->content; ?>
-                </section><!-- /.content -->
+
+                <?php echo $this->content; ?>
+
             </div><!-- /.right-side -->
 
             <footer class="main-footer">
@@ -292,6 +313,10 @@
                 ->prependFile($this->basePath('vendor/AdminLTE/dist/js/app.min.js'))
                 // SlimScroll Plugin
                 ->prependFile($this->basePath('vendor/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js'))
+                // Datepicker
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/locales/bootstrap-datepicker.pt-BR.js'))
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/bootstrap-datepicker.js'))
+                ->prependFile($this->basePath('vendor/moment/min/moment.min.js'))
                 // Bootstrap 3.3.5
                 ->prependFile($this->basePath('vendor/AdminLTE/bootstrap/js/bootstrap.min.js'))
                 // jQuery 2.1.4
@@ -302,7 +327,7 @@
             // change user active role
             $(document).ready(function () {
 
-//                $('.main-footer').show();
+                //                $('.main-footer').show();
                 $('.role').on('click', function () {
                     var role = $(this);
                     var jsonRole = JSON.stringify({
@@ -330,6 +355,14 @@
                         }
                     });
                 });
+
+                $('.datepicker').datepicker({
+                    format: 'dd/mm/yyyy',
+                    language: 'pt-BR',
+                    autoclose: true,
+                    startDate: moment().format('DD/MM/YYYY')
+                });
+
             });
 
         </script>

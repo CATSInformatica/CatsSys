@@ -1,0 +1,48 @@
+
+
+
+<section class="content">
+
+    <h3>Tabela de processos seletivos</h3>
+    <hr>
+
+    <?php echo $this->message; ?>
+
+    <div class="table-responsive">
+        <table class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Nº</th>
+                    <th class="text-center">Ano</th>
+                    <th class="text-center">Data de Início</th>
+                    <th class="text-center">Data de Término</th>
+                    <th class="text-center">Tipo</th>
+                    <th class="text-center">Edital</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->recruitments as $recruitment): ?>
+                    <tr>
+                        <td class="text-center"> <?php echo $this->escapeHtml($recruitment->getRecruitmentId()); ?></td>
+                        <td class="text-center"> <?php echo $this->escapeHtml($recruitment->getRecruitmentNumber()); ?></td>
+                        <td class="text-center"> <?php echo $this->escapeHtml($recruitment->getRecruitmentYear()); ?></td>
+                        <td class="text-center"> <?php echo $recruitment->getRecruitmentBeginDate()->format('d/m/Y'); ?></td>
+                        <td class="text-center"> <?php echo $recruitment->getRecruitmentEndDate()->format('d/m/Y'); ?></td>
+                        <td class="text-center"> <?php echo $this->escapeHtml($recruitment->getRecruitmentType()); ?></td>
+                        <td class="text-center">
+                            <a href="<?php echo $this->escapeHtml($recruitment->getRecruitmentPublicNotice()); ?>" >
+                                <i class="fa fa-file-pdf-o"></i>
+                            </a>
+                        </td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</section>
+
+
+

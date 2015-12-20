@@ -1,0 +1,69 @@
+<section class="content">
+
+    <p><?php echo $this->message; ?></p>
+    
+    <div class="row">
+        <h2> Criar um novo processo seletivo</h2>
+        <hr>
+    </div>
+    <div class="col-xs-6 col-md-6 col-md-offset-3">
+        <?php
+        $form = $this->form;
+
+        $form->prepare();
+        echo $this->form()->openTag($form);
+        ?>
+
+        <div class='form-group'>
+            <label for='recruitment_number'>Nº do processo seletivo</label>
+            <?php
+            echo $this->formRow($form->get('recruitment_number'));
+            ?>
+        </div>
+
+        <div class='form-group'>
+            <label for='recruitment_year'>Ano do processo seletivo</label>
+            <?php
+            echo $this->formRow($form->get('recruitment_year'));
+            ?>
+        </div>
+
+        <div class="row">
+            <div class="form-group col-xs-6 col-md-6">
+                <label for='recruitment_begindate'>Data de Início</label>
+                <?php
+                echo $this->formRow($form->get('recruitment_begindate'));
+                ?>
+            </div>
+            <div class="form-group col-xs-6 col-md-6">
+                <label for='recruitment_enddate'>Data de Término</label>
+                <?php
+                echo $this->formRow($form->get('recruitment_enddate'));
+                ?>
+            </div>
+        </div>
+
+        <div class='form-group'>
+            <label for='recruitment_public_notice'>Edital</label>
+            <?php
+            echo $this->formRow($form->get('recruitment_public_notice'));
+            ?>
+        </div>
+
+        <div class='form-group'>
+            <label for='recruitment_type'>Tipo de processo seletivo</label>
+            <?php
+            echo $this->formRow($form->get('recruitment_type'));
+            ?>
+        </div>
+
+        <div class="form-group row">
+            <div class="col-md-1 col-md-offset-4"></div>
+            <?php
+            echo $this->formSubmit($form->get('Submit'));
+            ?>
+            <?php echo $this->form()->closeTag(); ?>
+        </div>
+    </div>
+
+</section>
