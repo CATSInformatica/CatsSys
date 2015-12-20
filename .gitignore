@@ -12,4 +12,3 @@ vendor
 composer.phar
 error.log
 access.log
-data
