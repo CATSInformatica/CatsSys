@@ -48,9 +48,16 @@ class Role
     private $user;
 
     /**
+     *
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity="Role", mappedBy="parents")
+     */
+    private $children;
+
+    /**
      * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="\Authorization\Entity\Role", inversedBy="role")
+     * @ORM\ManyToMany(targetEntity="Role", inversedBy="children")
      * @ORM\JoinTable(name="role_parents",
      *   joinColumns={
      *     @ORM\JoinColumn(name="role_id", referencedColumnName="role_id")
@@ -60,7 +67,7 @@ class Role
      *   }
      * )
      */
-    private $role;
+    private $parents;
 
     /**
      * Constructor
@@ -68,7 +75,8 @@ class Role
     public function __construct()
     {
         $this->user = new ArrayCollection();
-        $this->role = new ArrayCollection();
+        $this->parents = new ArrayCollection();
+        $this->children = new ArrayCollection();
     }
 
     /**
@@ -127,7 +135,7 @@ class Role
     }
 
     /**
-     * Get user
+     * Get User
      *
      * @return Collection
      */
@@ -137,37 +145,88 @@ class Role
     }
 
     /**
-     * Add role
+     * 
+     * @param Collection $parents
+     */
+    public function setParents(Collection $parents)
+    {
+        $this->parents = $parents;
+    }
+
+    /**
+     * Add parent
      *
-     * @param Role $role
+     * @param Role $parent
      *
      * @return Role
      */
-    public function addRole(Role $role)
+    public function addParent(Role $parent)
     {
-        $this->role[] = $role;
+        $this->parents[] = $parent;
 
         return $this;
     }
 
     /**
-     * Remove role
+     * Remove parent
      *
-     * @param Role $role
+     * @param Role $parent
      */
-    public function removeRole(Role $role)
+    public function removeParent(Role $parent)
     {
-        $this->role->removeElement($role);
+        $this->parents->removeElement($parent);
     }
 
     /**
-     * Get role
+     * Get parents
      *
      * @return Collection
      */
-    public function getRole()
+    public function getParents()
     {
-        return $this->role;
+        return $this->parents;
+    }
+
+    /**
+     * Get child roles
+     * @return type
+     */
+    function getChildren()
+    {
+        return $this->children;
+    }
+
+    /**
+     * Set child roles
+     * @param Collection $children
+     */
+    function setChildren(Collection $children)
+    {
+        $this->children = $children;
+    }
+
+    /**
+     * Add child role
+     *
+     * @param Role $child
+     *
+     * @return Role
+     */
+    public function addChild(Role $child)
+    {
+        $this->children[] = $child;
+
+        return $this;
+    }
+
+    /**
+     * Remove child role
+     *
+     * @param Role $child
+     */
+    public function removeChild(Role $child)
+    {
+        $this->children->removeElement($child);
     }
 
 }

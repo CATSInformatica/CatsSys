@@ -73,11 +73,22 @@
     <?php phpinfo(); ?>
 
     No navegador digite http://cats-lab.lan, você deverá ver as configurações da instalação do php
+    
 
+______________________________
 
+Segunda etapa
+______________________________
 
-    Clonar o projeto
+   Instalar git
+	> No terminal digite: sudo apt-get install git
+
+   Instalar Netbeans IDE
+	> acesse o link <https://netbeans.org/downloads/> e baixe a última versão do Netbeans para PHP.
+
+    Clonar o projeto do CATS. vá na pasta vhosts e delete a pasta cats-lab, em seguida abra o terminal e digite o comando
     > git clone https://github.com/marciodojr/catsSys.git
+    Renomeie a pasta clonada do github para cats-lab
 
     Instalar as bibliotecas externas
  
@@ -123,7 +134,9 @@
     
     php public/index.php orm:validate-schema
     php public/index.php orm:schema-tool:create
-    php doctrine orm:schema-tool:update
+    php public/index.php orm:schema-tool:update --force
+
+    mysqldump --no-create-info -u root -p catssys > catssys_data.sql
 
     Instalação do bower:
         > sudo apt-get install npm

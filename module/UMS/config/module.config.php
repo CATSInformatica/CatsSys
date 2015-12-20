@@ -51,4 +51,26 @@ return array(
             'userInfo' => 'UMS\View\Helper\UserInfo',
         )
     ),
+    // Doctrine configuration
+    'doctrine' => array(
+        'configuration' => array(
+            'orm_default' => array(
+                'generate_proxies' => true,
+            ),
+        ),
+        'driver' => array(
+            'ums_driver' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => array(
+                    __DIR__ . '/../src/UMS/Entity',
+                ),
+            ),
+            'orm_default' => array(
+                'drivers' => array(
+                    'UMS\Entity' => 'ums_driver',
+                ),
+            ),
+        ),
+    ),
 );

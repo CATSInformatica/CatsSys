@@ -52,7 +52,7 @@ class AclDb extends ZendAcl
     {
         foreach ($roles as $role) {
             if (!$this->hasRole($role->getRoleName())) {
-                $parents = $role->getRole()->toArray();
+                $parents = $role->getParents()->toArray();
                 $parentNames = array();
                 foreach ($parents as $parent) {
                     $parentNames[] = $parent->getRoleName();

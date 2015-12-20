@@ -10,6 +10,7 @@ namespace Database\Service;
 
 trait EntityManagerService
 {
+
     /**
      *
      * @var Doctrine\ORM\EntityManager
@@ -23,7 +24,8 @@ trait EntityManagerService
                     ->getServiceLocator()
                     ->get('Doctrine\ORM\EntityManager');
         }
-        
+
         return $this->entityManager;
     }
+
 }
