@@ -78,4 +78,37 @@ class RecruitmentController extends AbstractActionController
         ));
     }
 
+    public function deleteAction()
+    {
+        $id = $this->params()->fromRoute('id');
+
+        if ($id !== null) {
+            try {
+                $em = $this->getEntityManager();
+                $recruitment = $em->getReference('Recruitment\Entity\Recruitment', $id);
+                $currentDate = new \DateTime('now');
+                if ($currentDate < $recruitment->getRecruitmentBeginDate()) {
+                    $em->remove($recruitment);
+                    $em->flush();
+                    return $this->redirect()->toRoute('recruitment/recruitment', array(
+                                'action' => 'index'
+                    ));
+                }
+
+                return new ViewModel(array(
+                    'message' => 'Não é possivel remover processos seletivos em andamento.'
+                    . 'Entre em contato com o administrador do sistema'
+                ));
+            } catch (\Exception $ex) {
+                return new ViewModel(array(
+                    'message' => $ex->getCode() . ': ' . $ex->getMessage()
+                ));
+            }
+        }
+
+        return new ViewModel(array(
+            'message' => 'Nenhum processo seletivo escolhido'
+        ));
+    }
+
 }

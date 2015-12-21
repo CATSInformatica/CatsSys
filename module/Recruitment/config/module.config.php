@@ -31,10 +31,11 @@ return array(
                     'recruitment' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/recruitment[/:action]',
+                            'route' => '/recruitment[/:action[/:id]]',
                             'constraints' => array(
                                 'controller' => 'Recruitment\Controller\Recruitment',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
                             ),
                             'defaults' => array(
                                 'action' => 'index',

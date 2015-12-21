@@ -187,10 +187,6 @@
             <!-- Right side column. Contains the content of the page -->
             <div class="content-wrapper">
 
-<!--                <section class="content-header">
-     Page title and breadcrumbs go here 
-</section> /.content-header -->
-
                 <!-- Main content -->
 
                 <?php echo $this->content; ?>
@@ -204,8 +200,6 @@
                 <strong>&copy 2003-<?php echo date('Y'); ?> <a href="http://www.familiacats.com.br/">CATS</a>.</strong> Todos os direitos reservados.
             </footer>
         </div>
-
-
         <script>
             var AdminLTEOptions = {
                 //Add slimscroll to navbar menus
@@ -363,8 +357,17 @@
                     startDate: moment().format('DD/MM/YYYY')
                 });
 
-            });
+                var url = window.location;
+                console.log(url);
+                // Will only work if string in href matches with location
+                $('ul.sidebar-menu a[href="' + url.pathname + '"]')
+                        .closest('ul')
+                        .addClass('menu-open')
+                        .css('display', 'block')
+                        .closest('li')
+                        .addClass('active');
 
+            });
         </script>
     </body>
 </html>

@@ -32,7 +32,7 @@ class RecruitmentForm extends Form
                     'name' => 'recruitment_begindate',
                     'attributes' => array(
                         'type' => 'text',
-                        'class' => 'form-control datepicker',
+                        'class' => 'form-control datepicker text-center',
                         'value' => $date->format('d/m/Y'),
                     ),
                 ))
@@ -40,7 +40,7 @@ class RecruitmentForm extends Form
                     'name' => 'recruitment_enddate',
                     'attributes' => array(
                         'type' => 'text',
-                        'class' => 'form-control datepicker',
+                        'class' => 'form-control datepicker text-center',
                         'value' => $date->format('d/m/Y')
                     ),
                 ))
@@ -73,7 +73,7 @@ class RecruitmentForm extends Form
                         'value_options' => $recruitmentYears,
                     ),
                     'attributes' => array(
-                        'class' => 'form-control',
+                        'class' => 'form-control text-center',
                     ),
                 ))
                 ->add(array(
@@ -94,7 +94,7 @@ class RecruitmentForm extends Form
                         ),
                     ),
                     'attributes' => array(
-                        'class' => 'form-control',
+                        'class' => 'form-control text-center',
                     ),
                 ))
                 ->add(array(

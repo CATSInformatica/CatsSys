@@ -71,8 +71,7 @@ class UserController extends AbstractActionController
 
         try {
 
-            $user = $entityManager->getRepository('Authentication\Entity\User')
-                    ->find($id);
+            $user = $entityManager->getReference('Authentication\Entity\User', $id);
         } catch (\Exception $ex) {
             echo $ex->getMessage();
         }
@@ -126,7 +125,7 @@ class UserController extends AbstractActionController
         $entityManager = $this->getEntityManager();
 
         try {
-            $user = $entityManager->getRepository('Authentication\Entity\User')->find($id);
+            $user = $entityManager->getReference('Authentication\Entity\User', $id);
             $entityManager->remove($user);
             $entityManager->flush();
         } catch (\Exception $ex) {
