@@ -8,10 +8,6 @@
 
 namespace Authorization;
 
-use Authorization\Acl\AclDb;
-use Authorization\Controller\Plugin\IsAllowed as IsAllowedControllerPlugin;
-use Authorization\View\Helper\IsAllowed as IsAllowedVieHelper;
-
 return array(
     'controllers' => array(
         'invokables' => array(
@@ -128,31 +124,17 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'acl' => function ($sm) {
-                return new AclDb($sm->get('Doctrine\ORM\EntityManager'));
-            }
+            'acl' => 'Authorization\Factory\AclDbFactory'
         ),
     ),
     'view_helpers' => array(
         'factories' => array(
-            'isAllowed' => function($sm) {
-                $sm = $sm->getServiceLocator(); // $sm was the view helper's locator
-                $auth = $sm->get('Zend\Authentication\AuthenticationService');
-                $acl = $sm->get('acl');
-                $helper = new IsAllowedVieHelper($auth, $acl);
-                return $helper;
-            },
+            'isAllowed' => 'Authorization\Factory\IsAllowedViewFactory',
         ),
     ),
     'controller_plugins' => array(
         'factories' => array(
-            'isAllowed' => function($sm) {
-                $sm = $sm->getServiceLocator(); // $sm was the view helper's locator
-                $auth = $sm->get('Zend\Authentication\AuthenticationService');
-                $acl = $sm->get('acl');
-                $plugin = new IsAllowedControllerPlugin($auth, $acl);
-                return $plugin;
-            }
+            'isAllowed' => 'Authorization\Factory\IsAllowedControllerFactory',
         ),
     ),
 );

@@ -58,7 +58,7 @@ class Role
      * @var Collection
      *
      * @ORM\ManyToMany(targetEntity="Role", inversedBy="children")
-     * @ORM\JoinTable(name="role_parents",
+     * @ORM\JoinTable(name="role_parent",
      *   joinColumns={
      *     @ORM\JoinColumn(name="role_id", referencedColumnName="role_id")
      *   },

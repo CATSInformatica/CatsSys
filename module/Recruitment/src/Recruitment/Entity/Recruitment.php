@@ -8,7 +8,10 @@
 
 namespace Recruitment\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Recruitment\Entity\Registration;
 
 /**
  * Description of Recruitment
@@ -75,16 +78,23 @@ class Recruitment
      */
     private $recruitmentType;
 
+    /**
+     *
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="\Recruitment\Entity\Registration", mappedBy="recruitment")
+     */
+    private $registrations;
+
     public function __construct()
     {
-        
+        $this->registrations = new ArrayCollection();
     }
 
     /**
      * 
      * @return integer
      */
-    function getRecruitmentId()
+    public function getRecruitmentId()
     {
         return $this->recruitmentId;
     }
@@ -93,7 +103,7 @@ class Recruitment
      * 
      * @return integer
      */
-    function getRecruitmentNumber()
+    public function getRecruitmentNumber()
     {
         return $this->recruitmentNumber;
     }
@@ -102,7 +112,7 @@ class Recruitment
      * 
      * @return integer
      */
-    function getRecruitmentYear()
+    public function getRecruitmentYear()
     {
         return $this->recruitmentYear;
     }
@@ -112,7 +122,7 @@ class Recruitment
      * @param integer $recruitmentNumber
      * @return \Recruitment\Entity\Recruitment
      */
-    function setRecruitmentNumber($recruitmentNumber)
+    public function setRecruitmentNumber($recruitmentNumber)
     {
         $this->recruitmentNumber = $recruitmentNumber;
         return $this;
@@ -123,7 +133,7 @@ class Recruitment
      * @param integer $recruitmentYear
      * @return \Recruitment\Entity\Recruitment
      */
-    function setRecruitmentYear($recruitmentYear)
+    public function setRecruitmentYear($recruitmentYear)
     {
         $this->recruitmentYear = $recruitmentYear;
         return $this;
@@ -133,7 +143,7 @@ class Recruitment
      * 
      * @return \DateTime
      */
-    function getRecruitmentBeginDate()
+    public function getRecruitmentBeginDate()
     {
         return $this->recruitmentBeginDate;
     }
@@ -142,7 +152,7 @@ class Recruitment
      * 
      * @return \DateTime
      */
-    function getRecruitmentEndDate()
+    public function getRecruitmentEndDate()
     {
         return $this->recruitmentEndDate;
     }
@@ -151,7 +161,7 @@ class Recruitment
      * 
      * @return string
      */
-    function getRecruitmentPublicNotice()
+    public function getRecruitmentPublicNotice()
     {
         return $this->recruitmentPublicNotice;
     }
@@ -160,7 +170,7 @@ class Recruitment
      * 
      * @return string
      */
-    function getRecruitmentType()
+    public function getRecruitmentType()
     {
         return $this->recruitmentType;
     }
@@ -170,7 +180,7 @@ class Recruitment
      * @param \DateTime $recruitmentBeginDate
      * @return \Recruitment\Entity\Recruitment
      */
-    function setRecruitmentBeginDate(\DateTime $recruitmentBeginDate)
+    public function setRecruitmentBeginDate(\DateTime $recruitmentBeginDate)
     {
         $this->recruitmentBeginDate = $recruitmentBeginDate;
         return $this;
@@ -181,7 +191,7 @@ class Recruitment
      * @param \DateTime $recruitmentEndDate
      * @return \Recruitment\Entity\Recruitment
      */
-    function setRecruitmentEndDate(\DateTime $recruitmentEndDate)
+    public function setRecruitmentEndDate(\DateTime $recruitmentEndDate)
     {
         $this->recruitmentEndDate = $recruitmentEndDate;
         return $this;
@@ -192,7 +202,7 @@ class Recruitment
      * @param string $recruitmentPublicNotice
      * @return \Recruitment\Entity\Recruitment
      */
-    function setRecruitmentPublicNotice($recruitmentPublicNotice)
+    public function setRecruitmentPublicNotice($recruitmentPublicNotice)
     {
         $this->recruitmentPublicNotice = $recruitmentPublicNotice;
         return $this;
@@ -204,7 +214,7 @@ class Recruitment
      * @return \Recruitment\Entity\Recruitment
      * @throws \InvalidArgumentException
      */
-    function setRecruitmentType($recruitmentType)
+    public function setRecruitmentType($recruitmentType)
     {
         if (!in_array($recruitmentType, array(self::STUDENT_RECRUITMENT_TYPE,
                     self::VOLUNTEER_RECRUITMENT_TYPE))) {
@@ -212,6 +222,48 @@ class Recruitment
         }
 
         $this->recruitmentType = $recruitmentType;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public function getRegistrations()
+    {
+        return $this->registrations->toArray();
+    }
+
+    /**
+     * 
+     * @param Collection $registrations
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setRegistrations(Collection $registrations)
+    {
+        $this->registrations = $registrations;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \Recruitment\Entity\Registration $registration
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function addRegistration(Registration $registration)
+    {
+        $this->recruitmentBeginDate[] = $registration;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \Recruitment\Entity\Registration $registration
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function removeRegistration(Registration $registration)
+    {
+        $this->registrations->removeElement($registration);
         return $this;
     }
 

@@ -6,12 +6,12 @@
  * and open the template in the editor.
  */
 
-namespace UMS\Entity;
+namespace Recruitment\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use UMS\Entity\Person;
+use Recruitment\Entity\Person;
 
 /**
  * Description of People
@@ -89,7 +89,7 @@ class Address
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity="\UMS\Entity\Person", mappedBy="addresses")
+     * @ORM\ManyToMany(targetEntity="Recruitment\Entity\Person", mappedBy="addresses")
      */
     private $people;
 

@@ -8,7 +8,6 @@
 
 namespace Authorization;
 
-
 use Authorization\Acl\AclDb;
 use Zend\EventManager\EventInterface;
 use Zend\Session\Container;
@@ -42,7 +41,7 @@ class Module
     {
         $application = $e->getApplication();
         $em = $application->getEventManager();
-        $em->attach('route', array($this, 'onRoute'), -100);
+//        $em->attach('route', array($this, 'onRoute'), -100);
     }
 
     // WORKING the main engine for ACL
@@ -53,7 +52,7 @@ class Module
         $sm = $application->getServiceManager();
 
         // Authentication
-        $auth = $sm->get('Zend\Authentication\AuthenticationService');
+//        $auth = $sm->get('Zend\Authentication\AuthenticationService');
 
         /**
          * 

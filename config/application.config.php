@@ -6,47 +6,35 @@
  * @see http://framework.zend.com/manual/current/en/tutorials/config.advanced.html#environment-specific-system-configuration
  * @see http://framework.zend.com/manual/current/en/tutorials/config.advanced.html#environment-specific-application-configuration
  */
+$modules = array(
+    // per-module layout
+    'EdpModuleLayouts',
+    // ORM mappers
+    'DoctrineModule',
+    'DoctrineORMModule',
+    // Database helper Module
+    'Database',
+    //First Application Module
+    'Site',
+    //Authentication Module
+    'Authentication',
+    //Authorizarion Module
+    'Authorization',
+    //User Management Space Module
+    'UMS',
+    // Recruitment Module
+    'Recruitment',
+);
+
+if (getenv('APP_ENV') == 'development') {
+    // zend developer tools helper to see doctrine operations, database MER and other things
+    $modules[] = 'ZendDeveloperTools';
+}
+
+
 return array(
-    // This should be an array of module namespaces used in the application.
-    'modules' => getenv('APP_ENV') == 'development' ? array(
-        // per-module layout
-        'EdpModuleLayouts',
-        // ORM mappers
-        'DoctrineModule',
-        'DoctrineORMModule',
-        // Database helper Module
-        'Database',
-        //First Application Module
-        'Site',
-        //Authentication Module
-        'Authentication',
-        //Authorizarion Module
-        'Authorization',
-        //User Management Space Module
-        'UMS',
-        // Recruitment Module
-        'Recruitment',
-            ) : array(
-        // per-module layout
-        'EdpModuleLayouts',
-        // zend developer tools helper to see doctrine operations and database MER
-        'ZendDeveloperTools',
-        // ORM mappers
-        'DoctrineModule',
-        'DoctrineORMModule',
-        //First Application Module
-        'Site',
-        //Authentication Module
-        'Authentication',
-        //Authorizarion Module
-        'Authorization',
-        //User Management Space
-        'UMS',
-        // Database helper Module
-        'Database',
-        // Recruitment Module
-        'Recruitment',
-            ),
+// This should be an array of module namespaces used in the application.
+    'modules' => $modules,
     // These are various options for the listeners attached to the ModuleManager
     'module_listener_options' => array(
         // This should be an array of paths in which modules reside.
@@ -63,24 +51,24 @@ return array(
         'config_glob_paths' => array(
             'config/autoload/{{,*.}global,{,*.}local}.php',
         ),
-    // Whether or not to enable a configuration cache.
-    // If enabled, the merged configuration will be cached and used in
-    // subsequent requests.
-    //'config_cache_enabled' => $booleanValue,
-    // The key used to create the configuration cache file name.
-    //'config_cache_key' => $stringKey,
-    // Whether or not to enable a module class map cache.
-    // If enabled, creates a module class map cache which will be used
-    // by in future requests, to reduce the autoloading process.
-    //'module_map_cache_enabled' => $booleanValue,
-    // The key used to create the class map cache file name.
-    //'module_map_cache_key' => $stringKey,
-    // The path in which to cache merged configuration.
-    //'cache_dir' => $stringPath,
-    // Whether or not to enable modules dependency checking.
-    // Enabled by default, prevents usage of modules that depend on other modules
-    // that weren't loaded.
-    // 'check_dependencies' => true,
+        // Whether or not to enable a configuration cache.
+        // If enabled, the merged configuration will be cached and used in
+        // subsequent requests.
+        'config_cache_enabled' => getenv('APP_ENV') == 'production',
+        // The key used to create the configuration cache file name.
+        'config_cache_key' => 'app_config',
+        // Whether or not to enable a module class map cache.
+        // If enabled, creates a module class map cache which will be used
+        // by in future requests, to reduce the autoloading process.
+        'module_map_cache_enabled' => getenv('APP_ENV') == 'production',
+        // The key used to create the class map cache file name.
+        'module_map_cache_key' => 'module_config',
+        // The path in which to cache merged configuration.
+        'cache_dir' => './data/cache/',
+        // Whether or not to enable modules dependency checking.
+        // Enabled by default, prevents usage of modules that depend on other modules
+        // that weren't loaded.
+        'check_dependencies' => getenv('APP_ENV') == 'production',
     ),
         // Used to create an own service manager. May contain one or more child arrays.
         //'service_listener_options' => array(

@@ -6,12 +6,15 @@
  * and open the template in the editor.
  */
 
-namespace UMS\Entity;
+namespace Recruitment\Entity;
 
+use Authentication\Entity\User;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use UMS\Entity\Address;
+use Recruitment\Entity\Address;
+use Recruitment\Entity\Person;
 
 /**
  * Description of People
@@ -101,7 +104,7 @@ class Person
     /**
      * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="\UMS\Entity\Address", inversedBy="people")
+     * @ORM\ManyToMany(targetEntity="Address", inversedBy="people")
      * @ORM\JoinTable(name="person_has_address",
      *   joinColumns={
      *     @ORM\JoinColumn(name="person_id", referencedColumnName="person_id")
@@ -112,7 +115,7 @@ class Person
      * )
      */
     private $addresses;
-    
+
     /**
      *
      * @var User
@@ -120,7 +123,27 @@ class Person
      * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id")
      */
     private $user;
-    
+
+    /**
+     *
+     * @var Registration
+     * @ORM\OneToOne(targetEntity="Registration", mappedBy="person")
+     */
+    private $registration;
+
+    /**
+     *
+     * @var Collection 
+     * @ORM\OneToMany(targetEntity="Relative", mappedBy="person")
+     */
+    private $isRelativeOf;
+
+    /**
+     *
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="Relative", mappedBy="relative")
+     */
+    private $relatives;
 
     /**
      * Constructor
@@ -128,13 +151,15 @@ class Person
     public function __construct()
     {
         $this->addresses = new ArrayCollection();
+        $this->relatives = new ArrayCollection();
+        $this->isRelativeOf = new ArrayCollection();
     }
 
     /**
      * Get Person ID
      * @return integer
      */
-    function getPersonId()
+    public function getPersonId()
     {
         return $this->personId;
     }
@@ -143,7 +168,7 @@ class Person
      * Get Person firstname
      * @return string
      */
-    function getPersonFistName()
+    public function getPersonFistName()
     {
         return $this->personFistName;
     }
@@ -152,7 +177,7 @@ class Person
      * Get Person lastname
      * @return string
      */
-    function getPersonLastName()
+    public function getPersonLastName()
     {
         return $this->personLastName;
     }
@@ -161,7 +186,7 @@ class Person
      * 
      * @return \Datetime
      */
-    function getPersonBirthday()
+    public function getPersonBirthday()
     {
         return $this->personBirthday;
     }
@@ -170,7 +195,7 @@ class Person
      * 
      * @param \Datetime $personBirthday
      */
-    function setPersonBirthday(\Datetime $personBirthday)
+    public function setPersonBirthday(\Datetime $personBirthday)
     {
         $this->personBirthday = $personBirthday;
     }
@@ -179,7 +204,7 @@ class Person
      * Get person RG
      * @return string
      */
-    function getPersonRg()
+    public function getPersonRg()
     {
         return $this->personRg;
     }
@@ -188,7 +213,7 @@ class Person
      * Get person CPF
      * @return string
      */
-    function getPersonCpf()
+    public function getPersonCpf()
     {
         return $this->personCpf;
     }
@@ -197,7 +222,7 @@ class Person
      * Get Person Email
      * @return string
      */
-    function getPersonEmail()
+    public function getPersonEmail()
     {
         return $this->personEmail;
     }
@@ -206,7 +231,7 @@ class Person
      * Get Person socialmedia link
      * @return string
      */
-    function getPersonSocialMedia()
+    public function getPersonSocialMedia()
     {
         return $this->personSocialMedia;
     }
@@ -215,7 +240,7 @@ class Person
      * Get person photo url
      * @return string
      */
-    function getPersonPhoto()
+    public function getPersonPhoto()
     {
         return $this->personPhoto;
     }
@@ -224,7 +249,7 @@ class Person
      * Set person photo url
      * @param string $personPhoto
      */
-    function setPersonPhoto($personPhoto)
+    public function setPersonPhoto($personPhoto)
     {
         $this->personPhoto = $personPhoto;
     }
@@ -233,7 +258,7 @@ class Person
      * Get Person Phone
      * @return string
      */
-    function getPersonPhone()
+    public function getPersonPhone()
     {
         return $this->personPhone;
     }
@@ -242,16 +267,16 @@ class Person
      * Get Person Alternative Phone
      * @return string
      */
-    function getPersonAlternativePhone()
+    public function getPersonAlternativePhone()
     {
         return $this->personAlternativePhone;
     }
 
     /**
      * Get Person Addresses
-     * @return type
+     * @return Collection
      */
-    function getAddresses()
+    public function getAddresses()
     {
         return $this->addresses;
     }
@@ -260,7 +285,7 @@ class Person
      * Set Person Firstname
      * @param string $personFistName
      */
-    function setPersonFistName($personFistName)
+    public function setPersonFistName($personFistName)
     {
         $this->personFistName = $personFistName;
     }
@@ -269,7 +294,7 @@ class Person
      * 
      * @param string $personLastName
      */
-    function setPersonLastName($personLastName)
+    public function setPersonLastName($personLastName)
     {
         $this->personLastName = $personLastName;
     }
@@ -278,7 +303,7 @@ class Person
      * 
      * @param string $personRg
      */
-    function setPersonRg($personRg)
+    public function setPersonRg($personRg)
     {
         $this->personRg = $personRg;
     }
@@ -287,7 +312,7 @@ class Person
      * 
      * @param string $personCpf
      */
-    function setPersonCpf($personCpf)
+    public function setPersonCpf($personCpf)
     {
         $this->personCpf = $personCpf;
     }
@@ -296,7 +321,7 @@ class Person
      * 
      * @param string $personEmail
      */
-    function setPersonEmail($personEmail)
+    public function setPersonEmail($personEmail)
     {
         $this->personEmail = $personEmail;
     }
@@ -305,7 +330,7 @@ class Person
      * 
      * @param string $personSocialMedia
      */
-    function setPersonSocialMedia($personSocialMedia)
+    public function setPersonSocialMedia($personSocialMedia)
     {
         $this->personSocialMedia = $personSocialMedia;
     }
@@ -314,7 +339,7 @@ class Person
      * 
      * @param string $personPhone
      */
-    function setPersonPhone($personPhone)
+    public function setPersonPhone($personPhone)
     {
         $this->personPhone = $personPhone;
     }
@@ -323,7 +348,7 @@ class Person
      * 
      * @param string $personAlternativePhone
      */
-    function setPersonAlternativePhone($personAlternativePhone)
+    public function setPersonAlternativePhone($personAlternativePhone)
     {
         $this->personAlternativePhone = $personAlternativePhone;
     }
@@ -331,7 +356,7 @@ class Person
     /**
      * @param Collection $addresses
      */
-    function setAddresses(Collection $addresses)
+    public function setAddresses(Collection $addresses)
     {
         $this->addresses = $addresses;
     }
@@ -339,7 +364,7 @@ class Person
     /**
      * Add address
      *
-     * @param Person $address
+     * @param Address $address
      *
      * @return Person
      */
@@ -352,11 +377,129 @@ class Person
     /**
      * Remove address
      *
-     * @param Person $address
+     * @param Address $address
      */
     public function removeAddress(Address $address)
     {
         $this->addresses->removeElement($address);
+    }
+
+    /**
+     * 
+     * @return User
+     */
+    public function getUser()
+    {
+        return $this->user;
+    }
+
+    /**
+     * 
+     * @return Registration
+     */
+    public function getRegistration()
+    {
+        return $this->registration;
+    }
+
+    /**
+     * 
+     * @param User $user
+     * @return Person
+     */
+    public function setUser(User $user)
+    {
+        $this->user = $user;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Registration $registration
+     * @return Person
+     */
+    public function setRegistration(Registration $registration)
+    {
+        $this->registration = $registration;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public function getIsRelativeOf()
+    {
+        return $this->isRelativeOf->toArray();
+    }
+
+    /**
+     * 
+     * @param Collection $isRelativeOf
+     * @return Person
+     */
+    public function setIsRelativeOf(Collection $isRelativeOf)
+    {
+        $this->isRelativeOf = $isRelativeOf;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Person $isRelativeOf
+     * @return Person
+     */
+    public function addIsRelativeOf(Person $isRelativeOf)
+    {
+        $this->isRelativeOf[] = $isRelativeOf;
+        return $this;
+    }
+
+    public function removeIsRelativeOf(Person $isRelativeOf)
+    {
+        $this->isRelativeOf->removeElement($isRelativeOf);
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public function getRelatives()
+    {
+        return $this->relatives->toArray();
+    }
+
+    /**
+     * 
+     * @param Collection $relatives
+     * @return Person
+     */
+    public function setRelatives(Collection $relatives)
+    {
+        $this->relatives = $relatives;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param Person $relative
+     * @return Person
+     */
+    public function addRelative(Person $relative)
+    {
+        $this->relatives[] = $relative;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param Person $relative
+     * @return Person
+     */
+    public function removeRelative(Person $relative)
+    {
+        $this->relatives->removeElement($relative);
+        return $this;
     }
 
 }

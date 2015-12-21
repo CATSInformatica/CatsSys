@@ -6,7 +6,7 @@
  */
 chdir(dirname(__DIR__));
 
-if (getenv(APP_ENV) == 'development') {
+if (getenv('APP_ENV') == 'development') {
     ini_set('display_errors', 1);
     ini_set('display_startup_errors', 1);
     error_reporting(E_ALL);
