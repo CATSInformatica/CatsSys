@@ -74,10 +74,9 @@
 
     No navegador digite http://cats-lab.lan, você deverá ver as configurações da instalação do php
     
+_____________________________
 
-______________________________
-
-Segunda etapa
+        Segunda etapa
 ______________________________
 
    Instalar git
@@ -91,9 +90,27 @@ ______________________________
     Renomeie a pasta clonada do github para cats-lab
 
     Instalar as bibliotecas externas
- 
-    > COMPOSER_PROCESS_TIMEOUT=2000 composer install
+    Entre na pasta cats-lab e abra o terminal e digite
+        > COMPOSER_PROCESS_TIMEOUT=2000 composer install
+    
+    Todas os pacotes necessários para o projeto serão baixados para a pasta .../vendor
+    Obs: intencionalmente a pasta vendor está configurada para ficar fora do projeto do CATS para não misturar o código e permitir
+    compartilhamento entre novos projetos.
 
+    Além do composer (utilizado para o php), é utilizado um programa semelhante para js, css chamado bower
+    
+    Instalação do bower:
+        > sudo apt-get install npm
+        > sudo npm install -g bower
+    
+    Após instalar o bower vá na pasta cats-lab/public e no terminal digite:
+        > bower install
+    Todas as dependencias de css e Js serão instaladas. O sistema do CATS utiliza:
+        > AdminLTE v2
+        > Bootstrap v3
+        > JQuery 2.x
+        > Talvez alguma outra coisa que não me lembro agora.
+    
     Criar arquivo local.php em ./config/autoload/
 
     /*
@@ -117,28 +134,50 @@ ______________________________
     );
 
     Fazer a cópia do arquivo de configurações do Zend Developer Tools
-
-    cp ./vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist ./config/autoload/zenddevelopertools.local.php
+    Dentro da pasta cats-lab abra o terminal e digite:
+    cp ./../vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist ./config/autoload/zenddevelopertools.local.php
 
     Criar um banco de dados Mysql com o usuário, senha e banco iguais aos valores inseridos no arquivo local.php
 
-    IDE padrão: NETBEANS 8.*
+    Intencionalmente o git foi configurado para não sincronizar alguns arquivos:
+        > todos os arquivos de desenvolvimento;
+        > configuração local
+        > configuração do projeto no Netbeans.
+    Sendo assim é preciso importar um novo projeto no Netbeans. Para importar o projeto no Netbeans siga as instruções abaixo:
 
-    Para importar o projeto no Netbeans
-
-    File > New Project
-    > (PHP Aplication with Existing Sources)
-    > (Selecionar a pasta clonada do github, escolher a versão 5.5 do PHP)
-
-    Gravar entidades no banco de dados a partir de objetos PHP
+    File > New Project > (PHP Aplication with Existing Sources) > (Selecionar a pasta clonada do github (cats-lab), escolher a versão 5.5 do PHP)
     
-    php public/index.php orm:validate-schema
-    php public/index.php orm:schema-tool:create
-    php public/index.php orm:schema-tool:update --force
+    Toda manipulação de banco de dados feita pelo sistema do CATS será por meio de Mapeamento Objeto-Relacional
+    desse modo é possível criar as tabelas do banco de dados a partir de certos objetos PHP
+    
+    Gravar entidades no banco de dados a partir de objetos PHP
 
-    mysqldump --no-create-info -u root -p catssys > catssys_data.sql
+    Abra o terminal na pasta cats-lab e digite os comandos 
+    (Obs: o banco de dados catssys deve existir e o arquivo local.php deve estar configurado como mencionado anteriormente)
+    
+    Verifica se o mapeamento está correto e avisa se o schema do bando de dados é igual as classes mapeadas
+        E1: php public/index.php orm:validate-schema
 
-    Instalação do bower:
-        > sudo apt-get install npm
-        > sudo npm install -g bower
-        > sudo sudo ln -s /usr/bin/nodejs /usr/bin/node
+    Cria as tabelas do banco de dados (em caso de falha utilize o parâmetro --force ao final)
+        E2: php public/index.php orm:schema-tool:create 
+    
+    A medida que novos objetos que repreentam tabelas do banco de dados vão sendo criadas é possível atualizar o schema do banco
+    primeiramente é preciso utilizar o comando E1 para verificar se o objeto foi criado corretamente 
+    (validar o código antes de criar as tabelas)
+        E3: php public/index.php orm:schema-tool:update --force
+
+    importar os dados para banco de dados
+    mysqldump --no-create-info -u root -p catssys <catssys_data.sql
+
+    Obs: o arquivo catssys_data.sql está junto com esse arquivo de documentação
+
+    após executar todos estes passos (se nada der errado) va no navegador e digite
+        > http://cats-lab.lan/
+        Será exibida uma página que representa o site (só tem o necessário para acessar o sistema)
+        Clique em login e insira as credenciais:
+            * username: fcadmin
+            * password: 177598230afbg#
+        
+        Se der tudo certo você estará dentro do sistema (ainda não tem muita coisa tudo do sistema antigo está sendo refeito
+    e as novas funcionalidades ainda estão para serem criadas)
+        
