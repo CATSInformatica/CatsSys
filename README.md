@@ -161,7 +161,7 @@ ______________________________
     Cria as tabelas do banco de dados (em caso de falha utilize o parâmetro --force ao final)
         E2: php public/index.php orm:schema-tool:create 
     
-    A medida que novos objetos que repreentam tabelas do banco de dados vão sendo criadas é possível atualizar o schema do banco
+    A medida que novos objetos que representam tabelas do banco de dados vão sendo criados é possível atualizar o schema do banco
     primeiramente é preciso utilizar o comando E1 para verificar se o objeto foi criado corretamente 
     (validar o código antes de criar as tabelas)
         E3: php public/index.php orm:schema-tool:update --force
