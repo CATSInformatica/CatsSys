@@ -12,6 +12,8 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Recruitment\Controller\Recruitment' => Controller\RecruitmentController::class,
+            'Recruitment\Controller\Registration' => Controller\RegistrationController::class,
+            'Recruitment\Controller\Captcha' => Controller\CaptchaController::class,
         ),
     ),
     'router' => array(
@@ -38,7 +40,38 @@ return array(
                                 'id' => '[0-9]+',
                             ),
                             'defaults' => array(
+                                'controller' => 'Recruitment\Controller\Recruitment',
                                 'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'registration' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/registration[/:action]',
+                            'constraints' => array(
+                                '__NAMESPACE__' => 'Recruitment\Controller',
+                                'controller' => 'Registration',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Recruitment\Controller\Registration',
+                                'action' => 'index',
+                            ),
+                        )
+                    ),
+                    'captcha' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/captcha[/:action[/:id]]',
+                            'constraints' => array(
+                                '__NAMESPACE__' => 'Recruitment\Controller',
+                                'controller' => 'Captcha',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Recruitment\Controller\Captcha',
+                                'action' => 'generate',
                             ),
                         ),
                     ),
@@ -47,10 +80,14 @@ return array(
         ),
     ),
     'view_manager' => array(
-        'template_map' => array(
+        'strategies' => array(
+            'ViewJsonStrategy',
+            'Zend\View\Strategy\PhpRendererStrategy',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view/',
+        ),
+        'template_map' => array(
         ),
         'display_exceptions' => true,
     ),

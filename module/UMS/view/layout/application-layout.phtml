@@ -29,6 +29,13 @@
                 // AdminLTE Skins
                 ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/skins/skin-blue.min.css'));
         ?>
+
+        <?php
+//        echo $this->headScript()
+        // Application Módule
+//                ->appendFile($this->basePath('js/application.js'));
+        ?>
+
     </head>
     <body class="skin-blue fixed">
 
@@ -174,6 +181,9 @@
                                 <li>
                                     <a href="<?php echo $this->url('recruitment/recruitment', array('action' => 'create')); ?>"> Criar Processo Seletivo </a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo $this->url('recruitment/registration', array('action' => 'studentRegistration')); ?>"> Inscrição (Alunos) </a>
+                                </li>
                             </ul>
                         </li>
 
@@ -298,7 +308,6 @@
                     lg: 1200
                 }
             }
-
         </script>
 
         <?php
@@ -350,15 +359,7 @@
                     });
                 });
 
-                $('.datepicker').datepicker({
-                    format: 'dd/mm/yyyy',
-                    language: 'pt-BR',
-                    autoclose: true,
-                    startDate: moment().format('DD/MM/YYYY')
-                });
-
                 var url = window.location;
-                console.log(url);
                 // Will only work if string in href matches with location
                 $('ul.sidebar-menu a[href="' + url.pathname + '"]')
                         .closest('ul')
@@ -367,6 +368,9 @@
                         .closest('li')
                         .addClass('active');
 
+                if (standardConfig !== null) {
+                    standardConfig.init();
+                }
             });
         </script>
     </body>

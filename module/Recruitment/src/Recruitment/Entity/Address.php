@@ -295,5 +295,4 @@ class Address
     {
         $this->people->removeElement($person);
     }
-
 }

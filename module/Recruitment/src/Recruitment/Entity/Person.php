@@ -25,6 +25,9 @@ use Recruitment\Entity\Person;
 class Person
 {
 
+    const GENDER_M = 'Masculino';
+    const GENDER_F = 'Feminino';
+
     /**
      * @var integer
      *
@@ -47,6 +50,13 @@ class Person
      * @ORM\Column(name="person_lastname", type="string" , length=200, nullable=false)
      */
     private $personLastName;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="person_gender", type="string", length=20, nullable=false)
+     */
+    private $personGender;
 
     /**
      *
@@ -479,7 +489,7 @@ class Person
         $this->relatives = $relatives;
         return $this;
     }
-    
+
     /**
      * 
      * @param Person $relative
@@ -490,7 +500,7 @@ class Person
         $this->relatives[] = $relative;
         return $this;
     }
-    
+
     /**
      * 
      * @param Person $relative
@@ -500,6 +510,28 @@ class Person
     {
         $this->relatives->removeElement($relative);
         return $this;
+    }
+
+    /**
+     * 
+     * @return string;
+     */
+    public function getPersonGender()
+    {
+        return $this->personGender;
+    }
+
+    function setPersonGender($personGender)
+    {
+        if (in_array($personGender, array(
+                    self::GENDER_F,
+                    self::GENDER_M
+                ))) {
+            $this->personGender = $personGender;
+            return $this;
+        }
+
+        throw new \InvalidArgumentException('invalid gender.');
     }
 
 }

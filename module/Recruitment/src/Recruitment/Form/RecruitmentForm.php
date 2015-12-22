@@ -101,7 +101,7 @@ class RecruitmentForm extends Form
                     'name' => 'Submit',
                     'attributes' => array(
                         'type' => 'button',
-                        'class' => 'btn btn-primary btn-lg',
+                        'class' => 'btn btn-primary',
                         'value' => 'Criar',
                     )
         ));

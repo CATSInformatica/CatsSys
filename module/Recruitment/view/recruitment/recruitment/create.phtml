@@ -8,7 +8,7 @@
     <p><?php echo $this->message; ?></p>
 
     <div class="row">
-        <div class="col-xs-12 col-md-4 col-md-offset-4">
+        <div class="col-xs-12 col-md-6 col-md-offset-3">
             <?php
             $form = $this->form;
 
@@ -70,3 +70,37 @@
     </div>
 
 </section>
+
+<script>
+
+    var standardConfig = (function () {
+        // your module code goes here
+        // var config = null;
+
+        /**
+         * 
+         * private functions
+         */
+
+        initDatepickers = function () {
+            $('.datepicker').datepicker({
+                format: 'dd/mm/yyyy',
+                setDate: moment().format('DD/MM/YYYY'),
+                startDate: moment().format('DD/MM/YYYY'),
+                endDate: moment().add(1, 'years').format('DD/MM/YYYY'),
+                startView: 0,
+                autoclose: true,
+                language: 'pt-BR'
+            });
+        };
+
+        return {
+            init: function () {
+                initDatepickers();
+            }
+        };
+
+    }());
+
+
+</script>

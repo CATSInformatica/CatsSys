@@ -23,6 +23,18 @@ class Registration
 {
 
     /**
+     * $registrationKnowAbout possible values
+     */
+    const FAMILY = 'Familiares';
+    const UNIVERSIRTY_STUDENTS = 'Alunos da UNIFEI';
+    const STUDENTS = 'Alunos do CATS';
+    const FRIENDS = 'Amigos';
+    const INTERNET = 'Internet';
+    const COMMON_COMMUNICATION_CHANNELS = 'Rádio, Televisão ou Jornais';
+    const SCHOOL = 'Divulgação em sua escola';
+    const VOLUNTEERS = 'Voluntários do CATS';
+
+    /**
      *
      * @var integer
      * @ORM\Column(name="registration_id", type="integer", nullable=false)
@@ -66,6 +78,13 @@ class Registration
      * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id")
      */
     private $person;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="registration_know_about", type="string", length=500, nullable=false)
+     */
+    private $registrationKnowAbout;
 
     public function __construct()
     {
@@ -157,6 +176,45 @@ class Registration
     {
         $this->person = $person;
         return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getRegistrationKnowAbout()
+    {
+        return $this->registrationKnowAbout;
+    }
+
+    /**
+     * 
+     * @param string $registrationKnowAbout
+     * @return Registration
+     * @throws \InvalidArgumentException
+     */
+    public function addRegistrationKnowAbout($registrationKnowAbout)
+    {
+        if (in_array($registrationKnowAbout, array(
+                    self::FAMILY,
+                    self::UNIVERSIRTY_STUDENTS,
+                    self::STUDENTS,
+                    self::FRIENDS,
+                    self::INTERNET,
+                    self::COMMON_COMMUNICATION_CHANNELS,
+                    self::SCHOOL,
+                    self::VOLUNTEERS,
+                ))) {
+
+            if ($this->registrationKnowAbout != null) {
+                $this->registrationKnowAbout .= ';' . $registrationKnowAbout;
+            } else {
+                $this->registrationKnowAbout = $registrationKnowAbout;
+            }
+            
+            return $this;
+        }
+        throw new \InvalidArgumentException('invalid registration know about.');
     }
 
 }

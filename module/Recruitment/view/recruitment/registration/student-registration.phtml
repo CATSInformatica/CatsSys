@@ -1,0 +1,191 @@
+<section class="content-header">
+    <h3>Inscrição</h3>
+</section>
+
+
+
+<section class="content">
+
+    <div class="row">
+        <div class="ccol-xs-12 col-md-6 col-md-offset-3">
+            <?php $this->formRadio()->setSeparator('</div><div class="radio">'); ?>
+            <?php $this->formMultiCheckbox()->setSeparator('</div><div class="checkbox">'); ?>
+            
+            <?php $form = $this->form; ?>
+            <?php $this->form->prepare(); ?>
+
+            <?php echo $this->form()->openTag($this->form); ?>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-4 form-group">
+                    <label for="person_firstname">Nome*</label>
+                    <?php
+                    echo $this->formRow($form->get('person_firstname'));
+                    ?>
+                </div>
+
+                <div class="col-xs-12 col-md-8 form-group">
+                    <label for="person_lastname">Sobrenome*</label>
+                    <?php
+                    echo $this->formRow($form->get('person_lastname'));
+                    ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-12 form-group">
+                    <label for="person_gender">Sexo*</label><br>
+                    <div class="radio">
+                        <?php
+                        echo $this->formRow($form->get('person_gender'));
+                        ?>
+                    </div>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="person_birthday">Data de nascimento*</label>
+                    <div class="input-group date">
+                        <div class="input-group-addon">
+                            <span class="glyphicon glyphicon-th"></span>
+                        </div>
+                        <?php
+                        echo $this->formRow($form->get('person_birthday'));
+                        ?>
+                    </div>
+                </div>
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="person_cpf">Nº do CPF*</label>
+                    <?php
+                    echo $this->formRow($form->get('person_cpf'));
+                    ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="person_rg">RG*</label>
+                    <?php
+                    echo $this->formRow($form->get('person_rg'));
+                    ?>
+                </div>
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="person_phone">Telefone ou Celular*</label>
+                    <?php
+                    echo $this->formRow($form->get('person_phone'));
+                    ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="person_email">Email*</label>
+
+                    <?php
+                    echo $this->formRow($form->get('person_email'));
+                    ?>
+                </div>
+
+
+                <div class="col-xs-12 col-md-6 form-group">
+                    <label for="person_confirm_email">Reensira o Email*</label>
+                    <?php
+                    echo $this->formRow($form->get('person_confirm_email'));
+                    ?>
+                </div>
+            </div>
+
+            <div class="form-group">
+                <label for="registration_know_about">Por qual(is) meio(s) você soube do processo 
+                    seletivo de alunos do CATS?*</label>
+                <div class="checkbox">
+                    <?php
+                    echo $this->formRow($form->get('registration_know_about'));
+                    ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="form-group col-xs-12 col-md-6 col-md-offset-3">
+                    <label for="registration_captcha">Insira o código da imagem</label><br>
+                    <?php
+                    echo $this->formRow($form->get('registration_captcha'));
+                    ?>
+                    <button id="refreshcaptcha" type="button" class="btn btn-default">
+                        <i class="ion-loop"></i> Trocar 
+                    </button>
+                </div>
+            </div>
+
+            <div class="form-group checkbox" id="registration_consent_box">
+                <label for="registration_consent"> 
+                    <?php
+                    echo $this->formRow($form->get('registration_consent'));
+                    ?>
+                    Declaro ter lido o edital do processo seletivo de alunos do CATS
+                    e estar ciente de todas as etapas e documentos exigidos neste processo seletivo.
+                </label>
+            </div>
+
+            <div class="form-group row">
+                <div class="col-xs-12 col-md-2"></div>
+                <?php
+                echo $this->formSubmit($form->get('registation_confirm'));
+                ?>
+                <?php echo $this->form()->closeTag(); ?>
+            </div>
+
+            <?php echo $this->form()->closeTag(); ?>
+
+        </div>
+    </div>
+</section>
+
+<script>
+
+    var standardConfig = (function () {
+        // your module code goes here
+        // var config = null;
+
+        /**
+         * 
+         * private functions
+         */
+
+        initDatepickers = function () {
+            $('.datepicker').datepicker({
+                format: 'dd/mm/yyyy',
+                setDate: moment().subtract(16, 'years').format('DD/MM/YYYY'),
+                startDate: moment().subtract(100, 'years').format('DD/MM/YYYY'),
+                endDate: moment().subtract(10, 'years').format('DD/MM/YYYY'),
+                startView: 1,
+                autoclose: true,
+                language: 'pt-BR'
+            });
+        };
+
+        initCaptchaOperations = function () {
+            $('#refreshcaptcha').click(function () {
+                $.ajax({
+                    url: '/recruitment/captcha/refresh',
+                    dataType: 'json',
+                    success: function (data) {
+                        $('#captcha_input-image').attr('src', data.src);
+                        $('#captcha_input-hidden').attr('value', data.id);
+                    }
+                });
+            });
+        };
+
+        return {
+            init: function () {
+                initDatepickers();
+                initCaptchaOperations();
+            }
+        };
+
+    }());
+
+
+</script>
