@@ -121,10 +121,10 @@ class Person
      * @ORM\ManyToMany(targetEntity="Address", inversedBy="people")
      * @ORM\JoinTable(name="person_has_address",
      *   joinColumns={
-     *     @ORM\JoinColumn(name="person_id", referencedColumnName="person_id")
+     *     @ORM\JoinColumn(name="person_id", referencedColumnName="person_id", nullable=false)
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="address_id", referencedColumnName="address_id")
+     *     @ORM\JoinColumn(name="address_id", referencedColumnName="address_id", nullable=false)
      *   }
      * )
      */

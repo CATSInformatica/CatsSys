@@ -36,7 +36,7 @@ class Relative
      *
      * @var Person
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="isRelativeOf")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id", nullable=false)
      */
     private $person;
 
@@ -44,7 +44,7 @@ class Relative
      *
      * @var Person 
      * @ORM\ManyToOne(targetEntity="Person", inversedBy="relatives")
-     * @ORM\JoinColumn(name="person_relative_id", referencedColumnName="person_id")
+     * @ORM\JoinColumn(name="person_relative_id", referencedColumnName="person_id", nullable=false)
      */
     private $relative;
 

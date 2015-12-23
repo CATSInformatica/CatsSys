@@ -38,10 +38,10 @@ class Role
      * @ORM\ManyToMany(targetEntity="\Authentication\Entity\User", inversedBy="role")
      * @ORM\JoinTable(name="user_has_role",
      *   joinColumns={
-     *     @ORM\JoinColumn(name="role_id", referencedColumnName="role_id")
+     *     @ORM\JoinColumn(name="role_id", referencedColumnName="role_id", nullable=false)
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="user_id", referencedColumnName="user_id")
+     *     @ORM\JoinColumn(name="user_id", referencedColumnName="user_id", nullable=false)
      *   }
      * )
      */
@@ -60,10 +60,10 @@ class Role
      * @ORM\ManyToMany(targetEntity="Role", inversedBy="children")
      * @ORM\JoinTable(name="role_parent",
      *   joinColumns={
-     *     @ORM\JoinColumn(name="role_id", referencedColumnName="role_id")
+     *     @ORM\JoinColumn(name="role_id", referencedColumnName="role_id", nullable=false)
      *   },
      *   inverseJoinColumns={
-     *     @ORM\JoinColumn(name="parent_id", referencedColumnName="role_id")
+     *     @ORM\JoinColumn(name="parent_id", referencedColumnName="role_id", nullable=false)
      *   }
      * )
      */

@@ -70,14 +70,14 @@ class Registration
      *
      * @var Recruitment
      * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Recruitment", inversedBy="registrations")
-     * @ORM\JoinColumn(name="recruitment_id", referencedColumnName="recruitment_id")
+     * @ORM\JoinColumn(name="recruitment_id", referencedColumnName="recruitment_id", nullable=false)
      */
     private $recruitment;
 
     /**
      * @var Person
      * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Person", inversedBy="registrations")
-     * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id")
+     * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id", nullable=false)
      */
     private $person;
 
