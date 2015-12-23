@@ -60,8 +60,8 @@ class RegistrationForm extends Form
                     'type' => 'radio',
                     'options' => array(
                         'value_options' => array(
-                            Person::GENDER_M => Person::GENDER_M,
-                            Person::GENDER_F => Person::GENDER_F,
+                            Person::GENDER_M => 'Masculino',
+                            Person::GENDER_F => 'Feminino',
                         ),
                     ),
                 ))

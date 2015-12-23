@@ -64,10 +64,10 @@ class Recruitment extends \Recruitment\Entity\Recruitment implements \Doctrine\O
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentId', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentNumber', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentYear', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentBeginDate', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentEndDate', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentPublicNotice', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentType');
+            return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentId', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentNumber', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentYear', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentBeginDate', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentEndDate', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentPublicNotice', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentType', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'registrations');
         }
 
-        return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentId', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentNumber', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentYear', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentBeginDate', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentEndDate', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentPublicNotice', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentType');
+        return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentId', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentNumber', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentYear', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentBeginDate', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentEndDate', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentPublicNotice', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'recruitmentType', '' . "\0" . 'Recruitment\\Entity\\Recruitment' . "\0" . 'registrations');
     }
 
     /**
@@ -318,6 +318,50 @@ class Recruitment extends \Recruitment\Entity\Recruitment implements \Doctrine\O
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRecruitmentType', array($recruitmentType));
 
         return parent::setRecruitmentType($recruitmentType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getRegistrations()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRegistrations', array());
+
+        return parent::getRegistrations();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setRegistrations(\Doctrine\Common\Collections\Collection $registrations)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRegistrations', array($registrations));
+
+        return parent::setRegistrations($registrations);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addRegistration(\Recruitment\Entity\Registration $registration)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addRegistration', array($registration));
+
+        return parent::addRegistration($registration);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeRegistration(\Recruitment\Entity\Registration $registration)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRegistration', array($registration));
+
+        return parent::removeRegistration($registration);
     }
 
 }

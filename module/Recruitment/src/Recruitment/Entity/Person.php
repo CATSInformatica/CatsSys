@@ -19,18 +19,24 @@ use Recruitment\Entity\Person;
 /**
  * Description of People
  * @author Márcio
- * @ORM\Table(name="person")
+ * @ORM\Table(name="person", 
+ *      uniqueConstraints={@ORM\UniqueConstraint(name="person_cpf_idx", columns={"person_cpf"})},
+ *      indexes={@ORM\Index(name="person_firstname_idx", columns={"person_firstname"})}
+ * )
  * @ORM\Entity
  */
 class Person
 {
 
-    const GENDER_M = 'Masculino';
-    const GENDER_F = 'Feminino';
+    /**
+     * 1 - Feminino
+     * 2 - Masculino
+     */
+    const GENDER_F = 1;
+    const GENDER_M = 2;
 
     /**
      * @var integer
-     *
      * @ORM\Column(name="person_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
@@ -39,22 +45,20 @@ class Person
 
     /**
      * @var string
-     *
      * @ORM\Column(name="person_firstname", type="string", length=80, nullable=false)
      */
     private $personFistName;
 
     /**
      * @var string
-     * 
      * @ORM\Column(name="person_lastname", type="string" , length=200, nullable=false)
      */
     private $personLastName;
 
     /**
      *
-     * @var string
-     * @ORM\Column(name="person_gender", type="string", length=20, nullable=false)
+     * @var integer
+     * @ORM\Column(name="person_gender", type="smallint", nullable=false)
      */
     private $personGender;
 
@@ -136,10 +140,10 @@ class Person
 
     /**
      *
-     * @var Registration
-     * @ORM\OneToOne(targetEntity="Registration", mappedBy="person")
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="Registration", mappedBy="person")
      */
-    private $registration;
+    private $registrations;
 
     /**
      *
@@ -163,6 +167,7 @@ class Person
         $this->addresses = new ArrayCollection();
         $this->relatives = new ArrayCollection();
         $this->isRelativeOf = new ArrayCollection();
+        $this->registrations = new ArrayCollection();
     }
 
     /**
@@ -208,6 +213,7 @@ class Person
     public function setPersonBirthday(\Datetime $personBirthday)
     {
         $this->personBirthday = $personBirthday;
+        return $this;
     }
 
     /**
@@ -298,6 +304,7 @@ class Person
     public function setPersonFistName($personFistName)
     {
         $this->personFistName = $personFistName;
+        return $this;
     }
 
     /**
@@ -307,6 +314,7 @@ class Person
     public function setPersonLastName($personLastName)
     {
         $this->personLastName = $personLastName;
+        return $this;
     }
 
     /**
@@ -316,6 +324,7 @@ class Person
     public function setPersonRg($personRg)
     {
         $this->personRg = $personRg;
+        return $this;
     }
 
     /**
@@ -325,6 +334,7 @@ class Person
     public function setPersonCpf($personCpf)
     {
         $this->personCpf = $personCpf;
+        return $this;
     }
 
     /**
@@ -334,6 +344,7 @@ class Person
     public function setPersonEmail($personEmail)
     {
         $this->personEmail = $personEmail;
+        return $this;
     }
 
     /**
@@ -343,6 +354,7 @@ class Person
     public function setPersonSocialMedia($personSocialMedia)
     {
         $this->personSocialMedia = $personSocialMedia;
+        return $this;
     }
 
     /**
@@ -352,6 +364,7 @@ class Person
     public function setPersonPhone($personPhone)
     {
         $this->personPhone = $personPhone;
+        return $this;
     }
 
     /**
@@ -361,6 +374,7 @@ class Person
     public function setPersonAlternativePhone($personAlternativePhone)
     {
         $this->personAlternativePhone = $personAlternativePhone;
+        return $this;
     }
 
     /**
@@ -369,6 +383,7 @@ class Person
     public function setAddresses(Collection $addresses)
     {
         $this->addresses = $addresses;
+        return $this;
     }
 
     /**
@@ -392,6 +407,7 @@ class Person
     public function removeAddress(Address $address)
     {
         $this->addresses->removeElement($address);
+        return $this;
     }
 
     /**
@@ -405,11 +421,11 @@ class Person
 
     /**
      * 
-     * @return Registration
+     * @return array
      */
-    public function getRegistration()
+    public function getRegistrations()
     {
-        return $this->registration;
+        return $this->registrations->toArray();
     }
 
     /**
@@ -425,12 +441,33 @@ class Person
 
     /**
      * 
-     * @param Registration $registration
+     * @param Collection $registrations
      * @return Person
      */
-    public function setRegistration(Registration $registration)
+    public function setRegistrations(Collection $registrations)
     {
-        $this->registration = $registration;
+        $this->registrations = $registrations;
+        return $this;
+    }
+
+    /**
+     * @param \Recruitment\Entity\Registration $registration
+     * @return Person
+     */
+    public function addRegistration(Registration $registration)
+    {
+        $this->registrations[] = $registration;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \Recruitment\Entity\Registration $registration
+     * @return Person
+     */
+    public function removeRegistration(Registration $registration)
+    {
+        $this->registrations->removeElement($registration);
         return $this;
     }
 
@@ -468,6 +505,7 @@ class Person
     public function removeIsRelativeOf(Person $isRelativeOf)
     {
         $this->isRelativeOf->removeElement($isRelativeOf);
+        return $this;
     }
 
     /**
@@ -514,13 +552,19 @@ class Person
 
     /**
      * 
-     * @return string;
+     * @return integer;
      */
     public function getPersonGender()
     {
         return $this->personGender;
     }
 
+    /**
+     * 
+     * @param integer $personGender
+     * @return Person
+     * @throws \InvalidArgumentException
+     */
     function setPersonGender($personGender)
     {
         if (in_array($personGender, array(

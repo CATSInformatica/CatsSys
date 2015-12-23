@@ -20,13 +20,17 @@ use Recruitment\Entity\Registration;
  * @ORM\Table(name="recruitment", uniqueConstraints={
  * @ORM\UniqueConstraint(name="recruitment_nyear_idx", columns={"recruitment_number", "recruitment_year"})
  * })
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Recruitment\Entity\Repository\Recruitment")
  */
 class Recruitment
 {
 
-    const STUDENT_RECRUITMENT_TYPE = 'ALUNO';
-    const VOLUNTEER_RECRUITMENT_TYPE = 'VOLUNTARIO';
+    /**
+     * 1: Processo seletivo de Aluno
+     * 2: Processo seletivo de Voluntário
+     */
+    const STUDENT_RECRUITMENT_TYPE = 1;
+    const VOLUNTEER_RECRUITMENT_TYPE = 2;
 
     /**
      *
@@ -73,8 +77,8 @@ class Recruitment
 
     /**
      *
-     * @var string
-     * @ORM\Column(name="recruitment_type", type="string", length=20, nullable=false)
+     * @var integer
+     * @ORM\Column(name="recruitment_type", type="smallint", nullable=false)
      */
     private $recruitmentType;
 
@@ -168,7 +172,7 @@ class Recruitment
 
     /**
      * 
-     * @return string
+     * @return integer
      */
     public function getRecruitmentType()
     {
@@ -210,7 +214,7 @@ class Recruitment
 
     /**
      * 
-     * @param string $recruitmentType
+     * @param integer $recruitmentType
      * @return \Recruitment\Entity\Recruitment
      * @throws \InvalidArgumentException
      */
@@ -252,7 +256,7 @@ class Recruitment
      */
     public function addRegistration(Registration $registration)
     {
-        $this->recruitmentBeginDate[] = $registration;
+        $this->registrations[] = $registration;
         return $this;
     }
 

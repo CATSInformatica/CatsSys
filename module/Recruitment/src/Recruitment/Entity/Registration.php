@@ -16,7 +16,9 @@ use Recruitment\Entity\Person;
  * Description of Registration
  *
  * @author marcio
- * @ORM\Table(name="registration")
+ * @ORM\Table(name="registration", 
+ *      uniqueConstraints={@ORM\UniqueConstraint(name="person_recruitment_idx", columns={"recruitment_id", "person_id"})},
+ * )
  * @ORM\Entity
  */
 class Registration
@@ -74,7 +76,7 @@ class Registration
 
     /**
      * @var Person
-     * @ORM\OneToOne(targetEntity="\Recruitment\Entity\Person", inversedBy="registration")
+     * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Person", inversedBy="registrations")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id")
      */
     private $person;
@@ -155,6 +157,7 @@ class Registration
      */
     public function setRecruitment(Recruitment $recruitment)
     {
+        $recruitment->addRegistration($this);
         $this->recruitment = $recruitment;
         return $this;
     }
@@ -174,6 +177,7 @@ class Registration
      */
     function setPerson(Person $person)
     {
+        $person->addRegistration($this);
         $this->person = $person;
         return $this;
     }
@@ -211,7 +215,7 @@ class Registration
             } else {
                 $this->registrationKnowAbout = $registrationKnowAbout;
             }
-            
+
             return $this;
         }
         throw new \InvalidArgumentException('invalid registration know about.');
