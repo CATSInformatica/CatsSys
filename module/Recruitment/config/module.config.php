@@ -48,11 +48,12 @@ return array(
                     'registration' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/registration[/:action]',
+                            'route' => '/registration[/:action[/:id]]',
                             'constraints' => array(
                                 '__NAMESPACE__' => 'Recruitment\Controller',
                                 'controller' => 'Registration',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
                             ),
                             'defaults' => array(
                                 'controller' => 'Recruitment\Controller\Registration',

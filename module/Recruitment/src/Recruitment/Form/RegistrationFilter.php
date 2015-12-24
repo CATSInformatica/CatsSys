@@ -15,7 +15,7 @@ use Zend\InputFilter\InputFilter;
  *
  * @author marcio
  */
-class RegistrationFilter extends InputFilter
+abstract class RegistrationFilter extends InputFilter
 {
 
     public function __construct()

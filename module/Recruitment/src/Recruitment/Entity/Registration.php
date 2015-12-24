@@ -35,6 +35,7 @@ class Registration
     const COMMON_COMMUNICATION_CHANNELS = 'Rádio, Televisão ou Jornais';
     const SCHOOL = 'Divulgação em sua escola';
     const VOLUNTEERS = 'Voluntários do CATS';
+    const REGISTRATION_PAD_LENGTH = 8;
 
     /**
      *
@@ -69,14 +70,14 @@ class Registration
     /**
      *
      * @var Recruitment
-     * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Recruitment", inversedBy="registrations")
+     * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Recruitment", inversedBy="registrations", fetch="EAGER")
      * @ORM\JoinColumn(name="recruitment_id", referencedColumnName="recruitment_id", nullable=false)
      */
     private $recruitment;
 
     /**
      * @var Person
-     * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Person", inversedBy="registrations")
+     * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Person", inversedBy="registrations", fetch="EAGER")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id", nullable=false)
      */
     private $person;
@@ -100,6 +101,15 @@ class Registration
     public function getRegistrationId()
     {
         return $this->registrationId;
+    }
+
+    /**
+     * 
+     * @return \DateTime
+     */
+    public function getRegistrationDate()
+    {
+        return $this->registrationDate;
     }
 
     /**

@@ -10,15 +10,17 @@ namespace Recruitment\Controller;
 
 use Database\Service\EntityManagerService;
 use DateTime;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use Recruitment\Entity\Person;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\Registration;
-use Recruitment\Form\RegistrationFilter;
+use Recruitment\Form\StudentRegistrationFilter;
 use Recruitment\Form\StudentRegistrationForm;
+use Zend\Json\Json;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 /**
  * Description of RegistrationController
@@ -30,9 +32,34 @@ class RegistrationController extends AbstractActionController
 
     use EntityManagerService;
 
-    public function indexAction()
+    /**
+     * 
+     * @todo criar índice no campo recruitmentType da entidade Recruitment
+     * 
+     * Exibe todas as inscrições do processo seletivo escolhido (inicialmente exibe o último 
+     * processo seletivo vigente).
+     * 
+     * @return ViewModel
+     */
+    public function showStudentRegistrationsAction()
     {
-        return new ViewModel();
+        try {
+
+            $em = $this->getEntityManager();
+            $recruitments = $em->getRepository('Recruitment\Entity\Recruitment')->findBy(
+                    array('recruitmentType' => Recruitment::STUDENT_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
+            );
+
+            return new ViewModel(array(
+                'message' => null,
+                'recruitments' => $recruitments,
+            ));
+        } catch (Exception $ex) {
+            return new ViewModel(array(
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.',
+                'recruitments' => null,
+            ));
+        }
     }
 
     /**
@@ -89,7 +116,7 @@ class RegistrationController extends AbstractActionController
         // Se a requisição for post (o formulário foi preenchido e envidado para o servidor)
         if ($request->isPost()) {
             $data = $request->getPost();
-            $form->setInputFilter(new RegistrationFilter());
+            $form->setInputFilter(new StudentRegistrationFilter());
             $form->setData($data);
 
             // Se o formulário de inscrição foi preenchido corretamente
@@ -157,6 +184,51 @@ class RegistrationController extends AbstractActionController
             'message' => $message,
             'form' => $form,
         ));
+    }
+
+    /**
+     * Busca todos as inscrições pro processo seletivo $rid. 
+     * Esta action é acessada via ajax pelo DataTable
+     * 
+     * @return JsonModel
+     */
+    public function getStudentRegistrationsAction()
+    {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+
+            $rid = $request->getPost()['rid'];
+
+            $resultSet = ['data' => [
+            ]];
+
+            try {
+                $em = $this->getEntityManager();
+
+                $regs = $em->getRepository('Recruitment\Entity\Registration')->findBy(array(
+                    'recruitment' => $rid
+                ));
+
+                foreach ($regs as $r) {
+                    $person = $r->getPerson();
+                    $recruitment = $r->getRecruitment();
+                    $resultSet['data'][] = array(
+                        $recruitment->getRecruitmentYear() .
+                        $recruitment->getRecruitmentNumber() .
+                        str_pad($r->getRegistrationId(), Registration::REGISTRATION_PAD_LENGTH, '0', STR_PAD_LEFT),
+                        $r->getRegistrationDate()->format('d/m/Y H:i:s'),
+                        $person->getPersonFistName() . ' ' . $person->getPersonLastName(),
+                        $person->getPersonCpf(),
+                        $person->getPersonRg(),
+                        $person->getPersonEmail(),
+                    );
+                }
+            } catch (Exception $ex) {
+                
+            }
+
+            return new JsonModel($resultSet);
+        }
     }
 
 }

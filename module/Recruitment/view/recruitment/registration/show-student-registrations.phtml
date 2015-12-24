@@ -1,0 +1,98 @@
+<section class="content-header">
+    <h3>Visualizar processos seletivos</h3>
+    <p><?php echo $this->message; ?></p>
+</section>
+
+<section class="content">
+    <?php if ($this->recruitments !== null): ?>
+        <div class="row">
+            <form class="form-inline col-xs-12 col-md-10 col-md-offset-1">
+                <div class="form-group">
+                    <label for="recruitment_id">Processo seletivo: </label>
+                    <select class="form-control" id="recruitment_id">
+                        <?php foreach ($this->recruitments as $recruitment): ?>
+
+                            <option value="<?php echo $recruitment->getRecruitmentId(); ?>" >
+                                <?php
+                                echo $recruitment->getRecruitmentNumber() . 'º Processo seletivo de ' .
+                                $recruitment->getRecruitmentYear();
+                                ?>
+                            </option>
+
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" id="recruitment-button" data-prev="0"><i class="fa fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+        <br>
+        <div class="row">
+            <div class="table-responsive col-xs-12 col-md-8 col-md-offset-2">
+                <table class="table table-condensed table-bordered" id="recruitment-table">
+                    <thead>
+                    <th>Nº de Inscrição</th>
+                    <th>Data</th>
+                    <th>Nome</th>
+                    <th>Cpf</th>
+                    <th>Rg</th>
+                    <th>Email</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    <?php endif; ?>
+
+</section>
+
+<script>
+
+    var standardConfig = (function () {
+        // your module code goes here
+        // var config = null;
+
+        /**
+         * 
+         * private functions
+         */
+
+        initDataTable = function () {
+
+            var recruitmentTable = $('#recruitment-table').DataTable({
+                iDisplayLength: 10,
+                dom: 'lftip',
+//                paging: false,
+                ajax: {
+                    url: "/recruitment/registration/getStudentRegistrations",
+                    type: "POST",
+                    data: function () {
+                        var rid = $('#recruitment_id').val();
+                        $('#recruitment-button').data('prev', rid);
+                        return {
+                            rid: rid
+                        };
+                    }
+                }
+            });
+
+            $('#recruitment-button').click(function () {
+                if ($(this).data('prev') !== $('#recruitment_id').val()) {
+                    recruitmentTable.ajax.reload();
+                }
+            });
+        };
+
+        return {
+            init: function () {
+                initDataTable();
+            }
+        };
+
+    }());
+
+</script>

@@ -18,6 +18,8 @@
                     'href' => $this->basePath() . '/img/favicon.ico'))
                 // Bootstrap
                 ->appendStylesheet($this->basePath('vendor/AdminLTE/bootstrap/css/bootstrap.min.css'))
+                // DataTable
+                ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.css'))
                 // Datepicker
                 ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/datepicker/datepicker3.css'))
                 // Font Awesome
@@ -184,6 +186,9 @@
                                 <li>
                                     <a href="<?php echo $this->url('recruitment/registration', array('action' => 'studentRegistration')); ?>"> Inscrição (Alunos) </a>
                                 </li>
+                                <li>
+                                    <a href="<?php echo $this->url('recruitment/registration', array('action' => 'showStudentRegistrations')); ?>"> Inscrições (Alunos) </a>
+                                </li>
                             </ul>
                         </li>
 
@@ -316,6 +321,9 @@
                 ->prependFile($this->basePath('vendor/AdminLTE/dist/js/app.min.js'))
                 // SlimScroll Plugin
                 ->prependFile($this->basePath('vendor/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js'))
+                //DataTable
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js'))
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/jquery.dataTables.min.js'))
                 // Datepicker
                 ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/locales/bootstrap-datepicker.pt-BR.js'))
                 ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/bootstrap-datepicker.js'))

@@ -17,7 +17,7 @@ use Zend\Form\Form;
  *
  * @author marcio
  */
-class RegistrationForm extends Form
+abstract class RegistrationForm extends Form
 {
 
     const FONT_DIR = './data/fonts/';
