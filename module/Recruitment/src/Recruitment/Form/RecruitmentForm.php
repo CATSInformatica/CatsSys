@@ -23,6 +23,8 @@ class RecruitmentForm extends Form
     public function __construct()
     {
         parent::__construct('Recruitment');
+        $this->setAttribute('method', 'post');
+        $this->setAttribute('enctype', 'multipart/form-data');
 
         $recruitmentYears = $this->generateRecruitmentYears();
 
@@ -50,15 +52,15 @@ class RecruitmentForm extends Form
                     'options' => array(
                         'empty_option' => 'Nº do processo seletivo',
                         'value_options' => array(
-                            '1º' => 1,
-                            '2º' => 2,
-                            '3º' => 3,
-                            '4º' => 4,
-                            '5º' => 5,
-                            '6º' => 6,
-                            '7º' => 7,
-                            '8º' => 8,
-                            '9º' => 9,
+                            1 => '1º',
+                            2 => '2º',
+                            3 => '3º',
+                            4 => '4º',
+                            5 => '5º',
+                            6 => '6º',
+                            7 => '7º',
+                            8 => '8º',
+                            9 => '9º',
                         ),
                     ),
                     'attributes' => array(
@@ -79,8 +81,8 @@ class RecruitmentForm extends Form
                 ->add(array(
                     'name' => 'recruitment_public_notice',
                     'attributes' => array(
-                        'type' => 'text',
-                        'class' => 'form-control',
+                        'type' => 'file',
+                        'class' => 'file',
                     )
                 ))
                 ->add(array(

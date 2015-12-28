@@ -1,0 +1,10 @@
+<section class="content-header">
+    <h3>Perfil do Candidato</h3>
+    <p><?php echo $this->message; ?></p>
+</section>
+
+<section class="content">
+    <?php if ($this->registration !== null): ?>
+        <?php echo $this->registration->getRegistrationId(); ?>
+    <?php endif; ?>
+</section>

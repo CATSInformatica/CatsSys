@@ -97,10 +97,23 @@ class RecruitmentFilter extends InputFilter
         $this->add(array(
             'name' => 'recruitment_public_notice',
             'required' => true,
-            'filters' => array(
-                array('name' => 'StripTags'),
-                array('name' => 'StringTrim'),
-            ),
+            'validators' => array(
+                array(
+                    'name' => 'Zend\Validator\File\Extension',
+                    'options' => array(
+                        'extension' => array(
+                            'pdf',
+                        ),
+                    ),
+                ),
+                array(
+                    'name' => 'Zend\Validator\File\Size',
+                    'options' => array(
+                        'min' => '1000',
+                        'max' => '5000000',
+                    )
+                )
+            )
         ));
 
         $this->add(array(

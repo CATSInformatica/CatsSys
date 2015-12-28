@@ -18,7 +18,7 @@ use Recruitment\Entity\Registration;
  *
  * @author marcio
  * @ORM\Table(name="recruitment", uniqueConstraints={
- * @ORM\UniqueConstraint(name="recruitment_nyear_idx", columns={"recruitment_number", "recruitment_year"})
+ * @ORM\UniqueConstraint(name="recruitment_nyeart_idx", columns={"recruitment_number", "recruitment_year", "recruitment_type"})
  * })
  * @ORM\Entity(repositoryClass="Recruitment\Entity\Repository\Recruitment")
  */
@@ -26,8 +26,8 @@ class Recruitment
 {
 
     /**
-     * 1: Processo seletivo de Aluno
-     * 2: Processo seletivo de Voluntário
+     * 1: Processo seletivo de Alunos
+     * 2: Processo seletivo de Voluntários
      */
     const STUDENT_RECRUITMENT_TYPE = 1;
     const VOLUNTEER_RECRUITMENT_TYPE = 2;

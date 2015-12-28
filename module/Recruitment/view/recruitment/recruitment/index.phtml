@@ -17,43 +17,24 @@
                     <th class="text-center">Data de Início</th>
                     <th class="text-center">Data de Término</th>
                     <th class="text-center">Tipo</th>
-                    <th class="text-center">Edital</th>
                     <th></th>
                 </tr>
             </thead>
             <tbody>
                 <?php foreach ($this->recruitments as $recruitment): ?>
-                    <tr>
+                    <tr class="cats-row" data-id="<?php echo $recruitment->getRecruitmentId(); ?>">
                         <td class="text-center"> <?php echo $this->escapeHtml($recruitment->getRecruitmentId()); ?></td>
                         <td class="text-center"> <?php echo $this->escapeHtml($recruitment->getRecruitmentNumber()); ?></td>
                         <td class="text-center"> <?php echo $this->escapeHtml($recruitment->getRecruitmentYear()); ?></td>
                         <td class="text-center"> <?php echo $recruitment->getRecruitmentBeginDate()->format('d/m/Y'); ?></td>
                         <td class="text-center"> <?php echo $recruitment->getRecruitmentEndDate()->format('d/m/Y'); ?></td>
-                        <td class="text-center"> <?php echo $this->escapeHtml($recruitment->getRecruitmentType()); ?></td>
-                        <td class="text-center">
-                            <a href="<?php echo $this->escapeHtml($recruitment->getRecruitmentPublicNotice()); ?>" >
-                                <i class="fa fa-file-pdf-o"></i>
-                            </a>
-                        </td>
-                        <td>
-                            <a href="
-                            <?php
-                            echo $this->url('recruitment/recruitment', array(
-                                'action' => 'delete',
-                                'id' => $recruitment->getRecruitmentId()
-                            ));
-                            ?>">
-                                <i class="fa fa-trash"></i>
-                            </a>
-                        </td>
+                        <td class="text-center"> <?php echo ($recruitment->getRecruitmentType() == 1)
+                        ? 'Processo Seletivo de Alunos' : 'Processo Seletivo de Voluntários'; ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
         </table>
     </div>
 </div>
-
 </section>
-
-
 

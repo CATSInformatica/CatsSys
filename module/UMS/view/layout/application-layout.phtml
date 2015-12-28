@@ -32,12 +32,6 @@
                 ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/skins/skin-blue.min.css'));
         ?>
 
-        <?php
-//        echo $this->headScript()
-        // Application Módule
-//                ->appendFile($this->basePath('js/application.js'));
-        ?>
-
     </head>
     <body class="skin-blue fixed">
 
@@ -107,6 +101,9 @@
                                         </div>
                                     </li>
                                 </ul>
+                            </li>
+                            <li>
+                                <a href="#" data-toggle="control-sidebar"><i class="fa fa-gears"></i></a>
                             </li>
                         </ul>
                     </div>
@@ -184,7 +181,7 @@
                                     <a href="<?php echo $this->url('recruitment/recruitment', array('action' => 'create')); ?>"> Criar Processo Seletivo </a>
                                 </li>
                                 <li>
-                                    <a href="<?php echo $this->url('recruitment/registration', array('action' => 'studentRegistration')); ?>"> Inscrição (Alunos) </a>
+                                    <a href="<?php echo $this->url('recruitment/registration', array('action' => 'studentRegistration')); ?>"> Formulário de Inscrição (Alunos) </a>
                                 </li>
                                 <li>
                                     <a href="<?php echo $this->url('recruitment/registration', array('action' => 'showStudentRegistrations')); ?>"> Inscrições (Alunos) </a>
@@ -201,9 +198,7 @@
 
             <!-- Right side column. Contains the content of the page -->
             <div class="content-wrapper">
-
                 <!-- Main content -->
-
                 <?php echo $this->content; ?>
 
             </div><!-- /.right-side -->
@@ -214,172 +209,293 @@
                 </div>
                 <strong>&copy 2003-<?php echo date('Y'); ?> <a href="http://www.familiacats.com.br/">CATS</a>.</strong> Todos os direitos reservados.
             </footer>
-        </div>
-        <script>
-            var AdminLTEOptions = {
-                //Add slimscroll to navbar menus
-                //This requires you to load the slimscroll plugin
-                //in every page before app.js
-                navbarMenuSlimscroll: true,
-                navbarMenuSlimscrollWidth: "3px", //The width of the scroll bar
-                navbarMenuHeight: "200px", //The height of the inner menu
-                //General animation speed for JS animated elements such as box collapse/expand and
-                //sidebar treeview slide up/down. This options accepts an integer as milliseconds,
-                //'fast', 'normal', or 'slow'
-                animationSpeed: 500,
-                //Sidebar push menu toggle button selector
-                sidebarToggleSelector: "[data-toggle='offcanvas']",
-                //Activate sidebar push menu
-                sidebarPushMenu: true,
-                //Activate sidebar slimscroll if the fixed layout is set (requires SlimScroll Plugin)
-                sidebarSlimScroll: true,
-                //Enable sidebar expand on hover effect for sidebar mini
-                //This option is forced to true if both the fixed layout and sidebar mini
-                //are used together
-                sidebarExpandOnHover: false,
-                //BoxRefresh Plugin
-                enableBoxRefresh: true,
-                //Bootstrap.js tooltip
-                enableBSToppltip: true,
-                BSTooltipSelector: "[data-toggle='tooltip']",
-                //Enable Fast Click. Fastclick.js creates a more
-                //native touch experience with touch devices. If you
-                //choose to enable the plugin, make sure you load the script
-                //before AdminLTE's app.js
-                enableFastclick: true,
-                //Control Sidebar Options
-                enableControlSidebar: true,
-                controlSidebarOptions: {
-                    //Which button should trigger the open/close event
-                    toggleBtnSelector: "[data-toggle='control-sidebar']",
-                    //The sidebar selector
-                    selector: ".control-sidebar",
-                    //Enable slide over content
-                    slide: true
-                },
-                //Box Widget Plugin. Enable this plugin
-                //to allow boxes to be collapsed and/or removed
-                enableBoxWidget: true,
-                //Box Widget plugin options
-                boxWidgetOptions: {
-                    boxWidgetIcons: {
-                        //Collapse icon
-                        collapse: 'fa-minus',
-                        //Open icon
-                        open: 'fa-plus',
-                        //Remove icon
-                        remove: 'fa-times'
+
+
+            <!-- Control Sidebar -->
+            <aside class="control-sidebar control-sidebar-dark">
+                <!-- Tab panes -->
+                <div class="tab-content">
+                    <!-- Home tab content -->
+                    <div class="tab-pane active" id="control-sidebar-home-tab">
+                        <h3 class="control-sidebar-heading">Ações</h3>
+
+
+                        <?php if (isset($toolbar) && is_array($toolbar)): ?>
+                            <ul class="control-sidebar-menu">
+                                <?php foreach ($toolbar['menu'] as $item): ?>
+                                    <li class="cats-toolbar-item">
+                                        <a href="<?php echo $item['url']; ?>" 
+                                           <?php echo empty($item['target']) ? '' : 'target="' . $item['target'] . '"'; ?>>
+                                            <i class="menu-icon <?php echo $item['class']; ?>"></i>
+                                            <div class="menu-info">
+                                                <h4 class="control-sidebar-subheading"><?php echo $item['title']; ?></h4>
+                                                <p><?php echo $item['description']; ?></p>
+                                            </div>
+                                        </a>
+                                    </li>
+                                <?php endforeach; ?>
+                            </ul>
+                        <?php else: ?>
+                            <p>Esta página não possui ações disponíveis.</p>
+                        <?php endif; ?>
+                    </div>
+                </div>
+            </aside>
+
+            <!-- /.control-sidebar -->
+            <!-- Add the sidebar's background. This div must be placed
+                 immediately after the control sidebar -->
+            <div class="control-sidebar-bg"></div>
+
+            <script>
+                var AdminLTEOptions = {
+                    //Add slimscroll to navbar menus
+                    //This requires you to load the slimscroll plugin
+                    //in every page before app.js
+                    navbarMenuSlimscroll: true,
+                    navbarMenuSlimscrollWidth: "3px", //The width of the scroll bar
+                    navbarMenuHeight: "200px", //The height of the inner menu
+                    //General animation speed for JS animated elements such as box collapse/expand and
+                    //sidebar treeview slide up/down. This options accepts an integer as milliseconds,
+                    //'fast', 'normal', or 'slow'
+                    animationSpeed: 500,
+                    //Sidebar push menu toggle button selector
+                    sidebarToggleSelector: "[data-toggle='offcanvas']",
+                    //Activate sidebar push menu
+                    sidebarPushMenu: true,
+                    //Activate sidebar slimscroll if the fixed layout is set (requires SlimScroll Plugin)
+                    sidebarSlimScroll: true,
+                    //Enable sidebar expand on hover effect for sidebar mini
+                    //This option is forced to true if both the fixed layout and sidebar mini
+                    //are used together
+                    sidebarExpandOnHover: false,
+                    //BoxRefresh Plugin
+                    enableBoxRefresh: true,
+                    //Bootstrap.js tooltip
+                    enableBSToppltip: true,
+                    BSTooltipSelector: "[data-toggle='tooltip']",
+                    //Enable Fast Click. Fastclick.js creates a more
+                    //native touch experience with touch devices. If you
+                    //choose to enable the plugin, make sure you load the script
+                    //before AdminLTE's app.js
+                    enableFastclick: false,
+                    //Control Sidebar Options
+                    enableControlSidebar: true,
+                    controlSidebarOptions: {
+                        //Which button should trigger the open/close event
+                        toggleBtnSelector: "[data-toggle='control-sidebar']",
+                        //The sidebar selector
+                        selector: ".control-sidebar",
+                        //Enable slide over content
+                        slide: true
                     },
-                    boxWidgetSelectors: {
-                        //Remove button selector
-                        remove: '[data-widget="remove"]',
-                        //Collapse button selector
-                        collapse: '[data-widget="collapse"]'
-                    }
-                },
-                //Direct Chat plugin options
-                directChat: {
-                    //Enable direct chat by default
-                    enable: true,
-                    //The button to open and close the chat contacts pane
-                    contactToggleSelector: '[data-widget="chat-pane-toggle"]'
-                },
-                //Define the set of colors to use globally around the website
-                colors: {
-                    lightBlue: "#3c8dbc",
-                    red: "#f56954",
-                    green: "#00a65a",
-                    aqua: "#00c0ef",
-                    yellow: "#f39c12",
-                    blue: "#0073b7",
-                    navy: "#001F3F",
-                    teal: "#39CCCC",
-                    olive: "#3D9970",
-                    lime: "#01FF70",
-                    orange: "#FF851B",
-                    fuchsia: "#F012BE",
-                    purple: "#8E24AA",
-                    maroon: "#D81B60",
-                    black: "#222222",
-                    gray: "#d2d6de"
-                },
-                //The standard screen sizes that bootstrap uses.
-                //If you change these in the variables.less file, change
-                //them here too.
-                screenSizes: {
-                    xs: 480,
-                    sm: 768,
-                    md: 992,
-                    lg: 1200
-                }
-            }
-        </script>
-
-        <?php
-        echo $this->inlineScript()
-                // AdminLTE App
-                ->prependFile($this->basePath('vendor/AdminLTE/dist/js/app.min.js'))
-                // SlimScroll Plugin
-                ->prependFile($this->basePath('vendor/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js'))
-                //DataTable
-                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js'))
-                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/jquery.dataTables.min.js'))
-                // Datepicker
-                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/locales/bootstrap-datepicker.pt-BR.js'))
-                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/bootstrap-datepicker.js'))
-                ->prependFile($this->basePath('vendor/moment/min/moment.min.js'))
-                // Bootstrap 3.3.5
-                ->prependFile($this->basePath('vendor/AdminLTE/bootstrap/js/bootstrap.min.js'))
-                // jQuery 2.1.4
-                ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
-        ?>
-
-        <script>
-            // change user active role
-            $(document).ready(function () {
-
-                //                $('.main-footer').show();
-                $('.role').on('click', function () {
-                    var role = $(this);
-                    var jsonRole = JSON.stringify({
-                        'role': role.text().toLowerCase()
-                    });
-                    $.ajax({
-                        url: '<?php echo $this->url('authorization/role', array('action' => 'changeActiveUserRole')); ?>',
-                        type: 'POST',
-                        dataType: 'json',
-                        async: true,
-                        data: jsonRole,
-                        success: function (msg) {
-
-                            // change role in menu
-                            if (msg.success) {
-                                var newActiveRole = role.text();
-                                role.text($('.active-role').text());
-                                $('.active-role').text(newActiveRole);
-                            }
-
-                            console.log(msg);
+                    //Box Widget Plugin. Enable this plugin
+                    //to allow boxes to be collapsed and/or removed
+                    enableBoxWidget: true,
+                    //Box Widget plugin options
+                    boxWidgetOptions: {
+                        boxWidgetIcons: {
+                            //Collapse icon
+                            collapse: 'fa-minus',
+                            //Open icon
+                            open: 'fa-plus',
+                            //Remove icon
+                            remove: 'fa-times'
                         },
-                        error: function (msg) {
-                            console.log(msg);
+                        boxWidgetSelectors: {
+                            //Remove button selector
+                            remove: '[data-widget="remove"]',
+                            //Collapse button selector
+                            collapse: '[data-widget="collapse"]'
                         }
-                    });
+                    },
+                    //Direct Chat plugin options
+//                    directChat: {
+//                        //Enable direct chat by default
+//                        enable: true,
+//                        //The button to open and close the chat contacts pane
+//                        contactToggleSelector: '[data-widget="chat-pane-toggle"]'
+//                    },
+                    //Define the set of colors to use globally around the website
+                    colors: {
+                        lightBlue: "#3c8dbc",
+                        red: "#f56954",
+                        green: "#00a65a",
+                        aqua: "#00c0ef",
+                        yellow: "#f39c12",
+                        blue: "#0073b7",
+                        navy: "#001F3F",
+                        teal: "#39CCCC",
+                        olive: "#3D9970",
+                        lime: "#01FF70",
+                        orange: "#FF851B",
+                        fuchsia: "#F012BE",
+                        purple: "#8E24AA",
+                        maroon: "#D81B60",
+                        black: "#222222",
+                        gray: "#d2d6de"
+                    },
+                    //The standard screen sizes that bootstrap uses.
+                    //If you change these in the variables.less file, change
+                    //them here too.
+                    screenSizes: {
+                        xs: 480,
+                        sm: 768,
+                        md: 992,
+                        lg: 1200
+                    }
+                };
+            </script>
+
+            <?php
+            echo $this->inlineScript()
+                    // AdminLTE App
+                    ->prependFile($this->basePath('vendor/AdminLTE/dist/js/app.min.js'))
+                    // SlimScroll Plugin
+                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js'))
+                    //DataTable
+                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js'))
+                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/jquery.dataTables.min.js'))
+                    // Datepicker
+                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/locales/bootstrap-datepicker.pt-BR.js'))
+                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/bootstrap-datepicker.js'))
+                    ->prependFile($this->basePath('vendor/moment/min/moment.min.js'))
+                    // Bootstrap 3.3.5
+                    ->prependFile($this->basePath('vendor/AdminLTE/bootstrap/js/bootstrap.min.js'))
+                    // jQuery 2.1.4
+                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
+            ?>
+
+            <style>
+                .cats-selected-bg {
+                    background-color: #d2d6de;
+                }
+                .table {
+                    cursor: pointer;
+                }
+
+                .btn-file {
+                    position: relative;
+                    overflow: hidden;
+                }
+                .btn-file input[type=file] {
+                    position: absolute;
+                    top: 0;
+                    right: 0;
+                    min-width: 100%;
+                    min-height: 100%;
+                    font-size: 100px;
+                    text-align: right;
+                    filter: alpha(opacity=0);
+                    opacity: 0;
+                    outline: none;
+                    background: white;
+                    cursor: inherit;
+                    display: block;
+                }
+
+            </style>
+
+            <script>
+
+                // fileselect event
+                $(document).on('change', '.btn-file :file', function () {
+                    var input = $(this),
+                            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                    input.trigger('fileselect', [numFiles, label]);
                 });
 
-                var url = window.location;
-                // Will only work if string in href matches with location
-                $('ul.sidebar-menu a[href="' + url.pathname + '"]')
-                        .closest('ul')
-                        .addClass('menu-open')
-                        .css('display', 'block')
-                        .closest('li')
-                        .addClass('active');
+                // change user active role
+                $(document).ready(function () {
 
-                if (standardConfig !== null) {
-                    standardConfig.init();
-                }
-            });
-        </script>
+                    //                $('.main-footer').show();
+                    $('.role').on('click', function () {
+                        var role = $(this);
+                        var jsonRole = JSON.stringify({
+                            'role': role.text().toLowerCase()
+                        });
+                        $.ajax({
+                            url: '<?php echo $this->url('authorization/role', array('action' => 'changeActiveUserRole')); ?>',
+                            type: 'POST',
+                            dataType: 'json',
+                            async: true,
+                            data: jsonRole,
+                            success: function (msg) {
+
+                                // change role in menu
+                                if (msg.success) {
+                                    var newActiveRole = role.text();
+                                    role.text($('.active-role').text());
+                                    $('.active-role').text(newActiveRole);
+                                }
+
+                                console.log(msg);
+                            },
+                            error: function (msg) {
+                                console.log(msg);
+                            }
+                        });
+                    });
+
+                    var url = window.location;
+                    // Will only work if string in href matches with location
+                    $('ul.sidebar-menu a[href="' + url.pathname + '"]')
+                            .closest('ul')
+                            .addClass('menu-open')
+                            .css('display', 'block')
+                            .closest('li')
+                            .addClass('active');
+
+                    // toolbar actions
+                    $('.cats-toolbar-item').click(function (e) {
+                        e.preventDefault();
+                        if ($('.cats-selected-row').length > 0) {
+                            var item = $(this).find('a');
+                            var url = item.attr('href');
+                            var target = item.attr('target');
+
+                            url = url.replace('$id', $('.cats-selected-row').data('id'));
+
+
+                            if (typeof target === 'undefined') {
+                                window.open(url, '_self');
+                            } else {
+                                window.open(url, target);
+                            }
+                        }
+                    });
+
+                    // select row on click
+                    $('table').on('click', '.cats-row', function () {
+                        $(this).siblings('tr')
+                                .removeClass('cats-selected-row')
+                                .find('td')
+                                .removeClass('cats-selected-bg');
+
+                        $(this).toggleClass('cats-selected-row');
+
+                        $(this).find('td').toggleClass('cats-selected-bg');
+
+                        if ($(this).hasClass('cats-selected-row')) {
+                            if (!$('.control-sidebar').hasClass('control-sidebar-open')) {
+                                $('.control-sidebar').addClass('control-sidebar-open');
+                            }
+                        } else {
+                            $('.control-sidebar').removeClass('control-sidebar-open');
+                        }
+                    });
+
+
+                    $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
+                        $(this).closest('div').siblings('.file-label').text(label);
+                    });
+
+
+                    if (typeof standardConfig !== 'undefined') {
+                        standardConfig.init();
+                    }
+                });
+            </script>
     </body>
 </html>

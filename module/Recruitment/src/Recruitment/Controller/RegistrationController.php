@@ -17,7 +17,6 @@ use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\Registration;
 use Recruitment\Form\StudentRegistrationFilter;
 use Recruitment\Form\StudentRegistrationForm;
-use Zend\Json\Json;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -49,6 +48,20 @@ class RegistrationController extends AbstractActionController
             $recruitments = $em->getRepository('Recruitment\Entity\Recruitment')->findBy(
                     array('recruitmentType' => Recruitment::STUDENT_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
             );
+
+
+            $this->layout()->toolbar = array(
+                'menu' => array(
+                    array(
+                        'url' => '/recruitment/registration/studentProfile/$id',
+                        'title' => 'Perfil do Candidato',
+                        'description' => 'Analizar Perfil do Candidato',
+                        'class' => 'fa fa-file-text-o bg-blue',
+                        'target' => '_blank',
+                    ),
+                ),
+            );
+
 
             return new ViewModel(array(
                 'message' => null,
@@ -213,6 +226,10 @@ class RegistrationController extends AbstractActionController
                     $person = $r->getPerson();
                     $recruitment = $r->getRecruitment();
                     $resultSet['data'][] = array(
+                        'DT_RowClass' => 'cats-row',
+                        'DT_RowAttr' => [
+                            'data-id' => $r->getRegistrationId()
+                        ],
                         $recruitment->getRecruitmentYear() .
                         $recruitment->getRecruitmentNumber() .
                         str_pad($r->getRegistrationId(), Registration::REGISTRATION_PAD_LENGTH, '0', STR_PAD_LEFT),
@@ -229,6 +246,34 @@ class RegistrationController extends AbstractActionController
 
             return new JsonModel($resultSet);
         }
+    }
+
+    public function studentProfileAction()
+    {
+        $id = $this->params('id', false);
+
+        if ($id) {
+            try {
+                $em = $this->getEntityManager();
+                $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
+                    'registrationId' => $id
+                ));
+                return new ViewModel(array(
+                    'message' => '',
+                    'registration' => $registration
+                ));
+            } catch (Exception $ex) {
+                return new ViewModel(array(
+                    'message' => 'Não foi possível encontrar o registro do candidato: ' . $ex->getMessage(),
+                    'registration' => null
+                ));
+            }
+        }
+
+        return new ViewModel(array(
+            'message' => 'nenhum candidato foi especificado.',
+            'registration' => null
+        ));
     }
 
 }
