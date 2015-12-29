@@ -47,7 +47,7 @@ class Person
      * @var string
      * @ORM\Column(name="person_firstname", type="string", length=80, nullable=false)
      */
-    private $personFistName;
+    private $personFirstName;
 
     /**
      * @var string
@@ -183,9 +183,9 @@ class Person
      * Get Person firstname
      * @return string
      */
-    public function getPersonFistName()
+    public function getPersonFirstName()
     {
-        return $this->personFistName;
+        return $this->personFirstName;
     }
 
     /**
@@ -294,16 +294,16 @@ class Person
      */
     public function getAddresses()
     {
-        return $this->addresses;
+        return $this->addresses->toArray();
     }
 
     /**
      * Set Person Firstname
-     * @param string $personFistName
+     * @param string $personFirstName
      */
-    public function setPersonFistName($personFistName)
+    public function setPersonFirstName($personFirstName)
     {
-        $this->personFistName = $personFistName;
+        $this->personFirstName = $personFirstName;
         return $this;
     }
 

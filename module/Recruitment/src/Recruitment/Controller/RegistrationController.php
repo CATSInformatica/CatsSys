@@ -147,11 +147,19 @@ class RegistrationController extends AbstractActionController
                     if ($person == null) {
                         echo 'hello?';
                         $person = new Person();
+                        $personDefaultPhoto = '';
+                        if ($data['person_gender'] == Person::GENDER_M) {
+                            $personDefaultPhoto = 'default-male-profile.png';
+                        } else if ($data['person_gender'] == Person::GENDER_F) {
+                            $personDefaultPhoto = 'default-female-profile.png';
+                        }
+
+                        $person->setPersonPhoto($personDefaultPhoto);
                     }
 
                     echo $data['person_birthday'];
                     // atualiza ou insere pela primeira vez os dados pessoais de cadastro
-                    $person->setPersonFistName($data['person_firstname'])
+                    $person->setPersonFirstName($data['person_firstname'])
                             ->setPersonLastName($data['person_lastname'])
                             ->setPersonGender($data['person_gender'])
                             ->setPersonBirthday(new DateTime($data['person_birthday']))
@@ -234,7 +242,7 @@ class RegistrationController extends AbstractActionController
                         $recruitment->getRecruitmentNumber() .
                         str_pad($r->getRegistrationId(), Registration::REGISTRATION_PAD_LENGTH, '0', STR_PAD_LEFT),
                         $r->getRegistrationDate()->format('d/m/Y H:i:s'),
-                        $person->getPersonFistName() . ' ' . $person->getPersonLastName(),
+                        $person->getPersonFirstName() . ' ' . $person->getPersonLastName(),
                         $person->getPersonCpf(),
                         $person->getPersonRg(),
                         $person->getPersonEmail(),
@@ -258,6 +266,32 @@ class RegistrationController extends AbstractActionController
                 $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
                     'registrationId' => $id
                 ));
+
+
+                $this->layout()->toolbar = array(
+                    'menu' => array(
+                        array(
+                            'url' => '#',
+                            'title' => 'Confirmar',
+                            'description' => 'Confirmar/Desconfirmar a inscrição do candidato.',
+                            'class' => 'fa fa-check bg-red',
+                        ),
+                        array(
+                            'url' => '#',
+                            'title' => 'Convocar',
+                            'description' => 'Convocar/Desconvocar o candidato para a pré-entrevista.',
+                            'class' => 'fa fa-users bg-blue',
+                        ),
+                        array(
+                            'url' => '#',
+                            'title' => 'Matricular',
+                            'description' => 'Matricular  o candidato em uma turma.',
+                            'class' => 'fa fa-graduation-cap bg-green',
+                        ),
+                    ),
+                );
+
+
                 return new ViewModel(array(
                     'message' => '',
                     'registration' => $registration
@@ -274,6 +308,41 @@ class RegistrationController extends AbstractActionController
             'message' => 'nenhum candidato foi especificado.',
             'registration' => null
         ));
+    }
+
+    /**
+     * Fazer validação por usuário:
+     *  - Voluntário: acesso apenas ao seu
+     *  - aluno: acesso apenas ao seu
+     *  - RH: acesso a todos
+     * 
+     * @return image
+     */
+    public function photoAction()
+    {
+        $response = $this->getResponse();
+        $response->getHeaders()->addHeaderLine('Content-Type', "image/png");
+        $id = $this->params('id', false);
+
+        if ($id) {
+
+            try {
+                $em = $this->getEntityManager();
+                $person = $em->getReference('Recruitment\Entity\Person', $id);
+                $photo = './data/profile/' . $person->getPersonPhoto();
+
+                if (file_exists($photo) !== false) {
+                    $photoContent = file_get_contents($photo);
+
+                    $response->setStatusCode(200);
+                    $response->setContent($photoContent);
+                }
+            } catch (\Exception $ex) {
+                $response = 'Erro. Por favor entre em contato com o administrador do sistema.';
+            }
+        }
+
+        return $response;
     }
 
 }
