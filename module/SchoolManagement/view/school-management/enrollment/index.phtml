@@ -1,0 +1,92 @@
+<section class="content-header">
+    <h1>Visualizar processos seletivos</h1>
+    <p><?php echo $this->message; ?></p>
+</section>
+
+<section class="content">
+    <?php if ($recruitment !== null): ?>
+        <div class="row">
+            <form class="form-inline col-xs-12 col-md-10 col-md-offset-1">
+                <div class="form-group">
+                    <label for="recruitment_id">Processo seletivo: </label>
+                    <select class="form-control" id="recruitment_id" disabled>
+
+                        <option value="<?php echo $recruitment->getRecruitmentId(); ?>">
+                            <?php
+                            echo $recruitment->getRecruitmentNumber() . 'º Processo seletivo de ' .
+                            $recruitment->getRecruitmentYear();
+                            ?>
+                        </option>
+                    </select>
+                </div>
+
+                <div class="form-group">
+                    <button type="button" class="btn btn-default" id="recruitment-button"><i class="fa fa-search"></i></button>
+                </div>
+            </form>
+        </div>
+        <br>
+        <div class="row">
+            <div class="table-responsive col-xs-12 col-md-8 col-md-offset-2">
+                <table class="table table-condensed table-bordered" id="recruitment-table">
+                    <thead>
+                    <th>Nº de Inscrição</th>
+                    <th>Data</th>
+                    <th>Nome</th>
+                    <th>Cpf</th>
+                    <th>Rg</th>
+                    <th>Email</th>
+                    </thead>
+                    <tbody>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    <?php endif; ?>
+
+</section>
+
+<script>
+
+    var standardConfig = (function () {
+        // your module code goes here
+        // var config = null;
+
+        /**
+         * 
+         * private functions
+         */
+
+        initDataTable = function () {
+
+            var recruitmentTable = $('#recruitment-table').DataTable({
+                dom: 'lftip',
+                paging: false,
+                ajax: {
+                    url: "/recruitment/registration/getAcceptedStudents",
+                    type: "POST",
+                    data: function () {
+                        var rid = $('#recruitment_id').val();
+                        $('#recruitment-button').data('prev', rid);
+                        return {
+                            rid: rid
+                        };
+                    }
+                }
+            });
+
+            $('#recruitment-button').click(function () {
+                recruitmentTable.ajax.reload();
+            });
+        };
+
+        return {
+            init: function () {
+                initDataTable();
+            }
+        };
+
+    }());
+
+</script>

@@ -19,10 +19,20 @@
                 <!-- Profile Image -->
                 <div class="box box-primary">
                     <div class="box-body box-profile">
-                        <img class="profile-user-img img-responsive img-circle" 
-                             src="/recruitment/registration/photo/<?php echo $person->getPersonId(); ?>"
-                             alt="User profile picture">
+                        <a href="#">
+                            <img class="profile-user-img img-responsive img-circle" 
+                                 id="profile-img"
+                                 src="/recruitment/registration/photo/<?php echo $person->getPersonId(); ?>"
+                                 data-id="<?php echo $person->getPersonId(); ?>"
+                                 alt="User profile picture">
+                        </a>
 
+                        <span class="fileupload-process">
+                            <div id="total-progress" class="progress progress-xs" 
+                                 role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="opacity: 0;">
+                                <div class="progress-bar progress-bar-green" style="width: 100%;" data-dz-uploadprogress=""></div>
+                            </div>
+                        </span>
                         <h3 class="profile-username text-center">
                             <?php echo $person->getPersonFirstName() . ' ' . $person->getPersonLastName(); ?>
                         </h3>
@@ -103,11 +113,11 @@
                             <?php echo $person->getPersonEmail(); ?>
                         </p>
 
-<!--                        <strong><i class="fa fa-book margin-r-5"></i> Formação</strong>
+                                                                                                                                                                <!--                        <strong><i class="fa fa-book margin-r-5"></i> Formação</strong>
 
-                        <p class="text-muted">
-                            B.S. in Computer Science from the University of Tennessee at Knoxville
-                        </p>-->
+                                                                                                                                                                                        <p class="text-muted">
+                                                                                                                                                                                            B.S. in Computer Science from the University of Tennessee at Knoxville
+                                                                                                                                                                                        </p>-->
 
                         <strong><i class="fa fa-map-marker margin-r-5"></i> Endereço</strong>
 
@@ -189,7 +199,7 @@
                                             <span class="time"><i class="fa fa-clock-o"></i> 
                                                 Há <?php echo $today->diff($registration->getRegistrationConfirmationDate())->d ?> dias
                                             </span>
-                                            <h3 class="timeline-header">Candidato confirmado.</h3>
+                                            <h3 class="timeline-header">Confirmação realizada.</h3>
                                         </div>
                                     </li>
                                     <!-- /.timeline item -->
@@ -212,12 +222,36 @@
                                             <span class="time"><i class="fa fa-clock-o"></i> 
                                                 Há <?php echo $today->diff($registration->getRegistrationConvocationDate())->d ?> dias
                                             </span>
-                                            <h3 class="timeline-header">Candidato Convocado.</h3>
+                                            <h3 class="timeline-header">Convocação Realizada.</h3>
                                         </div>
                                     </li>
                                     <!-- /.timeline item -->
 
                                 <?php endif; ?>
+
+                                <?php if ($registration->getRegistrationAcceptanceDate() instanceof \DateTime): ?>
+
+                                    <!-- timeline time label -->
+                                    <li class="time-label">
+                                        <span class="bg-yellow">
+                                            <?php echo $registration->getRegistrationAcceptanceDate()->format('H:i \o\n l jS F Y'); ?>
+                                        </span>
+                                    </li>
+                                    <!-- /.timeline-label -->
+                                    <!-- timeline item -->
+                                    <li>
+                                        <i class="fa fa-graduation-cap bg-yellow"></i>
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="fa fa-clock-o"></i> 
+                                                Há <?php echo $today->diff($registration->getRegistrationAcceptanceDate())->d ?> dias
+                                            </span>
+                                            <h3 class="timeline-header">Aprovação concedida.</h3>
+                                        </div>
+                                    </li>
+                                    <!-- /.timeline item -->
+
+                                <?php endif; ?>
+
 
                                 <!-- END timeline item -->
                                 <li>
@@ -293,3 +327,57 @@
 
     <?php endif; ?>
 </section>
+
+<script>
+
+    var standardConfig = (function () {
+        // your module code goes here
+        // var config = null;
+
+        /**
+         * 
+         * private functions
+         */
+
+        initImageUpload = function () {
+
+            var profileDropzone = new Dropzone("#profile-img", {
+                paramName: 'profilePhoto',
+                maxFilesize: 5,
+                uploadMultiple: false,
+                acceptedFiles: "image/png, image/jpeg",
+                url: "/recruitment/registration/changePhoto/" + $("#profile-img").data('id')
+            });
+
+            profileDropzone.on("sending", function (file) {
+                // Show the total progress bar when upload starts
+                $("#total-progress").css('opacity', '1');
+            });
+
+            profileDropzone.on("totaluploadprogress", function (progress) {
+                $("#total-progress .progress-bar").css('width', progress + '%');
+            });
+
+            profileDropzone.on("queuecomplete", function (progress) {
+                // Hide the total progress bar when nothing's uploading anymore
+                $("#total-progress").css('opacity', '0');
+            });
+
+            profileDropzone.on('success', function (file, data) {
+                bootbox.alert(data.message);
+                if (data.file !== null) {
+                    $("#profile-img").attr('src', data.file + '?' + new Date().getTime());
+                }
+            });
+        };
+
+        return {
+            init: function () {
+                initImageUpload();
+            }
+        };
+
+    }());
+
+
+</script>

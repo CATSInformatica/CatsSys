@@ -20,10 +20,15 @@ use Recruitment\Form\StudentRegistrationForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 
 /**
+ * 
+ * @todo Fazer as actions de convocação e aceitação
+ * 
+ * 
  * Description of RegistrationController
- *
+ * 
  * @author marcio
  */
 class RegistrationController extends AbstractActionController
@@ -58,6 +63,7 @@ class RegistrationController extends AbstractActionController
                         'description' => 'Analizar Perfil do Candidato',
                         'class' => 'fa fa-file-text-o bg-blue',
                         'target' => '_blank',
+                        'fntype' => 'selectedHttpClick',
                     ),
                 ),
             );
@@ -256,6 +262,10 @@ class RegistrationController extends AbstractActionController
         }
     }
 
+    /**
+     * 
+     * @return ViewModel Retorna a inscrição do candidato que possui a inscrição com id = $id
+     */
     public function studentProfileAction()
     {
         $id = $this->params('id', false);
@@ -271,22 +281,28 @@ class RegistrationController extends AbstractActionController
                 $this->layout()->toolbar = array(
                     'menu' => array(
                         array(
-                            'url' => '#',
+                            'url' => '/recruitment/registration/confirmation/' . $id,
+                            'id' => 'fn-confirmation',
                             'title' => 'Confirmar',
                             'description' => 'Confirmar/Desconfirmar a inscrição do candidato.',
                             'class' => 'fa fa-check bg-red',
+                            'fntype' => 'ajaxClick',
                         ),
                         array(
-                            'url' => '#',
+                            'url' => '/recruitment/registration/convocation/' . $id,
+                            'id' => 'fn-convocation',
                             'title' => 'Convocar',
                             'description' => 'Convocar/Desconvocar o candidato para a pré-entrevista.',
-                            'class' => 'fa fa-users bg-blue',
+                            'class' => 'fa fa-users bg-blue fn-ajaxClick',
+                            'fntype' => 'ajaxClick',
                         ),
                         array(
-                            'url' => '#',
-                            'title' => 'Matricular',
-                            'description' => 'Matricular  o candidato em uma turma.',
-                            'class' => 'fa fa-graduation-cap bg-green',
+                            'url' => '/recruitment/registration/acceptance/' . $id,
+                            'title' => 'Aprovar Candidato',
+                            'id' => 'fn-acceptance',
+                            'description' => 'Aprova/remove aprovação do candidato. A aprovação é condição suficiente para a matrícula.',
+                            'class' => 'fa fa-graduation-cap bg-yellow',
+                            'fntype' => 'ajaxClick',
                         ),
                     ),
                 );
@@ -311,12 +327,15 @@ class RegistrationController extends AbstractActionController
     }
 
     /**
-     * Fazer validação por usuário:
+     * 
+     * Método seguro para exibição da foto de perfil
+     * 
+     * @todo Fazer validação por usuário:
      *  - Voluntário: acesso apenas ao seu
      *  - aluno: acesso apenas ao seu
      *  - RH: acesso a todos
      * 
-     * @return image
+     * @return Image Foto do perfil do usuário. Caso não haja uma específica, utiliza as imagens padrões
      */
     public function photoAction()
     {
@@ -343,6 +362,258 @@ class RegistrationController extends AbstractActionController
         }
 
         return $response;
+    }
+
+    /**
+     * @todo Fazer verificação por usuário de forma idêntica a action photo
+     * 
+     * Altera a foto de perfil, aceita apenas imagens no formato jpg ou png
+     * 
+     * @return ViewModel
+     * @throws \RuntimeException
+     */
+    public function changePhotoAction()
+    {
+        $id = $this->params('id', false);
+        $request = $this->getRequest();
+        if ($id && $request->isPost()) {
+            $file = $request->getFiles()->profilePhoto;
+            try {
+
+                $em = $this->getEntityManager();
+                $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
+                    'registrationId' => $id
+                ));
+
+                $targetDir = './data/profile/';
+                $targetName = $id;
+
+                switch ($file['type']) {
+                    case 'image/jpeg':
+                        $targetName .= '.jpg';
+                        if (file_exists($targetDir . $id . '.png')) {
+                            unlink($targetDir . $id . '.png');
+                        }
+                        break;
+                    case 'image/png':
+                        $targetName .= '.png';
+                        if (file_exists($targetDir . $id . '.jpg')) {
+                            unlink($targetDir . $id . '.jpg');
+                        }
+                        break;
+                    default:
+                        throw new \RuntimeException('Formato inválido, apenas imagens no '
+                        . 'formato jpg e png são aceitas.');
+                }
+
+                $targetFile = $targetDir . $targetName;
+
+                $uploadAdapter = new HttpAdapter();
+
+                $uploadAdapter->addFilter('File\Rename', array(
+                    'target' => $targetFile,
+                    'overwrite' => true
+                ));
+
+                $uploadAdapter->setDestination($targetDir);
+
+                if (!$uploadAdapter->receive($file['name'])) {
+                    $messages = implode('\n', $uploadAdapter->getMessages());
+                    throw new \RuntimeException($messages);
+                }
+
+                $person = $registration->getPerson();
+                $person->setPersonPhoto($targetName);
+
+                $em->persist($person);
+                $em->flush();
+
+                return new JsonModel(array(
+                    'message' => 'Imagem enviada com sucesso.',
+                    'file' => '/recruitment/registration/photo/' . $id,
+                ));
+            } catch (Exception $ex) {
+                return new ViewModel(array(
+                    'message' => $ex->getMessage(),
+                    'file' => null,
+                ));
+            }
+        }
+    }
+
+    /**
+     * Faz a confirmação/Desconfirma a inscrição de um candidato
+     * 
+     * @return JsonModel essa action é acionada via ajax
+     */
+    public function confirmationAction()
+    {
+        $id = $this->params('id', false);
+
+        if ($id) {
+
+            try {
+                $em = $this->getEntityManager();
+
+                $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
+                    'registrationId' => $id
+                ));
+
+                if ($registration->getRegistrationConfirmationDate() !== null) {
+                    $registration->setRegistrationConfirmationDate(null);
+                    $msg = 'Confirmação revogada com sucesso.';
+                } else {
+                    $registration->setRegistrationConfirmationDate(new \DateTime('now'));
+                    $msg = 'Candidato confirmado com sucesso.';
+                }
+
+                $em->persist($registration);
+                $em->flush();
+            } catch (Exception $ex) {
+                $msg = 'Erro ao tentar alterar a confirmação: ' . $ex->getMessage();
+            }
+
+            return new JsonModel(array(
+                'message' => $msg,
+            ));
+        }
+
+        return new JsonModel(array(
+            'message' => 'Nenhum identificador especificado.',
+        ));
+    }
+
+    /**
+     * Faz a convocação/Desconvoca um candidato para a pré-entrevista
+     * 
+     * @return JsonModel essa action é acionada via ajax
+     */
+    public function convocationAction()
+    {
+        $id = $this->params('id', false);
+
+        if ($id) {
+
+            try {
+                $em = $this->getEntityManager();
+
+                $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
+                    'registrationId' => $id
+                ));
+
+                if ($registration->getRegistrationConvocationDate() !== null) {
+                    $registration->setRegistrationConvocationDate(null);
+                    $msg = 'Convocação revogada com sucesso.';
+                } else {
+                    $registration->setRegistrationConvocationDate(new \DateTime('now'));
+                    $msg = 'Candidato convocado com sucesso.';
+                }
+
+                $em->persist($registration);
+                $em->flush();
+            } catch (Exception $ex) {
+                $msg = 'Erro ao tentar alterar a convocação: ' . $ex->getMessage();
+            }
+
+            return new JsonModel(array(
+                'message' => $msg,
+            ));
+        }
+
+        return new JsonModel(array(
+            'message' => 'Nenhum identificador especificado.',
+        ));
+    }
+
+    /**
+     * Faz a aprovação/Desprovação de um candidato
+     * 
+     * @return JsonModel essa action é acionada via ajax
+     */
+    public function acceptanceAction()
+    {
+        $id = $this->params('id', false);
+
+        if ($id) {
+
+            try {
+                $em = $this->getEntityManager();
+
+                $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
+                    'registrationId' => $id
+                ));
+
+                if ($registration->getRegistrationAcceptanceDate() !== null) {
+                    $registration->setRegistrationAcceptanceDate(null);
+                    $msg = 'Aprovação revogada com sucesso.';
+                } else {
+                    $registration->setRegistrationAcceptanceDate(new \DateTime('now'));
+                    $msg = 'Candidato aprovado com sucesso.';
+                }
+
+                $em->persist($registration);
+                $em->flush();
+            } catch (Exception $ex) {
+                $msg = 'Erro ao tentar alterar a aprovação: ' . $ex->getMessage();
+            }
+
+            return new JsonModel(array(
+                'message' => $msg,
+            ));
+        }
+
+        return new JsonModel(array(
+            'message' => 'Nenhum identificador especificado.',
+        ));
+    }
+
+    /**
+     * Retorna os candidatos do processo seletivo $id aptos a realizarem a matrícula
+     * 
+     * @return JsonModel
+     */
+    public function getAcceptedStudentsAction()
+    {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+
+            $rid = $request->getPost()['rid'];
+
+            $resultSet = ['data' => [
+            ]];
+
+            try {
+
+                $em = $this->getEntityManager();
+                $regs = $em->getRepository('Recruitment\Entity\Registration')
+                        ->findByAccepted($rid);
+
+                foreach ($regs as $r) {
+                    $person = $r->getPerson();
+                    $recruitment = $r->getRecruitment();
+                    $resultSet['data'][] = array(
+                        'DT_RowClass' => 'cats-row',
+                        'DT_RowAttr' => [
+                            'data-id' => $r->getRegistrationId()
+                        ],
+                        $recruitment->getRecruitmentYear() .
+                        $recruitment->getRecruitmentNumber() .
+                        str_pad($r->getRegistrationId(), Registration::REGISTRATION_PAD_LENGTH, '0', STR_PAD_LEFT),
+                        $r->getRegistrationDate()->format('d/m/Y H:i:s'),
+                        $person->getPersonFirstName() . ' ' . $person->getPersonLastName(),
+                        $person->getPersonCpf(),
+                        $person->getPersonRg(),
+                        $person->getPersonEmail(),
+                    );
+                }
+            } catch (Exception $ex) {
+                return new JsonModel([$ex->getMessage()]);
+            }
+
+            return new JsonModel($resultSet);
+        }
+
+        return new JsonModel([]);
     }
 
 }

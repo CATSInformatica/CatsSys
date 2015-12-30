@@ -29,7 +29,9 @@
                 // Theme style
                 ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/AdminLTE.min.css'))
                 // AdminLTE Skins
-                ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/skins/skin-blue.min.css'));
+                ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/skins/skin-blue.min.css'))
+                // DropzoneJS
+                ->appendStylesheet($this->basePath('vendor/dropzone/dist/min/dropzone.min.css'));
         ?>
 
     </head>
@@ -189,6 +191,19 @@
                             </ul>
                         </li>
 
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-users"></i>
+                                <span>Gestão Escolar</span>
+                                <i class="pull-right fa fa-circle-thin"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="<?php echo $this->url('school-management/enrollment', array('action' => 'index')); ?>"> Matricular Alunos </a>
+                                </li>
+                            </ul>
+                        </li>
+
                     </ul>
                     <!-- /.navbar-collapse -->
 
@@ -221,15 +236,20 @@
 
 
                         <?php if (isset($toolbar) && is_array($toolbar)): ?>
-                            <ul class="control-sidebar-menu">
+                            <ul class="control-sidebar-menu cats-toolbar">
                                 <?php foreach ($toolbar['menu'] as $item): ?>
-                                    <li class="cats-toolbar-item">
+                                    <li class="cats-toolbar-item" 
+                                        data-fntype="<?php echo $item['fntype']; ?>" 
+                                        data-title="<?php echo $item['title']; ?>"
+                                        >
                                         <a href="<?php echo $item['url']; ?>" 
-                                           <?php echo empty($item['target']) ? '' : 'target="' . $item['target'] . '"'; ?>>
+                                        <?php echo empty($item['target']) ? '' : 'target="' . $item['target'] . '" '; ?>
+                                        <?php echo empty($item['id']) ? '' : 'id="' . $item['id'] . '" '; ?>
+                                           >
                                             <i class="menu-icon <?php echo $item['class']; ?>"></i>
                                             <div class="menu-info">
-                                                <h4 class="control-sidebar-subheading"><?php echo $item['title']; ?></h4>
-                                                <p><?php echo $item['description']; ?></p>
+                                                <h4 class="control-sidebar-subheading text-center"><?php echo $item['title']; ?></h4>
+                                                <p class="text-center"><?php echo $item['description']; ?></p>
                                             </div>
                                         </a>
                                     </li>
@@ -349,6 +369,10 @@
 
             <?php
             echo $this->inlineScript()
+                    //DropzoneJS
+                    ->prependFile($this->basePath('vendor/dropzone/dist/min/dropzone.min.js'))
+                    // BootboxJS
+                    ->prependFile($this->basePath('vendor/bootbox.js/bootbox.js'))
                     // AdminLTE App
                     ->prependFile($this->basePath('vendor/AdminLTE/dist/js/app.min.js'))
                     // SlimScroll Plugin
@@ -398,6 +422,123 @@
 
             <script>
 
+                /**
+                 * @todo Transformar os seletores hardcoded (i.e. '.cats-toolbar', ...) em parâmetros globais
+                 * 
+                 */
+                var toolbarConfig = (function (elements) {
+
+                    var fnTypes = {};
+
+                    initClick = function () {
+
+                        $('.cats-toolbar').on('click', '.cats-toolbar-item', function (e) {
+                            // nenhuma ação é executada se não estiver especificada abaixo
+                            e.preventDefault();
+                            var fnType = $(this).data('fntype');
+                            if (fnTypes.hasOwnProperty(fnType)) {
+                                fnTypes[fnType].call(this, $(this));
+                            } else {
+                                bootbox.alert('fnType: (' + fnType + ') não definida.');
+                            }
+                        });
+                    };
+                    fnTypes.selectedHttpClick = function (toolbarItem) {
+                        var selectedResult = getSelectedItemInfo(toolbarItem);
+                        if (selectedResult !== null) {
+                            window.open(selectedResult.url, selectedResult.target);
+                        } else {
+                            bootbox.alert('Nenhuma item (ex: linha de uma tabela) foi escolhido.');
+                        }
+                    };
+                    fnTypes.selectedAjaxClick = function (toolbarItem) {
+
+                        bootbox.confirm('Tem certeza que deseja executar ' +
+                                'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
+                            if (result) {
+                                var selectedResult = getSelectedItemInfo(toolbarItem);
+                                if (selectedResult !== null) {
+                                    $.ajax({
+                                        url: selectedResult.url,
+                                        type: 'GET',
+                                        success: function (data) {
+                                            bootbox.alert(data.message);
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            bootbox.alert(textStatus);
+                                        }
+                                    });
+                                } else {
+                                    bootbox.alert('Nenhuma item (ex: linha de uma tabela) foi escolhido.');
+                                }
+                            } else {
+                                bootbox.alert('Ação abortada.');
+                            }
+                        });
+                    };
+
+                    fnTypes.ajaxClick = function (toolbarItem) {
+                        bootbox.confirm('Tem certeza que deseja executar ' +
+                                'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
+                            if (result) {
+                                var itemInfo = getItemInfo(toolbarItem);
+
+                                $.ajax({
+                                    url: itemInfo.url,
+                                    type: 'GET',
+                                    success: function (data) {
+                                        bootbox.alert(data.message);
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        bootbox.alert(textStatus);
+                                    }
+                                });
+
+                            } else {
+                                bootbox.alert('Ação abortada.');
+                            }
+                        });
+                    };
+
+                    getSelectedItemInfo = function (toolbarItem) {
+                        if ($('.cats-selected-row').length > 0) {
+                            var item = toolbarItem.find('a');
+                            var url = item.attr('href');
+                            var target = item.attr('target');
+                            url = url.replace('$id', $('.cats-selected-row').data('id'));
+
+                            return {
+                                url: url,
+                                target: (typeof target !== 'undefined' ? target : '_self')
+                            };
+                        }
+
+                        return null;
+                    };
+
+                    getItemInfo = function (toolbarItem) {
+                        var item = toolbarItem.find('a');
+                        var url = item.attr('href');
+                        var target = item.attr('target');
+
+                        return {
+                            url: url,
+                            target: (typeof target !== 'undefined' ? target : '_self')
+                        };
+                    };
+
+                    // toolbar actions
+
+                    return {
+                        init: function () {
+                            initClick();
+                        }
+                    };
+                }());
+            </script>
+
+            <script>
+
                 // fileselect event
                 $(document).on('change', '.btn-file :file', function () {
                     var input = $(this),
@@ -405,7 +546,6 @@
                             label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
                     input.trigger('fileselect', [numFiles, label]);
                 });
-
                 // change user active role
                 $(document).ready(function () {
 
@@ -437,7 +577,6 @@
                             }
                         });
                     });
-
                     var url = window.location;
                     // Will only work if string in href matches with location
                     $('ul.sidebar-menu a[href="' + url.pathname + '"]')
@@ -446,26 +585,6 @@
                             .css('display', 'block')
                             .closest('li')
                             .addClass('active');
-
-                    // toolbar actions
-                    $('.cats-toolbar-item').click(function (e) {
-                        e.preventDefault();
-                        if ($('.cats-selected-row').length > 0) {
-                            var item = $(this).find('a');
-                            var url = item.attr('href');
-                            var target = item.attr('target');
-
-                            url = url.replace('$id', $('.cats-selected-row').data('id'));
-
-
-                            if (typeof target === 'undefined') {
-                                window.open(url, '_self');
-                            } else {
-                                window.open(url, target);
-                            }
-                        }
-                    });
-
                     // select row on click
                     $('table').on('click', '.cats-row', function () {
                         $(this).siblings('tr')
@@ -476,22 +595,20 @@
                         $(this).toggleClass('cats-selected-row');
 
                         $(this).find('td').toggleClass('cats-selected-bg');
-
                         if ($(this).hasClass('cats-selected-row')) {
-                            if (!$('.control-sidebar').hasClass('control-sidebar-open')) {
-                                $('.control-sidebar').addClass('control-sidebar-open');
+                            if (!$('body').hasClass('control-sidebar-open')) {
+                                $('body').addClass('control-sidebar-open');
                             }
                         } else {
-                            $('.control-sidebar').removeClass('control-sidebar-open');
+                            $('body').removeClass('control-sidebar-open');
                         }
                     });
-
-
                     $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
                         $(this).closest('div').siblings('.file-label').text(label);
                     });
-
-
+                    if (typeof toolbarConfig !== 'undefined') {
+                        toolbarConfig.init();
+                    }
                     if (typeof standardConfig !== 'undefined') {
                         standardConfig.init();
                     }

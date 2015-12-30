@@ -24,6 +24,8 @@ $modules = array(
     'UMS',
     // Recruitment Module
     'Recruitment',
+    // School Management
+    'SchoolManagement',
 );
 
 if (getenv('APP_ENV') == 'development') {

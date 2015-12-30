@@ -19,7 +19,7 @@ use Recruitment\Entity\Person;
  * @ORM\Table(name="registration", 
  *      uniqueConstraints={@ORM\UniqueConstraint(name="person_recruitment_idx", columns={"recruitment_id", "person_id"})},
  * )
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Recruitment\Entity\Repository\Registration")
  */
 class Registration
 {
@@ -69,6 +69,13 @@ class Registration
 
     /**
      *
+     * @var \DateTime
+     * @ORM\Column(name="registration_acceptance_date", type="datetime", nullable=true)
+     */
+    private $registrationAcceptanceDate;
+
+    /**
+     *
      * @var Recruitment
      * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Recruitment", inversedBy="registrations", fetch="EAGER")
      * @ORM\JoinColumn(name="recruitment_id", referencedColumnName="recruitment_id", nullable=false)
@@ -114,7 +121,7 @@ class Registration
 
     /**
      * 
-     * @return \DateTime
+     * @return mixed \DateTime | null
      */
     public function getRegistrationConfirmationDate()
     {
@@ -123,10 +130,10 @@ class Registration
 
     /**
      * 
-     * @param \DateTime $registrationConfirmationDate
+     * @param mixed $registrationConfirmationDate \DateTime | null
      * @return Registration
      */
-    public function setRegistrationConfirmationDate(\DateTime $registrationConfirmationDate)
+    public function setRegistrationConfirmationDate($registrationConfirmationDate)
     {
         $this->registrationConfirmationDate = $registrationConfirmationDate;
         return $this;
@@ -134,7 +141,7 @@ class Registration
 
     /**
      * 
-     * @return \DateTime
+     * @return mixed \DateTime | null
      */
     public function getRegistrationConvocationDate()
     {
@@ -143,10 +150,10 @@ class Registration
 
     /**
      * 
-     * @param \DateTime $registrationConvocationDate
+     * @param mixed $registrationConvocationDate \DateTime | null
      * @return Registration
      */
-    public function setRegistrationConvocationDate(\DateTime $registrationConvocationDate)
+    public function setRegistrationConvocationDate($registrationConvocationDate)
     {
         $this->registrationConvocationDate = $registrationConvocationDate;
         return $this;
@@ -229,6 +236,26 @@ class Registration
             return $this;
         }
         throw new \InvalidArgumentException('invalid registration know about.');
+    }
+
+    /**
+     * 
+     * @return mixed \DateTime | null
+     */
+    function getRegistrationAcceptanceDate()
+    {
+        return $this->registrationAcceptanceDate;
+    }
+
+    /**
+     * 
+     * @param mixed $registrationAcceptanceDate \DateTime | null
+     * @return \Recruitment\Entity\Registration
+     */
+    function setRegistrationAcceptanceDate($registrationAcceptanceDate)
+    {
+        $this->registrationAcceptanceDate = $registrationAcceptanceDate;
+        return $this;
     }
 
 }

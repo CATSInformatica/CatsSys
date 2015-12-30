@@ -9,6 +9,7 @@
 namespace Recruitment\Controller;
 
 use DateTime;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Form\RecruitmentFilter;
@@ -16,6 +17,7 @@ use Recruitment\Form\RecruitmentForm;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -45,6 +47,7 @@ class RecruitmentController extends AbstractActionController
                     'title' => 'Edital',
                     'description' => 'Ler edital',
                     'class' => 'fa fa-file-pdf-o bg-green',
+                    'fntype' => 'selectedHttpClick',
                     'target' => '_blank',
                 ),
                 array(
@@ -52,6 +55,7 @@ class RecruitmentController extends AbstractActionController
                     'title' => 'Remover',
                     'description' => 'Remove um processo seletivo existente',
                     'class' => 'fa fa-trash-o bg-red',
+                    'fntype' => 'selectedAjaxClick',
                 ),
             ),
         );
@@ -151,7 +155,7 @@ class RecruitmentController extends AbstractActionController
 
                     return $this->redirect()->toRoute('recruitment/recruitment', array('action' => 'index'));
                 } catch (Exception $ex) {
-                    if($ex instanceof UniqueConstraintViolationException) {
+                    if ($ex instanceof UniqueConstraintViolationException) {
                         return new ViewModel(array(
                             'message' => 'Este processo seletivo já foi cadastrado.',
                             'form' => null,
@@ -173,9 +177,9 @@ class RecruitmentController extends AbstractActionController
 
     public function deleteAction()
     {
-        $id = $this->params()->fromRoute('id');
+        $id = $this->params('id', false);
 
-        if ($id !== null) {
+        if ($id) {
             try {
                 $em = $this->getEntityManager();
                 $recruitment = $em->getReference('Recruitment\Entity\Recruitment', $id);
@@ -188,19 +192,19 @@ class RecruitmentController extends AbstractActionController
                     ));
                 }
 
-                return new ViewModel(array(
+                return new JsonModel(array(
                     'message' => 'Não é possivel remover processos seletivos em andamento.'
-                    . ' Entre em contato com o administrador do sistema'
+                    . ' Entre em contato com o administrador do sistema.'
                 ));
             } catch (Exception $ex) {
-                return new ViewModel(array(
+                return new JsonModel(array(
                     'message' => $ex->getCode() . ': ' . $ex->getMessage()
                 ));
             }
         }
 
-        return new ViewModel(array(
-            'message' => 'Nenhum processo seletivo escolhido'
+        return new JsonModel(array(
+            'message' => 'Nenhum processo seletivo escolhido.'
         ));
     }
 

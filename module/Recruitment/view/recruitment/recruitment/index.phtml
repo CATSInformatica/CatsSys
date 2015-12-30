@@ -8,7 +8,7 @@
     <?php echo $this->message; ?>
 
     <div class="table-responsive col-xs-8 col-md-8 col-md-offset-2">
-        <table class="table table-condensed table-striped">
+        <table id="recruitment-table" class="table table-condensed table-striped">
             <thead>
                 <tr>
                     <th class="text-center">#</th>
@@ -17,7 +17,6 @@
                     <th class="text-center">Data de Início</th>
                     <th class="text-center">Data de Término</th>
                     <th class="text-center">Tipo</th>
-                    <th></th>
                 </tr>
             </thead>
             <tbody>
@@ -28,8 +27,9 @@
                         <td class="text-center"> <?php echo $this->escapeHtml($recruitment->getRecruitmentYear()); ?></td>
                         <td class="text-center"> <?php echo $recruitment->getRecruitmentBeginDate()->format('d/m/Y'); ?></td>
                         <td class="text-center"> <?php echo $recruitment->getRecruitmentEndDate()->format('d/m/Y'); ?></td>
-                        <td class="text-center"> <?php echo ($recruitment->getRecruitmentType() == 1)
-                        ? 'Processo Seletivo de Alunos' : 'Processo Seletivo de Voluntários'; ?></td>
+                        <td class="text-center"> <?php
+                            echo ($recruitment->getRecruitmentType() == 1) ? 'Processo Seletivo de Alunos' : 'Processo Seletivo de Voluntários';
+                            ?></td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>
@@ -38,3 +38,31 @@
 </div>
 </section>
 
+<script>
+
+    var standardConfig = (function () {
+        // your module code goes here
+        // var config = null;
+
+        /**
+         * 
+         * private functions
+         */
+
+        initDataTable = function () {
+
+            var recruitmentTable = $('#recruitment-table').DataTable({
+                dom: 'lftip',
+                paging: false
+            });
+        };
+
+        return {
+            init: function () {
+                initDataTable();
+            }
+        };
+
+    }());
+
+</script>
