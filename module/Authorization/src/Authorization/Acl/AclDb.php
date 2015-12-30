@@ -33,8 +33,7 @@ class AclDb extends ZendAcl
      */
     public function __construct($entityManager)
     {
-        // verify ...
-        $roles = $entityManager->getRepository('Authorization\Entity\Role')->findBy([], ['roleId' => 'asc']);
+        $roles = $entityManager->getRepository('Authorization\Entity\Role')->findAll();
         $resources = $entityManager->getRepository('Authorization\Entity\Resource')->findAll();
         $privileges = $entityManager->getRepository('Authorization\Entity\Privilege')->findAll();
 
@@ -45,19 +44,31 @@ class AclDb extends ZendAcl
     /**
      * Adds Roles to ACL
      *
+     * @todo Essa função não verifica ciclos, é fundamental que o cadastro de papéis seja feito com cautela.
+     * 
+     * Essa função não é à prova de ciclos. A verificação de ciclos deve ser feita no cadastro de papéis.
+     * 
      * @param array $roles
      * @return Authorization\Acl\AclDb
      */
     protected function _addRoles($roles)
     {
+        // para cada role verifique se ela já foi adicionada ao sistema de permissão, se não foi tente adicioná-la
         foreach ($roles as $role) {
-            if (!$this->hasRole($role->getRoleName())) {
+            $roleName = $role->getRoleName();
+            if (!$this->hasRole($roleName)) {
+
                 $parents = $role->getParents()->toArray();
                 $parentNames = array();
                 foreach ($parents as $parent) {
-                    $parentNames[] = $parent->getRoleName();
+                    $parentName = $parent->getRoleName();
+                    // se uma dos papéis herdados não foi adicionado no sistema de permissão tenta adicioná-lo
+                    if (!$this->hasRole($parentName)) {
+                        $this->_addRoles([$parent]);
+                    }
+                    $parentNames[] = $parentName;
                 }
-                $this->addRole(new GenericRole($role->getRoleName()), $parentNames);
+                $this->addRole(new GenericRole($roleName), $parentNames);
             }
         }
 
@@ -84,9 +95,7 @@ class AclDb extends ZendAcl
 
             if ($privilege->getPrivilegePermissionAllow()) {
                 $this->allow(
-                        $privilege->getRole()->getRoleName(),
-                        $privilege->getResource()->getResourceName(),
-                        ($privilege->getPrivilegeName() != 'all') ? $privilege->getPrivilegeName() : null
+                        $privilege->getRole()->getRoleName(), $privilege->getResource()->getResourceName(), ($privilege->getPrivilegeName() != 'all') ? $privilege->getPrivilegeName() : null
                 );
             } else {
                 $this->deny($privilege->getRole()->getRoleName(), $privilege->getResource()->getResourceName(), $privilege->getPrivilegeName());
