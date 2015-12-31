@@ -136,7 +136,7 @@ abstract class RegistrationForm extends Form
                     'name' => 'registation_confirm',
                     'type' => 'button',
                     'attributes' => array(
-                        'class' => 'btn btn-success',
+                        'class' => 'btn btn-success btn-block',
                         'value' => 'Concluir',
                     ),
         ));

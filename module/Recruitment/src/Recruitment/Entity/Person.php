@@ -17,7 +17,7 @@ use Recruitment\Entity\Address;
 use Recruitment\Entity\Person;
 
 /**
- * Description of People
+ * Description of Person
  * @author Márcio
  * @ORM\Table(name="person", 
  *      uniqueConstraints={@ORM\UniqueConstraint(name="person_cpf_idx", columns={"person_cpf"})},

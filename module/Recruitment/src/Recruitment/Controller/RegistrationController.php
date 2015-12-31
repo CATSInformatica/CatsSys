@@ -238,15 +238,12 @@ class RegistrationController extends AbstractActionController
 
                 foreach ($regs as $r) {
                     $person = $r->getPerson();
-                    $recruitment = $r->getRecruitment();
                     $resultSet['data'][] = array(
                         'DT_RowClass' => 'cats-row',
                         'DT_RowAttr' => [
                             'data-id' => $r->getRegistrationId()
                         ],
-                        $recruitment->getRecruitmentYear() .
-                        $recruitment->getRecruitmentNumber() .
-                        str_pad($r->getRegistrationId(), Registration::REGISTRATION_PAD_LENGTH, '0', STR_PAD_LEFT),
+                        $r->getRegistrationNumber(),
                         $r->getRegistrationDate()->format('d/m/Y H:i:s'),
                         $person->getPersonFirstName() . ' ' . $person->getPersonLastName(),
                         $person->getPersonCpf(),
@@ -590,15 +587,12 @@ class RegistrationController extends AbstractActionController
 
                 foreach ($regs as $r) {
                     $person = $r->getPerson();
-                    $recruitment = $r->getRecruitment();
                     $resultSet['data'][] = array(
                         'DT_RowClass' => 'cats-row',
                         'DT_RowAttr' => [
                             'data-id' => $r->getRegistrationId()
                         ],
-                        $recruitment->getRecruitmentYear() .
-                        $recruitment->getRecruitmentNumber() .
-                        str_pad($r->getRegistrationId(), Registration::REGISTRATION_PAD_LENGTH, '0', STR_PAD_LEFT),
+                        $r->getRegistrationNumber(),
                         $r->getRegistrationDate()->format('d/m/Y H:i:s'),
                         $person->getPersonFirstName() . ' ' . $person->getPersonLastName(),
                         $person->getPersonCpf(),

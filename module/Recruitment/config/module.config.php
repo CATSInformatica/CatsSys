@@ -89,6 +89,7 @@ return array(
             __DIR__ . '/../view/',
         ),
         'template_map' => array(
+            'profile/template' => __DIR__ . '/../view/templates/profile.phtml',
         ),
         'display_exceptions' => true,
     ),

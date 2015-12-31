@@ -242,7 +242,7 @@ class Registration
      * 
      * @return mixed \DateTime | null
      */
-    function getRegistrationAcceptanceDate()
+    public function getRegistrationAcceptanceDate()
     {
         return $this->registrationAcceptanceDate;
     }
@@ -252,10 +252,20 @@ class Registration
      * @param mixed $registrationAcceptanceDate \DateTime | null
      * @return \Recruitment\Entity\Registration
      */
-    function setRegistrationAcceptanceDate($registrationAcceptanceDate)
+    public function setRegistrationAcceptanceDate($registrationAcceptanceDate)
     {
         $this->registrationAcceptanceDate = $registrationAcceptanceDate;
         return $this;
+    }
+
+    public function getRegistrationNumber()
+    {
+        $regNum = $this->recruitment->getRecruitmentYear() .
+                $this->recruitment->getRecruitmentNumber() .
+                str_pad($this->registrationId, self::REGISTRATION_PAD_LENGTH, '0', STR_PAD_LEFT
+        );
+
+        return $regNum;
     }
 
 }

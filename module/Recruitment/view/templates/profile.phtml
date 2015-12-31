@@ -1,0 +1,370 @@
+<?php
+/**
+ * Imprime o perfil do usuário de acordo com as configurações passadas
+ * 
+ * @todo Formação incompleta, permitir aumento da linha do tempo da aba "situação"
+ * 
+ */
+$person = $registration->getPerson();
+$recruitment = $registration->getRecruitment();
+$user = $person->getUser();
+$addresses = $person->getAddresses();
+?>
+
+<div class="row">
+    <div class="col-md-3">
+
+        <!-- Profile Image -->
+        <div class="box box-primary">
+            <div class="box-body box-profile">
+                <a href="#">
+                    <img class="profile-user-img img-responsive img-circle" 
+                         id="profile-img"
+                         src="/recruitment/registration/photo/<?php echo $person->getPersonId(); ?>"
+                         data-id="<?php echo $person->getPersonId(); ?>"
+                         alt="User profile picture">
+                </a>
+
+                <?php if ($config['isPhotoEditable']): ?>
+                    <span class="fileupload-process">
+                        <div id="total-progress" class="progress progress-xs" 
+                             role="progressbar" aria-valuemin="0" aria-valuemax="100" aria-valuenow="0" style="opacity: 0;">
+                            <div class="progress-bar progress-bar-green" style="width: 100%;" data-dz-uploadprogress=""></div>
+                        </div>
+                    </span>
+                <?php endif; ?>
+
+                <h3 class="profile-username text-center">
+                    <?php echo $person->getPersonFirstName() . ' ' . $person->getPersonLastName(); ?>
+                </h3>
+
+                <p class="text-muted text-center">
+                    <?php if ($user !== null): ?>
+
+                    <?php else: ?>
+
+                        <?php
+                        echo ($person->getPersonGender() == \Recruitment\Entity\Person::GENDER_M) ?
+                                'Candidato' : 'Candidata';
+
+                        echo ($recruitment->getRecruitmentType() ==
+                        \Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE) ?
+                                '<br> (Processo Seletivo de Alunos)' : ' Processo Seletivo de Voluntários';
+                        ?>
+
+                    <?php endif; ?>
+                </p>
+
+                <ul class="list-group list-group-unbordered">
+                    <li class="list-group-item">
+                        <b>Nº de Inscrição</b> <a class="pull-right"> 
+                            <?php
+                            echo $registration->getRegistrationNumber()
+                            ?>
+                        </a>
+                    </li>
+                    <li class="list-group-item">
+                        <b>Inscrito em </b> <a class="pull-right">
+                            <?php
+                            echo $registration->getRegistrationDate()->format('d/m/Y H:i:s');
+                            ?>
+                        </a>
+                    </li>
+                </ul>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+
+        <!-- About Me Box -->
+        <div class="box box-primary">
+            <div class="box-header with-border">
+                <h3 class="box-title">Sobre Mim</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body">
+
+                <strong><i class="fa fa-birthday-cake margin-r-5"></i> Data de Nascimento</strong>
+
+                <p class="text-muted">
+                    <?php echo $person->getPersonBirthday()->format('d/m/Y'); ?>
+                    <?php if ($config['showAge']): ?>
+                        <?php
+                        $birthday = $person->getPersonBirthday();
+                        $today = new \DateTime('now');
+                        $years = $today->diff($birthday)->y;
+
+                        echo '(' . $years . ' anos)'
+                        ?>
+                    <?php endif; ?>
+                </p>
+
+                <strong><i class="fa fa-phone margin-r-5"></i> Telefone</strong>
+
+                <p class="text-muted">
+                    <?php echo $person->getPersonPhone(); ?>
+                </p>
+
+                <strong><i class="fa fa-at margin-r-5"></i> Email</strong>
+
+                <p class="text-muted">
+                    <?php echo $person->getPersonEmail(); ?>
+                </p>
+
+                <?php if ($recruitment->getRecruitmentType() == Recruitment\Entity\Recruitment::VOLUNTEER_RECRUITMENT_TYPE): ?>
+
+                    <strong><i class="fa fa-book margin-r-5"></i> Formação</strong>
+
+                    <p class="text-muted">
+                        B.S. in Computer Science from the University of Tennessee at Knoxville
+                    </p>
+
+                <?php endif; ?>
+
+                <strong><i class="fa fa-map-marker margin-r-5"></i> Endereço</strong>
+
+                <p class="text-muted">
+                    <?php if ($addresses !== []): ?>
+
+                        <?php foreach ($addresses as $addr): ?>
+                            <?php
+                            echo $addr->getAddressStreet() . ', ' .
+                            $addr->getAddressNumber() . ' ' .
+                            ($addr->getAddressComplement() == null ?
+                                    '' :
+                                    ('(' . $addr->getAddressComplement() . ') ')) . '- ' .
+                            $addr->getAddressNeighborhood() . ' - ' .
+                            $addr->getAddressCity() . ' - ' .
+                            $addr->getAddressState() . ', CEP: ' .
+                            $addr->getAddressPostalCode() . '<br>';
+                            ?>
+                        <?php endforeach; ?>
+
+                    <?php else: ?>
+                        Nenhum endereço cadastrado.
+                    <?php endif; ?>
+                </p>
+            </div>
+            <!-- /.box-body -->
+        </div>
+        <!-- /.box -->
+    </div>
+    <!-- /.col -->
+    <div class="col-md-9">
+        <div class="nav-tabs-custom">
+            <ul class="nav nav-tabs">
+                <?php if (isset($config['tabs']['recruitment-timeline'])): ?>
+                    <li class="active"><a href="#recruitment-timeline" data-toggle="tab" aria-expanded="false">Situação</a></li>
+                <?php endif; ?>
+                <?php if (isset($config['tabs']['documentation'])): ?>
+                    <li class=""><a href="#documentation" data-toggle="tab" aria-expanded="false">Documentação</a></li>
+                <?php endif; ?>
+                <?php if (isset($config['tabs']['score'])): ?>
+                    <li class=""><a href="#score" data-toggle="tab" aria-expanded="true">Pontuação</a></li>
+                <?php endif; ?>
+                <?php if (isset($config['tabs']['info'])): ?>
+                    <li class=""><a href="#info" data-toggle="tab" aria-expanded="true">Editar Dados</a></li>
+                <?php endif; ?>
+            </ul>
+            <div class="tab-content">
+
+                <?php if (isset($config['tabs']['recruitment-timeline'])): ?>
+
+                    <div class="tab-pane active" id="recruitment-timeline">
+
+                        <?php $today = new \DateTime('now'); ?>
+                        <!-- The timeline -->
+                        <ul class="timeline timeline">
+                            <!-- timeline time label -->
+                            <li class="time-label">
+                                <span class="bg-green">
+                                    <?php echo $registration->getRegistrationDate()->format('H:i \o\n l jS F Y'); ?>
+                                </span>
+                            </li>
+                            <!-- /.timeline-label -->
+                            <!-- timeline item -->
+                            <li>
+                                <i class="fa fa-pencil bg-green"></i>
+                                <div class="timeline-item">
+                                    <span class="time"><i class="fa fa-clock-o"></i> 
+                                        Há <?php echo $today->diff($registration->getRegistrationDate())->d ?> dias
+                                    </span>
+                                    <h3 class="timeline-header">Inscrição realizada.</h3>
+                                </div>
+                            </li>
+                            <!-- /.timeline item -->
+
+                            <?php if ($registration->getRegistrationConfirmationDate() instanceof \DateTime): ?>
+
+                                <!-- timeline time label -->
+                                <li class="time-label">
+                                    <span class="bg-red">
+                                        <?php echo $registration->getRegistrationConfirmationDate()->format('H:i \o\n l jS F Y'); ?>
+                                    </span>
+                                </li>
+                                <!-- /.timeline-label -->
+                                <!-- timeline item -->
+                                <li>
+                                    <i class="fa fa-check bg-red"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fa fa-clock-o"></i> 
+                                            Há <?php echo $today->diff($registration->getRegistrationConfirmationDate())->d ?> dias
+                                        </span>
+                                        <h3 class="timeline-header">Confirmação realizada.</h3>
+                                    </div>
+                                </li>
+                                <!-- /.timeline item -->
+
+                            <?php endif; ?>
+
+                            <?php if ($registration->getRegistrationConvocationDate() instanceof \DateTime): ?>
+
+                                <!-- timeline time label -->
+                                <li class="time-label">
+                                    <span class="bg-blue">
+                                        <?php echo $registration->getRegistrationConvocationDate()->format('H:i \o\n l jS F Y'); ?>
+                                    </span>
+                                </li>
+                                <!-- /.timeline-label -->
+                                <!-- timeline item -->
+                                <li>
+                                    <i class="fa fa-users bg-blue"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fa fa-clock-o"></i> 
+                                            Há <?php echo $today->diff($registration->getRegistrationConvocationDate())->d ?> dias
+                                        </span>
+                                        <h3 class="timeline-header">Convocação Realizada.</h3>
+                                    </div>
+                                </li>
+                                <!-- /.timeline item -->
+
+                            <?php endif; ?>
+
+                            <?php if ($registration->getRegistrationAcceptanceDate() instanceof \DateTime): ?>
+
+                                <!-- timeline time label -->
+                                <li class="time-label">
+                                    <span class="bg-yellow">
+                                        <?php echo $registration->getRegistrationAcceptanceDate()->format('H:i \o\n l jS F Y'); ?>
+                                    </span>
+                                </li>
+                                <!-- /.timeline-label -->
+                                <!-- timeline item -->
+                                <li>
+                                    <i class="fa fa-graduation-cap bg-yellow"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fa fa-clock-o"></i> 
+                                            Há <?php echo $today->diff($registration->getRegistrationAcceptanceDate())->d ?> dias
+                                        </span>
+                                        <h3 class="timeline-header">Aprovação concedida.</h3>
+                                    </div>
+                                </li>
+                                <!-- /.timeline item -->
+
+                            <?php endif; ?>
+                            <?php foreach ($config['tabs']['recruitment-timeline'] as $timelineItem): ?>
+
+                                <!-- timeline time label -->
+                                <li class="time-label">
+                                    <span class="<?php echo $timelineItem['color']; ?>">
+                                        <?php echo $timelineItem['title']; ?>
+                                    </span>
+                                </li>
+                                <!-- /.timeline-label -->
+                                <!-- timeline item -->
+                                <li>
+                                    <i class="<?php echo $timelineItem['icon'] . ' ' . $timelineItem['color']; ?>"></i>
+                                    <div class="timeline-item">
+                                        <span class="time"><i class="fa fa-clock-o"></i> 
+                                            <?php echo $timelineItem['time']; ?>
+                                        </span>
+                                        <h3 class="timeline-header"><?php echo $timelineItem['content-header']; ?></h3>
+                                    </div>
+                                </li>
+                                <!-- /.timeline item -->
+
+                            <?php endforeach; ?>
+
+
+                            <!-- END timeline item -->
+                            <li>
+                                <i class="fa fa-clock-o bg-gray"></i>
+                            </li>
+                        </ul>
+                    </div>
+
+                <?php endif; ?>
+                <?php if (isset($config['tabs']['documentation'])): ?>
+
+                    <div class="tab-pane" id="documentation">
+                        <div class="row">
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-aqua"><i class="fa fa-user"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Informações pessoais</span>               
+                                    </div>
+                                    <!-- /.info-box-content -->
+                                </div>
+                                <!-- /.info-box -->
+                            </div>
+                            <!-- /.col -->
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-red"><i class="fa fa-money"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Comprovantes de renda</span>
+                                    </div>
+                                    <!-- /.info-box-content -->
+                                </div>
+                                <!-- /.info-box -->
+                            </div>
+                            <!-- /.col -->
+
+                            <!-- fix for small devices only -->
+                            <div class="clearfix visible-sm-block"></div>
+
+                            <div class="col-md-4 col-sm-6 col-xs-12">
+                                <div class="info-box">
+                                    <span class="info-box-icon bg-green"><i class="fa fa-dollar"></i></span>
+
+                                    <div class="info-box-content">
+                                        <span class="info-box-text">Comprovantes de despesas</span>
+                                    </div>
+                                    <!-- /.info-box-content -->
+                                </div>
+                                <!-- /.info-box -->
+                            </div>
+                            <!-- /.col -->
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+
+                <?php endif; ?>
+                <?php if (isset($config['tabs']['score'])): ?>
+
+                    <div class="tab-pane" id="score">
+                        <p> Números, números números, ... </p>
+                    </div>
+                    <!-- /.tab-pane -->
+
+                <?php endif; ?>
+                <?php if (isset($config['tabs']['info'])): ?>
+
+                    <div class="tab-pane" id="info">
+                        <p> Dados de inscrição, pre-entrevista, entrevista, ... </p>
+                    </div>
+                    <!-- /.tab-pane -->
+
+                <?php endif; ?>
+
+            </div>
+            <!-- /.tab-content -->
+        </div>
+        <!-- /.nav-tabs-custom -->
+    </div>
+    <!-- /.col -->
+</div>
+<!-- /.row -->
