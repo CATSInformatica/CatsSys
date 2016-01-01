@@ -7,6 +7,7 @@ return array(
         'invokables' => array(
             'SchoolManagement\Controller\Enrollment' => Controller\EnrollmentController::class,
             'SchoolManagement\Controller\StudentClass' => Controller\StudentClassController::class,
+            'SchoolManagement\Controller\SchoolWarning' => Controller\SchoolWarningController::class,
         )
     ),
     'router' => array(
@@ -45,6 +46,22 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'SchoolManagement\Controller\StudentClass',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'school-warning' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/school-warning[/:action[/:sid[/:swid]]]',
+                            'constraints' => array(
+                                'controller' => 'SchoolManagement\Controller\SchoolWarning',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'sid' => '[0-9]+',
+                                'swid' => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'SchoolManagement\Controller\SchoolWarning',
                                 'action' => 'index',
                             ),
                         ),

@@ -16,7 +16,10 @@ use Recruitment\Entity\Registration;
  * Description of Entrollment
  *
  * @author Márcio Dias <marciojr91@gmail.com>
- * @ORM\Table(name="enrollment")
+ * @ORM\Table(name="enrollment", 
+ *      uniqueConstraints={@ORM\UniqueConstraint(name="class_registration_idx", 
+ *          columns={"class_id", "registration_id"})}
+ * )
  * @ORM\Entity
  */
 class Enrollment
@@ -24,31 +27,34 @@ class Enrollment
 
     /**
      *
-     * @var SchoolManagement\Entity\StudentClass
+     * @var integer
+     * @ORM\Column(name="enrollment_id", type="integer", nullable=false)
      * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="SchoolManagement\Entity\StudentClass", inversedBy="enrollments")
+     * @ORM\GeneratedValue(strategy="IDENTITY")
+     */
+    private $enrollmentId;
+
+    /**
+     * @var SchoolManagement\Entity\StudentClass
+     * @ORM\ManyToOne(targetEntity="SchoolManagement\Entity\StudentClass", inversedBy="enrollments", fetch="EXTRA_LAZY")
      * @ORM\JoinColumn(name="class_id", referencedColumnName="class_id", nullable=false)
      */
     private $class;
 
     /**
-     *
      * @var Recruitment\Entity\Registration
-     * @ORM\Id
-     * @ORM\ManyToOne(targetEntity="Recruitment\Entity\Registration")
+     * @ORM\ManyToOne(targetEntity="Recruitment\Entity\Registration", fetch="EXTRA_LAZY")
      * @ORM\JoinColumn(name="registration_id", referencedColumnName="registration_id", nullable=false)
      */
     private $registration;
 
     /**
-     *
      * @var \DateTime
      * @ORM\Column(name="enrollment_begindate", type="datetime", nullable=false)
      */
     private $enrollmentBeginDate;
 
     /**
-     *
      * @var mixed
      * @ORM\Column(name="enrollment_enddate", type="datetime", nullable=true)
      */
@@ -61,6 +67,14 @@ class Enrollment
 
     /**
      * 
+     * @return integer
+     */
+    public function getEnrollmentId()
+    {
+        return $this->enrollmentId;
+    }
+
+    /**
      * @return SchoolManagement\Entity\StudentClass
      */
     public function getClass()
@@ -69,7 +83,6 @@ class Enrollment
     }
 
     /**
-     * 
      * @return Recruitment\Entity\Registration
      */
     public function getRegistration()

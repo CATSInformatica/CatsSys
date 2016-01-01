@@ -1,0 +1,61 @@
+
+<section class="content-header">
+    <h1>Advertências</h1>
+    <hr>
+    <p><?php echo $message; ?></p>
+</section>
+
+<section class="content">
+
+    <div class="table-responsive col-xs-8 col-md-8 col-md-offset-2">
+        <table id="warning-table" class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Tipo</th>
+                    <th class="text-center">Descrição</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->warningTypes as $wt): ?>
+                    <tr class="cats-row" data-id="<?php echo $wt->getWarningTypeId(); ?>">
+                        <td class="text-center"> <?php echo $wt->getWarningTypeId(); ?></td>
+                        <td class="text-center"> <?php echo $wt->getWarningTypeName(); ?></td>
+                        <td class="text-center"> <?php echo $wt->getWarningTypeDescription(); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+</section>
+
+
+<script>
+
+    var standardConfig = (function () {
+        // your module code goes here
+        // var config = null;
+
+        /**
+         * 
+         * private functions
+         */
+
+        initDataTable = function () {
+
+            $('#warning-table').DataTable({
+                dom: 'lftip',
+                paging: false
+            });
+        };
+
+        return {
+            init: function () {
+                initDataTable();
+            }
+        };
+
+    }());
+
+</script>
