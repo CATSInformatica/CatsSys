@@ -8,7 +8,7 @@
 
     Verificar se o apache está funcionando adequadamente
 
-    vá no navegador e digite [http://localhost]([http://localhost) você deverá ver a página padrão de instalação do apache
+    vá no navegador e digite http://localhost você deverá ver a página padrão de instalação do apache
 
     Configuração do virtual host
     Digite ou cole no terminal: `sudo gedit /etc/apache2/sites-available/cats-lab.conf`
@@ -77,7 +77,7 @@
         phpinfo();
     ```
 
-    No navegador digite [http://cats-lab.lan](http://cats-lab.lan), você deverá ver as configurações da instalação do php
+    No navegador digite http://cats-lab.lan, você deverá ver as configurações da instalação do php
     
 _____________________________
 
@@ -88,7 +88,7 @@ ______________________________
 	* No terminal digite: `sudo apt-get install git`
 
    Instalar Netbeans IDE
-	* acesse o link [https://netbeans.org/downloads/](https://netbeans.org/downloads/) e baixe a última versão do Netbeans para PHP.
+	* acesse o link https://netbeans.org/downloads/ e baixe a última versão do Netbeans para PHP.
 
     Clonar o projeto do CATS. vá na pasta vhosts e delete a pasta cats-lab, em seguida abra o terminal e digite o comando
         * `git clone https://github.com/marciodojr/catsSys.git`
@@ -178,7 +178,7 @@ ______________________________
     Obs: o arquivo catssys_data.sql está junto com esse arquivo de documentação
 
     após executar todos estes passos (se nada der errado) va no navegador e digite
-        - [http://cats-lab.lan/](http://cats-lab.lan/)
+        - http://cats-lab.lan/
         Será exibida uma página que representa o site (só tem o necessário para acessar o sistema)
         Clique em login e insira as credenciais:
             * `username: fcadmin`
