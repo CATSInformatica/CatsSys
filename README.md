@@ -1,4 +1,8 @@
-# catsSys - Sistema administrativo do CATS utilizando Zend Framework
+# catsSys - Sistema administrativo do CATS utilizando Zend Framework 2
+
+# Instruções de instalação
+
+## Primeira Parte
 
 Instalar php5, apache2, mysql
 Digite ou cole no terminal: 
@@ -64,12 +68,12 @@ Adicione ao final do arquivo a linha:
 
 
 Habilitar modo de reescrita no apache2
-digite ou cole no terminal: sudo a2enmode rewrite
+digite ou cole no terminal: `sudo a2enmode rewrite`
 
 Habilitar o site criado
 digite ou cole no terminal: `sudo a2ensite cats-lab.conf`
 
-Reiniciar o apache: sudo service apache2 restart
+Reiniciar o apache: `sudo service apache2 restart`
 
 Testar se o virtual host para o cats foi criado com sucesso
 
@@ -83,7 +87,7 @@ e cole o seguinte conteúdo
 
 No navegador digite http://cats-lab.lan, você deverá ver as configurações da instalação do php
     
-Segunda etapa
+## Segunda etapa
 
 
 Instalar git
