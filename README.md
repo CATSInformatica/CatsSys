@@ -82,111 +82,113 @@ e cole o seguinte conteúdo
 
 No navegador digite http://cats-lab.lan, você deverá ver as configurações da instalação do php
     
-_____________________________
+Segunda etapa
 
-        Segunda etapa
-______________________________
 
 Instalar git
-     * No terminal digite: `sudo apt-get install git`
+    No terminal digite: `sudo apt-get install git`
 
 Instalar Netbeans IDE
-     * acesse o link https://netbeans.org/downloads/ e baixe a última versão do Netbeans para PHP.
+    acesse o link https://netbeans.org/downloads/ e baixe a última versão do Netbeans para PHP.
 
- Clonar o projeto do CATS. vá na pasta vhosts e delete a pasta cats-lab, em seguida abra o terminal e digite o comando
-     * `git clone https://github.com/marciodojr/catsSys.git`
- Renomeie a pasta clonada do github para cats-lab
+Clonar o projeto do CATS. vá na pasta vhosts e delete a pasta cats-lab, em seguida abra o terminal e digite o comando
 
- Instalar as bibliotecas externas
- Entre na pasta cats-lab e abra o terminal e digite
-     * `COMPOSER_PROCESS_TIMEOUT=2000 composer install`
+    `git clone https://github.com/marciodojr/catsSys.git`
 
- Todas os pacotes necessários para o projeto serão baixados para a pasta .../vendor
- Obs: intencionalmente a pasta vendor está configurada para ficar fora do projeto do CATS para não misturar o código e permitir
- compartilhamento entre novos projetos.
+Renomeie a pasta clonada do github para cats-lab
 
- Além do composer (utilizado para o php), é utilizado um programa semelhante para js, css chamado bower
+Instalar as bibliotecas externas
 
- Instalação do bower:
-     * `sudo apt-get install npm`
-     * `sudo npm install -g bower`
+Entre na pasta cats-lab e abra o terminal e digite
+    `COMPOSER_PROCESS_TIMEOUT=2000 composer install`
 
- Após instalar o bower vá na pasta `cats-lab/public` e no terminal digite:
-     * `bower install`
- Todas as dependencias de css e Js serão instaladas. O sistema do CATS utiliza:
-     * AdminLTE v2
-     * Bootstrap v3
-     * JQuery 2.x
-     * Talvez alguma outra coisa que não me lembro agora.
+Todas os pacotes necessários para o projeto serão baixados para a pasta `./../vendor`
+Intencionalmente a pasta vendor está configurada para ficar fora do projeto do CATS para não misturar o código do projeto com códigos de terceiros e permitir
+compartilhamento entre novos projetos.
 
- Criar arquivo local.php em ./config/autoload/
+Além do composer (utilizado para o php), é utilizado um programa semelhante para js e css chamado [bower](http://bower.io/)
 
- ```php
- /*
- * ./config/autoload/local.php
- *
- * inserir usuario, senha e nome do banco de dados que será utilizado
- * localmente
- */
- return array(
-    'doctrine' => array(
-        'connection' => array(
-            'orm_default' => array(
-                'params' => array(
-                    'user'     => 'root',
-                    'password' => 'root',
-                    'dbname'   => 'catssys',
-                ),
-            ),
-        ),
-    ),
- );
- ```
+Instalação do bower:
+    `sudo apt-get install npm`
+    `sudo npm install -g bower`
 
- Fazer a cópia do arquivo de configurações do Zend Developer Tools
- Dentro da pasta cats-lab abra o terminal e digite:
- `cp ./../vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist ./config/autoload/zenddevelopertools.local.php`
+Após instalar o bower vá na pasta `cats-lab/public` e no terminal digite: `bower install`
 
- Criar um banco de dados Mysql com o usuário, senha e banco iguais aos valores inseridos no arquivo local.php
+Todas as dependencias de css e Js serão instaladas. O sistema do CATS utiliza:
+    AdminLTE 2.x
+    Bootstrap 3.x
+    JQuery 2.x
+    Moment 2.x
+
+Criar arquivo local.php em `./config/autoload/`
+
+```php
+/*
+* ./config/autoload/local.php
+*
+* inserir usuario, senha e nome do banco de dados que será utilizado
+* localmente
+*/
+return array(
+   'doctrine' => array(
+       'connection' => array(
+           'orm_default' => array(
+               'params' => array(
+                   'user'     => 'root',
+                   'password' => 'root',
+                   'dbname'   => 'catssys',
+               ),
+           ),
+       ),
+   ),
+);
+```
+
+Fazer a cópia do arquivo de configurações do Zend Developer Tools
+Dentro da pasta cats-lab abra o terminal e digite:
+
+    `cp ./../vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist ./config/autoload/zenddevelopertools.local.php`
+
+Criar um banco de dados Mysql com o usuário, senha e banco iguais aos valores inseridos no arquivo local.php
 
  Intencionalmente o git foi configurado para não sincronizar alguns arquivos:
-     > todos os arquivos de desenvolvimento;
-     > configuração local
-     > configuração do projeto no Netbeans.
- Sendo assim é preciso importar um novo projeto no Netbeans. Para importar o projeto no Netbeans siga as instruções abaixo:
+    todos os arquivos de desenvolvimento;
+    configuração local
+    configuração do projeto no Netbeans.
 
- File > New Project > (PHP Aplication with Existing Sources) > (Selecionar a pasta clonada do github (cats-lab), escolher a versão 5.5 do PHP)
+Sendo assim, é preciso importar um novo projeto no Netbeans. Para importar o projeto no Netbeans siga as instruções abaixo:
 
- Toda manipulação de banco de dados feita pelo sistema do CATS será por meio de Mapeamento Objeto-Relacional
- desse modo é possível criar as tabelas do banco de dados a partir de certos objetos PHP
+    `File > New Project > (PHP Aplication with Existing Sources) > (Selecionar a pasta clonada do github (cats-lab), escolher a versão 5.5 do PHP)`
 
- Gravar entidades no banco de dados a partir de objetos PHP
+Toda manipulação de banco de dados feita pelo sistema do CATS será por meio de Mapeamento Objeto-Relacional desse modo é possível criar as tabelas do banco de dados a partir de certos objetos PHP
 
- Abra o terminal na pasta cats-lab e digite os comandos 
- (Obs: o banco de dados catssys deve existir e o arquivo local.php deve estar configurado como mencionado anteriormente)
+Gravar entidades no banco de dados a partir de objetos PHP
 
- Verifica se o mapeamento está correto e avisa se o schema do bando de dados é igual as classes mapeadas
-     E1: `php public/index.php orm:validate-schema`
+Abra o terminal na pasta cats-lab e digite os comandos (Obs: o banco de dados `catssys` deve existir e o arquivo local.php deve estar configurado como mencionado anteriormente).
 
- Cria as tabelas do banco de dados (em caso de falha utilize o parâmetro `--force` ao final)
-     E2: `php public/index.php orm:schema-tool:create`
+Verificar se o mapeamento está correto e avisa se o schema do bando de dados é igual as classes mapeadas
 
- A medida que novos objetos que representam tabelas do banco de dados vão sendo criados é possível atualizar 
- o schema do banco. Primeiramente é preciso utilizar o comando E1 para verificar se o objeto foi criado corretamente 
- (validar o código antes de criar as tabelas) em seguida é utilizado o comando abaixo:
-     E3: `php public/index.php orm:schema-tool:update --force`
+    E1: `php public/index.php orm:validate-schema`
 
- importar os dados para banco de dados
- `mysqldump --no-create-info -u root -p catssys <catssys_data.sql`
+Cria as tabelas do banco de dados (em caso de falha utilize o parâmetro `--force` ao final)
+    
+    E2: `php public/index.php orm:schema-tool:create`
 
- Obs: o arquivo catssys_data.sql está junto com esse arquivo de documentação
+A medida que novos objetos que representam tabelas do banco de dados vão sendo criados é possível atualizar o schema do banco. Primeiramente é preciso utilizar o comando E1 para verificar se o objeto foi criado corretamente (validar o código antes de criar as tabelas) em seguida é utilizado o comando abaixo:
+    
+    E3: `php public/index.php orm:schema-tool:update --force`
 
- após executar todos estes passos (se nada der errado) va no navegador e digite http://cats-lab.lan/. Será exibida uma página que representa o site (só tem o necessário para acessar o sistema). Clique em login e insira as credenciais:
+Importar os dados para banco de dados
+
+    `mysqldump --no-create-info -u root -p catssys <catssys_data.sql`
+
+Obs: o arquivo catssys_data.sql está junto com esse arquivo de documentação.
+
+Após executar todos estes passos (se nada der errado) va no navegador e digite http://cats-lab.lan/. Será exibida uma página que representa o site (só tem o necessário para acessar o sistema). Clique em login e insira as credenciais:
 
 ```
     username: fcadmin
     password: 177598230afbg#
 ```
-
-    Se der tudo certo você estará dentro do sistema (ainda não tem muita coisa tudo do sistema antigo está sendo refeito e as novas funcionalidades ainda estão para serem criadas)
+Se der tudo certo você estará dentro do sistema (ainda não tem muita coisa tudo do sistema antigo está sendo refeito e as novas funcionalidades ainda estão para serem criadas)
         
