@@ -1,11 +1,11 @@
-# catsSys
-
-Sistema administrativo do CATS utilizando Zend Framework 2
+# catsSys - Sistema administrativo do CATS utilizando Zend Framework
 
 Instalar php5, apache2, mysql
 Digite ou cole no terminal: 
 
-    `sudo apt-get install php5 mysql-server php5-mysql composer apache2 -y`
+```
+sudo apt-get install php5 mysql-server php5-mysql composer apache2 -y
+```
 
 OBS: lembre-se do usuário e senha inseridos na instalação do mysql. Eles serão necessários para a manipulação dos bancos de dados.
 
@@ -46,6 +46,7 @@ Salve e feche o arquivo de texto
 
 Pelo gerenciador de arquivos ou pelo terminal crie uma pasta chamada vhosts/cats-lab na raiz do diretório home do usuário (por exemplo: /home/marcio/vhosts/cats-lab)
 digite ou cole no terminal:
+
 ```
     cd ~
     mkdir vhosts
