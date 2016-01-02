@@ -1,4 +1,4 @@
-# catsSys - Sistema administrativo do CATS utilizando Zend Framework 2
+# catsSys - Sistema administrativo do CATS
 
 # Instruções de instalação
 
@@ -87,7 +87,7 @@ e cole o seguinte conteúdo
 
 No navegador digite http://cats-lab.lan, você deverá ver as configurações da instalação do php
     
-## Segunda etapa
+## Segunda parte
 
 
 Instalar git
