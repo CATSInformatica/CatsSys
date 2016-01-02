@@ -178,13 +178,12 @@ Instalar Netbeans IDE
 
  Obs: o arquivo catssys_data.sql está junto com esse arquivo de documentação
 
- após executar todos estes passos (se nada der errado) va no navegador e digite
-     - http://cats-lab.lan/
-     Será exibida uma página que representa o site (só tem o necessário para acessar o sistema)
-     Clique em login e insira as credenciais:
-         * `username: fcadmin`
-         * `password: 177598230afbg#`
+ após executar todos estes passos (se nada der errado) va no navegador e digite http://cats-lab.lan/. Será exibida uma página que representa o site (só tem o necessário para acessar o sistema). Clique em login e insira as credenciais:
 
-     Se der tudo certo você estará dentro do sistema (ainda não tem muita coisa tudo do sistema antigo está sendo refeito
- e as novas funcionalidades ainda estão para serem criadas)
+```
+    username: fcadmin
+    password: 177598230afbg#
+```
+
+    Se der tudo certo você estará dentro do sistema (ainda não tem muita coisa tudo do sistema antigo está sendo refeito e as novas funcionalidades ainda estão para serem criadas)
         
