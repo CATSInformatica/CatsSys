@@ -3,7 +3,10 @@
 Sistema administrativo do CATS utilizando Zend Framework 2
 
 Instalar php5, apache2, mysql
-Digite ou cole no terminal: `sudo apt-get install php5 mysql-server php5-mysql composer apache2 -y`
+Digite ou cole no terminal: 
+
+    `sudo apt-get install php5 mysql-server php5-mysql composer apache2 -y`
+
 OBS: lembre-se do usuário e senha inseridos na instalação do mysql. Eles serão necessários para a manipulação dos bancos de dados.
 
 Verificar se o apache está funcionando adequadamente
