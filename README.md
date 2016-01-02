@@ -210,14 +210,23 @@ Importar os dados para banco de dados
 
 Obs: o arquivo catssys_data.sql está junto com esse arquivo de documentação.
 
+Criar as pastas
 
-crie as pastas
-    data/cache
+```
     data/captcha
+    data/session
+```
+
+Dar permissão de leitura e escrita nas pastas
+
+```
+    data/DoctrineORMModule/Proxy
+    data/cache
     data/edital
+    data/fonts
     data/profile
     data/session
-    
+```    
 
 Após executar todos estes passos (se nada der errado) va no navegador e digite http://cats-lab.lan/. Será exibida uma página que representa o site (só tem o necessário para acessar o sistema). Clique em login e insira as credenciais:
 
