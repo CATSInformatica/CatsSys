@@ -2,16 +2,16 @@ echo 'Starting script.';
 
 echo 'Installing Required Packages: PHP, Composer Apache, MySql';
 
-apt-get install apt-get install php5 mysql-server php5-mysql composer apache2 npm -y
+sudo apt-get install php5 mysql-server php5-mysql php5-gd composer apache2 npm -y
 
 echo 'Installing bower'
-npm install -g bower
+sudo npm install -g bower
 
 echo 'Creating symbolic link for nodejs /usr/bin/nodejs ~> /usr/bin/node'
-ln -s /usr/bin/nodejs /usr/bin/node
+sudo ln -s /usr/bin/nodejs /usr/bin/node
 
 echo 'Creating virtual host configuration'
-cat <<EOT >> /etc/apache2/sites-available/cats-lab.conf
+sudo tee /etc/apache2/sites-available/cats-lab.conf << EOF
 <VirtualHost 127.1.1.100:80>
 
         ServerName cats-lab.lan
@@ -32,10 +32,14 @@ cat <<EOT >> /etc/apache2/sites-available/cats-lab.conf
 </VirtualHost>
 
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
-EOT
-echo '127.1.1.100   cats-lab.lan # nome associado ao virtual host local de desenvolvimento' >/etc/hosts
+EOF
+
+sudo tee -a  /etc/hosts << EOF
+ echo '127.1.1.100   cats-lab.lan # nome associado ao virtual host local de desenvolvimento'
+EOF
 
 echo 'Starting git clone'
+mkdir $HOME/vhosts
 git clone https://github.com/marciodojr/catsSys.git $HOME/vhosts/cats-lab
 
 echo 'Starting Composer packages installation'
@@ -43,11 +47,11 @@ cd $HOME/vhosts/cats-lab
 COMPOSER_PROCESS_TIMEOUT=2000 composer install
 
 echo 'Starting bower assets installation'
-cd public/
+cd $HOME/vhosts/cats-lab/public/
 bower install
 
 echo 'Creating local configuration'
-cat <<EOT >> $HOME/vhosts/cats-lab/config/autoload/local.php
+tee $HOME/vhosts/cats-lab/config/autoload/local.php << EOF
 <?php
 /*
 * ./config/autoload/local.php
@@ -68,32 +72,31 @@ return array(
        ),
    ),
 );
-EOT
+EOF
 cp $HOME/vhosts/vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist $HOME/vhosts/cats-lab/config/autoload/zenddevelopertools.local.php
 
 echo 'Creating database CatsSys'
-read -s "Usuário do mysql: " user
-mysql -u $user -p -e 'create database catssys'
+mysql -u root -p -e 'create database catssys'
 
 echo 'Creating database schema'
 php $HOME/vhosts/cats-lab/public/index.php orm:validate-schema
-php $HOME/vhosts/cats-lab/public/index.php orm:schema-tool:create --force
+php $HOME/vhosts/cats-lab/public/index.php orm:schema-tool:create
 
 echo 'Importing table contents'
-mysql -u $user -p catssys < ~$HOME/vhosts/cats-lab/data/dev-helpers/catssys_data.sql
+mysql -u root -p catssys <$HOME/vhosts/cats-lab/data/dev-helpers/catssys_data.sql
 
 echo 'Creating data directories'
 mkdir $HOME/vhosts/cats-lab/data/captcha
 mkdir $HOME/vhosts/cats-lab/data/session
 
-echo 'Setting permissions for data directories
-chmod 777 data/DoctrineORMModule/Proxy
-chmod 777 data/cache
-chmod 777 data/edital
-chmod 777 data/fonts
-chmod 777 data/profile
-chmod 777 data/captcha
-chmod 777 data/session
+echo 'Setting permissions for data directories'
+sudo chmod 777 $HOME/vhosts/cats-lab/data/DoctrineORMModule/Proxy
+sudo chmod 777 $HOME/vhosts/cats-lab/data/cache
+sudo chmod 777 $HOME/vhosts/cats-lab/data/edital
+sudo chmod 777 $HOME/vhosts/cats-lab/data/fonts
+sudo chmod 777 $HOME/vhosts/cats-lab/data/profile
+sudo chmod 777 $HOME/vhosts/cats-lab/data/captcha
+sudo chmod 777 $HOME/vhosts/cats-lab/data/session
 
 echo 'Enabling rewrite mode'
 sudo a2enmod rewrite
