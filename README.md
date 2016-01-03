@@ -2,13 +2,15 @@
 
 # Instruções de instalação
 
+Obs: caso queira utilizar a configuração padrão para instalação, é possível utilizar o script [https://raw.githubusercontent.com/marciodojr/catsSys/master/data/dev-helpers/setup-environment.sh](setup-environment.sh) e pular diretamente para a [step-three](terceira parte) deste arquivo
+
 ## Primeira Parte
 
 Instalar php5, apache2, mysql
 Digite ou cole no terminal: 
 
 ```
-sudo apt-get install php5 mysql-server php5-mysql composer apache2 -y
+sudo apt-get install php5 mysql-server php5-mysql php5-gd composer apache2 -y
 ```
 
 OBS: lembre-se do usuário e senha inseridos na instalação do mysql. Eles serão necessários para a manipulação dos bancos de dados.
@@ -89,13 +91,6 @@ No navegador digite http://cats-lab.lan, você deverá ver as configurações da
     
 ## Segunda parte
 
-
-Instalar git
-    No terminal digite: `sudo apt-get install git`
-
-Instalar Netbeans IDE
-    acesse o link https://netbeans.org/downloads/ e baixe a última versão do Netbeans para PHP.
-
 Clonar o projeto do CATS. vá na pasta vhosts e delete a pasta cats-lab, em seguida abra o terminal e digite o comando
 
 ```
@@ -128,7 +123,7 @@ Instalação do bower:
 
 Após instalar o bower vá na pasta `cats-lab/public` e no terminal digite: `bower install`
 
-Todas as dependencias de css e Js serão instaladas. O sistema do CATS utiliza:
+Todas as dependencias de css e js serão instaladas. O sistema do CATS utiliza:
 
 ```
     AdminLTE 2.x
@@ -170,17 +165,6 @@ Dentro da pasta cats-lab abra o terminal e digite:
 ```
 
 Criar um banco de dados Mysql com o usuário, senha e banco iguais aos valores inseridos no arquivo local.php
-
- Intencionalmente o git foi configurado para não sincronizar alguns arquivos:
-    todos os arquivos de desenvolvimento;
-    configuração local
-    configuração do projeto no Netbeans.
-
-Sendo assim, é preciso importar um novo projeto no Netbeans. Para importar o projeto no Netbeans siga as instruções abaixo:
-
-```
-    File > New Project > (PHP Aplication with Existing Sources) > (Selecionar a pasta clonada do github (cats-lab), escolher a versão 5.5 do PHP)
-```
 
 Toda manipulação de banco de dados feita pelo sistema do CATS será por meio de Mapeamento Objeto-Relacional desse modo é possível criar as tabelas do banco de dados a partir de certos objetos PHP
 
@@ -231,14 +215,31 @@ Dar permissão de leitura e escrita nas pastas
     data/session
 ```    
 
-Após executar todos estes passos (se nada der errado) va no navegador e digite http://cats-lab.lan/. Será exibida uma página que representa o site (só tem o necessário para acessar o sistema). Clique em login e insira as credenciais:
+Se der tudo certo você estará dentro do sistema (ainda não tem muita coisa tudo do sistema antigo está sendo refeito e as novas funcionalidades ainda estão para serem criadas)
+
+## <a name="step-three"></a> Terceira Parte (Recomendado)
+
+Instalar Netbeans IDE: baixe a última versão do Netbeans para PHP https://netbeans.org/downloads/.
+
+ Intencionalmente o git foi configurado para não sincronizar alguns arquivos:
+    todos os arquivos de desenvolvimento;
+    configuração local
+    configuração do projeto no Netbeans.
+
+Sendo assim, é preciso importar um novo projeto no Netbeans. Para importar o projeto no Netbeans siga as instruções abaixo:
+
+```
+    File > New Project > (PHP Aplication with Existing Sources) > (Selecionar a pasta clonada do github (cats-lab), escolher a versão 5.5 do PHP)
+```
+
+## Quarta Parte
+
+Va no navegador e digite http://cats-lab.lan/. Será exibida uma página que representa o site (só tem o necessário para acessar o sistema). Clique em login e insira as credenciais:
 
 ```
     username: fcadmin
     password: 177598230afbg#
 ```
-Se der tudo certo você estará dentro do sistema (ainda não tem muita coisa tudo do sistema antigo está sendo refeito e as novas funcionalidades ainda estão para serem criadas)
-
 
 
         
