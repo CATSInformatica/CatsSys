@@ -68,7 +68,7 @@ Adicione ao final do arquivo a linha:
 
 
 Habilitar modo de reescrita no apache2
-digite ou cole no terminal: `sudo a2enmode rewrite`
+digite ou cole no terminal: `sudo a2enmod rewrite`
 
 Habilitar o site criado
 digite ou cole no terminal: `sudo a2ensite cats-lab.conf`
@@ -139,6 +139,7 @@ Todas as dependencias de css e Js serão instaladas. O sistema do CATS utiliza:
 Criar arquivo local.php em `./config/autoload/`
 
 ```php
+<?php
 /*
 * ./config/autoload/local.php
 *
@@ -206,7 +207,7 @@ A medida que novos objetos que representam tabelas do banco de dados vão sendo 
 
 Importar os dados para banco de dados
 
-    mysqldump --no-create-info -u root -p catssys <catssys_data.sql
+    mysql -u root -p catssys <catssys_data.sql
 
 Obs: o arquivo catssys_data.sql está junto com esse arquivo de documentação.
 

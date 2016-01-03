@@ -218,6 +218,21 @@
 
                             </ul>
                         </li>
+                        <li>
+                            <a href="#">
+                                <i class="fa fa-users"></i>
+                                <span>Documentos</span>
+                                <i class="pull-right fa fa-circle-thin"></i>
+                            </a>
+                            <ul class="treeview-menu">
+                                <li>
+                                    <a href="<?php echo $this->url('documents/student-bg-config', array('action' => 'create')); ?>"> Criar Configuração </a>
+                                </li>
+                                <li>
+                                    <a href="<?php echo $this->url('documents/student-bg-config', array('action' => 'index')); ?>"> Ver Configurações </a>
+                                </li>
+                            </ul>
+                        </li>
 
                     </ul>
                     <!-- /.navbar-collapse -->
@@ -322,7 +337,7 @@
                         //The sidebar selector
                         selector: ".control-sidebar",
                         //Enable slide over content
-                        slide: false
+                        slide: true
                     },
                     //Box Widget Plugin. Enable this plugin
                     //to allow boxes to be collapsed and/or removed

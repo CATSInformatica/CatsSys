@@ -26,6 +26,8 @@ $modules = array(
     'Recruitment',
     // School Management
     'SchoolManagement',
+    // Documents
+    'Documents',
 );
 
 if (getenv('APP_ENV') == 'development') {

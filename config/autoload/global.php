@@ -35,5 +35,6 @@ return array(
         'UMS' => 'application/layout',
         'Recruitment' => 'application/layout',
         'SchoolManagement' => 'application/layout',
+        'Documents' => 'application/layout',
     )
 );

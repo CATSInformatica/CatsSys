@@ -1,0 +1,16 @@
+
+
+    CRUD Config
+    
+    StudentCardIdConfig
+        > indexAction = Retrive
+        > createAction - 
+        > deleteAction - 
+        > editAction  - Optional
+    
+        
+    Gerar Coisa carteirinha e a coisa  carômetro
+
+    Entity  
+        > StudentBgConfig (id, phrase, author, bg_img)
+
