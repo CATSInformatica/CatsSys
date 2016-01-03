@@ -2,7 +2,8 @@
 
 # Instruções de instalação
 
-Obs: caso queira utilizar a configuração padrão para instalação, é possível utilizar o script [setup-environment.sh](https://raw.githubusercontent.com/marciodojr/catsSys/master/data/dev-helpers/setup-environment.sh) e pular diretamente para a [terceira parte](#step-three) deste arquivo
+Obs: caso queira utilizar a configuração padrão para instalação, é possível utilizar o script [setup-environment.sh](https://raw.githubusercontent.com/marciodojr/catsSys/master/data/dev-helpers/setup-environment.sh) e pular diretamente para a [terceira parte](#step-three) deste arquivo.
+
 **_Importante_**: durante a execução do script é fudamental que, na instalação do mysql o usuário e senha utilizados sejam *root* e *root*.
 
 ## Primeira Parte
