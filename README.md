@@ -123,6 +123,7 @@ Instalação do bower:
 ```
     sudo apt-get install npm
     sudo npm install -g bower
+    sudo ln -s /usr/bin/nodejs /usr/bin/node
 ```
 
 Após instalar o bower vá na pasta `cats-lab/public` e no terminal digite: `bower install`
@@ -226,6 +227,7 @@ Dar permissão de leitura e escrita nas pastas
     data/edital
     data/fonts
     data/profile
+    data/captcha
     data/session
 ```    
 
