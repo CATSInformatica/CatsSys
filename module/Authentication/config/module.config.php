@@ -106,12 +106,12 @@ return array(
         'config' => array(
             'class' => 'Zend\Session\Config\SessionConfig',
             'options' => array(
-                'name' => 'familiacats',
+                'name' => 'system',
                 'use_cookies' => true,
                 'cookie_lifetime' => 0,
                 'cookie_httponly' => true,
                 'cookie_secure' => false,
-                'remember_me_seconds' => 1800, // remember me for 12 hours
+                'remember_me_seconds' => 3600, // remember me for 24 hours
                 'gc_maxlifetime' => 10,
             )
         ),
@@ -122,5 +122,29 @@ return array(
                 'Zend\Session\Validator\HttpUserAgent',
             )
         )
-    )
+    ),
+    'navigation' => array(
+        'default' => array(
+            array(
+                'label' => 'User',
+                'uri' => '#',
+                'icon' => 'fa fa-user',
+                'order' => 2,
+                'resource' => 'Authorization\Controller\Privilege',
+                'pages' => array(
+                    array(
+                        'label' => 'Show users',
+                        'route' => 'authentication/user',
+                        'icon' => 'fa fa-users'
+                    ),
+                    array(
+                        'label' => 'Create an user',
+                        'route' => 'authentication/user',
+                        'action' => 'create',
+                        'icon' => 'fa fa-user-plus'
+                    ),
+                )
+            ),
+        ),
+    ),
 );

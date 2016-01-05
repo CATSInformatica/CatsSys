@@ -24,6 +24,7 @@ class AclDb extends ZendAcl
      * Default Role
      */
     const DEFAULT_ROLE = 'guest';
+    const ADMIN_ROLE = 'admin';
 
     /**
      * Constructor
@@ -38,7 +39,7 @@ class AclDb extends ZendAcl
         $privileges = $entityManager->getRepository('Authorization\Entity\Privilege')->findAll();
 
         $this->_addRoles($roles)
-                ->_addAclRoles($resources, $privileges);
+            ->_addAclRoles($resources, $privileges);
     }
 
     /**
@@ -94,13 +95,23 @@ class AclDb extends ZendAcl
         foreach ($privileges as $privilege) {
 
             if ($privilege->getPrivilegePermissionAllow()) {
+
                 $this->allow(
-                        $privilege->getRole()->getRoleName(), $privilege->getResource()->getResourceName(), ($privilege->getPrivilegeName() != 'all') ? $privilege->getPrivilegeName() : null
+                    $privilege->getRole()->getRoleName(),
+                    ($privilege->getResource() !== null) ? $privilege->getResource()->getResourceName() : null,
+                    $privilege->getPrivilegeName()
                 );
             } else {
-                $this->deny($privilege->getRole()->getRoleName(), $privilege->getResource()->getResourceName(), $privilege->getPrivilegeName());
+                $this->deny($privilege->getRole()->getRoleName(),
+                    ($privilege->getResource() !== null) ? $privilege->getResource()->getResourceName() : null,
+                    $privilege->getPrivilegeName()
+                );
             }
         }
+
+        // Administrator inherits nothing, but is allowed all privileges
+        $this->allow(self::ADMIN_ROLE);
+
         return $this;
     }
 

@@ -103,4 +103,58 @@ return array(
             ),
         ),
     ),
+    'navigation' => array(
+        'default' => array(
+            array(
+                'label' => 'Class',
+                'uri' => '#',
+                'icon' => 'fa fa-graduation-cap',
+                'order' => 9,
+                'pages' => array(
+                    array(
+                        'label' => 'Show classes',
+                        'route' => 'school-management/student-class',
+                        'resource' => 'SchoolManagement\Controller\StudentClass',
+                        'privilege' => 'index',
+                        'icon' => 'fa fa-graduation-cap'
+                    ),
+                    array(
+                        'label' => 'Create a class',
+                        'route' => 'school-management/student-class',
+                        'action' => 'create',
+                        'resource' => 'SchoolManagement\Controller\StudentClass',
+                        'privilege' => 'create',
+                        'icon' => 'fa fa-graduation-cap'
+                    ),
+                    array(
+                        'label' => 'Enroll',
+                        'route' => 'school-management/enrollment',
+                        'resource' => 'SchoolManagement\Controller\StudentClass',
+                        'privilege' => 'index',
+                        'icon' => 'fa fa-user-plus'
+                    ),
+                ),
+            ),
+            array(
+                'label' => 'Warning',
+                'uri' => '#',
+                'icon' => 'fa fa-exclamation-triangle',
+                'order' => 10,
+                'resource' => 'SchoolManagement\Controller\SchoolWarning',
+                'pages' => array(
+                    array(
+                        'label' => 'Show warnings',
+                        'route' => 'school-management/school-warning',
+                        'icon' => 'fa fa-exclamation-triangle'
+                    ),
+                    array(
+                        'label' => 'Create a warning',
+                        'route' => 'school-management/school-warning',
+                        'action' => 'create',
+                        'icon' => 'fa fa-exclamation-triangle'
+                    ),
+                ),
+            ),
+        ),
+    ),
 );

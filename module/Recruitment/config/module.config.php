@@ -115,4 +115,56 @@ return array(
             ),
         ),
     ),
+    'navigation' => array(
+        'default' => array(
+            array(
+                'label' => 'Recruitment',
+                'uri' => '#',
+                'icon' => 'fa fa-users',
+                'order' => 6,
+                'resource' => 'Recruitment\Controller\Recruitment',
+                'pages' => array(
+                    array(
+                        'label' => 'Show recruitments',
+                        'route' => 'recruitment/recruitment',
+                        'resource' => 'Recruitment\Controller\Recruitment',
+                        'privilege' => 'index',
+                        'icon' => 'fa fa-users'
+                    ),
+                    array(
+                        'label' => 'Create a recruitment',
+                        'route' => 'recruitment/recruitment',
+                        'action' => 'create',
+                        'resource' => 'Recruitment\Controller\Recruitment',
+                        'privilege' => 'create',
+                        'icon' => 'fa fa-user-plus'
+                    ),
+                ),
+            ),
+            array(
+                'label' => 'Registration',
+                'uri' => '#',
+                'icon' => 'fa fa-users',
+                'order' => 7,
+                'pages' => array(
+                    array(
+                        'label' => 'Show registrations',
+                        'route' => 'recruitment/registration',
+                        'resource' => 'Recruitment\Controller\Registration',
+                        'privilege' => 'index',
+                        'icon' => 'fa fa-users'
+                    ),
+                    array(
+                        'label' => 'Student registration form',
+                        'route' => 'recruitment/registration',
+                        'action' => 'studentRegistration',
+                        'resource' => 'Recruitment\Controller\Registration',
+                        'privilege' => 'studentRegistration',
+                        'icon' => 'fa fa-user-plus',
+                        'target' => '_blank',
+                    ),
+                ),
+            ),
+        ),
+    ),
 );

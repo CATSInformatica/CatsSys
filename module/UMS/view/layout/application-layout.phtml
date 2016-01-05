@@ -6,32 +6,32 @@
         <?php echo $this->headTitle('CatsSys'); ?>
         <?php
         echo $this->headMeta()
-                ->appendName('viewport', 'width=device-width, initial-scale=1.0')
-                ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
 
         <!-- Le styles -->
         <?php
         echo $this->headLink(array(
-                    'rel' => 'shortcut icon',
-                    'type' => 'image/vnd.microsoft.icon',
-                    'href' => $this->basePath() . '/img/favicon.ico'))
-                // Bootstrap
-                ->appendStylesheet($this->basePath('vendor/AdminLTE/bootstrap/css/bootstrap.min.css'))
-                // DataTable
-                ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.css'))
-                // Datepicker
-                ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/datepicker/datepicker3.css'))
-                // Font Awesome
-                ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'))
-                // Ionicons
-                ->appendStylesheet($this->basePath('vendor/Ionicons/css/ionicons.min.css'))
-                // Theme style
-                ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/AdminLTE.min.css'))
-                // AdminLTE Skins
-                ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/skins/skin-blue.min.css'))
-                // DropzoneJS
-                ->appendStylesheet($this->basePath('vendor/dropzone/dist/min/dropzone.min.css'));
+                'rel' => 'shortcut icon',
+                'type' => 'image/vnd.microsoft.icon',
+                'href' => $this->basePath() . '/img/favicon.ico'))
+            // Bootstrap
+            ->appendStylesheet($this->basePath('vendor/AdminLTE/bootstrap/css/bootstrap.min.css'))
+            // DataTable
+            ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.css'))
+            // Datepicker
+            ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/datepicker/datepicker3.css'))
+            // Font Awesome
+            ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'))
+            // Ionicons
+            ->appendStylesheet($this->basePath('vendor/Ionicons/css/ionicons.min.css'))
+            // Theme style
+            ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/AdminLTE.min.css'))
+            // AdminLTE Skins
+            ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/skins/skin-blue.min.css'))
+            // DropzoneJS
+            ->appendStylesheet($this->basePath('vendor/dropzone/dist/min/dropzone.min.css'));
         ?>
 
     </head>
@@ -80,7 +80,9 @@
 
                                     <!-- Menu Body -->
                                     <li class="user-body">
-                                        <?php foreach ($userInfo['allRoles'] as $userRole): ?>
+                                        <?php
+                                        foreach ($userInfo['allRoles'] as $userRole):
+                                            ?>
                                             <?php
                                             $userRole = ucwords($userRole);
                                             if ($userRole != $userActiveRole):
@@ -98,7 +100,9 @@
                                             <a href="#" class="btn btn-default btn-flat">Profile</a>
                                         </div>
                                         <div class="pull-right">
-                                            <a href="<?php echo $this->url('authentication/login', array('action' => 'logout')); ?>"  class="btn btn-default btn-flat">
+                                            <a href="<?php
+                                            echo $this->url('authentication/login', array('action' => 'logout'));
+                                            ?>"  class="btn btn-default btn-flat">
                                                 <i class="fa fa-fw fa-power-off"></i>Sair </a>
                                         </div>
                                     </li>
@@ -119,123 +123,16 @@
                     <!-- sidebar menu: : style can be found in sidebar.less -->
 
                     <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-                    <ul class="sidebar-menu">
-                        <li>
-                            <a href="<?php echo $this->url('ums/default', array('action' => 'index')) ?>"><i class="fa fa-fw fa-dashboard"></i> UMS</a>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="ion-ios-unlocked-outline"></i>
-                                <span>Autenticação</span>
-                                <i class="pull-right fa fa-circle-thin"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <a href="<?php echo $this->url('authentication/user', array('action' => 'index')) ?>">Show All Users</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('authentication/user', array('action' => 'create')) ?>">Create New User</a>
-                                </li>
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="ion-ios-unlocked-outline"></i>
-                                <span>Autorização</span>
-                                <i class="pull-right fa fa-circle-thin"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <a href="<?php echo $this->url('authorization/role', array('action' => 'index')) ?>">Ver Papéis</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('authorization/role', array('action' => 'create')) ?>">Criar Papel</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('authorization/role', array('action' => 'add-role-to-user')) ?>">Associar Papel</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('authorization/resource', array('action' => 'index')) ?>">Ver Recursos</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('authorization/resource', array('action' => 'create')) ?>">Criar Recurso</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('authorization/privilege', array('action' => 'index')) ?>">Ver Privilégios</a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('authorization/privilege', array('action' => 'create')) ?>">Criar Privilégio</a>
-                                </li>
-                            </ul>
-                        </li>
 
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-users"></i>
-                                <span>Processo Seletivo</span>
-                                <i class="pull-right fa fa-circle-thin"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <a href="<?php echo $this->url('recruitment/recruitment', array('action' => 'index')); ?>"> Ver Processos Seletivos </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('recruitment/recruitment', array('action' => 'create')); ?>"> Criar Processo Seletivo </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('recruitment/registration', array('action' => 'studentRegistration')); ?>"> Formulário de Inscrição (Alunos) </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('recruitment/registration', array('action' => 'showStudentRegistrations')); ?>"> Inscrições (Alunos) </a>
-                                </li>
-                            </ul>
-                        </li>
+                    <?php
+                    echo $this->
+                        navigation('navigation')
+                        ->menu()
+                        ->setUlClass('sidebar-menu')
+                        ->setPartial('menu/template');
+                    ?>
 
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-users"></i>
-                                <span>Gestão Escolar</span>
-                                <i class="pull-right fa fa-circle-thin"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <a href="<?php echo $this->url('school-management/student-class', array('action' => 'create')); ?>"> Criar Turma </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('school-management/student-class', array('action' => 'index')); ?>"> Ver Turmas </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('school-management/enrollment', array('action' => 'index')); ?>"> Matricular Alunos </a>
-                                </li>
-
-                                <li>
-                                    <a href="<?php echo $this->url('school-management/school-warning', array('action' => 'create')); ?>"> Criar Advertência </a>
-                                </li>
-
-                                <li>
-                                    <a href="<?php echo $this->url('school-management/school-warning', array('action' => 'index')); ?>"> Ver Advertências </a>
-                                </li>
-
-                            </ul>
-                        </li>
-                        <li>
-                            <a href="#">
-                                <i class="fa fa-users"></i>
-                                <span>Documentos</span>
-                                <i class="pull-right fa fa-circle-thin"></i>
-                            </a>
-                            <ul class="treeview-menu">
-                                <li>
-                                    <a href="<?php echo $this->url('documents/student-bg-config', array('action' => 'create')); ?>"> Criar Configuração </a>
-                                </li>
-                                <li>
-                                    <a href="<?php echo $this->url('documents/student-bg-config', array('action' => 'index')); ?>"> Ver Configurações </a>
-                                </li>
-                            </ul>
-                        </li>
-
-                    </ul>
-                    <!-- /.navbar-collapse -->
+                    <!-- /.Sidebar Menu Items -->
 
                 </section>
                 <!-- /.sidebar -->
@@ -399,25 +296,25 @@
 
             <?php
             echo $this->inlineScript()
-                    //DropzoneJS
-                    ->prependFile($this->basePath('vendor/dropzone/dist/min/dropzone.min.js'))
-                    // BootboxJS
-                    ->prependFile($this->basePath('vendor/bootbox.js/bootbox.js'))
-                    // AdminLTE App
-                    ->prependFile($this->basePath('vendor/AdminLTE/dist/js/app.min.js'))
-                    // SlimScroll Plugin
-                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js'))
-                    //DataTable
-                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js'))
-                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/jquery.dataTables.min.js'))
-                    // Datepicker
-                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/locales/bootstrap-datepicker.pt-BR.js'))
-                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/bootstrap-datepicker.js'))
-                    ->prependFile($this->basePath('vendor/moment/min/moment.min.js'))
-                    // Bootstrap 3.3.5
-                    ->prependFile($this->basePath('vendor/AdminLTE/bootstrap/js/bootstrap.min.js'))
-                    // jQuery 2.1.4
-                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
+                //DropzoneJS
+                ->prependFile($this->basePath('vendor/dropzone/dist/min/dropzone.min.js'))
+                // BootboxJS
+                ->prependFile($this->basePath('vendor/bootbox.js/bootbox.js'))
+                // AdminLTE App
+                ->prependFile($this->basePath('vendor/AdminLTE/dist/js/app.min.js'))
+                // SlimScroll Plugin
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js'))
+                //DataTable
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js'))
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/jquery.dataTables.min.js'))
+                // Datepicker
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/locales/bootstrap-datepicker.pt-BR.js'))
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/bootstrap-datepicker.js'))
+                ->prependFile($this->basePath('vendor/moment/min/moment.min.js'))
+                // Bootstrap 3.3.5
+                ->prependFile($this->basePath('vendor/AdminLTE/bootstrap/js/bootstrap.min.js'))
+                // jQuery 2.1.4
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
             ?>
 
             <style>
@@ -456,7 +353,7 @@
                  * @todo Transformar os seletores hardcoded (i.e. '.cats-toolbar', ...) em parâmetros globais
                  * 
                  */
-                var toolbarConfig = (function (elements) {
+                var toolbarConfig = (function (config) {
 
                     var fnTypes = {};
 
@@ -473,6 +370,7 @@
                             }
                         });
                     };
+
                     fnTypes.selectedHttpClick = function (toolbarItem) {
                         var selectedResult = getSelectedItemInfo(toolbarItem);
                         if (selectedResult !== null) {
@@ -481,6 +379,7 @@
                             bootbox.alert('Nenhuma item (ex: linha de uma tabela) foi escolhido.');
                         }
                     };
+
                     fnTypes.selectedAjaxClick = function (toolbarItem) {
 
                         bootbox.confirm('Tem certeza que deseja executar ' +
@@ -530,6 +429,18 @@
                         });
                     };
 
+                    fnTypes.httpClick = function (toolbarItem) {
+                        bootbox.confirm('Tem certeza que deseja executar ' +
+                                'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
+                            if (result) {
+                                var selectedResult = getItemInfo(toolbarItem);
+                                window.open(selectedResult.url, selectedResult.target);
+                            } else {
+                                bootbox.alert('Ação abortada.');
+                            }
+                        });
+                    };
+
                     getSelectedItemInfo = function (toolbarItem) {
                         if ($('.cats-selected-row').length > 0) {
                             var item = toolbarItem.find('a');
@@ -556,12 +467,19 @@
                             target: (typeof target !== 'undefined' ? target : '_self')
                         };
                     };
-
                     // toolbar actions
 
                     return {
                         init: function () {
                             initClick();
+                        },
+                        closeToolbar: function () {
+                            $('.control-sidebar').removeClass('control-sidebar-open');
+                        },
+                        openToolbar: function () {
+                            if (!$('.control-sidebar').hasClass('control-sidebar-open')) {
+                                $('.control-sidebar').addClass('control-sidebar-open');
+                            }
                         }
                     };
                 }());
@@ -626,11 +544,9 @@
 
                         $(this).find('td').toggleClass('cats-selected-bg');
                         if ($(this).hasClass('cats-selected-row')) {
-                            if (!$('body').hasClass('control-sidebar-open')) {
-                                $('body').addClass('control-sidebar-open');
-                            }
+                            toolbarConfig.openToolbar();
                         } else {
-                            $('body').removeClass('control-sidebar-open');
+                            toolbarConfig.closeToolbar();
                         }
                     });
                     $('.btn-file :file').on('fileselect', function (event, numFiles, label) {

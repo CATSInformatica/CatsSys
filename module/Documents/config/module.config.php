@@ -67,4 +67,32 @@ return array(
             ),
         ),
     ),
+    'navigation' => array(
+        'default' => array(
+            array(
+                'label' => 'Documents',
+                'uri' => '#',
+                'icon' => 'fa fa-files-o',
+                'order' => 8,
+                'resource' => 'Documents\Controller\StudentBgConfig',
+                'pages' => array(
+                    array(
+                        'label' => 'Show background configs',
+                        'route' => 'documents/student-bg-config',
+                        'resource' => 'Documents\Controller\StudentBgConfig',
+                        'privilege' => 'index',
+                        'icon' => 'fa fa-files-o'
+                    ),
+                    array(
+                        'label' => 'Create a background config',
+                        'route' => 'documents/student-bg-config',
+                        'action' => 'create',
+                        'resource' => 'Documents\Controller\StudentBgConfig',
+                        'privilege' => 'create',
+                        'icon' => 'fa fa-file-o'
+                    ),
+                ),
+            ),
+        ),
+    ),
 );
