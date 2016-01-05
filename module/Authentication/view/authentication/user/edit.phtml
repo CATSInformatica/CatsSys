@@ -1,13 +1,15 @@
-<div class='container'>
+<section class="content">
 
-    <div class="col-xs-6 col-md-4">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
         <?php
         $form = $this->form;
 
-        $form->setAttribute('action', $this->url('authentication/user', array(
-                    'controller' => 'user',
-                    'action' => 'edit',
-                    'id' => $this->id,
+        $form->setAttribute('action',
+            $this->url('authentication/user',
+                array(
+                'controller' => 'user',
+                'action' => 'edit',
+                'id' => $this->id,
         )));
 
         $form->prepare();
@@ -17,12 +19,12 @@
             <label for='username'>Nome de usuário</label>
             <?php
             echo $this->formRow($form->get('user_name')
-                            ->setAttributes(
-                                    array(
-                                        'class' => 'form-control',
-                                        'disabled' => 'disabled',
-                                    )
-                            )
+                    ->setAttributes(
+                        array(
+                            'class' => 'form-control',
+                            'disabled' => 'disabled',
+                        )
+                    )
             );
             ?>
         </div>
@@ -31,7 +33,7 @@
             <label for='username'>Senha</label>
             <?php
             echo $this->formRow($form->get('user_password')
-                            ->setAttribute('class', 'form-control')
+                    ->setAttribute('class', 'form-control')
             );
             ?>
         </div>
@@ -40,14 +42,13 @@
             <label for='password'>Confirmação de senha</label>
             <?php
             echo $this->formRow($form->get('user_password_confirm')
-                            ->setAttribute('class', 'form-control')
+                    ->setAttribute('class', 'form-control')
             );
             ?>
         </div>
-        <?php
-        echo $this->formSubmit($form->get('submit')
-                        ->setAttribute('class', 'btn btn-primary btn-lg'));
-        ?>
+        <div class='form-group'>
+            <?php echo $this->formRow($form->get('submit')); ?>
+        </div>
         <?php echo $this->form()->closeTag(); ?>
     </div>
-</div>
+</section>

@@ -19,7 +19,7 @@ class UserForm extends Form
 {
 
     public function __construct($name = null)
-    {        
+    {
         parent::__construct('user');
         $this->setAttribute('method', 'post');
         $this->add(array(
@@ -35,14 +35,14 @@ class UserForm extends Form
                 'type' => 'password',
             ),
         ));
-        
+
         $this->add(array(
             'name' => 'user_password_confirm',
             'attributes' => array(
                 'type' => 'password',
             ),
         ));
-        
+
 //        $this->add(array(
 //            'name' => 'user_email',
 //            'attributes' => array(
@@ -61,8 +61,9 @@ class UserForm extends Form
             'name' => 'submit',
             'attributes' => array(
                 'type' => 'submit',
-                'value' => 'Go',
+                'value' => 'Salvar',
                 'id' => 'submitbutton',
+                'class' => 'btn btn-primary btn-block'
             ),
         ));
     }

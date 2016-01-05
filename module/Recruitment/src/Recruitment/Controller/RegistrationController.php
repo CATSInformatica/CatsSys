@@ -54,21 +54,6 @@ class RegistrationController extends AbstractActionController
                 array('recruitmentType' => Recruitment::STUDENT_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
             );
 
-
-            $this->layout()->toolbar = array(
-                'menu' => array(
-                    array(
-                        'url' => '/recruitment/registration/studentProfile/$id',
-                        'title' => 'Perfil do Candidato',
-                        'description' => 'Analizar Perfil do Candidato',
-                        'class' => 'fa fa-file-text-o bg-blue',
-                        'target' => '_blank',
-                        'fntype' => 'selectedHttpClick',
-                    ),
-                ),
-            );
-
-
             return new ViewModel(array(
                 'message' => null,
                 'recruitments' => $recruitments,
@@ -273,37 +258,6 @@ class RegistrationController extends AbstractActionController
                 $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
                     'registrationId' => $id
                 ));
-
-
-                $this->layout()->toolbar = array(
-                    'menu' => array(
-                        array(
-                            'url' => '/recruitment/registration/confirmation/' . $id,
-                            'id' => 'fn-confirmation',
-                            'title' => 'Confirmar',
-                            'description' => 'Confirmar/Desconfirmar a inscrição do candidato.',
-                            'class' => 'fa fa-check bg-red',
-                            'fntype' => 'ajaxClick',
-                        ),
-                        array(
-                            'url' => '/recruitment/registration/convocation/' . $id,
-                            'id' => 'fn-convocation',
-                            'title' => 'Convocar',
-                            'description' => 'Convocar/Desconvocar o candidato para a pré-entrevista.',
-                            'class' => 'fa fa-users bg-blue fn-ajaxClick',
-                            'fntype' => 'ajaxClick',
-                        ),
-                        array(
-                            'url' => '/recruitment/registration/acceptance/' . $id,
-                            'title' => 'Aprovar Candidato',
-                            'id' => 'fn-acceptance',
-                            'description' => 'Aprova/remove aprovação do candidato. A aprovação é condição suficiente para a matrícula.',
-                            'class' => 'fa fa-graduation-cap bg-yellow',
-                            'fntype' => 'ajaxClick',
-                        ),
-                    ),
-                );
-
 
                 return new ViewModel(array(
                     'message' => '',

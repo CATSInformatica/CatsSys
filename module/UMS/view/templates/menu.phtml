@@ -16,7 +16,7 @@ $container = $this->container;
 
         <?php if (!$hasChildren): ?>
             <!-- the page doesn't have any child -->
-            <li>
+            <li <?php echo ($page->isActive() ? 'class="active"' : ''); ?> >
                 <a href="<?php echo $page->getHref() ?>">
 
                     <?php if ($page->get("icon") !== ""): ?>
@@ -36,14 +36,18 @@ $container = $this->container;
             <?php
             //check if access is allowed for at least one item who isn't a separator
             $access = false;
+            $active = false;
             foreach ($page->getPages() as $child) {
                 if ($child->get("separator") !== true && $this->navigation()->accept($child)) {
                     $access = true;
+                    if (!$active && $child->isActive()) {
+                        $active = true;
+                    }
                 }
             }
             ?>
             <?php if ($access): ?>
-                <li class="treeview">
+                <li class="treeview <?php echo ($active ? 'active' : ''); ?> ">
                     <a href="#">
                         <?php if ($page->get("icon") !== ""): ?>
                             <i class="<?php echo $page->get("icon"); ?>"></i>
@@ -58,7 +62,7 @@ $container = $this->container;
                         <i class="pull-right fa fa-circle-thin"></i>
                     </a>
 
-                    <ul class="treeview-menu">
+                    <ul class="treeview-menu <?php echo ($active ? 'menu-open' : ''); ?>">
                         <?php foreach ($page->getPages() as $child): ?>
                             <?php
                             if (!$this->navigation()->accept($child)) {
@@ -72,7 +76,7 @@ $container = $this->container;
                                     continue;
                                 endif;
                                 ?>
-                            <li>
+                            <li <?php echo ($child->isActive() ? 'class="active"' : ''); ?>>
                                 <a href="<?php echo $child->getHref() ?>"
                                 <?php if ($child->getTarget() != ""): ?>
                                        target="<?php echo $child->getTarget(); ?>"

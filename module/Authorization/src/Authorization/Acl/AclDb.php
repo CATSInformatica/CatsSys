@@ -38,8 +38,8 @@ class AclDb extends ZendAcl
         $resources = $entityManager->getRepository('Authorization\Entity\Resource')->findAll();
         $privileges = $entityManager->getRepository('Authorization\Entity\Privilege')->findAll();
 
-        $this->_addRoles($roles)
-            ->_addAclRoles($resources, $privileges);
+        $this->addDbRoles($roles)
+            ->addAclDbRules($resources, $privileges);
     }
 
     /**
@@ -52,7 +52,7 @@ class AclDb extends ZendAcl
      * @param array $roles
      * @return Authorization\Acl\AclDb
      */
-    protected function _addRoles($roles)
+    protected function addDbRoles($roles)
     {
         // para cada role verifique se ela já foi adicionada ao sistema de permissão, se não foi tente adicioná-la
         foreach ($roles as $role) {
@@ -65,7 +65,7 @@ class AclDb extends ZendAcl
                     $parentName = $parent->getRoleName();
                     // se uma dos papéis herdados não foi adicionado no sistema de permissão tenta adicioná-lo
                     if (!$this->hasRole($parentName)) {
-                        $this->_addRoles([$parent]);
+                        $this->addDbRoles([$parent]);
                     }
                     $parentNames[] = $parentName;
                 }
@@ -84,7 +84,7 @@ class AclDb extends ZendAcl
      * @return User\Acl
      * @throws \Exception
      */
-    protected function _addAclRoles($resources, $privileges)
+    protected function addAclDbRules($resources, $privileges)
     {
         foreach ($resources as $resource) {
             if (!$this->hasResource($resource->getResourceName())) {

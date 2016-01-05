@@ -22,12 +22,12 @@ return array(
                     'enrollment' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/enrollment[/:action[/:sid[/:cid]]]',
+                            'route' => '/enrollment[/:action[/:id1[/:id2]]]',
                             'constraints' => array(
                                 'controller' => 'SchoolManagement\Controller\Enrollment',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'sid' => '[0-9]+',
-                                'cid' => '[0-9]+',
+                                'id1' => '[0-9]+',
+                                'id2' => '[0-9]+',
                             ),
                             'defaults' => array(
                                 'controller' => 'SchoolManagement\Controller\Enrollment',
@@ -114,9 +114,19 @@ return array(
                     array(
                         'label' => 'Show classes',
                         'route' => 'school-management/student-class',
+                        'action' => 'index',
                         'resource' => 'SchoolManagement\Controller\StudentClass',
                         'privilege' => 'index',
-                        'icon' => 'fa fa-graduation-cap'
+                        'icon' => 'fa fa-graduation-cap',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/school-management/student-class/delete/$id',
+                                'title' => 'Remover',
+                                'description' => 'Permite remover uma turma que ainda não possua alunos',
+                                'class' => 'fa fa-trash-o bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
+                        ),
                     ),
                     array(
                         'label' => 'Create a class',
@@ -129,9 +139,48 @@ return array(
                     array(
                         'label' => 'Enroll',
                         'route' => 'school-management/enrollment',
-                        'resource' => 'SchoolManagement\Controller\StudentClass',
+                        'action' => 'index',
+                        'resource' => 'SchoolManagement\Controller\Enrollment',
                         'privilege' => 'index',
-                        'icon' => 'fa fa-user-plus'
+                        'icon' => 'fa fa-users',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/school-management/enrollment/studentProfile/$id',
+                                'title' => 'Perfil do Candidato',
+                                'description' => 'Analizar Perfil do Candidato',
+                                'class' => 'fa fa-file-text-o bg-blue',
+                                'target' => '_blank',
+                                'fntype' => 'selectedHttpClick',
+                            ),
+                        ),
+                        'pages' => array(
+                            array(
+                                'label' => 'Student profile',
+                                'route' => 'school-management/enrollment',
+                                'action' => 'studentProfile',
+                                'resource' => 'SchoolManagement\Controller\Enrollment',
+                                'privilege' => 'studentProfile',
+                                'icon' => 'fa fa-user',
+                                'toolbar' => array(
+                                    array(
+                                        'url' => '/school-management/enrollment/enroll/$id',
+                                        'id' => 'fn-enroll',
+                                        'title' => 'Matricular',
+                                        'description' => 'Matricula o candidato em uma turma.',
+                                        'class' => 'fa fa-check bg-blue',
+                                        'fntype' => 'selectedAjaxUrlClick',
+                                    ),
+                                    array(
+                                        'url' => '/school-management/enrollment/unenroll/$id',
+                                        'id' => 'fn-unenroll',
+                                        'title' => 'Desmatricular',
+                                        'description' => 'Remove a matrícula do candidato na turma selecionada.',
+                                        'class' => 'fa fa-close bg-red',
+                                        'fntype' => 'selectedAjaxUrlClick',
+                                    ),
+                                ),
+                            ),
+                        ),
                     ),
                 ),
             ),
@@ -145,7 +194,17 @@ return array(
                     array(
                         'label' => 'Show warnings',
                         'route' => 'school-management/school-warning',
-                        'icon' => 'fa fa-exclamation-triangle'
+                        'action' => 'index',
+                        'icon' => 'fa fa-exclamation-triangle',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/school-management/school-warning/delete/$id',
+                                'title' => 'Remover',
+                                'description' => 'Permite remover uma tipo de advertência.',
+                                'class' => 'fa fa-trash-o bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
+                        ),
                     ),
                     array(
                         'label' => 'Create a warning',

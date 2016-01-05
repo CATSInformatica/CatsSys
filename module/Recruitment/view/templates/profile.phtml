@@ -45,11 +45,11 @@ $addresses = $person->getAddresses();
 
                         <?php
                         echo ($person->getPersonGender() == \Recruitment\Entity\Person::GENDER_M) ?
-                                'Candidato' : 'Candidata';
+                            'Candidato' : 'Candidata';
 
                         echo ($recruitment->getRecruitmentType() ==
                         \Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE) ?
-                                '<br> (Processo Seletivo de Alunos)' : ' Processo Seletivo de Voluntários';
+                            '<br> (Processo Seletivo de Alunos)' : ' Processo Seletivo de Voluntários';
                         ?>
 
                     <?php endif; ?>
@@ -131,8 +131,8 @@ $addresses = $person->getAddresses();
                             echo $addr->getAddressStreet() . ', ' .
                             $addr->getAddressNumber() . ' ' .
                             ($addr->getAddressComplement() == null ?
-                                    '' :
-                                    ('(' . $addr->getAddressComplement() . ') ')) . '- ' .
+                                '' :
+                                ('(' . $addr->getAddressComplement() . ') ')) . '- ' .
                             $addr->getAddressNeighborhood() . ' - ' .
                             $addr->getAddressCity() . ' - ' .
                             $addr->getAddressState() . ', CEP: ' .
@@ -262,28 +262,37 @@ $addresses = $person->getAddresses();
                                 <!-- /.timeline item -->
 
                             <?php endif; ?>
-                            <?php foreach ($config['tabs']['recruitment-timeline'] as $timelineItem): ?>
+                            <?php if (is_array($config['tabs']['recruitment-timeline'])): ?>
+                                <?php
+                                foreach ($config['tabs']['recruitment-timeline'] as $timelineItem):
+                                    ?>
 
-                                <!-- timeline time label -->
-                                <li class="time-label">
-                                    <span class="<?php echo $timelineItem['color']; ?>">
-                                        <?php echo $timelineItem['title']; ?>
-                                    </span>
-                                </li>
-                                <!-- /.timeline-label -->
-                                <!-- timeline item -->
-                                <li>
-                                    <i class="<?php echo $timelineItem['icon'] . ' ' . $timelineItem['color']; ?>"></i>
-                                    <div class="timeline-item">
-                                        <span class="time"><i class="fa fa-clock-o"></i> 
-                                            <?php echo $timelineItem['time']; ?>
+                                    <!-- timeline time label -->
+                                    <li class="time-label">
+                                        <span class="<?php echo $timelineItem['color']; ?>">
+                                            <?php echo $timelineItem['title']; ?>
                                         </span>
-                                        <h3 class="timeline-header"><?php echo $timelineItem['content-header']; ?></h3>
-                                    </div>
-                                </li>
-                                <!-- /.timeline item -->
+                                    </li>
+                                    <!-- /.timeline-label -->
+                                    <!-- timeline item -->
+                                    <li>
+                                        <i class="<?php
+                                        echo $timelineItem['icon'] . ' ' .
+                                        $timelineItem['color'];
+                                        ?>"></i>
+                                        <div class="timeline-item">
+                                            <span class="time"><i class="fa fa-clock-o"></i> 
+            <?php echo $timelineItem['time']; ?>
+                                            </span>
+                                            <h3 class="timeline-header">
+            <?php echo $timelineItem['content-header']; ?>
+                                            </h3>
+                                        </div>
+                                    </li>
+                                    <!-- /.timeline item -->
 
-                            <?php endforeach; ?>
+                                <?php endforeach; ?>
+    <?php endif; ?>
 
 
                             <!-- END timeline item -->
@@ -294,7 +303,7 @@ $addresses = $person->getAddresses();
                     </div>
 
                 <?php endif; ?>
-                <?php if (isset($config['tabs']['documentation'])): ?>
+<?php if (isset($config['tabs']['documentation'])): ?>
 
                     <div class="tab-pane" id="documentation">
                         <div class="row">
@@ -343,7 +352,7 @@ $addresses = $person->getAddresses();
                     <!-- /.tab-pane -->
 
                 <?php endif; ?>
-                <?php if (isset($config['tabs']['score'])): ?>
+<?php if (isset($config['tabs']['score'])): ?>
 
                     <div class="tab-pane" id="score">
                         <p> Números, números números, ... </p>
@@ -351,14 +360,14 @@ $addresses = $person->getAddresses();
                     <!-- /.tab-pane -->
 
                 <?php endif; ?>
-                <?php if (isset($config['tabs']['info'])): ?>
+<?php if (isset($config['tabs']['info'])): ?>
 
                     <div class="tab-pane" id="info">
                         <p> Dados de inscrição, pre-entrevista, entrevista, ... </p>
                     </div>
                     <!-- /.tab-pane -->
 
-                <?php endif; ?>
+<?php endif; ?>
 
             </div>
             <!-- /.tab-content -->

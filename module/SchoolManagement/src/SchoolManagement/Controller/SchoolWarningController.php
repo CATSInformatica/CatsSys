@@ -46,19 +46,6 @@ class SchoolWarningController extends AbstractActionController
             $warningTypes = null;
         }
 
-
-        $this->layout()->toolbar = array(
-            'menu' => array(
-                array(
-                    'url' => '/school-management/school-warning/delete/$id',
-                    'title' => 'Remover',
-                    'description' => 'Permite remover uma tipo de advertência.',
-                    'class' => 'fa fa-trash-o bg-red',
-                    'fntype' => 'selectedAjaxClick',
-                ),
-            ),
-        );
-
         return new ViewModel(array(
             'message' => $message,
             'warningTypes' => $warningTypes,

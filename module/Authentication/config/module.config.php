@@ -135,6 +135,7 @@ return array(
                     array(
                         'label' => 'Show users',
                         'route' => 'authentication/user',
+                        'action' => 'index',
                         'icon' => 'fa fa-users'
                     ),
                     array(

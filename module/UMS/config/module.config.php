@@ -42,6 +42,8 @@ return array(
         'template_map' => array(
             'application/layout' => __DIR__ . '/../view/layout/application-layout.phtml',
             'menu/template' => __DIR__ . '/../view/templates/menu.phtml',
+            'header/template' => __DIR__ . '/../view/templates/header.phtml',
+            'toolbar/template' => __DIR__ . '/../view/templates/toolbar.phtml',
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
@@ -52,7 +54,7 @@ return array(
             'userInfo' => 'UMS\View\Helper\UserInfo',
         ),
         'factories' => array(
-            'navigation' => 'UMS\Factory\DefaultNavigationViewFactory',
+            'navigation' => 'UMS\Factory\NavigationViewFactory',
         ),
     ),
     // menu with navigation

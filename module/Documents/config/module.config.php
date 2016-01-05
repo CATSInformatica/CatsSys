@@ -79,6 +79,7 @@ return array(
                     array(
                         'label' => 'Show background configs',
                         'route' => 'documents/student-bg-config',
+                        'action' => 'index',
                         'resource' => 'Documents\Controller\StudentBgConfig',
                         'privilege' => 'index',
                         'icon' => 'fa fa-files-o'

@@ -49,19 +49,6 @@ class StudentClassController extends AbstractActionController
             $classes = null;
         }
 
-
-        $this->layout()->toolbar = array(
-            'menu' => array(
-                array(
-                    'url' => '/school-management/student-class/delete/$id',
-                    'title' => 'Remover',
-                    'description' => 'Permite remover uma turma que ainda não possua alunos',
-                    'class' => 'fa fa-trash-o bg-red',
-                    'fntype' => 'selectedAjaxClick',
-                ),
-            ),
-        );
-
         return new ViewModel(array(
             'message' => $message,
             'classes' => $classes,

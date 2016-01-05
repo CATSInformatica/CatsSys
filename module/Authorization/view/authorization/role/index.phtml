@@ -1,9 +1,4 @@
-
-
-<div class="container">
-    <h1>Role index</h1>
-    <hr>
-
+<section class="content">
     <?php if (!empty($this->error)): ?>
         <?php echo $this->error; ?>
     <?php else: ?>
@@ -27,27 +22,31 @@
                             <td class="text-center"><?php echo $this->escapeHtml($role->getRoleName()); ?></td>
                             <td class="text-center">
                                 <div class="btn-toolbar" role="toolbar" aria-label="...">
-                                    <?php foreach ($role->getParents()->toArray() as $parentRole): ?>
+                                    <?php foreach ($role->getParents()->toArray() as
+                                            $parentRole): ?>
                                         <button type="button" class="btn btn-info"><?php echo $this->escapeHtml($parentRole->getRoleName()); ?></button>
-                                    <?php endforeach; ?>
+        <?php endforeach; ?>
                                 </div>
                             </td>
                             <td class="text-center">
                                 <div class="btn-toolbar" role="toolbar" aria-label="...">
-                                    <?php foreach ($role->getChildren()->toArray() as $childRole): ?>
+                                    <?php foreach ($role->getChildren()->toArray() as
+                                            $childRole): ?>
                                         <button type="button" class="btn btn-info"><?php echo $this->escapeHtml($childRole->getRoleName()); ?></button>
-                                    <?php endforeach; ?>
+        <?php endforeach; ?>
                                 </div>
                             </td>
-                            <td class="text-center"><a class="btn btn-danger"  href='<?php echo $this->url('authorization/role', array('controller' => 'role', 'action' => 'edit', 'id' => $role->getRoleId())); ?>'>Edit</a></td>
-                            <td class="text-center"><a class="btn btn-danger" href='<?php echo $this->url('authorization/role', array('action' => 'delete', 'id' => $role->getRoleId())); ?>'>Delete</a></td>
+                            <td class="text-center"><a class="btn btn-danger"  href='<?php echo $this->url('authorization/role',
+            array('controller' => 'role', 'action' => 'edit', 'id' => $role->getRoleId())); ?>'>Edit</a></td>
+                            <td class="text-center"><a class="btn btn-danger" href='<?php echo $this->url('authorization/role',
+                    array('action' => 'delete', 'id' => $role->getRoleId())); ?>'>Delete</a></td>
                         </tr>
-                    <?php endforeach; ?>
+        <?php endforeach; ?>
                 </tbody>
             </table>
         </div>
-    <?php endif; ?>
-</div>
+<?php endif; ?>
+</section>
 
 
 

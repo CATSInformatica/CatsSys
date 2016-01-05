@@ -149,6 +149,7 @@ return array(
                     array(
                         'label' => 'Show roles',
                         'route' => 'authorization/role',
+                        'action' => 'index',
                         'icon' => 'fa fa-files-o'
                     ),
                     array(
@@ -175,6 +176,7 @@ return array(
                     array(
                         'label' => 'Show resources',
                         'route' => 'authorization/resource',
+                        'action' => 'index',
                         'icon' => 'fa fa-retweet'
                     ),
                     array(
@@ -195,6 +197,7 @@ return array(
                     array(
                         'label' => 'Show privileges',
                         'route' => 'authorization/privilege',
+                        'action' => 'index',
                         'icon' => 'fa fa-bullseye'
                     ),
                     array(

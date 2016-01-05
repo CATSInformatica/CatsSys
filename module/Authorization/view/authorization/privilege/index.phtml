@@ -1,8 +1,4 @@
-
-<div class="container">
-    <h1>Privilege index</h1>
-    <hr>
-
+<section class="content">
     <?php echo $this->message; ?>
 
     <div class="table-responsive">
@@ -25,11 +21,12 @@
                         <td class="text-center"> <?php echo $this->escapeHtml($privilege->getPrivilegePermissionAllow() ? 'TRUE' : 'FALSE'); ?></td>
                         <td class="text-center"> <?php echo $this->escapeHtml($privilege->getResource()->getResourceName()); ?></td>
                         <td class="text-center"> <?php echo $this->escapeHtml($privilege->getRole()->getRoleName()); ?></td>
-                        <td class="text-center"> <a class="btn btn-danger" href="<?php echo $this->url('authorization/privilege', array('action' => 'delete', 'id' => $privilege->getPrivilegeId())); ?>">Delete</a></td>
+                        <td class="text-center"> <a class="btn btn-danger" href="<?php echo $this->url('authorization/privilege',
+                    array('action' => 'delete', 'id' => $privilege->getPrivilegeId())); ?>">Delete</a></td>
                     </tr>
-                <?php endforeach; ?>
+<?php endforeach; ?>
             </tbody>
         </table>
     </div>
-</div>
+</section>
 

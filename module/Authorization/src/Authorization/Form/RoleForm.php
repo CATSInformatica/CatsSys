@@ -45,7 +45,7 @@ class RoleForm extends Form
                     'name' => 'Submit',
                     'attributes' => array(
                         'type' => 'button',
-                        'class' => 'btn btn-primary btn-lg',
+                        'class' => 'btn btn-primary btn-block',
                         'value' => 'Go',
                     ),
         ));

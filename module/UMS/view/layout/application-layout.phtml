@@ -141,6 +141,14 @@
             <!-- Right side column. Contains the content of the page -->
             <div class="content-wrapper">
                 <!-- Main content -->
+                <section class="content-header">
+                    <?php
+                    echo $this->navigation('navigation')
+                        ->breadcrumbs()
+                        ->setMinDepth(0)
+                        ->setPartial('header/template');
+                    ?>
+                </section>
                 <?php echo $this->content; ?>
 
             </div><!-- /.right-side -->
@@ -155,36 +163,19 @@
 
             <!-- Control Sidebar -->
             <aside class="control-sidebar control-sidebar-dark">
+
                 <!-- Tab panes -->
                 <div class="tab-content">
                     <!-- Home tab content -->
-                    <div class="tab-pane active" id="control-sidebar-home-tab">
-                        <h3 class="control-sidebar-heading">Ações</h3>
+                    <div class="tab-pane active" id="control-sidebar-toolbar-tab">
 
+                        <?php
+                        echo $this->navigation('navigation')
+                            ->menu()
+                            ->setUlClass('system-toolbar')
+                            ->setPartial('toolbar/template');
+                        ?>
 
-                        <?php if (isset($toolbar) && is_array($toolbar)): ?>
-                            <ul class="control-sidebar-menu cats-toolbar">
-                                <?php foreach ($toolbar['menu'] as $item): ?>
-                                    <li class="cats-toolbar-item" 
-                                        data-fntype="<?php echo $item['fntype']; ?>" 
-                                        data-title="<?php echo $item['title']; ?>"
-                                        >
-                                        <a href="<?php echo $item['url']; ?>" 
-                                        <?php echo empty($item['target']) ? '' : 'target="' . $item['target'] . '" '; ?>
-                                        <?php echo empty($item['id']) ? '' : 'id="' . $item['id'] . '" '; ?>
-                                           >
-                                            <i class="menu-icon <?php echo $item['class']; ?>"></i>
-                                            <div class="menu-info">
-                                                <h4 class="control-sidebar-subheading text-center"><?php echo $item['title']; ?></h4>
-                                                <p class="text-center"><?php echo $item['description']; ?></p>
-                                            </div>
-                                        </a>
-                                    </li>
-                                <?php endforeach; ?>
-                            </ul>
-                        <?php else: ?>
-                            <p>Esta página não possui ações disponíveis.</p>
-                        <?php endif; ?>
                     </div>
                 </div>
             </aside>
@@ -350,7 +341,7 @@
             <script>
 
                 /**
-                 * @todo Transformar os seletores hardcoded (i.e. '.cats-toolbar', ...) em parâmetros globais
+                 * @todo Transformar os seletores hardcoded (i.e. '.system-toolbar', ...) em parâmetros globais
                  * 
                  */
                 var toolbarConfig = (function (config) {
@@ -359,7 +350,7 @@
 
                     initClick = function () {
 
-                        $('.cats-toolbar').on('click', '.cats-toolbar-item', function (e) {
+                        $('.system-toolbar').on('click', 'li', function (e) {
                             // nenhuma ação é executada se não estiver especificada abaixo
                             e.preventDefault();
                             var fnType = $(this).data('fntype');
@@ -372,7 +363,7 @@
                     };
 
                     fnTypes.selectedHttpClick = function (toolbarItem) {
-                        var selectedResult = getSelectedItemInfo(toolbarItem);
+                        var selectedResult = getSelectedItemInfo(toolbarItem, false);
                         if (selectedResult !== null) {
                             window.open(selectedResult.url, selectedResult.target);
                         } else {
@@ -385,7 +376,7 @@
                         bootbox.confirm('Tem certeza que deseja executar ' +
                                 'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
                             if (result) {
-                                var selectedResult = getSelectedItemInfo(toolbarItem);
+                                var selectedResult = getSelectedItemInfo(toolbarItem, false);
                                 if (selectedResult !== null) {
                                     $.ajax({
                                         url: selectedResult.url,
@@ -410,7 +401,7 @@
                         bootbox.confirm('Tem certeza que deseja executar ' +
                                 'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
                             if (result) {
-                                var itemInfo = getItemInfo(toolbarItem);
+                                var itemInfo = getItemInfo(toolbarItem, false);
 
                                 $.ajax({
                                     url: itemInfo.url,
@@ -433,7 +424,7 @@
                         bootbox.confirm('Tem certeza que deseja executar ' +
                                 'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
                             if (result) {
-                                var selectedResult = getItemInfo(toolbarItem);
+                                var selectedResult = getItemInfo(toolbarItem, false);
                                 window.open(selectedResult.url, selectedResult.target);
                             } else {
                                 bootbox.alert('Ação abortada.');
@@ -441,15 +432,74 @@
                         });
                     };
 
-                    getSelectedItemInfo = function (toolbarItem) {
+                    fnTypes.ajaxUrlClick = function (toolbarItem) {
+                        bootbox.confirm('Tem certeza que deseja executar ' +
+                                'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
+                            if (result) {
+                                var itemInfo = getItemInfo(toolbarItem, true);
+
+                                $.ajax({
+                                    url: itemInfo.url,
+                                    type: 'GET',
+                                    success: function (data) {
+                                        bootbox.alert(data.message);
+                                    },
+                                    error: function (jqXHR, textStatus, errorThrown) {
+                                        bootbox.alert(textStatus);
+                                    }
+                                });
+
+                            } else {
+                                bootbox.alert('Ação abortada.');
+                            }
+                        });
+                    };
+
+                    fnTypes.selectedAjaxUrlClick = function (toolbarItem) {
+                        bootbox.confirm('Tem certeza que deseja executar ' +
+                                'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
+                            if (result) {
+                                var selectedResult = getSelectedItemInfo(toolbarItem, true);
+                                
+                                if (selectedResult !== null) {
+
+                                    $.ajax({
+                                        url: selectedResult.url,
+                                        type: 'GET',
+                                        success: function (data) {
+                                            bootbox.alert(data.message);
+                                        },
+                                        error: function (jqXHR, textStatus, errorThrown) {
+                                            bootbox.alert(textStatus);
+                                        }
+                                    });
+                                } else {
+                                    bootbox.alert('Nenhuma item (ex: linha de uma tabela) foi escolhido.');
+                                }
+                            } else {
+                                bootbox.alert('Ação abortada.');
+                            }
+                        });
+                    };
+
+
+                    getSelectedItemInfo = function (toolbarItem, buildUrl) {
                         if ($('.cats-selected-row').length > 0) {
                             var item = toolbarItem.find('a');
+
+                            var params = '';
+
+                            if (buildUrl) {
+                                var urlArr = window.location.pathname.split('/');
+                                params = '/' + urlArr.slice(4, urlArr.length).join('/');
+                            }
+
                             var url = item.attr('href');
                             var target = item.attr('target');
                             url = url.replace('$id', $('.cats-selected-row').data('id'));
 
                             return {
-                                url: url,
+                                url: url + params,
                                 target: (typeof target !== 'undefined' ? target : '_self')
                             };
                         }
@@ -457,13 +507,20 @@
                         return null;
                     };
 
-                    getItemInfo = function (toolbarItem) {
+                    getItemInfo = function (toolbarItem, buildUrl) {
                         var item = toolbarItem.find('a');
+                        var params = '';
+
+                        if (buildUrl) {
+                            var urlArr = window.location.pathname.split('/');
+                            params = '/' + urlArr.slice(4, urlArr.length).join('/');
+                        }
+
                         var url = item.attr('href');
                         var target = item.attr('target');
 
                         return {
-                            url: url,
+                            url: url + params,
                             target: (typeof target !== 'undefined' ? target : '_self')
                         };
                     };
@@ -525,14 +582,7 @@
                             }
                         });
                     });
-                    var url = window.location;
-                    // Will only work if string in href matches with location
-                    $('ul.sidebar-menu a[href="' + url.pathname + '"]')
-                            .closest('ul')
-                            .addClass('menu-open')
-                            .css('display', 'block')
-                            .closest('li')
-                            .addClass('active');
+
                     // select row on click
                     $('table').on('click', '.cats-row', function () {
                         $(this).siblings('tr')

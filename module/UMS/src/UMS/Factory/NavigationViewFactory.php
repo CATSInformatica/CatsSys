@@ -17,7 +17,7 @@ use Zend\Session\Container;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class DefaultNavigationViewFactory implements FactoryInterface
+class NavigationViewFactory implements FactoryInterface
 {
 
     public function createService(ServiceLocatorInterface $serviceLocator)
