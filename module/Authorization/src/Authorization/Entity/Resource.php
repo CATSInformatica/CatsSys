@@ -24,11 +24,9 @@ class Resource
     /**
      * @var string
      *
-     * @ORM\Column(name="resource_name", type="string", length=100, nullable=false)
+     * @ORM\Column(name="resource_name", type="string", length=100, nullable=false, unique=true)
      */
     private $resourceName;
-
-
 
     /**
      * Get resourceId
@@ -50,7 +48,6 @@ class Resource
     public function setResourceName($resourceName)
     {
         $this->resourceName = $resourceName;
-
         return $this;
     }
 

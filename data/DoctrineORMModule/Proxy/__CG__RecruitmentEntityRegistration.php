@@ -64,10 +64,10 @@ class Registration extends \Recruitment\Entity\Registration implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationId', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationConfirmationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationConvocationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationAcceptanceDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'person', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationKnowAbout');
+            return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationId', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationConfirmationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationConvocationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationAcceptanceDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'person', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationKnowAbout', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'preInterview');
         }
 
-        return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationId', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationConfirmationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationConvocationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationAcceptanceDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'person', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationKnowAbout');
+        return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationId', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationConfirmationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationConvocationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationAcceptanceDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'person', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationKnowAbout', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'preInterview');
     }
 
     /**
@@ -340,6 +340,28 @@ class Registration extends \Recruitment\Entity\Registration implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRegistrationNumber', array());
 
         return parent::getRegistrationNumber();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPreInterview()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPreInterview', array());
+
+        return parent::getPreInterview();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setPreInterview(\Recruitment\Entity\PreInterview $preInterview)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPreInterview', array($preInterview));
+
+        return parent::setPreInterview($preInterview);
     }
 
 }

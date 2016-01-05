@@ -115,4 +115,120 @@ return array(
             ),
         ),
     ),
+    'navigation' => array(
+        'default' => array(
+            array(
+                'label' => 'Recruitment',
+                'uri' => '#',
+                'icon' => 'fa fa-users',
+                'order' => 6,
+                'resource' => 'Recruitment\Controller\Recruitment',
+                'pages' => array(
+                    array(
+                        'label' => 'Show recruitments',
+                        'route' => 'recruitment/recruitment',
+                        'action' => 'index',
+                        'resource' => 'Recruitment\Controller\Recruitment',
+                        'icon' => 'fa fa-users',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/recruitment/recruitment/edital/$id',
+                                'title' => 'Edital',
+                                'description' => 'Ler edital',
+                                'class' => 'fa fa-file-pdf-o bg-green',
+                                'fntype' => 'selectedHttpClick',
+                                'target' => '_blank',                                
+                            ),
+                            array(
+                                'url' => '/recruitment/recruitment/delete/$id',
+                                'title' => 'Remover',
+                                'description' => 'Remove um processo seletivo existente',
+                                'class' => 'fa fa-trash-o bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
+                        ),
+                    ),
+                    array(
+                        'label' => 'Create a recruitment',
+                        'route' => 'recruitment/recruitment',
+                        'action' => 'create',
+                        'resource' => 'Recruitment\Controller\Recruitment',
+                        'privilege' => 'create',
+                        'icon' => 'fa fa-user-plus'
+                    ),
+                ),
+            ),
+            array(
+                'label' => 'Registration',
+                'uri' => '#',
+                'icon' => 'fa fa-users',
+                'order' => 7,
+                'pages' => array(
+                    array(
+                        'label' => 'Show registrations',
+                        'route' => 'recruitment/registration',
+                        'action' => 'index',
+                        'resource' => 'Recruitment\Controller\Registration',
+                        'privilege' => 'index',
+                        'icon' => 'fa fa-users',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/recruitment/registration/studentProfile/$id',
+                                'title' => 'Perfil do Candidato',
+                                'description' => 'Analizar Perfil do Candidato',
+                                'class' => 'fa fa-file-text-o bg-blue',
+                                'target' => '_blank',
+                                'fntype' => 'selectedHttpClick',
+                            ),
+                        ),
+                        'pages' => array(
+                            array(
+                                'label' => 'Student profile',
+                                'route' => 'recruitment/registration',
+                                'action' => 'studentProfile',
+                                'resource' => 'Recruitment\Controller\Registration',
+                                'privilege' => 'studentProfile',
+                                'icon' => 'fa fa-user',
+                                'toolbar' => array(
+                                    array(
+                                        'url' => '/recruitment/registration/confirmation',
+                                        'id' => 'fn-confirmation',
+                                        'title' => 'Confirmar',
+                                        'description' => 'Confirmar/Desconfirmar a inscrição do candidato.',
+                                        'class' => 'fa fa-check bg-red',
+                                        'fntype' => 'ajaxUrlClick',
+                                    ),
+                                    array(
+                                        'url' => '/recruitment/registration/convocation',
+                                        'id' => 'fn-convocation',
+                                        'title' => 'Convocar',
+                                        'description' => 'Convocar/Desconvocar o candidato para a pré-entrevista.',
+                                        'class' => 'fa fa-users bg-blue fn-ajaxClick',
+                                        'fntype' => 'ajaxUrlClick',
+                                    ),
+                                    array(
+                                        'url' => '/recruitment/registration/acceptance',
+                                        'title' => 'Aprovar Candidato',
+                                        'id' => 'fn-acceptance',
+                                        'description' => 'Aprova/remove aprovação do candidato. A aprovação é condição suficiente para a matrícula.',
+                                        'class' => 'fa fa-graduation-cap bg-yellow',
+                                        'fntype' => 'ajaxUrlClick',
+                                    ),
+                                ),
+                            ),
+                        )
+                    ),
+                    array(
+                        'label' => 'Student registration form',
+                        'route' => 'recruitment/registration',
+                        'action' => 'studentRegistration',
+                        'resource' => 'Recruitment\Controller\Registration',
+                        'privilege' => 'studentRegistration',
+                        'icon' => 'fa fa-user-plus',
+                        'target' => '_blank',
+                    ),
+                ),
+            ),
+        ),
+    ),
 );

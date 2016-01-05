@@ -1,0 +1,36 @@
+<h4 class="control-sidebar-heading">Ações</h4>
+
+<?php
+$container = $this->container;
+$activePage = $this->navigation($container)->findOneBy('active', 1);
+?>
+
+<?php if ($activePage !== null && $activePage->get('toolbar') !== null): ?>
+
+    <?php
+    $menu = $activePage->get('toolbar');
+    ?>
+
+    <ul class="control-sidebar-menu <?php echo $this->navigation($container)->menu()->getUlClass(); ?>">
+        <?php foreach ($menu as $item): ?>
+            <li
+                data-fntype="<?php echo $item['fntype']; ?>" 
+                data-title="<?php echo $item['title']; ?>"
+                >
+                <a 
+                <?php echo empty($item['id']) ? ' ' : ' id="' . $item['id'] . '" '; ?>
+                    href="<?php echo $item['url']; ?>"
+                    <?php echo empty($item['target']) ? ' ' : 'target="' . $item['target'] . '"'; ?> 
+                    >
+                    <i class="menu-icon <?php echo $item['class']; ?>"></i>
+                    <div class="menu-info">
+                        <h4 class="control-sidebar-subheading text-center"><?php echo $item['title']; ?></h4>
+                        <p class="text-center"><?php echo $item['description']; ?></p>
+                    </div>
+                </a>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+<?php else: ?>
+    <p>Esta página não possui ações disponíveis.</p>
+<?php endif; ?>

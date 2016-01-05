@@ -35,23 +35,8 @@ class EnrollmentController extends AbstractActionController
 
             $em = $this->getEntityManager();
             $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')->findOneBy(
-                    array('recruitmentType' => Recruitment::STUDENT_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
+                array('recruitmentType' => Recruitment::STUDENT_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
             );
-
-
-            $this->layout()->toolbar = array(
-                'menu' => array(
-                    array(
-                        'url' => '/school-management/enrollment/studentProfile/$id',
-                        'title' => 'Perfil do Candidato',
-                        'description' => 'Analizar Perfil do Candidato',
-                        'class' => 'fa fa-file-text-o bg-blue',
-                        'target' => '_blank',
-                        'fntype' => 'selectedHttpClick',
-                    ),
-                ),
-            );
-
 
             return new ViewModel(array(
                 'message' => null,
@@ -74,7 +59,7 @@ class EnrollmentController extends AbstractActionController
      */
     public function studentProfileAction()
     {
-        $id = $this->params('sid', false);
+        $id = $this->params('id1', false);
 
         if ($id) {
 
@@ -89,29 +74,7 @@ class EnrollmentController extends AbstractActionController
                 ));
 
                 $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')
-                        ->findByEndDateGratherThan(new DateTime('now'));
-
-
-                $this->layout()->toolbar = array(
-                    'menu' => array(
-                        array(
-                            'url' => '/school-management/enrollment/enroll/' . $id . '/$id',
-                            'id' => 'fn-enroll',
-                            'title' => 'Matricular',
-                            'description' => 'Matricula o candidato em uma turma.',
-                            'class' => 'fa fa-check bg-blue',
-                            'fntype' => 'selectedAjaxClick',
-                        ),
-                        array(
-                            'url' => '/school-management/enrollment/unenroll/' . $id . '/$id',
-                            'id' => 'fn-unenroll',
-                            'title' => 'Desmatricular',
-                            'description' => 'Remove a matrícula do candidato na turma selecionada.',
-                            'class' => 'fa fa-close bg-red',
-                            'fntype' => 'selectedAjaxClick',
-                        ),
-                    ),
-                );
+                    ->findByEndDateGratherThan(new DateTime('now'));
 
                 return new ViewModel(array(
                     'message' => '',
@@ -143,8 +106,8 @@ class EnrollmentController extends AbstractActionController
      */
     public function enrollAction()
     {
-        $sid = $this->params('sid', false);
-        $cid = $this->params('cid', false);
+        $cid = $this->params('id1', false);
+        $sid = $this->params('id2', false);
 
         if ($sid && $cid) {
 
@@ -156,8 +119,8 @@ class EnrollmentController extends AbstractActionController
                 $enrollment = new Enrollment();
 
                 $enrollment
-                        ->setClass($class)
-                        ->setRegistration($registration);
+                    ->setClass($class)
+                    ->setRegistration($registration);
 
                 $class->addEnrollment($enrollment);
 
@@ -188,8 +151,8 @@ class EnrollmentController extends AbstractActionController
      */
     public function unenrollAction()
     {
-        $sid = $this->params('sid', false);
-        $cid = $this->params('cid', false);
+        $cid = $this->params('id1', false);
+        $sid = $this->params('id2', false);
 
         if ($sid && $cid) {
 
@@ -208,8 +171,8 @@ class EnrollmentController extends AbstractActionController
                     $message = 'Matrícula desfeita com sucesso.';
                 } else {
                     $message = 'O aluno não está matriculado na turma escolhida.'
-                            . ' Por favor verifique se o aluno e a turma'
-                            . ' foram escolhidos corretamente.';
+                        . ' Por favor verifique se o aluno e a turma'
+                        . ' foram escolhidos corretamente.';
                 }
             } catch (Exception $ex) {
                 $message = 'Não foi possível encontrar o registro do candidato: ' . $ex->getMessage();

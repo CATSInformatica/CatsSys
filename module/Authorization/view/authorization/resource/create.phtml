@@ -1,15 +1,8 @@
-<?php
+<section class="content">
 
-echo $this->message;
-?>
+    <?php echo $this->message; ?>
 
-<div class='container'>
-
-    <div class="row">
-        <h2> Create a new Resource</h2>
-        <hr>
-    </div>
-    <div class="col-xs-6 col-md-4">
+    <div class="col-xs-12 col-md-6 col-md-offset-3">
         <?php
         $resourceForm = $this->form;
 
@@ -22,10 +15,13 @@ echo $this->message;
             echo $this->formRow($resourceForm->get('resource_name'));
             ?>
         </div>
-        <?php
-        echo $this->formSubmit($resourceForm->get('Submit'));
-        ?>
+        <div class='form-group'>
+            <?php
+            echo $this->formRow($resourceForm->get('Submit'));
+            ?>
+        </div>
         <?php echo $this->form()->closeTag(); ?>
     </div>
-</div>
+    
+</section>
 

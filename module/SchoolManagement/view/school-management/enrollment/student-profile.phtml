@@ -1,48 +1,3 @@
-<section class="content-header">
-    <h1>Perfil do Aluno</h1>
-    <p><?php echo $this->message; ?></p>
-</section>
-
-<section class="content">
-    <?php if ($this->registration !== null): ?>
-
-        <?php
-        $TimelineItens = [];
-
-        $today = new \DateTime('now');
-
-        foreach ($enrollments as $enr) {
-            $TimelineItens[] = array(
-                'color' => 'bg-green-active',
-                'title' => $enr->getEnrollmentBeginDate()->format('H:i \o\n l jS F Y'),
-                'time' => 'Há ' . $today->diff($enr->getEnrollmentBeginDate())->d . ' dias',
-                'icon' => 'fa fa-graduation-cap',
-                'content-header' => 'Matrícula',
-            );
-        }
-
-
-
-        echo $this->partial('profile/template', array(
-            'registration' => $registration,
-            'config' => array(
-                'isPhotoEditable' => false,
-                'showAge' => true,
-                'tabs' => array(
-                    'recruitment-timeline' => $TimelineItens,
-                    'info' => true,
-                ),
-            ),
-        ));
-        ?>
-
-    <?php endif; ?>
-</section>
-
-<section class="content-header">
-    <h1>Turmas Disponíveis</h1>
-</section>
-
 <section class="content">
     <?php if ($this->classes !== null): ?>
         <div class="row">
@@ -72,6 +27,47 @@
             </div>
         </div>
     <?php endif; ?>
+</section>
+
+
+<section class="content">
+
+    <p><?php echo $this->message; ?></p>
+
+    <?php if ($this->registration !== null): ?>
+
+        <?php
+        $TimelineItens = [];
+
+        $today = new \DateTime('now');
+
+        foreach ($enrollments as $enr) {
+            $TimelineItens[] = array(
+                'color' => 'bg-green-active',
+                'title' => $enr->getEnrollmentBeginDate()->format('H:i \o\n l jS F Y'),
+                'time' => 'Há ' . $today->diff($enr->getEnrollmentBeginDate())->d . ' dias',
+                'icon' => 'fa fa-graduation-cap',
+                'content-header' => 'Matrícula',
+            );
+        }
+
+
+
+        echo $this->partial('profile/template',
+            array(
+            'registration' => $registration,
+            'config' => array(
+                'isPhotoEditable' => false,
+                'showAge' => true,
+                'tabs' => array(
+                    'recruitment-timeline' => $TimelineItens,
+                    'info' => true,
+                ),
+            ),
+        ));
+        ?>
+
+<?php endif; ?>
 </section>
 
 <script>

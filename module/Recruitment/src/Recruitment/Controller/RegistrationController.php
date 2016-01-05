@@ -40,34 +40,19 @@ class RegistrationController extends AbstractActionController
      * 
      * @todo criar índice no campo recruitmentType da entidade Recruitment
      * 
-     * Exibe todas as inscrições do processo seletivo escolhido (inicialmente exibe o último 
+     * Exibe todas as inscrições do processo seletivo de alunos escolhido (inicialmente exibe o último 
      * processo seletivo vigente).
      * 
      * @return ViewModel
      */
-    public function showStudentRegistrationsAction()
+    public function indexAction()
     {
         try {
 
             $em = $this->getEntityManager();
             $recruitments = $em->getRepository('Recruitment\Entity\Recruitment')->findBy(
-                    array('recruitmentType' => Recruitment::STUDENT_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
+                array('recruitmentType' => Recruitment::STUDENT_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
             );
-
-
-            $this->layout()->toolbar = array(
-                'menu' => array(
-                    array(
-                        'url' => '/recruitment/registration/studentProfile/$id',
-                        'title' => 'Perfil do Candidato',
-                        'description' => 'Analizar Perfil do Candidato',
-                        'class' => 'fa fa-file-text-o bg-blue',
-                        'target' => '_blank',
-                        'fntype' => 'selectedHttpClick',
-                    ),
-                ),
-            );
-
 
             return new ViewModel(array(
                 'message' => null,
@@ -111,7 +96,7 @@ class RegistrationController extends AbstractActionController
 
             // Busca por um processo seletivo aberto
             $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-                    ->findByTypeAndBetweenBeginAndEndDates(Recruitment::STUDENT_RECRUITMENT_TYPE, new DateTime('now'));
+                ->findByTypeAndBetweenBeginAndEndDates(Recruitment::STUDENT_RECRUITMENT_TYPE, new DateTime('now'));
 
             if ($recruitment === null) {
                 return new ViewModel(array(
@@ -166,13 +151,13 @@ class RegistrationController extends AbstractActionController
                     echo $data['person_birthday'];
                     // atualiza ou insere pela primeira vez os dados pessoais de cadastro
                     $person->setPersonFirstName($data['person_firstname'])
-                            ->setPersonLastName($data['person_lastname'])
-                            ->setPersonGender($data['person_gender'])
-                            ->setPersonBirthday(new DateTime($data['person_birthday']))
-                            ->setPersonRg($data['person_rg'])
-                            ->setPersonCpf($data['person_cpf'])
-                            ->setPersonEmail($data['person_email'])
-                            ->setPersonPhone($data['person_phone']);
+                        ->setPersonLastName($data['person_lastname'])
+                        ->setPersonGender($data['person_gender'])
+                        ->setPersonBirthday(new DateTime($data['person_birthday']))
+                        ->setPersonRg($data['person_rg'])
+                        ->setPersonCpf($data['person_cpf'])
+                        ->setPersonEmail($data['person_email'])
+                        ->setPersonPhone($data['person_phone']);
 
                     // cria uma nova inscrição 
                     $registration = new Registration();
@@ -201,7 +186,7 @@ class RegistrationController extends AbstractActionController
                         $form = null;
                     } else {
                         $message = 'Erro inesperado.Por favor, tente novamente ou'
-                                . ' entre em contato com o administrador do sistema.';
+                            . ' entre em contato com o administrador do sistema.';
                     }
                 }
             }
@@ -273,37 +258,6 @@ class RegistrationController extends AbstractActionController
                 $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
                     'registrationId' => $id
                 ));
-
-
-                $this->layout()->toolbar = array(
-                    'menu' => array(
-                        array(
-                            'url' => '/recruitment/registration/confirmation/' . $id,
-                            'id' => 'fn-confirmation',
-                            'title' => 'Confirmar',
-                            'description' => 'Confirmar/Desconfirmar a inscrição do candidato.',
-                            'class' => 'fa fa-check bg-red',
-                            'fntype' => 'ajaxClick',
-                        ),
-                        array(
-                            'url' => '/recruitment/registration/convocation/' . $id,
-                            'id' => 'fn-convocation',
-                            'title' => 'Convocar',
-                            'description' => 'Convocar/Desconvocar o candidato para a pré-entrevista.',
-                            'class' => 'fa fa-users bg-blue fn-ajaxClick',
-                            'fntype' => 'ajaxClick',
-                        ),
-                        array(
-                            'url' => '/recruitment/registration/acceptance/' . $id,
-                            'title' => 'Aprovar Candidato',
-                            'id' => 'fn-acceptance',
-                            'description' => 'Aprova/remove aprovação do candidato. A aprovação é condição suficiente para a matrícula.',
-                            'class' => 'fa fa-graduation-cap bg-yellow',
-                            'fntype' => 'ajaxClick',
-                        ),
-                    ),
-                );
-
 
                 return new ViewModel(array(
                     'message' => '',
@@ -407,7 +361,8 @@ class RegistrationController extends AbstractActionController
 
                 $uploadAdapter = new HttpAdapter();
 
-                $uploadAdapter->addFilter('File\Rename', array(
+                $uploadAdapter->addFilter('File\Rename',
+                    array(
                     'target' => $targetFile,
                     'overwrite' => true
                 ));
@@ -583,7 +538,7 @@ class RegistrationController extends AbstractActionController
 
                 $em = $this->getEntityManager();
                 $regs = $em->getRepository('Recruitment\Entity\Registration')
-                        ->findByAccepted($rid);
+                    ->findByAccepted($rid);
 
                 foreach ($regs as $r) {
                     $person = $r->getPerson();

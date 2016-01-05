@@ -19,15 +19,17 @@ use Zend\View\Model\ViewModel;
  *
  * @author marcio
  */
-class PrivilegeController extends AbstractActionController {
+class PrivilegeController extends AbstractActionController
+{
 
     use \Database\Service\EntityManagerService;
 
-    public function indexAction() {
+    public function indexAction()
+    {
         try {
             $em = $this->getEntityManager();
             $privileges = $em->getRepository('\Authorization\Entity\Privilege')
-                    ->findAll();
+                ->findAll();
             return new ViewModel(array(
                 'privileges' => $privileges,
             ));
@@ -38,7 +40,8 @@ class PrivilegeController extends AbstractActionController {
         }
     }
 
-    public function createAction() {
+    public function createAction()
+    {
 
         $request = $this->getRequest();
 
@@ -64,17 +67,18 @@ class PrivilegeController extends AbstractActionController {
 
             $privilege = new Privilege();
 
-            $privilege->setPrivilegeName($data['privilege_name'])
-                    ->setPrivilegePermissionAllow($data['privilege_permission_allow'])
-                    ->setResource($em->getReference('Authorization\Entity\Resource', $data['resource_id']))
-                    ->setRole($em->getReference('Authorization\Entity\Role', $data['role_id']));
+            $privilege->setPrivilegeName($data['privilege_name'] !== "" ? $data['privilege_name'] : null)
+                ->setPrivilegePermissionAllow($data['privilege_permission_allow'])
+                ->setResource($em->getReference('Authorization\Entity\Resource', $data['resource_id']))
+                ->setRole($em->getReference('Authorization\Entity\Role', $data['role_id']));
 
             try {
                 $em->persist($privilege);
                 $em->flush();
 
-                return $this->redirect()->toRoute('authorization/privilege', array(
-                            'action' => 'index'
+                return $this->redirect()->toRoute('authorization/privilege',
+                        array(
+                        'action' => 'index'
                 ));
             } catch (Exception $ex) {
                 return new ViewModel(array(
@@ -88,7 +92,8 @@ class PrivilegeController extends AbstractActionController {
         ));
     }
 
-    public function deleteAction() {
+    public function deleteAction()
+    {
         $id = $this->params()->fromRoute('id');
 
         if ($id) {

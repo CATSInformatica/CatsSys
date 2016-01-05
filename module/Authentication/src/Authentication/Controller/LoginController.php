@@ -29,7 +29,8 @@ use Zend\View\Model\ViewModel;
  *
  * @author marcio
  */
-class LoginController extends AbstractActionController {
+class LoginController extends AbstractActionController
+{
 
     use EntityManagerService;
 
@@ -37,7 +38,8 @@ class LoginController extends AbstractActionController {
      * Faz a autenticação de usuários
      * @return ViewModel
      */
-    public function loginAction() {
+    public function loginAction()
+    {
         $this->layout('login/layout');
         $loginForm = new LoginForm();
         $message = null;
@@ -45,26 +47,28 @@ class LoginController extends AbstractActionController {
 
         if ($request->isPost()) {
             $loginForm->setInputFilter(new LoginFilter(
-                    $this->getServiceLocator()
+                $this->getServiceLocator()
             ));
             $loginForm->setData($request->getPost());
 
             if ($loginForm->isValid()) {
                 $data = $loginForm->getData();
-                return $this->userAuthentication($data) ?
-                        $this->redirect()->toRoute('ums/default') :
-                        $message = 'Credenciais inválidas.';
+                if ($this->userAuthentication($data)) {
+                    return $this->redirect()->toRoute('ums');
+                } else {
+                    $message = 'Credenciais inválidas.';
+                }
             }
         }
 
         return new ViewModel(array(
-            'error' => 'Your authentication credentials are not valid!',
             'form' => $loginForm,
             'message' => $message,
         ));
     }
 
-    protected function userAuthentication($data) {
+    protected function userAuthentication($data)
+    {
         $auth = $this->getServiceLocator()->get('Zend\Authentication\AuthenticationService');
         $adapter = $auth->getAdapter();
         $adapter->setIdentityValue($data['username']);
@@ -101,7 +105,8 @@ class LoginController extends AbstractActionController {
         return false;
     }
 
-    public function logoutAction() {
+    public function logoutAction()
+    {
         $auth = $this->getServiceLocator()->get('Zend\Authentication\AuthenticationService');
         if ($auth->hasIdentity()) {
             $auth->clearIdentity();

@@ -36,30 +36,6 @@ class RecruitmentController extends AbstractActionController
 
         $recruitments = $em->getRepository('Recruitment\Entity\Recruitment')->findAll();
 
-
-        /**
-         * Toolbar config
-         */
-        $this->layout()->toolbar = array(
-            'menu' => array(
-                array(
-                    'url' => '/recruitment/recruitment/edital/$id',
-                    'title' => 'Edital',
-                    'description' => 'Ler edital',
-                    'class' => 'fa fa-file-pdf-o bg-green',
-                    'fntype' => 'selectedHttpClick',
-                    'target' => '_blank',
-                ),
-                array(
-                    'url' => '/recruitment/recruitment/delete/$id',
-                    'title' => 'Remover',
-                    'description' => 'Remove um processo seletivo existente',
-                    'class' => 'fa fa-trash-o bg-red',
-                    'fntype' => 'selectedAjaxClick',
-                ),
-            ),
-        );
-
         return new ViewModel(array(
             'recruitments' => $recruitments
         ));

@@ -1,0 +1,99 @@
+<?php
+$container = $this->container;
+?>
+<ul class="<?php echo $this->navigation($container)->menu()->getUlClass(); ?>">
+    <?php foreach ($container as $page): ?>
+
+        <?php
+        if (!$this->navigation($container)->accept($page)) {
+            // User doesn't have permission to access this resource, then ACL will deny
+            continue;
+        }
+        ?>
+
+        <?php /* @var $page Zend\Navigation\Page\Mvc */ ?>
+        <?php $hasChildren = $page->hasPages() ?>
+
+        <?php if (!$hasChildren): ?>
+            <!-- the page doesn't have any child -->
+            <li <?php echo ($page->isActive() ? 'class="active"' : ''); ?> >
+                <a href="<?php echo $page->getHref() ?>">
+
+                    <?php if ($page->get("icon") !== ""): ?>
+                        <i class="<?php echo $page->get("icon"); ?>"></i>
+                    <?php endif; ?>
+                    <span>
+                        <?php
+                        echo $this->escapeHtml($this->translate($page->getLabel(),
+                                $this->navigation($container)->getTranslatorTextDomain()));
+                        ?>
+                    </span>
+                </a>
+            </li>
+
+        <?php else: ?>
+            <!-- At least one child exists -->
+            <?php
+            //check if access is allowed for at least one item who isn't a separator
+            $access = false;
+            $active = false;
+            foreach ($page->getPages() as $child) {
+                if ($child->get("separator") !== true && $this->navigation()->accept($child)) {
+                    $access = true;
+                    if (!$active && $child->isActive()) {
+                        $active = true;
+                    }
+                }
+            }
+            ?>
+            <?php if ($access): ?>
+                <li class="treeview <?php echo ($active ? 'active' : ''); ?> ">
+                    <a href="#">
+                        <?php if ($page->get("icon") !== ""): ?>
+                            <i class="<?php echo $page->get("icon"); ?>"></i>
+                        <?php endif; ?>
+
+                        <span>
+                            <?php
+                            echo $this->escapeHtml($this->translate($page->getLabel(),
+                                    $this->navigation($container)->getTranslatorTextDomain()));
+                            ?>
+                        </span>
+                        <i class="pull-right fa fa-circle-thin"></i>
+                    </a>
+
+                    <ul class="treeview-menu <?php echo ($active ? 'menu-open' : ''); ?>">
+                        <?php foreach ($page->getPages() as $child): ?>
+                            <?php
+                            if (!$this->navigation()->accept($child)) {
+                                // User doesn't have permission to access this resource, then ACL will deny
+                                continue;
+                            }
+                            ?>
+                            <?php if ($child->get("separator") === true): ?>
+                                <li class="divider"></li>
+                                    <?php
+                                    continue;
+                                endif;
+                                ?>
+                            <li <?php echo ($child->isActive() ? 'class="active"' : ''); ?>>
+                                <a href="<?php echo $child->getHref() ?>"
+                                <?php if ($child->getTarget() != ""): ?>
+                                       target="<?php echo $child->getTarget(); ?>"
+                                   <?php endif; ?> >
+                                       <?php if ($child->get("icon") !== ""): ?>
+                                        <i class="<?php echo $child->get("icon"); ?>"></i>
+                                    <?php endif; ?>
+                                    <?php
+                                    echo $this->escapeHtml($this->translate($child->getLabel(),
+                                            $this->navigation($container)->getTranslatorTextDomain()));
+                                    ?>
+                                </a>
+                            </li>
+                        <?php endforeach ?>
+                    </ul>
+                </li>
+            <?php endif; ?>
+        <?php endif ?>
+    <?php endforeach ?>
+</ul>

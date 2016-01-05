@@ -96,6 +96,14 @@ class Registration
      */
     private $registrationKnowAbout;
 
+    /**
+     *
+     * @var Recruitment\Entity\PreInterview
+     * @ORM\OneToOne(targetEntity="Recruitment\Entity\PreInterview")
+     * @ORM\JoinColumn(name="pre_inteview_id", referencedColumnName="pre_interview_id")
+     */
+    private $preInterview;
+
     public function __construct()
     {
         $this->registrationDate = new \DateTime('now');
@@ -217,15 +225,15 @@ class Registration
     public function addRegistrationKnowAbout($registrationKnowAbout)
     {
         if (in_array($registrationKnowAbout, array(
-                    self::FAMILY,
-                    self::UNIVERSIRTY_STUDENTS,
-                    self::STUDENTS,
-                    self::FRIENDS,
-                    self::INTERNET,
-                    self::COMMON_COMMUNICATION_CHANNELS,
-                    self::SCHOOL,
-                    self::VOLUNTEERS,
-                ))) {
+                self::FAMILY,
+                self::UNIVERSIRTY_STUDENTS,
+                self::STUDENTS,
+                self::FRIENDS,
+                self::INTERNET,
+                self::COMMON_COMMUNICATION_CHANNELS,
+                self::SCHOOL,
+                self::VOLUNTEERS,
+            ))) {
 
             if ($this->registrationKnowAbout != null) {
                 $this->registrationKnowAbout .= ';' . $registrationKnowAbout;
@@ -258,14 +266,38 @@ class Registration
         return $this;
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getRegistrationNumber()
     {
         $regNum = $this->recruitment->getRecruitmentYear() .
-                $this->recruitment->getRecruitmentNumber() .
-                str_pad($this->registrationId, self::REGISTRATION_PAD_LENGTH, '0', STR_PAD_LEFT
+            $this->recruitment->getRecruitmentNumber() .
+            str_pad($this->registrationId, self::REGISTRATION_PAD_LENGTH, '0', STR_PAD_LEFT
         );
 
         return $regNum;
+    }
+
+    /**
+     * 
+     * @return Recruitment\Entity\PreInterview
+     */
+    public function getPreInterview()
+    {
+        return $this->preInterview;
+    }
+
+    /**
+     * 
+     * @param Recruitment\Entity\PreInterview $preInterview
+     * @return Recruitment\Entity\Registration
+     */
+    public function setPreInterview(PreInterview $preInterview)
+    {
+        $this->preInterview = $preInterview;
+        return $this;
     }
 
 }
