@@ -6,8 +6,7 @@
 
 
 <section class="content">
-    
-    <?php if ($configs) :?>
+    <?php if ($configs): ?>
     <div class="table-responsive col-xs-8 col-md-8 col-md-offset-2">
         <table id="config-table" class="table table-condensed table-striped">
             <thead>
@@ -30,6 +29,8 @@
             </tbody>
         </table>
     </div>
+    <?php else: ?>
+    <p> Não há configurações cadastradas. </p>
     <?php endif; ?>
 </section>
 <script>

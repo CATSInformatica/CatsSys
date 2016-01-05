@@ -57,14 +57,26 @@ class StudentBgConfig
         return $this->studentBgConfigId;
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getStudentBgConfigPhrase() {
         return $this->studentBgConfigPhrase;
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getStudentBgConfigAuthor() {
         return $this->studentBgConfigAuthor;
     }
 
+    /**
+     * 
+     * @return string
+     */
     public function getStudentBgConfigImg() {
         return $this->studentBgConfigImg;
     }
@@ -79,11 +91,21 @@ class StudentBgConfig
         return $this;
     }
 
+    /**
+     * 
+     * @param string $studentBgConfigAuthor
+     * @return \Documents\Entity\StudentBgConfig
+     */
     public function setStudentBgConfigAuthor($studentBgConfigAuthor) {
         $this->studentBgConfigAuthor = $studentBgConfigAuthor;
         return $this;
     }
 
+    /**
+     * 
+     * @param string $studentBgConfigImg
+     * @return \Documents\Entity\StudentBgConfig
+     */
     public function setStudentBgConfigImg($studentBgConfigImg) {
         $this->studentBgConfigImg = $studentBgConfigImg;
         return $this;
