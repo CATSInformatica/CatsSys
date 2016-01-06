@@ -82,7 +82,16 @@ return array(
                         'action' => 'index',
                         'resource' => 'Documents\Controller\StudentBgConfig',
                         'privilege' => 'index',
-                        'icon' => 'fa fa-files-o'
+                        'icon' => 'fa fa-files-o',
+                        'toolbar' => array(
+                            array( 
+                                'url' => '/documents/student-bg-config/delete/$id',
+                                'title' => 'Remover',
+                                'description' => 'Remove uma configuração de fundo',
+                                'class' => 'fa fa-trash-o bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            )
+                        ),
                     ),
                     array(
                         'label' => 'Create a background config',
