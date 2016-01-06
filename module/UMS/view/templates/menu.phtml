@@ -62,7 +62,7 @@ $container = $this->container;
                         <i class="pull-right fa <?php echo ($active ? 'fa-circle' : ' fa-circle-thin'); ?>"></i>
                     </a>
 
-                    <ul class="treeview-menu <?php echo ($active ? 'menu-open' : ''); ?>">
+                    <ul class="treeview-menu <?php echo ($active ? 'menu-open" style="display: block;' : ''); ?>" >
                         <?php foreach ($page->getPages() as $child): ?>
                             <?php
                             if (!$this->navigation()->accept($child)) {
