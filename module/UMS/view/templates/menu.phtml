@@ -47,7 +47,7 @@ $container = $this->container;
             }
             ?>
             <?php if ($access): ?>
-                <li class="treeview <?php echo ($active ? 'active' : ''); ?> ">
+                <li class="treeview <?php echo ($active ? 'active' : ''); ?>">
                     <a href="#">
                         <?php if ($page->get("icon") !== ""): ?>
                             <i class="<?php echo $page->get("icon"); ?>"></i>
@@ -59,7 +59,7 @@ $container = $this->container;
                                     $this->navigation($container)->getTranslatorTextDomain()));
                             ?>
                         </span>
-                        <i class="pull-right fa fa-circle-thin"></i>
+                        <i class="pull-right fa <?php echo ($active ? 'fa-circle' : ' fa-circle-thin'); ?>"></i>
                     </a>
 
                     <ul class="treeview-menu <?php echo ($active ? 'menu-open' : ''); ?>">
