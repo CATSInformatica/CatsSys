@@ -27,20 +27,20 @@ class ResourceForm extends Form
 //        ));
 
         $this->add(array(
-                    'name' => 'resource_name',
-                    'attributes' => array(
-                        'type' => 'text',
-                        'class' => 'form-control',
-                        'placeholder' => 'Resource name',
-                    ),
-                ))
-                ->add(array(
-                    'name' => 'Submit',
-                    'attributes' => array(
-                        'type' => 'button',
-                        'class' => 'btn btn-primary btn-block',
-                        'value' => 'Go',
-                    ),
+                'name' => 'resource_name',
+                'attributes' => array(
+                    'type' => 'text',
+                    'class' => 'form-control',
+                    'placeholder' => 'Resource name',
+                ),
+            ))
+            ->add(array(
+                'name' => 'Submit',
+                'attributes' => array(
+                    'type' => 'submit',
+                    'class' => 'btn btn-primary btn-block',
+                    'value' => 'Go',
+                ),
         ));
     }
 

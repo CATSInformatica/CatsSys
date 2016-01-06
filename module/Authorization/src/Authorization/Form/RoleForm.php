@@ -44,7 +44,7 @@ class RoleForm extends Form
                 ->add(array(
                     'name' => 'Submit',
                     'attributes' => array(
-                        'type' => 'button',
+                        'type' => 'submit',
                         'class' => 'btn btn-primary btn-block',
                         'value' => 'Go',
                     ),

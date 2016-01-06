@@ -628,4 +628,15 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
         return parent::setPersonGender($personGender);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function getPersonName()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPersonName', array());
+
+        return parent::getPersonName();
+    }
+
 }

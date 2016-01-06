@@ -565,17 +565,26 @@ class Person
      * @return Person
      * @throws \InvalidArgumentException
      */
-    function setPersonGender($personGender)
+    public function setPersonGender($personGender)
     {
         if (in_array($personGender, array(
-                    self::GENDER_F,
-                    self::GENDER_M
-                ))) {
+                self::GENDER_F,
+                self::GENDER_M
+            ))) {
             $this->personGender = $personGender;
             return $this;
         }
 
         throw new \InvalidArgumentException('invalid gender.');
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getPersonName()
+    {
+        return $this->personFirstName . ' ' . $this->personLastName;
     }
 
 }

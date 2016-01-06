@@ -14,6 +14,7 @@ return array(
             'Recruitment\Controller\Recruitment' => Controller\RecruitmentController::class,
             'Recruitment\Controller\Registration' => Controller\RegistrationController::class,
             'Recruitment\Controller\Captcha' => Controller\CaptchaController::class,
+            'Recruitment\Controller\PreInterview' => Controller\PreInterviewController::class,
         ),
     ),
     'router' => array(
@@ -76,6 +77,19 @@ return array(
                             ),
                         ),
                     ),
+                    'pre-interview' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/pre-interview[/:action]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Recruitment\Controller\PreInterview',
+                                'action' => 'index',
+                            ),
+                        )
+                    )
                 ),
             ),
         ),
@@ -137,7 +151,7 @@ return array(
                                 'description' => 'Ler edital',
                                 'class' => 'fa fa-file-pdf-o bg-green',
                                 'fntype' => 'selectedHttpClick',
-                                'target' => '_blank',                                
+                                'target' => '_blank',
                             ),
                             array(
                                 'url' => '/recruitment/recruitment/delete/$id',
@@ -216,7 +230,7 @@ return array(
                                     ),
                                 ),
                             ),
-                        )
+                        ),
                     ),
                     array(
                         'label' => 'Student registration form',
@@ -225,7 +239,24 @@ return array(
                         'resource' => 'Recruitment\Controller\Registration',
                         'privilege' => 'studentRegistration',
                         'icon' => 'fa fa-user-plus',
-                        'target' => '_blank',
+                    ),
+                    array(
+                        'label' => 'Student pre-interview I',
+                        'route' => 'recruitment/pre-interview',
+                        'action' => 'index',
+                        'resource' => 'Recruitment\Controller\PreInterview',
+                        'privilege' => 'index',
+                        'icon' => 'fa fa-female',
+                        'pages' => array(
+                            array(
+                                'label' => 'Student pre-interview II',
+                                'route' => 'recruitment/pre-interview',
+                                'action' => 'studentPreInterview',
+                                'resource' => 'Recruitment\Controller\PreInterview',
+                                'privilege' => 'studentPreInterview',
+                                'icon' => 'fa fa-female',
+                            )
+                        )
                     ),
                 ),
             ),
