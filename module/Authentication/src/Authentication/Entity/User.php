@@ -10,7 +10,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * User
  *
- * @ORM\Table(name="user", uniqueConstraints={@ORM\UniqueConstraint(name="UNIQ_1483A5E9DFDCDFE1", columns={"user_name"})})
+ * @ORM\Table(name="user")
  * @ORM\Entity
  */
 class User
@@ -27,7 +27,7 @@ class User
     /**
      * @var string
      *
-     * @ORM\Column(name="user_name", type="string", length=100, nullable=false)
+     * @ORM\Column(name="user_name", type="string", length=100, nullable=false, unique=true)
      */
     private $userName;
 

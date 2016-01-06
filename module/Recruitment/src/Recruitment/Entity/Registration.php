@@ -83,6 +83,14 @@ class Registration
     private $recruitment;
 
     /**
+     *
+     * @var Recruitment\Entity\PreInterview
+     * @ORM\OneToOne(targetEntity="Recruitment\Entity\PreInterview")
+     * @ORM\JoinColumn(name="pre_inteview_id", referencedColumnName="pre_interview_id")
+     */
+    private $preInterview;
+
+    /**
      * @var Person
      * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Person", inversedBy="registrations", fetch="EAGER")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id", nullable=false)
@@ -95,14 +103,6 @@ class Registration
      * @ORM\Column(name="registration_know_about", type="string", length=500, nullable=false)
      */
     private $registrationKnowAbout;
-
-    /**
-     *
-     * @var Recruitment\Entity\PreInterview
-     * @ORM\OneToOne(targetEntity="Recruitment\Entity\PreInterview")
-     * @ORM\JoinColumn(name="pre_inteview_id", referencedColumnName="pre_interview_id")
-     */
-    private $preInterview;
 
     public function __construct()
     {
@@ -224,7 +224,8 @@ class Registration
      */
     public function addRegistrationKnowAbout($registrationKnowAbout)
     {
-        if (in_array($registrationKnowAbout, array(
+        if (in_array($registrationKnowAbout,
+                array(
                 self::FAMILY,
                 self::UNIVERSIRTY_STUDENTS,
                 self::STUDENTS,
