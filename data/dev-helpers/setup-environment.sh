@@ -83,7 +83,8 @@ php $HOME/vhosts/cats-lab/public/index.php orm:validate-schema
 php $HOME/vhosts/cats-lab/public/index.php orm:schema-tool:create
 
 echo 'Importing table contents'
-mysql -u root -p catssys <$HOME/vhosts/cats-lab/data/dev-helpers/catssys_data.sql
+mysql -u root -p catssys <$HOME/vhosts/cats-lab/data/dev-helpers/catssys_data_1.sql
+mysql -u root -p catssys <$HOME/vhosts/cats-lab/data/dev-helpers/catssys_data_2.sql
 
 echo 'Creating data directories'
 mkdir $HOME/vhosts/cats-lab/data/captcha
