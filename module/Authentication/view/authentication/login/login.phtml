@@ -2,24 +2,8 @@
 
 <div class = "container">
     <div class="wrapper">
-        
-        <?php
-        $form = $this->form;
-        $form->prepare();
-        echo $this->form()->openTag($form);
-        ?>
-        
         <h3 class="form-signin-heading">Welcome Back! Please Sign In</h3>
-
-        <?php
-        echo $this->formRow($form->get('username'));
-        echo $this->formRow($form->get('password'));
-        echo $this->formRow($form->get('rememberme')) . ' ' . 'Continuar conectado?';
-        echo '<br><br>';
-        echo $this->formSubmit($form->get('submit')) . '<br>';
-        echo $this->message;
-        ?>
-
+        <?php echo $this->form($form); ?>
     </div>
 </div>
 

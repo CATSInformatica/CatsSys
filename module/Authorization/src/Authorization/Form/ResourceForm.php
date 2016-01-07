@@ -13,7 +13,7 @@ use Zend\Form\Form;
 /**
  * Description of RoleForm
  *
- * @author marcio
+ * @author Márcio Dias <marciojr91@gmail.com>
  */
 class ResourceForm extends Form
 {
@@ -22,16 +22,14 @@ class ResourceForm extends Form
     {
         parent::__construct('Resource');
 
-//        $this->setAttributes(array(
-//            'action' =>,
-//        ));
-
         $this->add(array(
                 'name' => 'resource_name',
                 'attributes' => array(
                     'type' => 'text',
-                    'class' => 'form-control',
                     'placeholder' => 'Resource name',
+                ),
+                'options' => array(
+                    'label' => 'Nome do recurso',
                 ),
             ))
             ->add(array(

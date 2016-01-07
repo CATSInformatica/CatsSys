@@ -15,41 +15,43 @@ use Zend\Form\Form;
  *
  * @author marcio
  */
-class UserRoleForm extends Form {
+class UserRoleForm extends Form
+{
 
     //put your code here
-    public function __construct($name = null, $options = array()) {
+    public function __construct($name = null, $options = array())
+    {
         parent::__construct($name);
 
         $this->add(array(
-                    'name' => 'user_id',
-                    'type' => 'Zend\Form\Element\Select',
-                    'options' => array(
-                        'value_options' => $options['users'],
-                    ),
-                    'attributes' => array(
-                        'type' => 'select',
-                        'class' => 'form-control',
-                    ),
-                ))
-                ->add(array(
-                    'name' => 'role_id',
-                    'type' => 'Zend\Form\Element\Select',
-                    'options' => array(
-                        'value_options' => $options['roles'],
-                    ),
-                    'attributes' => array(
-                        'type' => 'select',
-                        'class' => 'form-control',
-                    )
-                ))
-                ->add(array(
-                    'name' => 'Submit',
-                    'attributes' => array(
-                        'type' => 'submit',
-                        'class' => 'btn btn-primary btn-block',
-                        'value' => 'Go',
-                    )
+                'name' => 'user_id',
+                'type' => 'Zend\Form\Element\Select',
+                'options' => array(
+                    'label' => 'Usuário',
+                    'value_options' => $options['users'],
+                ),
+                'attributes' => array(
+                    'type' => 'select',
+                ),
+            ))
+            ->add(array(
+                'name' => 'role_id',
+                'type' => 'Zend\Form\Element\Select',
+                'options' => array(
+                    'label' => 'Papel',
+                    'value_options' => $options['roles'],
+                ),
+                'attributes' => array(
+                    'type' => 'select',
+                )
+            ))
+            ->add(array(
+                'name' => 'Submit',
+                'attributes' => array(
+                    'type' => 'submit',
+                    'class' => 'btn btn-primary btn-block',
+                    'value' => 'Go',
+                )
         ));
     }
 

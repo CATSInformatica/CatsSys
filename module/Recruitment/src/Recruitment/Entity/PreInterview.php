@@ -24,28 +24,27 @@ class PreInterview
      * Somente em escola pública.
      * Maior parte em escola pública.
      * Somente em escola particular.
+     * Escola particular com bolsa.
      * Maior parte em escola particular.
      * Não frequentei escola regular.
      */
-    const ELEMENTARY_SCHOOL_TYPE_ONLY_PUBLIC = 1;
-    const ELEMENTARY_SCHOOL_TYPE_MOST_PUBLIC = 2;
-    const ELEMENTARY_SCHOOL_TYPE_ONLY_PRIVATE = 3;
-    const ELEMENTARY_SCHOOL_TYPE_MOST_PRIVATE = 4;
-    const ELEMENTARY_SCHOOL_TYPE_NOT_ATTENDED_REGULAR_SCHOOL = 5;
+    const SCHOOL_TYPE_ONLY_PUBLIC = 1;
+    const SCHOOL_TYPE_MOST_PUBLIC = 2;
+    const SCHOOL_TYPE_ONLY_PRIVATE = 3;
+    const SCHOOL_TYPE_PRIVATE_SCHOLARSHIP = 4;
+    const SCHOOL_TYPE_MOST_PRIVATE = 5;
+    const SCHOOL_TYPE_NOT_ATTENDED_REGULAR_SCHOOL = 6;
 
     /**
-     * Somente em escola pública
-     * Maior parte em escola pública
-     * Somente em escola particular
-     * Maior parte em escola particular
-     * Escola particular com bolsa
+     * Curso assistencial.
+     * Curso particular.
+     * Curso particular com bolsa.
+     * Não frequentei curso pré-vestibular.
      */
-    const HIGH_SCHOOL_TYPE_ONLY_PUBLIC = 1;
-    const HIGH_SCHOOL_TYPE_MOST_PUBLIC = 2;
-    const HIGH_SCHOOL_TYPE_ONLY_PRIVATE = 3;
-    const HIGH_SCHOOL_TYPE_MOST_PRIVATE = 4;
-    const HIGH_SCHOOL_TYPE_PRIVATE_SCHOLARSHIP = 5;
-    const HIGH_SCHOOL_TYPE_NOT_ATTENDED_REGULAR_SCHOOL = 6;
+    const PREP_SCHOOL_ASSISTANCE = 1;
+    const PREP_SCHOOL_PRIVATE = 2;
+    const PREP_SCHOOL_PRIVATE_SCHOLARSHIP = 3;
+    const PREP_SCHOOL_NOTHING = 4;
 
     /**
      * Inglês
@@ -74,6 +73,34 @@ class PreInterview
     const CURRENT_STUDY_NOTHING = 5;
 
     /**
+     * Quantas pessoas moram em sua casa (incluindo você)?* 
+     * Uma pessoa.
+     * Duas pessoas.
+     * Três pessoas.
+     * Quatro pessoas.
+     * Cinco pessoas.
+     * Seis pessoas.
+     * Mais de seis pessoas.
+     */
+    const ONE = 1;
+    const TWO = 2;
+    const THREE = 3;
+    const FOUR = 4;
+    const FIVE = 5;
+    const SIX = 6;
+    const MORE_THAN_SIX = 7;
+
+    /**
+     * Quem mora com você?
+     */
+    const LIVE_WITH_YOU_ALONE = 'Moro sozinho.';
+    const LIVE_WITH_YOU_CHILDREN = 'Filhos.';
+    const LIVE_WITH_YOU_PARENTS = 'Moro com pai e/ou mãe.';
+    const LIVE_WITH_YOU_SIBLINGS = 'Irmãos.';
+    const LIVE_WITH_YOU_LIFE_PARTNER = 'Esposa, marido, companheiro(a).';
+    const LIVE_WITH_YOU_OTHER = 'Outro.';
+
+    /**
      * Bicicleta, carona. 
      * A pé, carona.
      * Transporte escolar (gratuito).
@@ -86,6 +113,7 @@ class PreInterview
     const MEANS_OF_TRANSPORT_SCHOLAR = 3;
     const MEANS_OF_TRANSPORT_PRIVATE_COLLETIVE = 4;
     const MEANS_OF_TRANSPORT_PRIVATE = 5;
+    const MEANS_OF_TRANSPORT_OTHER = 6;
 
     /**
      * Nenhuma.
@@ -118,8 +146,9 @@ class PreInterview
     const PARENT_SCHOOL_GRADE_INCOMPLETE_HIGH_SCHOOL = 3;
     const PARENT_SCHOOL_GRADE_COMPLETE_HIGH_SCHOOL = 4;
     const PARENT_SCHOOL_GRADE_INCOMPLETE_UNDERGRADUATE_COURSE = 5;
-    const PARENT_SCHOOL_GRADE_MASTER_DEGREE = 6;
-    const PARENT_SCHOOL_GRADE_DOCTORATE_DEGREE = 7;
+    const PARENT_SCHOOL_GRADE_GRADUATE_SPECIALIZATION = 6;
+    const PARENT_SCHOOL_GRADE_MASTER_DEGREE = 7;
+    const PARENT_SCHOOL_GRADE_DOCTORATE_DEGREE = 8;
 
     /**
      *
@@ -187,6 +216,12 @@ class PreInterview
     private $preInterviewHSConclusionYear;
 
     /**
+     * @var integer
+     * @ORM\Column(name="pre_interview_preparation_school", type="smallint", nullable=false)
+     */
+    private $preInterviewPreparationSchool;
+
+    /**
      *
      * @var integer
      * @ORM\Column(name="pre_interview_language_course", type="smallint", nullable=false)
@@ -212,6 +247,13 @@ class PreInterview
      * @ORM\Column(name="pre_interview_live_with_you", type="string", length=120, nullable=false)
      */
     private $preInterviewLiveWithYou;
+
+    /**
+     *
+     * @var integer
+     * @ORM\Column(name="pre_interview_number_of_rooms", type="smallint", nullable=false)
+     */
+    private $preInterviewNumberOfRooms;
 
     /**
      *
@@ -587,6 +629,46 @@ class PreInterview
     public function setPreInterviewExpectFromUs($preInterviewExpectFromUs)
     {
         $this->preInterviewExpectFromUs = $preInterviewExpectFromUs;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getPreInterviewPreparationSchool()
+    {
+        return $this->preInterviewPreparationSchool;
+    }
+
+    /**
+     * 
+     * @param integer $preInterviewPreparationSchool
+     * @return Recruitment\Entity\PreInterview
+     */
+    public function setPreInterviewPreparationSchool($preInterviewPreparationSchool)
+    {
+        $this->preInterviewPreparationSchool = $preInterviewPreparationSchool;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getPreInterviewNumberOfRooms()
+    {
+        return $this->preInterviewNumberOfRooms;
+    }
+
+    /**
+     * 
+     * @param integer $preInterviewNumberOfRooms
+     * @return Recruitment\Entity\PreInterview
+     */
+    public function setPreInterviewNumberOfRooms($preInterviewNumberOfRooms)
+    {
+        $this->preInterviewNumberOfRooms = $preInterviewNumberOfRooms;
         return $this;
     }
 

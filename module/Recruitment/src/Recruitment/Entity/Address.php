@@ -22,8 +22,35 @@ use Recruitment\Entity\Person;
 class Address
 {
 
+    const STATE_AC = 'AC';
+    const STATE_AL = 'AL';
+    const STATE_AP = 'AP';
+    const STATE_AM = 'AM';
+    const STATE_BA = 'BA';
+    const STATE_CE = 'CE';
+    const STATE_DF = 'DF';
+    const STATE_ES = 'ES';
+    const STATE_GO = 'GO';
+    const STATE_MA = 'MA';
+    const STATE_MT = 'MT';
+    const STATE_MS = 'MS';
+    const STATE_MG = 'MG';
+    const STATE_PA = 'PA';
+    const STATE_PB = 'PB';
+    const STATE_PR = 'PR';
+    const STATE_PE = 'PE';
+    const STATE_PI = 'PI';
+    const STATE_RJ = 'RJ';
+    const STATE_RN = 'RN';
+    const STATE_RS = 'RS';
+    const STATE_RO = 'RO';
+    const STATE_RR = 'RR';
+    const STATE_SC = 'SC';
+    const STATE_SP = 'SP';
+    const STATE_SE = 'SE';
+    const STATE_TO = 'TO';
+
     /**
-     *
      * @var integer
      * @ORM\Column(name="address_id", type="integer", nullable=false)
      * @ORM\Id
@@ -295,4 +322,5 @@ class Address
     {
         $this->people->removeElement($person);
     }
+
 }

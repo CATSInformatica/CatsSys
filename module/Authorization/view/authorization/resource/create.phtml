@@ -3,24 +3,7 @@
     <?php echo $this->message; ?>
 
     <div class="col-xs-12 col-md-6 col-md-offset-3">
-        <?php
-        $resourceForm = $this->form;
-
-        $resourceForm->prepare();
-        echo $this->form()->openTag($resourceForm);
-        ?>
-        <div class='form-group'>
-            <label for='resource_name'>Resource Name</label>
-            <?php
-            echo $this->formRow($resourceForm->get('resource_name'));
-            ?>
-        </div>
-        <div class='form-group'>
-            <?php
-            echo $this->formRow($resourceForm->get('Submit'));
-            ?>
-        </div>
-        <?php echo $this->form()->closeTag(); ?>
+        <?php echo $this->form($form); ?>
     </div>
     
 </section>

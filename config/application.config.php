@@ -9,6 +9,8 @@
 $modules = array(
     // per-module layout
     'EdpModuleLayouts',
+    // Twitter Bootstrap view helpers
+    'TwbBundle',
     // ORM mappers
     'DoctrineModule',
     'DoctrineORMModule',

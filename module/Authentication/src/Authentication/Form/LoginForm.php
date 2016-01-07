@@ -20,9 +20,7 @@ class LoginForm extends Form
 
     public function __construct($name = null)
     {
-        parent::__construct('login');
-
-
+        parent::__construct($name);
 
         $this->setAttributes(array(
                     'method' => 'post',
@@ -35,7 +33,6 @@ class LoginForm extends Form
                     'attributes' => array(
                         'type' => 'text',
                         'placeholder' => 'Usuário',
-                        'class' => 'form-control',
                         'id' => 'username',
                         'autofocus' => '',
                     ),
@@ -47,14 +44,15 @@ class LoginForm extends Form
                         'type' => 'password',
                         'placeholder' => 'Senha',
                         'id' => 'password',
-                        'class' => 'form-control',
-                    )
+                    ),
                 ))
                 // Remember Me checkbox
                 ->add(array(
                     'name' => 'rememberme',
                     'type' => 'checkbox',
-                    'class' => 'form-control',
+                    'options' => array(
+                        'label' => 'Continuar conectado?',
+                    )
                 ))
                 // Submit Button
                 ->add(array(
@@ -63,7 +61,7 @@ class LoginForm extends Form
                         'type' => 'submit',
                         'value' => 'Login',
                         'id' => 'submitbutton',
-                        'class' => 'btn btn-primary btn-lg',
+                        'class' => 'btn btn-primary btn-block',
                     ),
         ));
     }

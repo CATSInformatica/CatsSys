@@ -136,7 +136,15 @@ return array(
                         'label' => 'Show users',
                         'route' => 'authentication/user',
                         'action' => 'index',
-                        'icon' => 'fa fa-users'
+                        'icon' => 'fa fa-users',
+                        'pages' => array(
+                            array(
+                                'label' => 'Edit user',
+                                'route' => 'authentication/user',
+                                'action' => 'edit',
+                                'icon' => 'fa fa-user',
+                            ),
+                        ),
                     ),
                     array(
                         'label' => 'Create an user',

@@ -1,31 +1,9 @@
 <section class="content">
 
-    <?php
-    echo $this->message;
-    ?>
+    <p> <?php echo $this->message; ?></p>
 
     <div class="col-xs-12 col-md-6 col-md-offset-3">
-        <?php
-        $form = $this->form;
-
-        $form->prepare();
-        echo $this->form()->openTag($form);
-        ?>
-        <div class='form-group'>
-            <label for='user_id'>Usuário</label>
-            <?php
-            echo $this->formRow($form->get('user_id'));
-            ?>
-        </div>
-        <div class='form-group'>
-            <label for='role_id'>Papel</label>
-            <?php
-            echo $this->formRow($form->get('role_id'));
-            ?>
-        </div>
-        <?php
-        echo $this->formSubmit($form->get('Submit'));
-        ?>
-        <?php echo $this->form()->closeTag(); ?>
+        <?php echo $this->form($form); ?>
     </div>
+
 </section>

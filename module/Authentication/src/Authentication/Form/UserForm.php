@@ -27,6 +27,9 @@ class UserForm extends Form
             'attributes' => array(
                 'type' => 'text',
             ),
+            'options' => array(
+                'label' => 'Nome de usuário.',
+            ),
         ));
 
         $this->add(array(
@@ -34,12 +37,18 @@ class UserForm extends Form
             'attributes' => array(
                 'type' => 'password',
             ),
+            'options' => array(
+                'label' => 'Senha',
+            ),
         ));
 
         $this->add(array(
             'name' => 'user_password_confirm',
             'attributes' => array(
                 'type' => 'password',
+            ),
+            'options' => array(
+                'label' => 'Confirmação de senha',
             ),
         ));
 

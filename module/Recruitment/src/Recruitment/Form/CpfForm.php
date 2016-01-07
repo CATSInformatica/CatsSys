@@ -24,14 +24,13 @@ class CpfForm extends Form
 
         $this->add(array(
             'name' => 'cpf',
-            'attributes' => array(
-                'type' => 'text',
-                'class' => 'form-control',
-            )
-        ));
-
-        $this->add(array(
+            'type' => 'text',
+            'options' => array(
+                'label' => 'Número do Cpf',
+            ),
+        ))->add(array(
             'name' => 'submit',
+            'type' => 'submit',
             'attributes' => array(
                 'class' => 'btn btn-success btn-block',
                 'value' => 'Prosseguir',

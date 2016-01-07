@@ -42,15 +42,16 @@ class UserController extends AbstractActionController
                 $pass = UserService::encryptPassword($data['user_password']);
 
                 $user->setUserName($data['user_name'])
-                        ->setUserPassword($pass['password'])
-                        ->setUserPasswordSalt($pass['password_salt'])
-                        ->setUserActive(true);
+                    ->setUserPassword($pass['password'])
+                    ->setUserPasswordSalt($pass['password_salt'])
+                    ->setUserActive(true);
 
                 $entityManager->persist($user);
                 $entityManager->flush();
 
-                return $this->redirect()->toRoute('authentication/user', array(
-                            'action' => 'index',
+                return $this->redirect()->toRoute('authentication/user',
+                        array(
+                        'action' => 'index',
                 ));
             }
         }
@@ -63,8 +64,9 @@ class UserController extends AbstractActionController
     {
         $id = $this->params()->fromRoute('id');
         if (!$id) {
-            return $this->redirect()->toRoute('authentication/user', array(
-                        'action' => 'index',
+            return $this->redirect()->toRoute('authentication/user',
+                    array(
+                    'action' => 'index',
             ));
         }
         $entityManager = $this->getEntityManager();
@@ -96,15 +98,15 @@ class UserController extends AbstractActionController
             if ($form->isValid()) {
                 $pass = UserService::encryptPassword($data['user_password']);
                 $user->setUserPassword($pass['password'])
-                        ->setUserPasswordSalt($pass['password_salt']);
+                    ->setUserPasswordSalt($pass['password_salt']);
 
                 $entityManager->persist($user);
                 $entityManager->flush();
 
                 return $this->redirect()
-                                ->toRoute('authentication/default', array(
-                                    'controller' => 'user',
-                                    'action' => 'index'
+                        ->toRoute('authentication/user',
+                            array(
+                            'action' => 'index'
                 ));
             }
         }
@@ -117,8 +119,9 @@ class UserController extends AbstractActionController
     {
         $id = $this->params()->fromRoute('id');
         if (!$id) {
-            return $this->redirect()->toRoute('authentication/user', array(
-                        'action' => 'index',
+            return $this->redirect()->toRoute('authentication/user',
+                    array(
+                    'action' => 'index',
             ));
         }
 
@@ -135,8 +138,9 @@ class UserController extends AbstractActionController
             ));
         }
 
-        return $this->redirect()->toRoute('authentication/user', array(
-                    'action' => 'index',
+        return $this->redirect()->toRoute('authentication/user',
+                array(
+                'action' => 'index',
         ));
     }
 

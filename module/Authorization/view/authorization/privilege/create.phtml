@@ -1,49 +1,9 @@
 <section class="content">
 
-    <?php
-    echo $this->message;
-    ?>
-    
+    <p> <?php echo $this->message; ?></p>
+
     <div class="col-xs-12 col-md-6 col-md-offset-3">
-        <?php
-        $form = $this->form;
-
-        $form->prepare();
-        echo $this->form()->openTag($form);
-        ?>
-        <div class='form-group'>
-            <label for='resource_name'>Nome do Privilégio</label>
-            <?php
-            echo $this->formRow($form->get('privilege_name'));
-            ?>
-        </div>
-
-        <div class='form-group'>
-            <label for='resource_id'>Recurso Associado</label>
-            <?php
-            echo $this->formRow($form->get('resource_id'));
-            ?>
-        </div>
-
-        <div class='form-group'>
-            <label for='role_id'>Papel Associado</label>
-            <?php
-            echo $this->formRow($form->get('role_id'));
-            ?>
-        </div>
-
-        <div class='form-group'>
-            <?php
-            echo $this->formRow($form->get('privilege_permission_allow'));
-            ?>
-            <label for='privilege_permission_allow'>Permitir/Bloquear</label>
-        </div>
-
-        <div class='form-group'>
-            <?php echo $this->formRow($form->get('Submit')); ?>
-        </div>
-        
-        <?php echo $this->form()->closeTag(); ?>
+        <?php echo $this->form($form); ?>
     </div>
 </section>
 

@@ -13,6 +13,7 @@ use DateTime;
 use Exception;
 use Recruitment\Form\CpfFilter;
 use Recruitment\Form\CpfForm;
+use Recruitment\Form\PreInterviewForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Zend\View\Model\ViewModel;
@@ -85,6 +86,9 @@ class PreInterviewController extends AbstractActionController
         $studentContainer = new Container('pre_interview');
 
         if ($studentContainer->offsetExists('regId')) {
+
+            $form = new PreInterviewForm('Pre-interview');
+
             try {
 
                 $em = $this->getEntityManager();
@@ -95,12 +99,16 @@ class PreInterviewController extends AbstractActionController
             } catch (Exception $ex) {
                 $registration = null;
             }
-        } else {
-            $registration = null;
+
+            return new ViewModel(array(
+                'registration' => $registration,
+                'form' => $form,
+            ));
         }
 
-        return new ViewModel(array(
-            'registration' => $registration
+        return $this->redirect()->toRoute('recruitment/pre-interview',
+                array(
+                'action' => 'index',
         ));
     }
 

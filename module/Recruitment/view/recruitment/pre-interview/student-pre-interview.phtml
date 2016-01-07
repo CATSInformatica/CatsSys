@@ -1,12 +1,227 @@
 
 <?php
 $person = $registration->getPerson();
+$form->prepare();
 ?>
 <section class="content">
     <div class="row">
         <div class="ccol-xs-12 col-md-6 col-md-offset-3">
-            <p> <?php echo $registration->getRegistrationNumber(); ?> </p>
-            <p> <?php echo $person->getPersonName(); ?> </p>
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Dados de Inscrição</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+
+                <div class="box-body">
+                    <div class="form-group">
+                        <label class="control-label">Número de inscrição: </label>
+                        <?php echo $registration->getRegistrationNumber(); ?>
+                        <br>
+                        <label class="control-label">Nome:</label> 
+                        <?php echo $person->getPersonName(); ?>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
+    <br>
+    <div class="row">
+        <div class="col-xs-12 col-md-6 col-md-offset-3">
+            <?php echo $this->form()->openTag($form); ?>
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Endereço</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-1">
+                            <?php echo $this->formLabel($form->get('cep')); ?>
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                            <?php echo $this->formElement($form->get('cep')); ?>
+                        </div>
+                        <div class="col-xs-12 col-md-1">
+                            <?php echo $this->formLabel($form->get('uf')); ?>
+                        </div>
+                        <div class="col-xs-12 col-md-2">
+                            <?php echo $this->formElement($form->get('uf')); ?>
+                        </div>
+                        <div class="col-xs-12 col-md-1">
+                            <?php echo $this->formLabel($form->get('city')); ?>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <?php echo $this->formElement($form->get('city')); ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-6">
+                            <?php echo $this->formLabel($form->get('neighborhood')); ?>
+                            <?php echo $this->formElement($form->get('neighborhood')); ?>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <?php echo $this->formLabel($form->get('street')); ?>
+                            <?php echo $this->formElement($form->get('street')); ?>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-6">
+                            <?php echo $this->formLabel($form->get('number')); ?>
+                            <?php echo $this->formElement($form->get('number')); ?>
+                        </div>
+                        <div class="col-xs-12 col-md-6">
+                            <?php echo $this->formLabel($form->get('complement')); ?>
+                            <?php echo $this->formElement($form->get('complement')); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Educação</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('elementary_school_type')); ?>
+                            <?php echo $this->formElement($form->get('elementary_school_type')); ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('high_school_type')); ?>
+                            <?php echo $this->formElement($form->get('high_school_type')); ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-9">
+                            <div class="col-xs-12 col-md-12">
+                                <?php echo $this->formLabel($form->get('high_school')); ?>
+                                <?php echo $this->formElement($form->get('high_school')); ?>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                            <div class="col-xs-12 col-md-12">
+                                <?php echo $this->formLabel($form->get('hs_conclusion_year')); ?>
+                                <?php echo $this->formElement($form->get('hs_conclusion_year')); ?>
+                            </div>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('preparation_school')); ?>
+                            <?php echo $this->formElement($form->get('preparation_school')); ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('language_course')); ?>
+                            <?php echo $this->formElement($form->get('language_course')); ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('current_study')); ?>
+                            <?php echo $this->formElement($form->get('current_study')); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="box">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Sócioeconômico</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('live_with_number')); ?>
+                            <?php echo $this->formElement($form->get('live_with_number')); ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('live_with_you')); ?>
+                            <?php echo $this->formElement($form->get('live_with_you')); ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('number_of_rooms')); ?>
+                            <?php echo $this->formElement($form->get('number_of_rooms')); ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('means_of_transport')); ?>
+                            <?php echo $this->formElement($form->get('means_of_transport')); ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('monthly_income')); ?>
+                            <?php echo $this->formElement($form->get('monthly_income')); ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('father_education_grade')); ?>
+                            <?php echo $this->formElement($form->get('father_education_grade')); ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('mother_education_grade')); ?>
+                            <?php echo $this->formElement($form->get('mother_education_grade')); ?>
+                        </div>
+                    </div>
+                    <br>
+                    <div class="form-group">
+                        <div class="col-xs-12 col-md-12">
+                            <?php echo $this->formLabel($form->get('expect_from_us')); ?>
+                            <?php echo $this->formElement($form->get('expect_from_us')); ?>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-12 col-md-12">
+                    <?php echo $this->formElement($form->get('submit')); ?>
+                </div>
+            </div>
+
+            <?php echo $this->form()->closeTag(); ?>
+        </div>
+    </div>
+
 </section>

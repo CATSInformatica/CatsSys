@@ -15,53 +15,59 @@ use Zend\Form\Form;
  *
  * @author marcio
  */
-class PrivilegeForm extends Form {
+class PrivilegeForm extends Form
+{
 
-    public function __construct($name = null, $options = array()) {
+    public function __construct($name = null, $options = array())
+    {
         parent::__construct($name);
 
         $this->add(array(
-                    'name' => 'privilege_name',
-                    'attributes' => array(
-                        'type' => 'text',
-                        'class' => 'form-control',
-                        'placeholder' => 'Privilege name',
-                    ),
-                ))
-                ->add(array(
-                    'name' => 'privilege_permission_allow',
-                    'type' => 'checkbox',
-                    'class' => 'form-control',
-                ))
-                ->add(array(
-                    'name' => 'resource_id',
-                    'type' => 'Zend\Form\Element\Select',
-                    'options' => array(
-                        'value_options' => $options['resources'],
-                    ),
-                    'attributes' => array(
-                        'type' => 'select',
-                        'class' => 'form-control',
-                    ),
-                ))
-                ->add(array(
-                    'name' => 'role_id',
-                    'type' => 'Zend\Form\Element\Select',
-                    'options' => array(
-                        'value_options' => $options['roles'],
-                    ),
-                    'attributes' => array(
-                        'type' => 'select',
-                        'class' => 'form-control',
-                    )
-                ))
-                ->add(array(
-                    'name' => 'Submit',
-                    'attributes' => array(
-                        'type' => 'submit',
-                        'class' => 'btn btn-primary btn-block',
-                        'value' => 'Go',
-                    )
+                'name' => 'privilege_name',
+                'attributes' => array(
+                    'type' => 'text',
+                    'placeholder' => 'Privilege name',
+                ),
+                'options' => array(
+                    'label' => 'Nome do privilégio',
+                ),
+            ))
+            ->add(array(
+                'name' => 'resource_id',
+                'type' => 'Zend\Form\Element\Select',
+                'options' => array(
+                    'label' => 'Recurso',
+                    'value_options' => $options['resources'],
+                ),
+                'attributes' => array(
+                    'type' => 'select',
+                ),
+            ))
+            ->add(array(
+                'name' => 'role_id',
+                'type' => 'Zend\Form\Element\Select',
+                'options' => array(
+                    'label' => 'Conceder privilégio para',
+                    'value_options' => $options['roles'],
+                ),
+                'attributes' => array(
+                    'type' => 'select',
+                )
+            ))
+            ->add(array(
+                'name' => 'privilege_permission_allow',
+                'type' => 'checkbox',
+                'options' => array(
+                    'label' => 'Permitir/Bloquear',
+                ),
+            ))
+            ->add(array(
+                'name' => 'Submit',
+                'attributes' => array(
+                    'type' => 'submit',
+                    'class' => 'btn btn-primary btn-block',
+                    'value' => 'Go',
+                )
         ));
     }
 
