@@ -38,6 +38,10 @@ sudo tee -a  /etc/hosts << EOF
  echo '127.1.1.100   cats-lab.lan # nome associado ao virtual host local de desenvolvimento'
 EOF
 
+echo 'Changing php.ini max_post_size to 20MB and upload_max_filesize to 15MB'
+sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php5/apache2/php.ini
+sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php5/apache2/php.ini
+
 echo 'Starting git clone'
 mkdir $HOME/vhosts
 git clone https://github.com/marciodojr/catsSys.git $HOME/vhosts/cats-lab
@@ -98,6 +102,7 @@ sudo chmod 777 $HOME/vhosts/cats-lab/data/fonts
 sudo chmod 777 $HOME/vhosts/cats-lab/data/profile
 sudo chmod 777 $HOME/vhosts/cats-lab/data/captcha
 sudo chmod 777 $HOME/vhosts/cats-lab/data/session
+sudo chmod 777 $HOME/vhosts/cats-lab/data/pre-interview
 
 echo 'Enabling rewrite mode'
 sudo a2enmod rewrite

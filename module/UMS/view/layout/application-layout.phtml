@@ -30,8 +30,7 @@
             ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/AdminLTE.min.css'))
             // AdminLTE Skins
             ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/skins/skin-blue.min.css'))
-            // DropzoneJS
-            ->appendStylesheet($this->basePath('vendor/dropzone/dist/min/dropzone.min.css'));
+            ->appendStylesheet($this->basePath('css/app.css'));
         ?>
 
     </head>
@@ -460,7 +459,7 @@
                                 'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
                             if (result) {
                                 var selectedResult = getSelectedItemInfo(toolbarItem, true);
-                                
+
                                 if (selectedResult !== null) {
 
                                     $.ajax({

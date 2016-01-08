@@ -80,9 +80,11 @@ return array(
                     'pre-interview' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/pre-interview[/:action]',
+                            'route' => '/pre-interview[/:action[/:file[/:rid]]]',
                             'constraints' => array(
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'file' => 'personal|income|expendure',
+                                'rid' => '[0-9]+',
                             ),
                             'defaults' => array(
                                 'controller' => 'Recruitment\Controller\PreInterview',
@@ -246,17 +248,27 @@ return array(
                         'action' => 'index',
                         'resource' => 'Recruitment\Controller\PreInterview',
                         'privilege' => 'index',
-                        'icon' => 'fa fa-female',
+                        'icon' => 'fa fa-check',
                         'pages' => array(
                             array(
                                 'label' => 'Student pre-interview II',
                                 'route' => 'recruitment/pre-interview',
-                                'action' => 'studentPreInterview',
+                                'action' => 'studentPreInterviewFiles',
                                 'resource' => 'Recruitment\Controller\PreInterview',
-                                'privilege' => 'studentPreInterview',
-                                'icon' => 'fa fa-female',
-                            )
-                        )
+                                'privilege' => 'studentPreInterviewFiles',
+                                'icon' => 'fa fa-file-pdf-o',
+                                'pages' => array(
+                                    array(
+                                        'label' => 'Student pre-interview III',
+                                        'route' => 'recruitment/pre-interview',
+                                        'action' => 'studentPreInterviewForm',
+                                        'resource' => 'Recruitment\Controller\PreInterview',
+                                        'privilege' => 'studentPreInterviewForm',
+                                        'icon' => 'fa fa-check-circle',
+                                    ),
+                                ),
+                            ),
+                        ),
                     ),
                 ),
             ),
