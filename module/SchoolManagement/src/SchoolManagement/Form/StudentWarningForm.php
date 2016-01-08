@@ -23,27 +23,32 @@ class StudentWarningForm extends Form
         parent::__construct($name, $options);
 
         $this->add(array(
-                    'name' => 'warning_type_name',
-                    'attributes' => array(
-                        'type' => 'text',
-                        'class' => 'form-control',
-                    )
-                ))
-                ->add(array(
-                    'name' => 'warning_type_description',
-                    'attributes' => array(
-                        'type' => 'textarea',
-                        'class' => 'form-control',
-                        'rows' => 5,
-                    )
-                ))
-                ->add(array(
-                    'name' => 'submit',
-                    'attributes' => array(
-                        'type' => 'text',
-                        'class' => 'btn btn-primary btn-block',
-                        'value' => 'Criar',
-                    )
+                'name' => 'warning_type_name',
+                'attributes' => array(
+                    'type' => 'text',
+                ),
+                'options' => array(
+                    'label' => 'Nome da advertência',
+                )
+            ))
+            ->add(array(
+                'name' => 'warning_type_description',
+                'attributes' => array(
+                    'type' => 'textarea',
+                    'class' => 'form-control',
+                    'rows' => 5,
+                ),
+                'options' => array(
+                    'label' => 'Descrição detalhada'
+                ),
+            ))
+            ->add(array(
+                'name' => 'submit',
+                'attributes' => array(
+                    'type' => 'submit',
+                    'class' => 'btn btn-primary btn-block',
+                    'value' => 'Criar',
+                )
         ));
     }
 

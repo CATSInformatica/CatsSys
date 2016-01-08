@@ -43,44 +43,29 @@ $form->prepare();
                     </div>
                 </div>
                 <div class="box-body">
-                    <div class="form-group">
-                        <div class="col-xs-12 col-md-1">
-                            <?php echo $this->formLabel($form->get('cep')); ?>
-                        </div>
-                        <div class="col-xs-12 col-md-3">
-                            <?php echo $this->formElement($form->get('cep')); ?>
-                        </div>
-                        <div class="col-xs-12 col-md-1">
-                            <?php echo $this->formLabel($form->get('uf')); ?>
-                        </div>
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-2">
-                            <?php echo $this->formElement($form->get('uf')); ?>
+                            <?php echo $this->formRow($form->get('cep')); ?>
                         </div>
-                        <div class="col-xs-12 col-md-1">
-                            <?php echo $this->formLabel($form->get('city')); ?>
+                        <div class="col-xs-12 col-md-1 col-md-offset-1">
+                            <?php echo $this->formRow($form->get('uf')); ?>
                         </div>
-                        <div class="col-xs-12 col-md-4">
-                            <?php echo $this->formElement($form->get('city')); ?>
+                        <div class="col-xs-12 col-md-3 col-md-offset-1">
+                            <?php echo $this->formRow($form->get('city')); ?>
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-xs-12 col-md-6">
-                            <?php echo $this->formLabel($form->get('neighborhood')); ?>
-                            <?php echo $this->formElement($form->get('neighborhood')); ?>
-                        </div>
-                        <div class="col-xs-12 col-md-6">
-                            <?php echo $this->formLabel($form->get('street')); ?>
-                            <?php echo $this->formElement($form->get('street')); ?>
+                        <div class="col-xs-12 col-md-3 col-md-offset-1">
+                            <?php echo $this->formRow($form->get('neighborhood')); ?>
                         </div>
                     </div>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-6">
-                            <?php echo $this->formLabel($form->get('number')); ?>
-                            <?php echo $this->formElement($form->get('number')); ?>
+                            <?php echo $this->formRow($form->get('street')); ?>
                         </div>
-                        <div class="col-xs-12 col-md-6">
-                            <?php echo $this->formLabel($form->get('complement')); ?>
-                            <?php echo $this->formElement($form->get('complement')); ?>
+                        <div class="col-xs-12 col-md-2 col-md-offset-1">
+                            <?php echo $this->formRow($form->get('number')); ?>
+                        </div>
+                        <div class="col-xs-12 col-md-2 col-md-offset-1">
+                            <?php echo $this->formRow($form->get('complement')); ?>
                         </div>
                     </div>
                 </div>
@@ -96,53 +81,42 @@ $form->prepare();
                     </div>
                 </div>
                 <div class="box-body">
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('elementary_school_type')); ?>
-                            <?php echo $this->formElement($form->get('elementary_school_type')); ?>
+                            <?php echo $this->formRow($form->get('elementary_school_type')); ?>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('high_school_type')); ?>
-                            <?php echo $this->formElement($form->get('high_school_type')); ?>
+                            <?php echo $this->formRow($form->get('high_school_type')); ?>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-9">
-                            <div class="col-xs-12 col-md-12">
-                                <?php echo $this->formLabel($form->get('high_school')); ?>
-                                <?php echo $this->formElement($form->get('high_school')); ?>
-                            </div>
+                            <?php echo $this->formRow($form->get('high_school')); ?>
                         </div>
-                        <div class="col-xs-12 col-md-3">
-                            <div class="col-xs-12 col-md-12">
-                                <?php echo $this->formLabel($form->get('hs_conclusion_year')); ?>
-                                <?php echo $this->formElement($form->get('hs_conclusion_year')); ?>
-                            </div>
+                        <div class="col-xs-12 col-md-2 col-md-offset-1">
+                            <?php echo $this->formRow($form->get('hs_conclusion_year')); ?>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('preparation_school')); ?>
-                            <?php echo $this->formElement($form->get('preparation_school')); ?>
+                            <?php echo $this->formRow($form->get('preparation_school')); ?>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('language_course')); ?>
-                            <?php echo $this->formElement($form->get('language_course')); ?>
+                            <?php echo $this->formRow($form->get('language_course')); ?>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('current_study')); ?>
-                            <?php echo $this->formElement($form->get('current_study')); ?>
+                            <?php echo $this->formRow($form->get('current_study')); ?>
                         </div>
                     </div>
                 </div>
@@ -157,66 +131,58 @@ $form->prepare();
                     </div>
                 </div>
                 <div class="box-body">
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('live_with_number')); ?>
-                            <?php echo $this->formElement($form->get('live_with_number')); ?>
+                            <?php echo $this->formRow($form->get('live_with_number')); ?>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('live_with_you')); ?>
-                            <?php echo $this->formElement($form->get('live_with_you')); ?>
+                            <?php echo $this->formRow($form->get('live_with_you')); ?>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('number_of_rooms')); ?>
-                            <?php echo $this->formElement($form->get('number_of_rooms')); ?>
+                            <?php echo $this->formRow($form->get('number_of_rooms')); ?>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('means_of_transport')); ?>
-                            <?php echo $this->formElement($form->get('means_of_transport')); ?>
+                            <?php echo $this->formRow($form->get('means_of_transport')); ?>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('monthly_income')); ?>
-                            <?php echo $this->formElement($form->get('monthly_income')); ?>
+                            <?php echo $this->formRow($form->get('monthly_income')); ?>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('father_education_grade')); ?>
-                            <?php echo $this->formElement($form->get('father_education_grade')); ?>
+                            <?php echo $this->formRow($form->get('father_education_grade')); ?>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('mother_education_grade')); ?>
-                            <?php echo $this->formElement($form->get('mother_education_grade')); ?>
+                            <?php echo $this->formRow($form->get('mother_education_grade')); ?>
                         </div>
                     </div>
                     <br>
-                    <div class="form-group">
+                    <div class="form-group col-md-12">
                         <div class="col-xs-12 col-md-12">
-                            <?php echo $this->formLabel($form->get('expect_from_us')); ?>
-                            <?php echo $this->formElement($form->get('expect_from_us')); ?>
+                            <?php echo $this->formRow($form->get('expect_from_us')); ?>
                         </div>
                     </div>
                 </div>
             </div>
             <div class="form-group">
                 <div class="col-xs-12 col-md-12">
-                    <?php echo $this->formElement($form->get('submit')); ?>
+                    <?php echo $this->formRow($form->get('submit')); ?>
                 </div>
             </div>
 

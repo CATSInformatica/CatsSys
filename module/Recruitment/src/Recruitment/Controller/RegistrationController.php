@@ -33,6 +33,8 @@ use Zend\File\Transfer\Adapter\Http as HttpAdapter;
  */
 class RegistrationController extends AbstractActionController
 {
+    
+    const PROFILE_DIR = './data/profile/';
 
     use EntityManagerService;
 
@@ -299,7 +301,7 @@ class RegistrationController extends AbstractActionController
             try {
                 $em = $this->getEntityManager();
                 $person = $em->getReference('Recruitment\Entity\Person', $id);
-                $photo = './data/profile/' . $person->getPersonPhoto();
+                $photo = self::PROFILE_DIR . $person->getPersonPhoto();
 
                 if (file_exists($photo) !== false) {
                     $photoContent = file_get_contents($photo);
@@ -336,7 +338,7 @@ class RegistrationController extends AbstractActionController
                     'registrationId' => $id
                 ));
 
-                $targetDir = './data/profile/';
+                $targetDir = self::PROFILE_DIR;
                 $targetName = $id;
 
                 switch ($file['type']) {

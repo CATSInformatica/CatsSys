@@ -28,6 +28,8 @@ use Zend\View\Model\ViewModel;
 class RecruitmentController extends AbstractActionController
 {
 
+    const EDITAL_DIR = './data/edital/';
+
     use \Database\Service\EntityManagerService;
 
     public function indexAction()
@@ -51,7 +53,7 @@ class RecruitmentController extends AbstractActionController
 
             $em = $this->getEntityManager();
             $recruitment = $em->getReference('Recruitment\Entity\Recruitment', $id);
-            $edital = './data/edital/' . $recruitment->getRecruitmentPublicNotice();
+            $edital = self::EDITAL_DIR . $recruitment->getRecruitmentPublicNotice();
 
             if (file_exists($edital) !== false) {
                 $editalContent = file_get_contents($edital);
@@ -75,7 +77,7 @@ class RecruitmentController extends AbstractActionController
             $file = $request->getFiles()->toArray();
 
             $data = array_merge_recursive(
-                    $request->getPost()->toArray(), $file
+                $request->getPost()->toArray(), $file
             );
 
             $form->setData($data);
@@ -86,12 +88,12 @@ class RecruitmentController extends AbstractActionController
 
                 try {
 
-                    $targetDir = './data/edital/';
+                    $targetDir = self::EDITAL_DIR;
 
                     $filename = $data['recruitment_year']
-                            . $data['recruitment_number']
-                            . $data['recruitment_type']
-                            . '.pdf';
+                        . $data['recruitment_number']
+                        . $data['recruitment_type']
+                        . '.pdf';
 
                     $targetFile = $targetDir . $filename;
 
@@ -103,7 +105,8 @@ class RecruitmentController extends AbstractActionController
 
                     $uploadAdapter = new HttpAdapter();
 
-                    $uploadAdapter->addFilter('File\Rename', array(
+                    $uploadAdapter->addFilter('File\Rename',
+                        array(
                         'target' => $targetFile,
                         'overwrite' => false
                     ));
@@ -120,11 +123,11 @@ class RecruitmentController extends AbstractActionController
                     $recruitment = new Recruitment();
 
                     $recruitment->setRecruitmentNumber($data['recruitment_number'])
-                            ->setRecruitmentYear($data['recruitment_year'])
-                            ->setRecruitmentBeginDate(new DateTime($data['recruitment_begindate']))
-                            ->setRecruitmentEndDate(new DateTime($data['recruitment_enddate']))
-                            ->setRecruitmentPublicNotice($filename)
-                            ->setRecruitmentType($data['recruitment_type']);
+                        ->setRecruitmentYear($data['recruitment_year'])
+                        ->setRecruitmentBeginDate(new DateTime($data['recruitment_begindate']))
+                        ->setRecruitmentEndDate(new DateTime($data['recruitment_enddate']))
+                        ->setRecruitmentPublicNotice($filename)
+                        ->setRecruitmentType($data['recruitment_type']);
 
                     $em->persist($recruitment);
                     $em->flush();
@@ -163,8 +166,9 @@ class RecruitmentController extends AbstractActionController
                 if ($currentDate < $recruitment->getRecruitmentBeginDate()) {
                     $em->remove($recruitment);
                     $em->flush();
-                    return $this->redirect()->toRoute('recruitment/recruitment', array(
-                                'action' => 'index'
+                    return $this->redirect()->toRoute('recruitment/recruitment',
+                            array(
+                            'action' => 'index'
                     ));
                 }
 

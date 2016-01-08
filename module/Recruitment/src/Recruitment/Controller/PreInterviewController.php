@@ -29,6 +29,8 @@ use Zend\View\Model\ViewModel;
 class PreInterviewController extends AbstractActionController
 {
 
+    const PRE_INTERVIEW_DIR = './data/pre-interview/';
+
     use EntityManagerService;
 
     /**
@@ -101,7 +103,7 @@ class PreInterviewController extends AbstractActionController
 
         $files['personal'] = $files['income'] = $files['expendure'] = false;
 
-        $prefix = './data/pre-interview/' . $studentContainer->offsetGet('regId') . '_';
+        $prefix = self::PRE_INTERVIEW_DIR . $studentContainer->offsetGet('regId') . '_';
 
         $files['personal'] = file_exists($prefix . 'personal.pdf');
         $files['income'] = file_exists($prefix . 'income.pdf');
@@ -182,7 +184,7 @@ class PreInterviewController extends AbstractActionController
                         throw new RuntimeException('Nenhum arquivo enviado.');
                     }
 
-                    $targetDir = './data/pre-interview/';
+                    $targetDir = self::PRE_INTERVIEW_DIR;
                     $filename = $studentContainer->offsetGet('regId') . '_' . $type . '.pdf';
                     $targetFile = $targetDir . $filename;
 
@@ -247,7 +249,7 @@ class PreInterviewController extends AbstractActionController
 
         if ($file) {
 
-            $pdf = './data/pre-interview/' . $rid . '_' . $file . '.pdf';
+            $pdf = self::PRE_INTERVIEW_DIR . $rid . '_' . $file . '.pdf';
 
             if (file_exists($pdf) !== false) {
                 $response = $this->getResponse();

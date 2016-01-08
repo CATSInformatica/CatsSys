@@ -19,6 +19,7 @@ use Zend\View\Model\JsonModel;
  */
 class CaptchaController extends AbstractActionController
 {
+    const CAPTCHA_DIR = './data/captcha/';
 
     public function generateAction()
     {
@@ -28,7 +29,7 @@ class CaptchaController extends AbstractActionController
 
         if ($id) {
 
-            $image = './data/captcha/' . $id;
+            $image = self::CAPTCHA_DIR . $id;
 
             if (file_exists($image) !== false) {
                 $imageGetContent = file_get_contents($image);
