@@ -18,9 +18,9 @@ use Recruitment\Entity\Registration;
 class StudentRegistrationForm extends RegistrationForm
 {
 
-    public function __construct($imgUrl, $name = null)
+    public function __construct($name = null)
     {
-        parent::__construct($imgUrl, $name);
+        parent::__construct($name);
 
         $this->add(array(
             'name' => 'registration_know_about',

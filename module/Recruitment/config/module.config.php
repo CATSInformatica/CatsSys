@@ -109,6 +109,11 @@ return array(
         ),
         'display_exceptions' => true,
     ),
+    'view_helpers' => array(
+        'invokables' => array(
+            'CaptchaImageViewHelper' => 'Recruitment\View\Helper\CaptchaImage',
+        ),
+    ),
     // Doctrine configuration
     'doctrine' => array(
         'configuration' => array(

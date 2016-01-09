@@ -9,6 +9,7 @@
 namespace Recruitment\Controller;
 
 use Recruitment\Form\StudentRegistrationForm;
+use Recruitment\Model\CaptchaImage;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 
@@ -19,7 +20,6 @@ use Zend\View\Model\JsonModel;
  */
 class CaptchaController extends AbstractActionController
 {
-    const CAPTCHA_DIR = './data/captcha/';
 
     public function generateAction()
     {
@@ -29,7 +29,7 @@ class CaptchaController extends AbstractActionController
 
         if ($id) {
 
-            $image = self::CAPTCHA_DIR . $id;
+            $image = CaptchaImage::DEFAULT_DIR . $id;
 
             if (file_exists($image) !== false) {
                 $imageGetContent = file_get_contents($image);
@@ -48,7 +48,7 @@ class CaptchaController extends AbstractActionController
 
     public function refreshAction()
     {
-        $form = new StudentRegistrationForm($this->getRequest()->getBaseUrl() . '/recruitment/captcha/generate', 'Inscrição');
+        $form = new StudentRegistrationForm('Inscrição');
         $captcha = $form->get('registration_captcha')->getCaptcha();
         $data = array();
         $data['id'] = $captcha->generate();

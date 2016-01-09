@@ -9,7 +9,7 @@
 namespace Recruitment\Form;
 
 use Recruitment\Entity\Person;
-use Zend\Captcha\Image;
+use Recruitment\Model\CaptchaImage;
 use Zend\Form\Form;
 
 /**
@@ -20,24 +20,17 @@ use Zend\Form\Form;
 abstract class RegistrationForm extends Form
 {
 
-    const FONT_DIR = './data/fonts/';
-    const CAPTCHA_DIR = './data/captcha/';
-
-    public function __construct($imgUrl, $name = null)
+    public function __construct($name = null)
     {
         parent::__construct($name);
 
-        $captchaImg = new Image(array(
-            'font' => self::FONT_DIR . 'Arial.ttf',
-            'width' => '250',
+        $captchaImg = new CaptchaImage(array(
+            'width' => '350',
             'height' => '100',
-            'dotNoiseLevel' => '40',
+            'dotNoiseLevel' => '60',
             'lineNoiseLevel' => 3,
             'expiration' => '360',
         ));
-
-        $captchaImg->setImgDir(self::CAPTCHA_DIR);
-        $captchaImg->setImgUrl($imgUrl);
 
         $this->add(array(
                 'name' => 'person_firstname',
