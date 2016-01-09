@@ -16,38 +16,47 @@ use Zend\Form\Form;
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class StudentBgConfigForm extends Form 
-{
-    public function __construct($name = null, $options = array())
-    {
+class StudentBgConfigForm extends Form {
+
+    public function __construct($name = null, $options = array()) {
         parent::__construct($name, $options);
 
-        $bg_img = new Element\File('bg_img');
-        $bg_img->setAttribute('type', 'file');
-        $bg_img->setAttribute('id', 'bg_img');
-        
         $this->add(array(
                     'name' => 'bg_phrase',
                     'attributes' => array(
                         'type' => 'text',
-                        'class' => 'form-control',
+                    ),
+                    'options' => array(
+                        'label' => 'Frase',
                     ),
                 ))
                 ->add(array(
                     'name' => 'bg_author',
                     'attributes' => array(
                         'type' => 'text',
-                        'class' => 'form-control',
+                    ),
+                    'options' => array(
+                        'label' => 'Autor',
                     ),
                 ))
-                ->add($bg_img)
+                ->add(array(
+                    'name' => 'bg_img',
+                    'attributes' => array(
+                        'type' => 'file',
+                        'id' => 'bg_img',
+                    ),
+                    'options' => array(
+                        'label' => 'Imagem de fundo',
+                    ),
+                ))
                 ->add(array(
                     'name' => 'Submit',
                     'attributes' => array(
                         'type' => 'button',
                         'class' => 'btn btn-primary btn-block',
                         'value' => 'Criar',
-                    )
+                    ),
         ));
     }
+
 }

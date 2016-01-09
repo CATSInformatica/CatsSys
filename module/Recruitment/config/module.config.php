@@ -259,16 +259,12 @@ return array(
                                 'label' => 'Student pre-interview II',
                                 'route' => 'recruitment/pre-interview',
                                 'action' => 'studentPreInterviewFiles',
-                                'resource' => 'Recruitment\Controller\PreInterview',
-                                'privilege' => 'studentPreInterviewFiles',
                                 'icon' => 'fa fa-file-pdf-o',
                                 'pages' => array(
                                     array(
                                         'label' => 'Student pre-interview III',
                                         'route' => 'recruitment/pre-interview',
                                         'action' => 'studentPreInterviewForm',
-                                        'resource' => 'Recruitment\Controller\PreInterview',
-                                        'privilege' => 'studentPreInterviewForm',
                                         'icon' => 'fa fa-check-circle',
                                     ),
                                 ),

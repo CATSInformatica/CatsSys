@@ -39,6 +39,26 @@ class StudentBgConfigController extends AbstractActionController
             $em = $this->getEntityManager();
             $configs = $em->getRepository('Documents\Entity\StudentBgConfig')->findAll();
             
+            //1
+            $cId = 1;
+            $bgId = 38;
+            
+            $bgSelected = $em->getRepository('Documents\Entity\StudentBgConfig')
+                       ->findOneBy(array(
+                           'studentBgConfigId' => $bgId
+                       ));
+            
+            $classSelected = $em->getReference('SchoolManagement\Entity\StudentClass',
+                    $cId);
+            
+            $enrolls = $classSelected->getEnrollments();
+            
+            foreach($enrolls as $enroll) {
+                $people[] = $enroll->getRegistration()->getPerson();
+            }
+            
+            
+            
         } catch (\Exception $ex) {
             $message = $ex->getMessage();
         }      
@@ -57,7 +77,9 @@ class StudentBgConfigController extends AbstractActionController
         
         return new ViewModel([
             'configs' => $configs,
-            'message' => $message
+            'message' => $message,
+            'people' => $people,
+            'bgConfig' => $bgSelected,
         ]); 
     }
     

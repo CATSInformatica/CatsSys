@@ -35,7 +35,7 @@ sudo tee /etc/apache2/sites-available/cats-lab.conf << EOF
 EOF
 
 sudo tee -a  /etc/hosts << EOF
- echo '127.1.1.100   cats-lab.lan # nome associado ao virtual host local de desenvolvimento'
+127.1.1.100   cats-lab.lan # nome associado ao virtual host local de desenvolvimento
 EOF
 
 echo 'Changing php.ini max_post_size to 20MB and upload_max_filesize to 15MB'
@@ -89,6 +89,7 @@ php $HOME/vhosts/cats-lab/public/index.php orm:schema-tool:create
 echo 'Importing table contents'
 mysql -u root -p catssys <$HOME/vhosts/cats-lab/data/dev-helpers/catssys_data_1.sql
 mysql -u root -p catssys <$HOME/vhosts/cats-lab/data/dev-helpers/catssys_data_2.sql
+mysql -u root -p catssys <$HOME/vhosts/cats-lab/data/dev-helpers/catssys_data_3.sql
 
 echo 'Creating data directories'
 mkdir $HOME/vhosts/cats-lab/data/captcha

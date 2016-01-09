@@ -1,34 +1,43 @@
-<section class="content-header">
-    <p> <?php echo $message ?> </p>
-</section>
-
-
 <section class="content">
+
+    <?php echo $bgConfig->getStudentBgConfigAuthor(); ?>
+
+    <ul>
+        <?php foreach ($people as $person): ?>
+            <li>
+                <?php echo $person->getPersonName(); ?><br>
+                <?php echo $person->getPersonRg(); ?><br>
+                <img src="/recruitment/registration/photo/<?php echo $person->getPersonId(); ?>"><br>
+            </li>
+        <?php endforeach; ?>
+    </ul>
+
+    <p> <?php echo $message ?> </p>
     <?php if ($configs): ?>
-    <div class="table-responsive col-xs-12 col-md-10 col-md-offset-1">
-        <table id="config-table" class="table table-condensed table-striped">
-            <thead>
-                <tr>
-                    <th class="text-center">#</th>
-                    <th class="text-center">Frase</th>
-                    <th class="text-center">Autor</th>
-                    <th class="text-center">Imagem</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($this->configs as $config): ?>
-                    <tr class="cats-row" data-id="<?php echo $config->getStudentBgConfigId(); ?>">
-                        <td class="text-center"> <?php echo $config->getStudentBgConfigId(); ?></td>
-                        <td class="text-center"> <?php echo $config->getStudentBgConfigPhrase(); ?></td>
-                        <td class="text-center"> <?php echo $config->getStudentBgConfigAuthor(); ?></td>
-                        <td class="text-center"> <a href="/img/<?php echo $config->getStudentBgConfigImg(); ?>"><?php echo $config->getStudentBgConfigImg(); ?> </a></td>
+        <div class="table-responsive col-xs-12 col-md-10 col-md-offset-1">
+            <table id="config-table" class="table table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Frase</th>
+                        <th class="text-center">Autor</th>
+                        <th class="text-center">Imagem</th>
                     </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
-    </div>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->configs as $config): ?>
+                        <tr class="cats-row" data-id="<?php echo $config->getStudentBgConfigId(); ?>">
+                            <td class="text-center"> <?php echo $config->getStudentBgConfigId(); ?></td>
+                            <td class="text-center"> <?php echo $config->getStudentBgConfigPhrase(); ?></td>
+                            <td class="text-center"> <?php echo $config->getStudentBgConfigAuthor(); ?></td>
+                            <td class="text-center"> <a href="/img/<?php echo $config->getStudentBgConfigImg(); ?>"><?php echo $config->getStudentBgConfigImg(); ?> </a></td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
     <?php else: ?>
-    <p> Não há configurações cadastradas. </p>
+        <p> Não há configurações cadastradas. </p>
     <?php endif; ?>
 </section>
 <script>

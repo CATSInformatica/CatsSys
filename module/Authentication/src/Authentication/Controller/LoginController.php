@@ -40,6 +40,11 @@ class LoginController extends AbstractActionController
      */
     public function loginAction()
     {
+        $userC =  new Container('User');
+        if($userC->id) {
+            return $this->redirect()->toRoute('ums');
+        }
+        
         $this->layout('login/layout');
         $loginForm = new LoginForm();
         $message = null;
@@ -69,7 +74,8 @@ class LoginController extends AbstractActionController
 
     protected function userAuthentication($data)
     {
-        $auth = $this->getServiceLocator()->get('Zend\Authentication\AuthenticationService');
+        $auth = $this->getServiceLocator()
+                ->get('Zend\Authentication\AuthenticationService');
         $adapter = $auth->getAdapter();
         $adapter->setIdentityValue($data['username']);
         $adapter->setCredentialValue($data['password']);
@@ -107,7 +113,8 @@ class LoginController extends AbstractActionController
 
     public function logoutAction()
     {
-        $auth = $this->getServiceLocator()->get('Zend\Authentication\AuthenticationService');
+        $auth = $this->getServiceLocator()
+                ->get('Zend\Authentication\AuthenticationService');
         if ($auth->hasIdentity()) {
             $auth->clearIdentity();
 

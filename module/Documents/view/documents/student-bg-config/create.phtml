@@ -1,4 +1,7 @@
-
+<?php 
+    $this->headTitle()->append('Criar configuração de fundo')
+        ->setSeparator(' - ');
+?>
 <section class="content-header">
     <p><?php echo $this->message; ?></p>
 </section>
@@ -7,43 +10,7 @@
     <div class="row">
         <?php if ($form !== null): ?>
             <div class="col-xs-12 col-md-6 col-md-offset-3">
-                <?php
-                $form->prepare();
-                echo $this->form()->openTag($form);
-                ?>
-
-                <div class='form-group'>
-                    <label for='bg_phrase'>Frase</label>
-                    <?php
-                    echo $this->formTextArea($form->get('bg_phrase'));                    
-                    ?>
-                </div>
-
-                <div class="row">
-                    <div class="form-group col-xs-12 col-md-12">
-                        <label for='bg_author'>Autor</label>
-                        <?php
-                        echo $this->formRow($form->get('bg_author'));
-                        ?>
-                    </div> 
-                </div>
-                <div class="row">
-                    <div class="form-group col-xs-12 col-md-6">
-                        <label for='bg_img'>Imagem de Fundo</label>
-                        <?php $bg_img = $form->get('bg_img'); ?>
-                        <?php echo $this->formFile($bg_img); ?>
-                        <?php echo $this->formElementErrors($bg_img); ?>
-                    </div>                    
-                    
-                </div>
-
-                <div class="form-group">
-                    <?php
-                    echo $this->formSubmit($form->get('Submit'));
-                    ?>
-                    <?php echo $this->form()->closeTag(); ?>
-                </div>
-
+                <?php echo $this->form($form); ?>
             </div>
         <?php endif; ?>
     </div>
