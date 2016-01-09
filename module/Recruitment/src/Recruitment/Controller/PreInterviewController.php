@@ -13,6 +13,7 @@ use DateTime;
 use Exception;
 use Recruitment\Form\CpfFilter;
 use Recruitment\Form\CpfForm;
+use Recruitment\Form\PreInterviewFilter;
 use Recruitment\Form\PreInterviewForm;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
@@ -131,30 +132,43 @@ class PreInterviewController extends AbstractActionController
     {
         $studentContainer = new Container('pre_interview');
 
-        if ($studentContainer->offsetExists('regId')) {
-
-            $form = new PreInterviewForm('Pre-interview');
-
-            try {
-
-                $em = $this->getEntityManager();
-
-                $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
-                    'registrationId' => $studentContainer->offsetGet('regId')
-                ));
-            } catch (Exception $ex) {
-                $registration = null;
-            }
-
-            return new ViewModel(array(
-                'registration' => $registration,
-                'form' => $form,
+        if (!$studentContainer->offsetExists('regId')) {
+            return $this->redirect()->toRoute('recruitment/pre-interview',
+                    array(
+                    'action' => 'index',
             ));
         }
 
-        return $this->redirect()->toRoute('recruitment/pre-interview',
-                array(
-                'action' => 'index',
+        $request = $this->getRequest();
+        $form = new PreInterviewForm('Pre-interview');
+
+        try {
+
+            $em = $this->getEntityManager();
+            $registration = $em->getReference('Recruitment\Entity\Registration', $studentContainer->offsetGet('regId'));
+
+            if ($request->isPost()) {
+                $data = $request->getPost();
+                $form->setInputFilter(new PreInterviewFilter());
+                $form->setData($data);
+
+                if ($form->isValid()) {
+                    $data = $form->getData();
+
+                    /**
+                     * Salvar os dados no banco
+                     */
+                }
+            }
+        } catch (Exception $ex) {
+            $registration = null;
+            echo $ex->getMessage();
+            exit;
+        }
+
+        return new ViewModel(array(
+            'registration' => $registration,
+            'form' => $form,
         ));
     }
 

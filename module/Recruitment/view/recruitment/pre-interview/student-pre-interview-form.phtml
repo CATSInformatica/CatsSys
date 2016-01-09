@@ -1,8 +1,5 @@
 
-<?php
-$person = $registration->getPerson();
-$form->prepare();
-?>
+
 <section class="content">
     <div class="row">
         <div class="col-xs-12 col-md-6 col-md-offset-3">
@@ -17,13 +14,16 @@ $form->prepare();
                 </div>
 
                 <div class="box-body">
-                    <div class="form-group">
-                        <label class="control-label">Número de inscrição: </label>
-                        <?php echo $registration->getRegistrationNumber(); ?>
-                        <br>
-                        <label class="control-label">Nome:</label> 
-                        <?php echo $person->getPersonName(); ?>
-                    </div>
+                    <?php if ($registration != null): ?>
+                        <?php $person = $registration->getPerson(); ?>
+                        <div class="form-group">
+                            <label class="control-label">Número de inscrição: </label>
+                            <?php echo $registration->getRegistrationNumber(); ?>
+                            <br>
+                            <label class="control-label">Nome:</label> 
+                            <?php echo $person->getPersonName(); ?>
+                        </div>
+                    <?php endif; ?>
                 </div>
             </div>
         </div>
