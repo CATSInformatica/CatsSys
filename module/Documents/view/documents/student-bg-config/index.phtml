@@ -7,7 +7,7 @@
             <li>
                 <?php echo $person->getPersonName(); ?><br>
                 <?php echo $person->getPersonRg(); ?><br>
-                <img src="/recruitment/registration/photo/<?php echo $person->getPersonId(); ?>"><br>
+                <img src="/recruitment/registration/photo/<?php echo $person->getPersonId(); ?>">
             </li>
         <?php endforeach; ?>
     </ul>
@@ -30,7 +30,9 @@
                             <td class="text-center"> <?php echo $config->getStudentBgConfigId(); ?></td>
                             <td class="text-center"> <?php echo $config->getStudentBgConfigPhrase(); ?></td>
                             <td class="text-center"> <?php echo $config->getStudentBgConfigAuthor(); ?></td>
-                            <td class="text-center"> <a href="/img/<?php echo $config->getStudentBgConfigImg(); ?>"><?php echo $config->getStudentBgConfigImg(); ?> </a></td>
+                            <td class="text-center"> <a href="/img/<?php echo $config->getStudentBgConfigImg(); ?>">
+                                <?php echo $config->getStudentBgConfigImg(); ?> </a>
+                            </td>
                         </tr>
                     <?php endforeach; ?>
                 </tbody>

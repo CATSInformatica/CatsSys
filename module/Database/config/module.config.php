@@ -15,7 +15,10 @@ return array(
     'doctrine' => array(
         'configuration' => array(
             'orm_default' => array(
-                'generate_proxies' => false,
+                'metadata_cache' => 'appApc',
+                'query_cache' => 'appApc',
+                'result_cache' => 'appApc',
+                'generate_proxies' => getenv('APP_ENV') === 'development',
             ),
         ),
     ),

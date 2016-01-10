@@ -85,8 +85,8 @@ class LoginController extends AbstractActionController
             $identity = $authResult->getIdentity();
             $auth->getStorage()->write($identity);
 
+            $sessionManager = new SessionManager();
             if ($data['rememberme']) {
-                $sessionManager = new SessionManager();
                 $sessionManager->rememberMe();
             }
 
@@ -104,8 +104,9 @@ class LoginController extends AbstractActionController
 
             $userContainer->offsetSet('activeRole', $roleNames[0]);
             $userContainer->offsetSet('allRoles', $roleNames);
-
-
+            
+            $sessionManager->writeClose();
+                
             return true;
         }
         return false;

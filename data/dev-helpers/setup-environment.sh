@@ -2,7 +2,7 @@ echo 'Starting script.';
 
 echo 'Installing Required Packages: PHP, Composer Apache, MySql';
 
-sudo apt-get install php5 mysql-server php5-mysql php5-gd composer apache2 npm -y
+sudo apt-get install php5 mysql-server php5-mysql php5-gd php-apc php5-apcu composer apache2 npm -y
 
 echo 'Installing bower'
 sudo npm install -g bower
