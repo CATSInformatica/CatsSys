@@ -47,11 +47,6 @@ return array(
         'display_exceptions' => true,
     ),
     'doctrine' => array(
-        'configuration' => array(
-            'orm_default' => array(
-                'generate_proxies' => true,
-            ),
-        ),
         'driver' => array(
             'documents_driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',

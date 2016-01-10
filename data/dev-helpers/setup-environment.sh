@@ -34,13 +34,18 @@ sudo tee /etc/apache2/sites-available/cats-lab.conf << EOF
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 EOF
 
+echo 'Binding domain http://cats-lab.lan to 127.1.1.100'
+sudo sed -i '/cats-lab.lan/d' /etc/hosts
 sudo tee -a  /etc/hosts << EOF
-127.1.1.100   cats-lab.lan # nome associado ao virtual host local de desenvolvimento
+127.1.1.100   cats-lab.lan # bind domain http://cats-lab.lan to 127.1.1.100
 EOF
 
 echo 'Changing php.ini max_post_size to 20MB and upload_max_filesize to 15MB'
 sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php5/apache2/php.ini
 sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php5/apache2/php.ini
+
+echo 'Removing previous cats-lab project'
+sudo rm -rf $HOME/vhosts/cats-lab
 
 echo 'Starting git clone'
 mkdir $HOME/vhosts
@@ -80,11 +85,12 @@ EOF
 cp $HOME/vhosts/vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist $HOME/vhosts/cats-lab/config/autoload/zenddevelopertools.local.php
 
 echo 'Creating database CatsSys'
-mysql -u root -p -e 'create database catssys'
+mysql -u root -p -e 'drop database if exists catssys; create database catssys'
 
 echo 'Creating database schema'
 php $HOME/vhosts/cats-lab/public/index.php orm:validate-schema
 php $HOME/vhosts/cats-lab/public/index.php orm:schema-tool:create
+php $HOME/vhosts/cats-lab/public/index.php orm:generate-proxies
 
 echo 'Importing table contents'
 mysql -u root -p catssys <$HOME/vhosts/cats-lab/data/dev-helpers/catssys_data_1.sql

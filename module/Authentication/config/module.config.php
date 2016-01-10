@@ -73,11 +73,6 @@ return array(
     ),
     // Doctrine configuration
     'doctrine' => array(
-        'configuration' => array(
-            'orm_default' => array(
-                'generate_proxies' => true,
-            ),
-        ),
         'authentication' => array(
             'orm_default' => array(
                 'object_manager' => 'Doctrine\ORM\EntityManager',

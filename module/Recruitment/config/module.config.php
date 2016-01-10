@@ -116,11 +116,6 @@ return array(
     ),
     // Doctrine configuration
     'doctrine' => array(
-        'configuration' => array(
-            'orm_default' => array(
-                'generate_proxies' => true,
-            ),
-        ),
         'driver' => array(
             'recruitment_driver' => array(
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
