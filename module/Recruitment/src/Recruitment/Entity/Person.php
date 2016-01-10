@@ -20,7 +20,6 @@ use Recruitment\Entity\Person;
  * Description of Person
  * @author Márcio
  * @ORM\Table(name="person", 
- *      uniqueConstraints={@ORM\UniqueConstraint(name="person_cpf_idx", columns={"person_cpf"})},
  *      indexes={@ORM\Index(name="person_firstname_idx", columns={"person_firstname"})}
  * )
  * @ORM\Entity
@@ -72,7 +71,7 @@ class Person
     /**
      *
      * @var string
-     * @ORM\Column(name="person_cpf", type="string", length=14, nullable=false)
+     * @ORM\Column(name="person_cpf", type="string", length=14, nullable=false, unique=true)
      */
     private $personCpf;
 
@@ -118,7 +117,7 @@ class Person
     /**
      * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="Address", inversedBy="people")
+     * @ORM\ManyToMany(targetEntity="Address", inversedBy="people", fetch="EXTRA_LAZY")
      * @ORM\JoinTable(name="person_has_address",
      *   joinColumns={
      *     @ORM\JoinColumn(name="person_id", referencedColumnName="person_id", nullable=false)
@@ -395,8 +394,18 @@ class Person
      */
     public function addAddress(Address $address)
     {
-        $this->addresses[] = $address;
+        $this->addresses->add($address);
         return $this;
+    }
+    
+    /**
+     * 
+     * @param Address $address
+     * @return boolean
+     */
+    public function hasAddress(Address $address)
+    {
+        return $this->addresses->contains($address);
     }
 
     /**

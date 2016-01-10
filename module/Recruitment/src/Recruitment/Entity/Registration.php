@@ -85,7 +85,7 @@ class Registration
     /**
      *
      * @var Recruitment\Entity\PreInterview
-     * @ORM\OneToOne(targetEntity="Recruitment\Entity\PreInterview")
+     * @ORM\OneToOne(targetEntity="Recruitment\Entity\PreInterview", mappedBy="registration")
      * @ORM\JoinColumn(name="pre_inteview_id", referencedColumnName="pre_interview_id")
      */
     private $preInterview;

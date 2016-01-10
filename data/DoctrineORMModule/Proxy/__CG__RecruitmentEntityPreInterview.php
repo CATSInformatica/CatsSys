@@ -64,10 +64,10 @@ class PreInterview extends \Recruitment\Entity\PreInterview implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewId', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewDate', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewPersonalInfo', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewIncomeProof', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewExpenseReceipt', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewElementarySchoolType', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewHighSchoolType', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewHighSchool', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewHSConclusionYear', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewPreparationSchool', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewLanguageCourse', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewCurrentStudy', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewLiveWithNumber', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewLiveWithYou', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewNumberOfRooms', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewMeansOfTransport', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewMonthlyIncome', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewFatherEducationGrade', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewMotherEducationGrade', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewExpectFromUs');
+            return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewId', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'registration', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewDate', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewPersonalInfo', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewIncomeProof', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewExpenseReceipt', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewElementarySchoolType', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewHighSchoolType', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewHighSchool', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewHSConclusionYear', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewPreparationSchool', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewLanguageCourse', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewCurrentStudy', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewLiveWithNumber', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewLiveWithYou', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewNumberOfRooms', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewMeansOfTransport', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewMonthlyIncome', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewFatherEducationGrade', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewMotherEducationGrade', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewExpectFromUs');
         }
 
-        return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewId', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewDate', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewPersonalInfo', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewIncomeProof', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewExpenseReceipt', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewElementarySchoolType', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewHighSchoolType', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewHighSchool', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewHSConclusionYear', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewPreparationSchool', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewLanguageCourse', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewCurrentStudy', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewLiveWithNumber', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewLiveWithYou', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewNumberOfRooms', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewMeansOfTransport', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewMonthlyIncome', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewFatherEducationGrade', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewMotherEducationGrade', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewExpectFromUs');
+        return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewId', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'registration', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewDate', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewPersonalInfo', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewIncomeProof', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewExpenseReceipt', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewElementarySchoolType', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewHighSchoolType', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewHighSchool', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewHSConclusionYear', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewPreparationSchool', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewLanguageCourse', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewCurrentStudy', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewLiveWithNumber', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewLiveWithYou', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewNumberOfRooms', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewMeansOfTransport', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewMonthlyIncome', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewFatherEducationGrade', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewMotherEducationGrade', '' . "\0" . 'Recruitment\\Entity\\PreInterview' . "\0" . 'preInterviewExpectFromUs');
     }
 
     /**
@@ -488,12 +488,23 @@ class PreInterview extends \Recruitment\Entity\PreInterview implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function setPreInterviewLiveWithYou($preInterviewLiveWithYou)
+    public function addPreInterviewLiveWithYou($liveWithYou)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPreInterviewLiveWithYou', array($preInterviewLiveWithYou));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addPreInterviewLiveWithYou', array($liveWithYou));
 
-        return parent::setPreInterviewLiveWithYou($preInterviewLiveWithYou);
+        return parent::addPreInterviewLiveWithYou($liveWithYou);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function clearPreInterviewLiveWithYou()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'clearPreInterviewLiveWithYou', array());
+
+        return parent::clearPreInterviewLiveWithYou();
     }
 
     /**
@@ -593,6 +604,17 @@ class PreInterview extends \Recruitment\Entity\PreInterview implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPreInterviewNumberOfRooms', array($preInterviewNumberOfRooms));
 
         return parent::setPreInterviewNumberOfRooms($preInterviewNumberOfRooms);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setRegistration(\Recruitment\Entity\Registration $registration)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRegistration', array($registration));
+
+        return parent::setRegistration($registration);
     }
 
 }

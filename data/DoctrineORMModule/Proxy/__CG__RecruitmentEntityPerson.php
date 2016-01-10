@@ -444,6 +444,17 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
+    public function hasAddress(\Recruitment\Entity\Address $address)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasAddress', array($address));
+
+        return parent::hasAddress($address);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function removeAddress(\Recruitment\Entity\Address $address)
     {
 

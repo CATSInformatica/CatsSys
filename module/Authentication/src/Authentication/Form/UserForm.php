@@ -28,7 +28,7 @@ class UserForm extends Form
                 'type' => 'text',
             ),
             'options' => array(
-                'label' => 'Nome de usuário.',
+                'label' => 'Nome de usuário',
             ),
         ));
 

@@ -26,7 +26,7 @@ class PreInterviewForm extends Form
 
 
         $this->add(array(
-                'name' => 'cep',
+                'name' => 'postal_code',
                 'type' => 'text',
                 'options' => array(
                     'label' => 'CEP',
@@ -37,38 +37,38 @@ class PreInterviewForm extends Form
                 )
             ))
             ->add(array(
-                'name' => 'uf',
+                'name' => 'state',
                 'type' => 'select',
                 'options' => array(
                     'label' => 'UF',
                     'value_options' => array(
-                        Address::STATE_AC,
-                        Address::STATE_AL,
-                        Address::STATE_AM,
-                        Address::STATE_AP,
-                        Address::STATE_BA,
-                        Address::STATE_CE,
-                        Address::STATE_DF,
-                        Address::STATE_ES,
-                        Address::STATE_GO,
-                        Address::STATE_MA,
-                        Address::STATE_MG,
-                        Address::STATE_MS,
-                        Address::STATE_MT,
-                        Address::STATE_PA,
-                        Address::STATE_PB,
-                        Address::STATE_PE,
-                        Address::STATE_PI,
-                        Address::STATE_PR,
-                        Address::STATE_RJ,
-                        Address::STATE_RN,
-                        Address::STATE_RO,
-                        Address::STATE_RR,
-                        Address::STATE_RS,
-                        Address::STATE_SC,
-                        Address::STATE_SE,
-                        Address::STATE_SP,
-                        Address::STATE_TO,
+                        Address::STATE_MG => Address::STATE_MG,
+                        Address::STATE_AC => Address::STATE_AC,
+                        Address::STATE_AL => Address::STATE_AL,
+                        Address::STATE_AM => Address::STATE_AM,
+                        Address::STATE_AP => Address::STATE_AP,
+                        Address::STATE_BA => Address::STATE_BA,
+                        Address::STATE_CE => Address::STATE_CE,
+                        Address::STATE_DF => Address::STATE_DF,
+                        Address::STATE_ES => Address::STATE_ES,
+                        Address::STATE_GO => Address::STATE_GO,
+                        Address::STATE_MA => Address::STATE_MA,
+                        Address::STATE_MS => Address::STATE_MS,
+                        Address::STATE_MT => Address::STATE_MT,
+                        Address::STATE_PA => Address::STATE_PA,
+                        Address::STATE_PB => Address::STATE_PB,
+                        Address::STATE_PE => Address::STATE_PE,
+                        Address::STATE_PI => Address::STATE_PI,
+                        Address::STATE_PR => Address::STATE_PR,
+                        Address::STATE_RJ => Address::STATE_RJ,
+                        Address::STATE_RN => Address::STATE_RN,
+                        Address::STATE_RO => Address::STATE_RO,
+                        Address::STATE_RR => Address::STATE_RR,
+                        Address::STATE_RS => Address::STATE_RS,
+                        Address::STATE_SC => Address::STATE_SC,
+                        Address::STATE_SE => Address::STATE_SE,
+                        Address::STATE_SP => Address::STATE_SP,
+                        Address::STATE_TO => Address::STATE_TO,
                     ),
                 ),
                 'attributes' => array(
@@ -312,6 +312,8 @@ class PreInterviewForm extends Form
                         . 'grau (colegial) completo.',
                         PreInterview::PARENT_SCHOOL_GRADE_INCOMPLETE_UNDERGRADUATE_COURSE => 'Ensino '
                         . 'superior (faculdade/universidade) incompleto.',
+                        PreInterview::PARENT_SCHOOL_GRADE_COMPLETE_UNDERGRADUATE_COURSE => 'Ensino '
+                        . 'superior (faculdade/universidade) completo.',
                         PreInterview::PARENT_SCHOOL_GRADE_GRADUATE_SPECIALIZATION => 'Pós-graduação '
                         . '(especialização) completa.',
                         PreInterview::PARENT_SCHOOL_GRADE_MASTER_DEGREE => 'Mestrado completo.',
@@ -335,6 +337,8 @@ class PreInterviewForm extends Form
                         . 'grau (colegial) completo.',
                         PreInterview::PARENT_SCHOOL_GRADE_INCOMPLETE_UNDERGRADUATE_COURSE => 'Ensino '
                         . 'superior (faculdade/universidade) incompleto.',
+                        PreInterview::PARENT_SCHOOL_GRADE_COMPLETE_UNDERGRADUATE_COURSE => 'Ensino '
+                        . 'superior (faculdade/universidade) completo.',
                         PreInterview::PARENT_SCHOOL_GRADE_GRADUATE_SPECIALIZATION => 'Pós-graduação '
                         . '(especialização) completa.',
                         PreInterview::PARENT_SCHOOL_GRADE_MASTER_DEGREE => 'Mestrado completo.',
@@ -344,8 +348,8 @@ class PreInterviewForm extends Form
             ))
             ->add(array(
                 'name' => 'expect_from_us',
-                'type' => 'textarea',
                 'attributes' => array(
+                    'type' => 'textarea',
                     'rows' => 6,
                 ),
                 'options' => array(

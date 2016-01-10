@@ -21,7 +21,7 @@ class PreInterviewFilter extends InputFilter
     public function __construct()
     {
         $this->add(array(
-                'name' => 'cep',
+                'name' => 'postal_code',
                 'required' => true,
                 'validators' => array(
                     array(
@@ -33,12 +33,15 @@ class PreInterviewFilter extends InputFilter
                 ),
             ))
             ->add(array(
-                'name' => 'uf',
+                'name' => 'state',
                 'required' => true,
             ))
             ->add(array(
                 'name' => 'city',
                 'required' => true,
+                'filters' => array(
+                    array('name' => 'StringToUpper'),
+                ),
                 'validators' => array(
                     array(
                         'name' => 'Zend\Validator\StringLength',
@@ -52,6 +55,9 @@ class PreInterviewFilter extends InputFilter
             ->add(array(
                 'name' => 'neighborhood',
                 'required' => true,
+                'filters' => array(
+                    array('name' => 'StringToUpper'),
+                ),
                 'validators' => array(
                     array(
                         'name' => 'Zend\Validator\StringLength',
@@ -65,6 +71,9 @@ class PreInterviewFilter extends InputFilter
             ->add(array(
                 'name' => 'street',
                 'required' => true,
+                'filters' => array(
+                    array('name' => 'StringToUpper'),
+                ),
                 'validators' => array(
                     array(
                         'name' => 'Zend\Validator\StringLength',
@@ -85,6 +94,9 @@ class PreInterviewFilter extends InputFilter
             ->add(array(
                 'name' => 'complement',
                 'required' => false,
+                'filters' => array(
+                    array('name' => 'StringToUpper'),
+                ),
                 'validators' => array(
                     array(
                         'name' => 'Zend\Validator\StringLength',
@@ -106,6 +118,9 @@ class PreInterviewFilter extends InputFilter
             ->add(array(
                 'name' => 'high_school',
                 'required' => true,
+                'filters' => array(
+                    array('name' => 'StringToUpper'),
+                ),
                 'validators' => array(
                     array(
                         'name' => 'Zend\Validator\StringLength',
@@ -166,16 +181,17 @@ class PreInterviewFilter extends InputFilter
                 'filters' => array(
                     array('name' => 'StringTrim'),
                     array('name' => 'StripTags'),
+                ),
+                'validators' => array(
                     array(
                         'name' => 'Zend\Validator\StringLength',
                         'options' => array(
-                            'min' => 5,
+                            'min' => 20,
                             'max' => 200,
-                        ),
-                    ),
-                ),
-            ))
-        ;
+                        )
+                    )
+                )
+        ));
     }
 
 }

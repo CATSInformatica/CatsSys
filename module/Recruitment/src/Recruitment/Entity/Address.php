@@ -16,7 +16,10 @@ use Recruitment\Entity\Person;
 /**
  * Description of People
  * @author Márcio
- * @ORM\Table(name="address")
+ * @ORM\Table(name="address",
+ *      uniqueConstraints={@ORM\UniqueConstraint(name="addr_unique_idx", columns={"address_country", "address_state",
+ *      "address_city", "address_neighborhood", "address_street", "address_number","address_complement"})}
+ * )
  * @ORM\Entity
  */
 class Address
@@ -116,7 +119,7 @@ class Address
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity="Recruitment\Entity\Person", mappedBy="addresses")
+     * @ORM\ManyToMany(targetEntity="Recruitment\Entity\Person", mappedBy="addresses", fetch="EXTRA_LAZY")
      */
     private $people;
 
@@ -143,7 +146,7 @@ class Address
      * Get Postal Code
      * @return string
      */
-    function getAddressPostalCode()
+    public function getAddressPostalCode()
     {
         return $this->addressPostalCode;
     }
@@ -152,7 +155,7 @@ class Address
      * Get Country
      * @return string
      */
-    function getAddressCountry()
+    public function getAddressCountry()
     {
         return $this->addressCountry;
     }
@@ -161,7 +164,7 @@ class Address
      * Get State
      * @return string
      */
-    function getAddressState()
+    public function getAddressState()
     {
         return $this->addressState;
     }
@@ -170,7 +173,7 @@ class Address
      * Get City
      * @return string
      */
-    function getAddressCity()
+    public function getAddressCity()
     {
         return $this->addressCity;
     }
@@ -179,7 +182,7 @@ class Address
      * Get Neighborhood
      * @return string
      */
-    function getAddressNeighborhood()
+    public function getAddressNeighborhood()
     {
         return $this->addressNeighborhood;
     }
@@ -188,7 +191,7 @@ class Address
      * Get Street
      * @return string
      */
-    function getAddressStreet()
+    public function getAddressStreet()
     {
         return $this->addressStreet;
     }
@@ -197,7 +200,7 @@ class Address
      * Get Number
      * @return integer
      */
-    function getAddressNumber()
+    public function getAddressNumber()
     {
         return $this->addressNumber;
     }
@@ -206,7 +209,7 @@ class Address
      * Get Number Complement
      * @return string
      */
-    function getAddressComplement()
+    public function getAddressComplement()
     {
         return $this->addressComplement;
     }
@@ -215,7 +218,7 @@ class Address
      * 
      * @return Collection
      */
-    function getPople()
+    public function getPople()
     {
         return $this->people;
     }
@@ -223,81 +226,99 @@ class Address
     /**
      * 
      * @param string $addressPostalCode
+     * @return Recruitment\Entity\Address
      */
-    function setAddressPostalCode($addressPostalCode)
+    public function setAddressPostalCode($addressPostalCode)
     {
         $this->addressPostalCode = $addressPostalCode;
+        return $this;
     }
 
     /**
      * 
      * @param string $addressCountry
+     * @return Recruitment\Entity\Address
      */
-    function setAddressCountry($addressCountry)
+    public function setAddressCountry($addressCountry)
     {
         $this->addressCountry = $addressCountry;
+        return $this;
     }
 
     /**
      * 
      * @param string $addressState
+     * @return Recruitment\Entity\Address Description
      */
-    function setAddressState($addressState)
+    public function setAddressState($addressState)
     {
         $this->addressState = $addressState;
+        return $this;
     }
 
     /**
      * 
      * @param string $addressCity
+     * @return Recruitment\Entity\Address
      */
-    function setAddressCity($addressCity)
+    public function setAddressCity($addressCity)
     {
         $this->addressCity = $addressCity;
+        return $this;
     }
 
     /**
      * 
      * @param string $addressNeighborhood
+     * @return Recruitment\Entity\Address
      */
-    function setAddressNeighborhood($addressNeighborhood)
+    public function setAddressNeighborhood($addressNeighborhood)
     {
         $this->addressNeighborhood = $addressNeighborhood;
+        return $this;
     }
 
     /**
      * 
      * @param string $addressStreet
+     * @return Recruitment\Entity\Address
      */
-    function setAddressStreet($addressStreet)
+    public function setAddressStreet($addressStreet)
     {
         $this->addressStreet = $addressStreet;
+        return $this;
     }
 
     /**
      * 
      * @param integer $addressNumber
+     * @return Recruitment\Entity\Address
      */
-    function setAddressNumber($addressNumber)
+    public function setAddressNumber($addressNumber)
     {
         $this->addressNumber = $addressNumber;
+        return $this;
     }
 
     /**
      * 
      * @param string $addressComplement
+     * @return Recruitment\Entity\Address
      */
-    function setAddressComplement($addressComplement)
+    public function setAddressComplement($addressComplement)
     {
         $this->addressComplement = $addressComplement;
+        return $this;
     }
 
     /**
      * @param Collection $people
+     * @return Recruitment\Entity\Address
      */
-    function setPeople(Collection $people)
+    public function setPeople(Collection $people)
     {
         $this->people = $people;
+        return $this;
     }
 
     /**
@@ -309,8 +330,19 @@ class Address
      */
     public function addPerson(Person $person)
     {
-        $this->people[] = $person;
+        $person->addAddress($this);
+        $this->people->add($person);
         return $this;
+    }
+
+    /**
+     * 
+     * @param Person $person
+     * @return boolean
+     */
+    public function hasPerson(Person $person)
+    {
+        return $this->people->contains($person);
     }
 
     /**

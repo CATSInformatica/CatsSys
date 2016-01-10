@@ -35,7 +35,6 @@ class StudentWarningForm extends Form
                 'name' => 'warning_type_description',
                 'attributes' => array(
                     'type' => 'textarea',
-                    'class' => 'form-control',
                     'rows' => 5,
                 ),
                 'options' => array(

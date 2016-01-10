@@ -9,6 +9,7 @@
 namespace Recruitment\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Recruitment\Entity\Registration;
 
 /**
  * Description of PreInterview
@@ -146,9 +147,10 @@ class PreInterview
     const PARENT_SCHOOL_GRADE_INCOMPLETE_HIGH_SCHOOL = 3;
     const PARENT_SCHOOL_GRADE_COMPLETE_HIGH_SCHOOL = 4;
     const PARENT_SCHOOL_GRADE_INCOMPLETE_UNDERGRADUATE_COURSE = 5;
-    const PARENT_SCHOOL_GRADE_GRADUATE_SPECIALIZATION = 6;
-    const PARENT_SCHOOL_GRADE_MASTER_DEGREE = 7;
-    const PARENT_SCHOOL_GRADE_DOCTORATE_DEGREE = 8;
+    const PARENT_SCHOOL_GRADE_COMPLETE_UNDERGRADUATE_COURSE = 6;
+    const PARENT_SCHOOL_GRADE_GRADUATE_SPECIALIZATION = 7;
+    const PARENT_SCHOOL_GRADE_MASTER_DEGREE = 8;
+    const PARENT_SCHOOL_GRADE_DOCTORATE_DEGREE = 9;
 
     /**
      *
@@ -158,6 +160,14 @@ class PreInterview
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $preInterviewId;
+
+    /**
+     *
+     * @var Recruitment\Entity\Registration
+     * @ORM\OneToOne(targetEntity="Recruitment\Entity\Registration", inversedBy="preInterview")
+     * @ORM\JoinColumn(name="registration_id", referencedColumnName="registration_id", nullable=false)
+     */
+    private $registration;
 
     /**
      *
@@ -568,13 +578,40 @@ class PreInterview
 
     /**
      * 
-     * @param string $preInterviewLiveWithYou
+     * @param string $liveWithYou
      * @return Recruitment\Entity\PreInterview
      */
-    public function setPreInterviewLiveWithYou($preInterviewLiveWithYou)
+    public function addPreInterviewLiveWithYou($liveWithYou)
     {
-        $this->preInterviewLiveWithYou = $preInterviewLiveWithYou;
-        return $this;
+
+        if (in_array($liveWithYou,
+                array(
+                self::LIVE_WITH_YOU_ALONE,
+                self::LIVE_WITH_YOU_CHILDREN,
+                self::LIVE_WITH_YOU_CHILDREN,
+                self::LIVE_WITH_YOU_PARENTS,
+                self::LIVE_WITH_YOU_CHILDREN,
+                self::LIVE_WITH_YOU_SIBLINGS,
+                self::LIVE_WITH_YOU_CHILDREN,
+                self::LIVE_WITH_YOU_LIFE_PARTNER,
+                self::LIVE_WITH_YOU_CHILDREN,
+                self::LIVE_WITH_YOU_OTHER,
+            ))) {
+
+            if ($this->preInterviewLiveWithYou !== null) {
+                $this->preInterviewLiveWithYou .= ';' . $liveWithYou;
+            } else {
+                $this->preInterviewLiveWithYou = $liveWithYou;
+            }
+
+            return $this;
+        }
+        throw new \InvalidArgumentException('invalid pre-interview live with you option.');
+    }
+
+    public function clearPreInterviewLiveWithYou()
+    {
+        $this->preInterviewLiveWithYou = null;
     }
 
     /**
@@ -669,6 +706,18 @@ class PreInterview
     public function setPreInterviewNumberOfRooms($preInterviewNumberOfRooms)
     {
         $this->preInterviewNumberOfRooms = $preInterviewNumberOfRooms;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Recruitment\Entity\Registration $registration
+     * @return Recruitment\Entity\PreInterview
+     */
+    public function setRegistration(Registration $registration)
+    {
+        $registration->setPreInterview($this);
+        $this->registration = $registration;
         return $this;
     }
 

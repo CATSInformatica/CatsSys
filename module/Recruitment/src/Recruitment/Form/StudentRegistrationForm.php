@@ -26,6 +26,7 @@ class StudentRegistrationForm extends RegistrationForm
             'name' => 'registration_know_about',
             'type' => 'Zend\Form\Element\MultiCheckbox',
             'options' => array(
+                'label' => 'Por qual(is) meio(s) você soube do processo seletivo de alunos?*',
                 'use_hidden_element' => false,
                 'value_options' => array(
                     Registration::FAMILY => array(

@@ -400,6 +400,17 @@ class Address extends \Recruitment\Entity\Address implements \Doctrine\ORM\Proxy
     /**
      * {@inheritDoc}
      */
+    public function hasPerson(\Recruitment\Entity\Person $person)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasPerson', array($person));
+
+        return parent::hasPerson($person);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function removePerson(\Recruitment\Entity\Person $person)
     {
 
