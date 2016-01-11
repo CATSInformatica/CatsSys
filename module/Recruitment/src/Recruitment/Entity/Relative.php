@@ -16,7 +16,7 @@ use Recruitment\Entity\Person;
  * @todo create constants for relationships (e.g. father, mother, sister, brother, uncle, ...)
  * @author marcio
  * @ORM\Table(name="person_relative", uniqueConstraints={
- * @ORM\UniqueConstraint(name="relative_relative_relationship_idx", columns={"person_id", "person_relative_id", "relative_relationship"})
+ * @ORM\UniqueConstraint(name="relative_relative_relationship_idx", columns={"person_id", "person_relative_id"})
  * })
  * @ORM\Entity
  */
@@ -80,6 +80,7 @@ class Relative
      */
     public function setPerson(Person $person)
     {
+        $person->addisRelativeOf($this);
         $this->person = $person;
         return $this;
     }
@@ -95,12 +96,13 @@ class Relative
 
     /**
      * 
-     * @param Person $relative
+     * @param Person $person
      * @return Relative
      */
-    public function setRelative(Person $relative)
+    public function setRelative(Person $person)
     {
-        $this->relative = $relative;
+        $person->addRelative($this);
+        $this->relative = $person;
         return $this;
     }
 
@@ -108,7 +110,7 @@ class Relative
      * 
      * @return string
      */
-    function getRelativeRelationship()
+    public function getRelativeRelationship()
     {
         return $this->relativeRelationship;
     }
@@ -118,7 +120,7 @@ class Relative
      * @param string $relativeRelationship
      * @return Relative
      */
-    function setRelativeRelationship($relativeRelationship)
+    public function setRelativeRelationship($relativeRelationship)
     {
         $this->relativeRelationship = $relativeRelationship;
         return $this;

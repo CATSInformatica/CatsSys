@@ -27,6 +27,10 @@ use Recruitment\Entity\Person;
 class Person
 {
 
+    const DEFAULT_FEMALE_PHOTO = 'default-female-profile.png';
+    const DEFAULT_MALE_PHOTO = 'default-male-profile.png';
+    const MAJORITY = 18;
+
     /**
      * 1 - Feminino
      * 2 - Masculino
@@ -140,21 +144,21 @@ class Person
     /**
      *
      * @var Collection
-     * @ORM\OneToMany(targetEntity="Registration", mappedBy="person")
+     * @ORM\OneToMany(targetEntity="Registration", mappedBy="person", fetch="EXTRA_LAZY")
      */
     private $registrations;
 
     /**
      *
      * @var Collection 
-     * @ORM\OneToMany(targetEntity="Relative", mappedBy="person")
+     * @ORM\OneToMany(targetEntity="Relative", mappedBy="person", fetch="EXTRA_LAZY")
      */
     private $isRelativeOf;
 
     /**
      *
      * @var Collection
-     * @ORM\OneToMany(targetEntity="Relative", mappedBy="relative")
+     * @ORM\OneToMany(targetEntity="Relative", mappedBy="relative", fetch="EXTRA_LAZY")
      */
     private $relatives;
 
@@ -261,12 +265,29 @@ class Person
     }
 
     /**
-     * Set person photo url
-     * @param string $personPhoto
+     * 
+     * @param mixed $personPhoto string or null
+     * @return Person
      */
-    public function setPersonPhoto($personPhoto)
+    public function setPersonPhoto($personPhoto = null)
     {
-        $this->personPhoto = $personPhoto;
+        if ($personPhoto === null) {
+            if ($this->personPhoto === null) {
+
+                switch ($this->personGender) {
+                    case self::GENDER_F:
+                        $this->personPhoto = self::DEFAULT_FEMALE_PHOTO;
+                        break;
+                    case self::GENDER_M:
+                        $this->personPhoto = self::DEFAULT_MALE_PHOTO;
+                        break;
+                }
+            }
+        } else {
+            $this->personPhoto = $personPhoto;
+        }
+
+        return $this;
     }
 
     /**
@@ -397,7 +418,7 @@ class Person
         $this->addresses->add($address);
         return $this;
     }
-    
+
     /**
      * 
      * @param Address $address
@@ -491,29 +512,23 @@ class Person
 
     /**
      * 
-     * @param Collection $isRelativeOf
+     * @param Relative $relative
      * @return Person
      */
-    public function setIsRelativeOf(Collection $isRelativeOf)
+    public function addIsRelativeOf(Relative $relative)
     {
-        $this->isRelativeOf = $isRelativeOf;
+        $this->isRelativeOf->add($relative);
         return $this;
     }
 
     /**
      * 
-     * @param Person $isRelativeOf
+     * @param Relative $relative
      * @return Person
      */
-    public function addIsRelativeOf(Person $isRelativeOf)
+    public function removeIsRelativeOf(Relative $relative)
     {
-        $this->isRelativeOf[] = $isRelativeOf;
-        return $this;
-    }
-
-    public function removeIsRelativeOf(Person $isRelativeOf)
-    {
-        $this->isRelativeOf->removeElement($isRelativeOf);
+        $this->isRelativeOf->removeElement($relative);
         return $this;
     }
 
@@ -528,32 +543,21 @@ class Person
 
     /**
      * 
-     * @param Collection $relatives
+     * @param Relative $relative
      * @return Person
      */
-    public function setRelatives(Collection $relatives)
+    public function addRelative(Relative $relative)
     {
-        $this->relatives = $relatives;
+        $this->relatives->add($relative);
         return $this;
     }
 
     /**
      * 
-     * @param Person $relative
+     * @param Relative $relative
      * @return Person
      */
-    public function addRelative(Person $relative)
-    {
-        $this->relatives[] = $relative;
-        return $this;
-    }
-
-    /**
-     * 
-     * @param Person $relative
-     * @return Person
-     */
-    public function removeRelative(Person $relative)
+    public function removeRelative(Relative $relative)
     {
         $this->relatives->removeElement($relative);
         return $this;
@@ -594,6 +598,21 @@ class Person
     public function getPersonName()
     {
         return $this->personFirstName . ' ' . $this->personLastName;
+    }
+
+    public function getPersonAge()
+    {
+        $today = new \DateTime('now');
+        return $today->diff($this->personBirthday)->y;
+    }
+
+    /**
+     * 
+     * @return boolean
+     */
+    public function isPersonUnderage()
+    {
+        return $this->getPersonAge() < self::MAJORITY;
     }
 
 }

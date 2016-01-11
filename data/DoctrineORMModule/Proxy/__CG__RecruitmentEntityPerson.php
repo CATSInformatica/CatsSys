@@ -290,7 +290,7 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
-    public function setPersonPhoto($personPhoto)
+    public function setPersonPhoto($personPhoto = NULL)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPersonPhoto', array($personPhoto));
@@ -543,34 +543,23 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
-    public function setIsRelativeOf(\Doctrine\Common\Collections\Collection $isRelativeOf)
+    public function addIsRelativeOf(\Recruitment\Entity\Relative $relative)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setIsRelativeOf', array($isRelativeOf));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addIsRelativeOf', array($relative));
 
-        return parent::setIsRelativeOf($isRelativeOf);
+        return parent::addIsRelativeOf($relative);
     }
 
     /**
      * {@inheritDoc}
      */
-    public function addIsRelativeOf(\Recruitment\Entity\Person $isRelativeOf)
+    public function removeIsRelativeOf(\Recruitment\Entity\Relative $relative)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addIsRelativeOf', array($isRelativeOf));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeIsRelativeOf', array($relative));
 
-        return parent::addIsRelativeOf($isRelativeOf);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeIsRelativeOf(\Recruitment\Entity\Person $isRelativeOf)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeIsRelativeOf', array($isRelativeOf));
-
-        return parent::removeIsRelativeOf($isRelativeOf);
+        return parent::removeIsRelativeOf($relative);
     }
 
     /**
@@ -587,18 +576,7 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
-    public function setRelatives(\Doctrine\Common\Collections\Collection $relatives)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRelatives', array($relatives));
-
-        return parent::setRelatives($relatives);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addRelative(\Recruitment\Entity\Person $relative)
+    public function addRelative(\Recruitment\Entity\Relative $relative)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'addRelative', array($relative));
@@ -609,7 +587,7 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
-    public function removeRelative(\Recruitment\Entity\Person $relative)
+    public function removeRelative(\Recruitment\Entity\Relative $relative)
     {
 
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRelative', array($relative));
@@ -648,6 +626,28 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPersonName', array());
 
         return parent::getPersonName();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getPersonAge()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPersonAge', array());
+
+        return parent::getPersonAge();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isPersonUnderage()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isPersonUnderage', array());
+
+        return parent::isPersonUnderage();
     }
 
 }

@@ -8,6 +8,9 @@
 
 namespace Recruitment\Form;
 
+use Recruitment\Form\Settings\AddressSettings;
+use Recruitment\Form\Settings\PersonSettings;
+use Recruitment\Form\Settings\RelativeSettings;
 use Zend\InputFilter\InputFilter;
 
 /**
@@ -18,95 +21,45 @@ use Zend\InputFilter\InputFilter;
 class PreInterviewFilter extends InputFilter
 {
 
-    public function __construct()
+    public function __construct($isUnderage = false)
     {
-        $this->add(array(
-                'name' => 'postal_code',
-                'required' => true,
-                'validators' => array(
-                    array(
-                        'name' => 'Zend\Validator\Regex',
-                        'options' => array(
-                            'pattern' => '/^[0-9]{5}-[0-9]{3}$/',
-                        ),
-                    ),
-                ),
-            ))
-            ->add(array(
-                'name' => 'state',
-                'required' => true,
-            ))
-            ->add(array(
-                'name' => 'city',
-                'required' => true,
-                'filters' => array(
-                    array('name' => 'StringToUpper'),
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'Zend\Validator\StringLength',
-                        'options' => array(
-                            'min' => 3,
-                            'max' => 50,
-                        ),
-                    ),
-                ),
-            ))
-            ->add(array(
-                'name' => 'neighborhood',
-                'required' => true,
-                'filters' => array(
-                    array('name' => 'StringToUpper'),
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'Zend\Validator\StringLength',
-                        'options' => array(
-                            'min' => 3,
-                            'max' => 50,
-                        ),
-                    ),
-                ),
-            ))
-            ->add(array(
-                'name' => 'street',
-                'required' => true,
-                'filters' => array(
-                    array('name' => 'StringToUpper'),
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'Zend\Validator\StringLength',
-                        'options' => array(
-                            'min' => 1,
-                            'max' => 100,
-                        ),
-                    ),
-                ),
-            ))
-            ->add(array(
-                'name' => 'number',
-                'required' => false,
-                'validators' => array(
-                    array('name' => 'Zend\Validator\Digits'),
-                ),
-            ))
-            ->add(array(
-                'name' => 'complement',
-                'required' => false,
-                'filters' => array(
-                    array('name' => 'StringToUpper'),
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'Zend\Validator\StringLength',
-                        'options' => array(
-                            'min' => 1,
-                            'max' => 100,
-                        ),
-                    ),
-                ),
-            ))
+
+        $addressFilters = AddressSettings::createAddressFilters();
+        $this->add($addressFilters['postal_code']);
+        $this->add($addressFilters['state']);
+        $this->add($addressFilters['city']);
+        $this->add($addressFilters['neighborhood']);
+        $this->add($addressFilters['street']);
+        $this->add($addressFilters['number']);
+        $this->add($addressFilters['complement']);
+
+        if ($isUnderage) {
+            $relativeSuffix = '_relative';
+            $personFilters = PersonSettings::createPersonFilters($relativeSuffix);
+            $this->add($personFilters['person_firstname']);
+            $this->add($personFilters['person_lastname']);
+            $this->add($personFilters['person_gender']);
+            $this->add($personFilters['person_birthday']);
+            $this->add($personFilters['person_cpf']);
+            $this->add($personFilters['person_rg']);
+            $this->add($personFilters['person_phone']);
+            $this->add($personFilters['person_email']);
+            $this->add($personFilters['person_confirm_email']);
+
+            $relativeFilters = RelativeSettings::createRelativeFilters();
+            $this->add($relativeFilters['relative_relationship']);
+
+            $addressFilters = AddressSettings::createAddressFilters($relativeSuffix);
+            $this->add($addressFilters['postal_code']);
+            $this->add($addressFilters['state']);
+            $this->add($addressFilters['city']);
+            $this->add($addressFilters['neighborhood']);
+            $this->add($addressFilters['street']);
+            $this->add($addressFilters['number']);
+            $this->add($addressFilters['complement']);
+        }
+
+        $this
             ->add(array(
                 'name' => 'elementary_school_type',
                 'required' => true,

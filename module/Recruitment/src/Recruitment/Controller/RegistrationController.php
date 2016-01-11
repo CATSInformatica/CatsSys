@@ -33,7 +33,7 @@ use Zend\File\Transfer\Adapter\Http as HttpAdapter;
  */
 class RegistrationController extends AbstractActionController
 {
-    
+
     const PROFILE_DIR = './data/profile/';
 
     use EntityManagerService;
@@ -138,23 +138,14 @@ class RegistrationController extends AbstractActionController
                     ));
 
                     if ($person == null) {
-                        echo 'hello?';
                         $person = new Person();
-                        $personDefaultPhoto = '';
-                        if ($data['person_gender'] == Person::GENDER_M) {
-                            $personDefaultPhoto = 'default-male-profile.png';
-                        } else if ($data['person_gender'] == Person::GENDER_F) {
-                            $personDefaultPhoto = 'default-female-profile.png';
-                        }
-
-                        $person->setPersonPhoto($personDefaultPhoto);
                     }
 
-                    echo $data['person_birthday'];
                     // atualiza ou insere pela primeira vez os dados pessoais de cadastro
                     $person->setPersonFirstName($data['person_firstname'])
                         ->setPersonLastName($data['person_lastname'])
                         ->setPersonGender($data['person_gender'])
+                        ->setPersonPhoto()
                         ->setPersonBirthday(new DateTime($data['person_birthday']))
                         ->setPersonRg($data['person_rg'])
                         ->setPersonCpf($data['person_cpf'])
@@ -220,7 +211,7 @@ class RegistrationController extends AbstractActionController
                 $em = $this->getEntityManager();
 
                 $regs = $em->getRepository('Recruitment\Entity\Registration')->findBy(array(
-                    'recruitment' => $rid
+                    'recruitment' => $rid,
                 ));
 
                 foreach ($regs as $r) {
@@ -257,9 +248,7 @@ class RegistrationController extends AbstractActionController
         if ($id) {
             try {
                 $em = $this->getEntityManager();
-                $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
-                    'registrationId' => $id
-                ));
+                $registration = $em->find('Recruitment\Entity\Registration', $id);
 
                 return new ViewModel(array(
                     'message' => '',
@@ -334,9 +323,7 @@ class RegistrationController extends AbstractActionController
             try {
 
                 $em = $this->getEntityManager();
-                $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
-                    'registrationId' => $id
-                ));
+                $registration = $em->find('Recruitment\Entity\Registration', $id);
 
                 $targetDir = self::PROFILE_DIR;
                 $targetName = $id;
@@ -409,9 +396,7 @@ class RegistrationController extends AbstractActionController
             try {
                 $em = $this->getEntityManager();
 
-                $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
-                    'registrationId' => $id
-                ));
+                $registration = $em->find('Recruitment\Entity\Registration', $id);
 
                 if ($registration->getRegistrationConfirmationDate() !== null) {
                     $registration->setRegistrationConfirmationDate(null);
@@ -451,9 +436,7 @@ class RegistrationController extends AbstractActionController
             try {
                 $em = $this->getEntityManager();
 
-                $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
-                    'registrationId' => $id
-                ));
+                $registration = $em->find('Recruitment\Entity\Registration', $id);
 
                 if ($registration->getRegistrationConvocationDate() !== null) {
                     $registration->setRegistrationConvocationDate(null);
@@ -493,9 +476,7 @@ class RegistrationController extends AbstractActionController
             try {
                 $em = $this->getEntityManager();
 
-                $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
-                    'registrationId' => $id
-                ));
+                $registration = $em->find('Recruitment\Entity\Registration', $id);
 
                 if ($registration->getRegistrationAcceptanceDate() !== null) {
                     $registration->setRegistrationAcceptanceDate(null);

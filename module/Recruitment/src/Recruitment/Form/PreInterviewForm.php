@@ -8,8 +8,10 @@
 
 namespace Recruitment\Form;
 
-use Recruitment\Entity\Address;
 use Recruitment\Entity\PreInterview;
+use Recruitment\Form\Settings\AddressSettings;
+use Recruitment\Form\Settings\PersonSettings;
+use Recruitment\Form\Settings\RelativeSettings;
 use Zend\Form\Form;
 
 /**
@@ -20,112 +22,47 @@ use Zend\Form\Form;
 class PreInterviewForm extends Form
 {
 
-    public function __construct($name = null, $options = array())
+    public function __construct($name = null, $options = array(), $isUnderage = false)
     {
         parent::__construct($name, $options);
 
+        $addressElements = AddressSettings::createAddressElements();
+        $this->add($addressElements['postal_code']);
+        $this->add($addressElements['state']);
+        $this->add($addressElements['city']);
+        $this->add($addressElements['neighborhood']);
+        $this->add($addressElements['street']);
+        $this->add($addressElements['number']);
+        $this->add($addressElements['complement']);
+
+        if ($isUnderage) {
+            $relativeSuffix = '_relative';
+            $personElements = PersonSettings::createPersonElements($relativeSuffix);
+            $this
+                ->add($personElements['person_firstname'])
+                ->add($personElements['person_lastname'])
+                ->add($personElements['person_gender'])
+                ->add($personElements['person_birthday'])
+                ->add($personElements['person_cpf'])
+                ->add($personElements['person_rg'])
+                ->add($personElements['person_phone'])
+                ->add($personElements['person_email'])
+                ->add($personElements['person_confirm_email']);
+
+            $relativeElements = RelativeSettings::createRelativeElements();
+            $this->add($relativeElements['relative_relationship']);
+
+            $addressElements = AddressSettings::createAddressElements($relativeSuffix);
+            $this->add($addressElements['postal_code']);
+            $this->add($addressElements['state']);
+            $this->add($addressElements['city']);
+            $this->add($addressElements['neighborhood']);
+            $this->add($addressElements['street']);
+            $this->add($addressElements['number']);
+            $this->add($addressElements['complement']);
+        }
 
         $this->add(array(
-                'name' => 'postal_code',
-                'type' => 'text',
-                'options' => array(
-                    'label' => 'CEP',
-                ),
-                'attributes' => array(
-                    'id' => 'cep',
-                    'class' => 'input-sm',
-                )
-            ))
-            ->add(array(
-                'name' => 'state',
-                'type' => 'select',
-                'options' => array(
-                    'label' => 'UF',
-                    'value_options' => array(
-                        Address::STATE_MG => Address::STATE_MG,
-                        Address::STATE_AC => Address::STATE_AC,
-                        Address::STATE_AL => Address::STATE_AL,
-                        Address::STATE_AM => Address::STATE_AM,
-                        Address::STATE_AP => Address::STATE_AP,
-                        Address::STATE_BA => Address::STATE_BA,
-                        Address::STATE_CE => Address::STATE_CE,
-                        Address::STATE_DF => Address::STATE_DF,
-                        Address::STATE_ES => Address::STATE_ES,
-                        Address::STATE_GO => Address::STATE_GO,
-                        Address::STATE_MA => Address::STATE_MA,
-                        Address::STATE_MS => Address::STATE_MS,
-                        Address::STATE_MT => Address::STATE_MT,
-                        Address::STATE_PA => Address::STATE_PA,
-                        Address::STATE_PB => Address::STATE_PB,
-                        Address::STATE_PE => Address::STATE_PE,
-                        Address::STATE_PI => Address::STATE_PI,
-                        Address::STATE_PR => Address::STATE_PR,
-                        Address::STATE_RJ => Address::STATE_RJ,
-                        Address::STATE_RN => Address::STATE_RN,
-                        Address::STATE_RO => Address::STATE_RO,
-                        Address::STATE_RR => Address::STATE_RR,
-                        Address::STATE_RS => Address::STATE_RS,
-                        Address::STATE_SC => Address::STATE_SC,
-                        Address::STATE_SE => Address::STATE_SE,
-                        Address::STATE_SP => Address::STATE_SP,
-                        Address::STATE_TO => Address::STATE_TO,
-                    ),
-                ),
-                'attributes' => array(
-                    'class' => 'input-sm',
-                ),
-            ))
-            ->add(array(
-                'name' => 'city',
-                'type' => 'text',
-                'options' => array(
-                    'label' => 'Cidade',
-                ),
-                'attributes' => array(
-                    'class' => 'input-sm',
-                ),
-            ))
-            ->add(array(
-                'name' => 'neighborhood',
-                'type' => 'text',
-                'options' => array(
-                    'label' => 'Bairro',
-                ),
-                'attributes' => array(
-                    'class' => 'input-sm',
-                ),
-            ))
-            ->add(array(
-                'name' => 'street',
-                'type' => 'text',
-                'options' => array(
-                    'label' => 'Rua',
-                ),
-                'attributes' => array(
-                    'class' => 'input-sm',
-                ),
-            ))
-            ->add(array(
-                'name' => 'number',
-                'type' => 'text',
-                'options' => array(
-                    'label' => 'Número',
-                ),
-                'attributes' => array(
-                    'class' => 'input-sm',
-                ),
-            ))
-            ->add(array(
-                'name' => 'complement',
-                'type' => 'text',
-                'options' => array(
-                    'label' => 'Complemento',
-                ),
-                'attributes' => array(
-                    'class' => 'input-sm',
-                ),
-            ))
-            ->add(array(
                 'name' => 'elementary_school_type',
                 'type' => 'radio',
                 'options' => array(

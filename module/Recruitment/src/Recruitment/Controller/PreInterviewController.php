@@ -10,11 +10,11 @@ namespace Recruitment\Controller;
 
 use Database\Service\EntityManagerService;
 use DateTime;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use Recruitment\Entity\Address;
+use Recruitment\Entity\Person;
 use Recruitment\Entity\PreInterview;
-use Recruitment\Entity\Registration;
+use Recruitment\Entity\Relative;
 use Recruitment\Form\CpfFilter;
 use Recruitment\Form\CpfForm;
 use Recruitment\Form\PreInterviewFilter;
@@ -64,7 +64,7 @@ class PreInterviewController extends AbstractActionController
                     $em = $this->getEntityManager();
 
                     $registration = $em->getRepository('Recruitment\Entity\Registration')
-                        ->findOneByPersonCpf($data['cpf']);
+                        ->findOneByPersonCpf($data['person_cpf']);
 
                     if ($registration !== null) {
                         if ($registration->getRegistrationConvocationDate() instanceof DateTime) {
@@ -142,6 +142,8 @@ class PreInterviewController extends AbstractActionController
      * Se algum(uns) dos arquivos ainda não foi recebido redireciona para a segunda etapa da pré-entrevista 
      * (studentPreInterviewFilesAction)
      * 
+     * Salva o endereço se necessário, responsável se necessário, endereço do responsável se necessário e pré-entrevista
+     * 
      * @return ViewModel
      */
     public function studentPreInterviewFormAction()
@@ -170,16 +172,20 @@ class PreInterviewController extends AbstractActionController
         }
         $message = null;
         $request = $this->getRequest();
-        $form = new PreInterviewForm('Pre-interview');
 
         try {
 
             $em = $this->getEntityManager();
             $registration = $em->getReference('Recruitment\Entity\Registration', $rid);
 
+            $person = $registration->getPerson();
+            $isUnderage = $person->isPersonUnderage();
+
+            $form = new PreInterviewForm('Pre-interview', [], $isUnderage);
+
             if ($request->isPost()) {
                 $data = $request->getPost();
-                $form->setInputFilter(new PreInterviewFilter());
+                $form->setInputFilter(new PreInterviewFilter($isUnderage));
                 $form->setData($data);
 
                 if ($form->isValid()) {
@@ -215,20 +221,23 @@ class PreInterviewController extends AbstractActionController
                         $preInterview->addPreInterviewLiveWithYou($lwy);
                     }
 
-                    $this->insertOrUpdateAddress($registration, $data);
-                    
+                    $this->insertOrUpdateAddress($person, $data);
+                    if ($isUnderage) {
+                        $this->insertOrUpdateRelative($person, $data);
+                    }
+
                     $preInterview->setRegistration($registration);
                     $em->persist($preInterview);
                     $em->flush();
 
                     $form = null;
+                    $studentContainer->getManager()->getStorage()->clear('pre_interview');
                     $message = 'Pré-entrevista concluída com com sucesso.';
                 }
             }
         } catch (Exception $ex) {
             $registration = $form = null;
             $message = 'Erro inesperado. Por favor, entre em contato com o administrador do sistema.';
-            $message = $ex->getMessage();
         }
 
         return new ViewModel(array(
@@ -245,11 +254,11 @@ class PreInterviewController extends AbstractActionController
      * Se o endereço existe e o candidato ainda não possui tal endereço faz apenas a associação do endereço
      * se o endereço existe e o candidato já possui tal endereço não faz nada.
      * 
-     * @param Registration $registration
+     * @param Person $person
      * @param array $data
      * @return null
      */
-    protected function insertOrUpdateAddress(Registration $registration, $data)
+    protected function insertOrUpdateAddress(Person $person, $data)
     {
         $em = $this->getEntityManager();
 
@@ -262,8 +271,6 @@ class PreInterviewController extends AbstractActionController
             'addressNumber' => $data['number'],
             'addressComplement' => $data['complement'],
         ));
-
-        $person = $registration->getPerson();
 
         if ($address !== null) {
             if (!$person->hasAddress($address)) {
@@ -285,6 +292,66 @@ class PreInterviewController extends AbstractActionController
         }
 
         $em->persist($address);
+    }
+
+    /**
+     * Salva o responsável se necessário, endereço se necessário, faz a associação candidato ~ responsável se 
+     * necessário ou executa atualização do parentesco
+     * 
+     * @param Person $person
+     * @param type $data
+     */
+    public function insertOrUpdateRelative(Person $person, $data)
+    {
+        $em = $this->getEntityManager();
+
+        $personRelative = $em->getRepository('Recruitment\Entity\Person')->findOneBy(array(
+            'personCpf' => $data['person_cpf_relative'],
+        ));
+
+        $relative = null;
+        if ($personRelative !== null) {
+            $relative = $em->getRepository('Recruitment\Entity\Relative')->findOneBy(array(
+                'person' => $person->getPersonId(),
+                'relative' => $personRelative->getPersonId(),
+            ));
+        } else {
+            $personRelative = new Person();
+            $personRelative
+                ->setPersonFirstName($data['person_firstname_relative'])
+                ->setPersonLastName($data['person_lastname_relative'])
+                ->setPersonGender($data['person_gender_relative'])
+                ->setPersonBirthday(new \DateTime($data['person_birthday_relative']))
+                ->setPersonCpf($data['person_cpf_relative'])
+                ->setPersonRg($data['person_rg_relative'])
+                ->setPersonPhone($data['person_phone_relative'])
+                ->setPersonEmail($data['person_email_relative'])
+                ->setPersonPhoto();
+
+            $em->persist($personRelative);
+        }
+
+        if ($relative === null) {
+            $relative = new Relative();
+            $relative
+                ->setPerson($person)
+                ->setRelative($personRelative);
+        }
+
+        $relative->setRelativeRelationship($data['relative_relationship']);
+
+        $this->insertOrUpdateAddress($personRelative,
+            array(
+            'postal_code' => $data['postal_code_relative'],
+            'state' => $data['state_relative'],
+            'city' => $data['city_relative'],
+            'neighborhood' => $data['neighborhood_relative'],
+            'street' => $data['street_relative'],
+            'number' => $data['number_relative'],
+            'complement' => $data['complement_relative'],
+        ));
+
+        $em->persist($relative);
     }
 
     /**

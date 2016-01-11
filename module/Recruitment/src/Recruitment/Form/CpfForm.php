@@ -8,6 +8,7 @@
 
 namespace Recruitment\Form;
 
+use Recruitment\Form\Settings\CpfSettings;
 use Zend\Form\Form;
 
 /**
@@ -22,19 +23,14 @@ class CpfForm extends Form
     {
         parent::__construct($name, $options);
 
-        $this->add(array(
-            'name' => 'cpf',
-            'type' => 'text',
-            'options' => array(
-                'label' => 'Número do Cpf',
-            ),
-        ))->add(array(
-            'name' => 'submit',
-            'type' => 'submit',
-            'attributes' => array(
-                'class' => 'btn btn-success btn-block',
-                'value' => 'Prosseguir',
-            )
+        $this->add(CpfSettings::createCpfElement())
+            ->add(array(
+                'name' => 'submit',
+                'type' => 'submit',
+                'attributes' => array(
+                    'class' => 'btn btn-success btn-block',
+                    'value' => 'Prosseguir',
+                )
         ));
     }
 

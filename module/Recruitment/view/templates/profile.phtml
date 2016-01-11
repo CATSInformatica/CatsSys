@@ -35,7 +35,7 @@ $addresses = $person->getAddresses();
                 <?php endif; ?>
 
                 <h3 class="profile-username text-center">
-                    <?php echo $person->getPersonFirstName() . ' ' . $person->getPersonLastName(); ?>
+                    <?php echo $person->getPersonName(); ?>
                 </h3>
 
                 <p class="text-muted text-center">
@@ -87,16 +87,12 @@ $addresses = $person->getAddresses();
                 <strong><i class="fa fa-birthday-cake margin-r-5"></i> Data de Nascimento</strong>
 
                 <p class="text-muted">
-                    <?php echo $person->getPersonBirthday()->format('d/m/Y'); ?>
-                    <?php if ($config['showAge']): ?>
-                        <?php
-                        $birthday = $person->getPersonBirthday();
-                        $today = new \DateTime('now');
-                        $years = $today->diff($birthday)->y;
-
-                        echo '(' . $years . ' anos)'
-                        ?>
-                    <?php endif; ?>
+                    <?php
+                    echo $person->getPersonBirthday()->format('d/m/Y');
+                    if ($config['showAge']) {
+                        echo ' (' . $person->getPersonAge() . ' anos)';
+                    }
+                    ?>
                 </p>
 
                 <strong><i class="fa fa-phone margin-r-5"></i> Telefone</strong>
@@ -282,17 +278,17 @@ $addresses = $person->getAddresses();
                                         ?>"></i>
                                         <div class="timeline-item">
                                             <span class="time"><i class="fa fa-clock-o"></i> 
-            <?php echo $timelineItem['time']; ?>
+                                                <?php echo $timelineItem['time']; ?>
                                             </span>
                                             <h3 class="timeline-header">
-            <?php echo $timelineItem['content-header']; ?>
+                                                <?php echo $timelineItem['content-header']; ?>
                                             </h3>
                                         </div>
                                     </li>
                                     <!-- /.timeline item -->
 
                                 <?php endforeach; ?>
-    <?php endif; ?>
+                            <?php endif; ?>
 
 
                             <!-- END timeline item -->
@@ -303,7 +299,7 @@ $addresses = $person->getAddresses();
                     </div>
 
                 <?php endif; ?>
-<?php if (isset($config['tabs']['documentation'])): ?>
+                <?php if (isset($config['tabs']['documentation'])): ?>
 
                     <div class="tab-pane" id="documentation">
                         <div class="row">
@@ -352,7 +348,7 @@ $addresses = $person->getAddresses();
                     <!-- /.tab-pane -->
 
                 <?php endif; ?>
-<?php if (isset($config['tabs']['score'])): ?>
+                <?php if (isset($config['tabs']['score'])): ?>
 
                     <div class="tab-pane" id="score">
                         <p> Números, números números, ... </p>
@@ -360,14 +356,14 @@ $addresses = $person->getAddresses();
                     <!-- /.tab-pane -->
 
                 <?php endif; ?>
-<?php if (isset($config['tabs']['info'])): ?>
+                <?php if (isset($config['tabs']['info'])): ?>
 
                     <div class="tab-pane" id="info">
                         <p> Dados de inscrição, pre-entrevista, entrevista, ... </p>
                     </div>
                     <!-- /.tab-pane -->
 
-<?php endif; ?>
+                <?php endif; ?>
 
             </div>
             <!-- /.tab-content -->
