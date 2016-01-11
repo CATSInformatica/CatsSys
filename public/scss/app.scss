@@ -22,3 +22,33 @@ and open the template in the editor.
         }
     }
 }
+
+.cats-selected-bg {
+    background-color: #d2d6de;
+}
+.table {
+    cursor: pointer;
+}
+
+.input-group-addon {
+    cursor: pointer;
+}
+
+.btn-file {
+    position: relative;
+    overflow: hidden;
+}
+.btn-file input[type=file] {
+    position: absolute;
+    top: 0;
+    right: 0;
+    min-width: 100%;
+    min-height: 100%;
+    font-size: 100px;
+    filter: alpha(opacity=0);
+    opacity: 0;
+    outline: none;
+    background: white;
+    cursor: pointer;
+    display: block;
+}

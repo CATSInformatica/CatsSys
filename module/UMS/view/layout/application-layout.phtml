@@ -21,7 +21,7 @@
             // DataTable
             ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.css'))
             // Datepicker
-            ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/datepicker/datepicker3.css'))
+            ->appendStylesheet($this->basePath('vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css'))
             // Font Awesome
             ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'))
             // Ionicons
@@ -297,45 +297,15 @@
                 //DataTable
                 ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js'))
                 ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/jquery.dataTables.min.js'))
-                // Datepicker
-                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/locales/bootstrap-datepicker.pt-BR.js'))
-                ->prependFile($this->basePath('vendor/AdminLTE/plugins/datepicker/bootstrap-datepicker.js'))
-                ->prependFile($this->basePath('vendor/moment/min/moment.min.js'))
+                // Bootstrap Datepicker
+                ->prependFile($this->basePath('vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js'))
+                // Moment
+                ->prependFile($this->basePath('vendor/moment/min/moment-with-locales.min.js'))
                 // Bootstrap 3.3.5
                 ->prependFile($this->basePath('vendor/AdminLTE/bootstrap/js/bootstrap.min.js'))
                 // jQuery 2.1.4
                 ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
             ?>
-
-            <style>
-                .cats-selected-bg {
-                    background-color: #d2d6de;
-                }
-                .table {
-                    cursor: pointer;
-                }
-
-                .btn-file {
-                    position: relative;
-                    overflow: hidden;
-                }
-                .btn-file input[type=file] {
-                    position: absolute;
-                    top: 0;
-                    right: 0;
-                    min-width: 100%;
-                    min-height: 100%;
-                    font-size: 100px;
-                    text-align: right;
-                    filter: alpha(opacity=0);
-                    opacity: 0;
-                    outline: none;
-                    background: white;
-                    cursor: inherit;
-                    display: block;
-                }
-
-            </style>
 
             <script>
 
@@ -543,24 +513,28 @@
 
             <script>
 
-                // fileselect event
+                // for file inputs
                 $(document).on('change', '.btn-file :file', function () {
                     var input = $(this),
                             numFiles = input.get(0).files ? input.get(0).files.length : 1,
                             label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
                     input.trigger('fileselect', [numFiles, label]);
                 });
+
                 // change user active role
                 $(document).ready(function () {
 
-                    //                $('.main-footer').show();
+                    $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
+                        $(this).siblings('.btn-file-name').text(label);
+                    });
+
                     $('.role').on('click', function () {
                         var role = $(this);
                         var jsonRole = JSON.stringify({
                             'role': role.text().toLowerCase()
                         });
                         $.ajax({
-                            url: '<?php echo $this->url('authorization/role', array('action' => 'changeActiveUserRole')); ?>',
+                            url: '/authorization/role/changeActiveUserRole',
                             type: 'POST',
                             dataType: 'json',
                             async: true,
@@ -598,9 +572,7 @@
                             toolbarConfig.closeToolbar();
                         }
                     });
-                    $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
-                        $(this).closest('div').siblings('.file-label').text(label);
-                    });
+
                     if (typeof toolbarConfig !== 'undefined') {
                         toolbarConfig.init();
                     }

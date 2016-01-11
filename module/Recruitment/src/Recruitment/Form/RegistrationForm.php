@@ -71,6 +71,7 @@ abstract class RegistrationForm extends Form
                 ),
                 'options' => array(
                     'label' => 'Nascimento*',
+                    'add-on-prepend' => '<i class="glyphicon glyphicon-calendar"></i>',
                 ),
             ))
             ->add(array(

@@ -5,67 +5,43 @@
     <div class="row">
         <?php if ($this->form !== null): ?>
             <div class="col-xs-12 col-md-6 col-md-offset-3">
-                <?php
-                $form = $this->form;
-
-                $form->prepare();
-                echo $this->form()->openTag($form);
-                ?>
-
-                <div class='form-group'>
-                    <label for='recruitment_number'>Nº do processo seletivo</label>
-                    <?php
-                    echo $this->formRow($form->get('recruitment_number'));
-                    ?>
+                <?php echo $this->form()->openTag($form); ?>
+                <div class="col-xs-12 col-md-6">
+                    <?php echo $this->formRow($form->get('recruitment_number')); ?>
                 </div>
-
-                <div class='form-group'>
-                    <label for='recruitment_year'>Ano do processo seletivo</label>
-                    <?php
-                    echo $this->formRow($form->get('recruitment_year'));
-                    ?>
+                <div class="col-xs-12 col-md-6">
+                    <?php echo $this->formRow($form->get('recruitment_year')); ?>
                 </div>
-
-                <div class="row">
-                    <div class="form-group col-xs-6 col-md-6">
-                        <label for='recruitment_begindate'>Data de Início</label>
-                        <?php
-                        echo $this->formRow($form->get('recruitment_begindate'));
-                        ?>
-                    </div>
-                    <div class="form-group col-xs-6 col-md-6">
-                        <label for='recruitment_enddate'>Data de Término</label>
-                        <?php
-                        echo $this->formRow($form->get('recruitment_enddate'));
-                        ?>
+                <div class="col-xs-12 col-md-6">
+                    <?php echo $this->formRow($form->get('recruitment_begindate')); ?>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                    <?php echo $this->formRow($form->get('recruitment_enddate')); ?>
+                </div>
+                <div class="col-xs-12 col-md-12">
+                    <div class="form-group 
+                    <?php
+                    echo $this->formElementErrors($form->get('recruitment_public_notice')) !== "" ? 'has-error' : '';
+                    ?>" >
+                             <?php echo $this->formLabel($form->get('recruitment_public_notice')); ?>
+                        <div class="input-group btn-file">
+                            <span class="input-group-addon"><i class="fa fa-file-pdf-o"></i></span>
+                            <?php echo $this->formElement($form->get('recruitment_public_notice')); ?>
+                            <span class="form-control btn-file-name">Nenhum arquivo selecionado</span>
+                        </div>
+                        
+                        <?php echo $this->formElementErrors($form->get('recruitment_public_notice')); ?>
                     </div>
                 </div>
-                <div class='form-group'>
-                    <label for='recruitment_public_notice'>Edital</label><br>
-                    <div class="btn btn-success btn-file">
-                        <i class="fa fa-file-pdf-o"></i> Procurar
-
-                        <?php
-                        echo $this->formRow($form->get('recruitment_public_notice'));
-                        ?>
-                    </div>
-                    <span class="file-label"></span>
+                <div class="col-xs-12 col-md-12">
+                    <?php echo $this->formRow($form->get('recruitment_type')); ?>
                 </div>
-
-                <div class='form-group'>
-                    <label for='recruitment_type'>Tipo de processo seletivo</label>
-                    <?php
-                    echo $this->formRow($form->get('recruitment_type'));
-                    ?>
+                <div class="col-xs-12 col-md-12">
+                    <?php echo $this->formRow($form->get('Submit')); ?>
                 </div>
-
-                <div class="form-group">
-                    <?php
-                    echo $this->formSubmit($form->get('Submit'));
-                    ?>
-                    <?php echo $this->form()->closeTag(); ?>
-                </div>
+                <?php echo $this->form()->closeTag(); ?>
             </div>
+
         <?php endif; ?>
     </div>
 
@@ -83,14 +59,15 @@
          */
 
         initDatepickers = function () {
-            $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',
-                setDate: moment().format('DD/MM/YYYY'),
-                startDate: moment().format('DD/MM/YYYY'),
-                endDate: moment().add(1, 'years').format('DD/MM/YYYY'),
-                startView: 0,
-                autoclose: true,
-                language: 'pt-BR'
+
+            $('.datepicker').closest('.input-group').datetimepicker({
+                format: 'DD/MM/YYYY',
+                minDate: moment(),
+                useCurrent: false,
+                maxDate: moment().add(18, 'months'),
+                locale: 'pt-br',
+                viewMode: 'years',
+                viewDate: moment()
             });
         };
 

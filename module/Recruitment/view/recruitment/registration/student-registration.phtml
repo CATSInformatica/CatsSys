@@ -101,14 +101,15 @@
          */
 
         initDatepickers = function () {
-            $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',
-                setDate: moment().subtract(16, 'years').format('DD/MM/YYYY'),
-                startDate: moment().subtract(100, 'years').format('DD/MM/YYYY'),
-                endDate: moment().subtract(10, 'years').format('DD/MM/YYYY'),
-                startView: 2,
-                autoclose: true,
-                language: 'pt-BR'
+
+            $('.datepicker').closest('.input-group').datetimepicker({
+                format: 'DD/MM/YYYY',
+                minDate: moment().subtract(100, 'years'),
+                useCurrent: false,
+                maxDate: moment().subtract(15, 'years'),
+                locale: 'pt-br',
+                viewMode: 'years',
+                viewDate: moment().subtract(21, 'years')
             });
         };
 
