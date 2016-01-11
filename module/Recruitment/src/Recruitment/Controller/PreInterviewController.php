@@ -150,6 +150,8 @@ class PreInterviewController extends AbstractActionController
     {
         $studentContainer = new Container('pre_interview');
 
+
+        // id de inscrição não está na sessão redireciona para o início
         if (!$studentContainer->offsetExists('regId')) {
             return $this->redirect()->toRoute('recruitment/pre-interview',
                     array(
@@ -158,12 +160,14 @@ class PreInterviewController extends AbstractActionController
         }
         $rid = $studentContainer->offsetGet('regId');
 
+
         $prefix = self::PRE_INTERVIEW_DIR . $rid;
 
         $files['personal'] = file_exists($prefix . self::PERSONAL_FILE_SUFFIX);
         $files['income'] = file_exists($prefix . self::INCOME_FILE_SUFFIX);
         $files['expendure'] = file_exists($prefix . self::EXPENDURE_FILE_SUFFIX);
 
+        // se ao menos um documento não foi enviado redireciona para a página de documentos da pré-entrevista
         if (!$files['personal'] || !$files['income'] || !$files['expendure']) {
             return $this->redirect()->toRoute('recruitment/pre-interview',
                     array(
@@ -178,23 +182,34 @@ class PreInterviewController extends AbstractActionController
             $em = $this->getEntityManager();
             $registration = $em->getReference('Recruitment\Entity\Registration', $rid);
 
+            // se o candidato já respondeu o formulário uma vez avisa que a pré-entrevista já foi cadastrada.
+            if ($registration->getPreInterview() !== null) {
+
+                $studentContainer->getManager()->getStorage()->clear('pre_interview');
+
+                return new ViewModel(array(
+                    'registration' => $registration,
+                    'form' => null,
+                    'message' => 'O formulário de pré-entrevista já foi enviado.',
+                ));
+            }
             $person = $registration->getPerson();
             $isUnderage = $person->isPersonUnderage();
 
             $form = new PreInterviewForm('Pre-interview', [], $isUnderage);
 
+            // se é um envio de formulário
             if ($request->isPost()) {
                 $data = $request->getPost();
                 $form->setInputFilter(new PreInterviewFilter($isUnderage));
                 $form->setData($data);
 
+                // se o formulário é válido
                 if ($form->isValid()) {
                     $data = $form->getData();
 
-                    $preInterview = $registration->getPreInterview();
-                    if ($preInterview === null) {
-                        $preInterview = new PreInterview();
-                    }
+                    // cria uma nova pré-entrevista e insere os valores do formulário
+                    $preInterview = new PreInterview();
 
                     $preInterview
                         ->setPreInterviewPersonalInfo($rid . self::PERSONAL_FILE_SUFFIX)
@@ -215,21 +230,24 @@ class PreInterviewController extends AbstractActionController
                         ->setPreInterviewMotherEducationGrade($data['mother_education_grade'])
                         ->setPreInterviewExpectFromUs($data['expect_from_us']);
 
-                    $preInterview->clearPreInterviewLiveWithYou();
-
                     foreach ($data['live_with_you'] as $lwy) {
                         $preInterview->addPreInterviewLiveWithYou($lwy);
                     }
 
+                    // inserção do endereço do candidato
                     $this->insertOrUpdateAddress($person, $data);
+
+                    // se o candidato é menor de idade insere os dados do responsável
                     if ($isUnderage) {
                         $this->insertOrUpdateRelative($person, $data);
                     }
 
+                    // salva tudo no banco de dados
                     $preInterview->setRegistration($registration);
                     $em->persist($preInterview);
                     $em->flush();
 
+                    // limpa a sessão e informa que a pré-entrevista foi concluída com sucesso.
                     $form = null;
                     $studentContainer->getManager()->getStorage()->clear('pre_interview');
                     $message = 'Pré-entrevista concluída com com sucesso.';
