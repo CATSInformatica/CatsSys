@@ -6,6 +6,7 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Documents\Controller\StudentBgConfig' => Controller\StudentBgConfigController::class,
+            'Documents\Controller\GeneratePdf' => Controller\GeneratePdfController::class,
         ),
     ),
     'router' => array(
@@ -28,6 +29,19 @@ return array(
                             'defaults' => array(
                                 'controller' => 'Documents\Controller\StudentBgConfig',
                                 'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'generate-pdf' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/generate-pdf/:action[/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Documents\Controller\GeneratePdf',
                             ),
                         ),
                     ),
@@ -95,6 +109,22 @@ return array(
                         'resource' => 'Documents\Controller\StudentBgConfig',
                         'privilege' => 'create',
                         'icon' => 'fa fa-file-o'
+                    ),
+                    array(
+                        'label' => 'Generate Student Card Id\'s',
+                        'route' => 'documents/generate-pdf',
+                        'action' => 'student-id-card',
+                        'resource' => 'Documents\Controller\GeneratePdf',
+                        'privilege' => 'student-id-card',
+                        'icon' => 'fa fa-file-pdf-o'
+                    ),
+                    array(
+                        'label' => 'Generate Students Board',
+                        'route' => 'documents/generate-pdf',
+                        'action' => 'students-board',
+                        'resource' => 'Documents\Controller\GeneratePdf',
+                        'privilege' => 'students-board',
+                        'icon' => 'fa fa-file-pdf-o'
                     ),
                 ),
             ),

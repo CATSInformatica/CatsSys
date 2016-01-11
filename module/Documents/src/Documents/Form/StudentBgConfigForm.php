@@ -8,7 +8,6 @@
 
 namespace Documents\Form;
 
-use Zend\Form\Element;
 use Zend\Form\Form;
 
 /**
@@ -20,6 +19,8 @@ class StudentBgConfigForm extends Form {
 
     public function __construct($name = null, $options = array()) {
         parent::__construct($name, $options);
+        $this->setAttribute('method', 'post');
+        $this->setAttribute('enctype', 'multipart/form-data');
 
         $this->add(array(
                     'name' => 'bg_phrase',
@@ -52,7 +53,7 @@ class StudentBgConfigForm extends Form {
                 ->add(array(
                     'name' => 'Submit',
                     'attributes' => array(
-                        'type' => 'button',
+                        'type' => 'submit',
                         'class' => 'btn btn-primary btn-block',
                         'value' => 'Criar',
                     ),

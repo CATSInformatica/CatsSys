@@ -1,0 +1,46 @@
+<section class="content">
+    <?php 
+    if ($pdf !== null) {
+        $pdf->Output('Carteirinhas', 'I', true);
+    }
+    ?>
+    <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <?php if ($this->form !== null): ?>
+            <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
+                <?php echo $this->form()->openTag($form); ?>
+                    <?php echo $this->formRow($form->get('config_id')); ?>
+                    <?php echo $this->formRow($form->get('class_id')); ?>
+                    <?php echo $this->formRow($form->get('expiry_date')); ?>
+                    <?php echo $this->formRow($form->get('Submit')); ?>
+                <?php echo $this->form()->closeTag(); ?>
+            </div>
+
+        <?php endif; ?>
+    </div>
+</section>
+<script>
+    var standardConfig = (function () {
+
+        initDatepickers = function () {
+            $('.datepicker').datepicker({
+                format: 'dd/mm/yyyy',
+                setDate: moment().format('DD/MM/YYYY'),
+                startDate: moment().format('DD/MM/YYYY'),
+                endDate: moment().add(1, 'years').format('DD/MM/YYYY'),
+                startView: 0,
+                autoclose: true,
+                language: 'pt-BR'
+            });
+        };
+
+        return {
+            init: function () {
+                initDatepickers();
+            }
+        };
+
+    }());
+
+
+</script>

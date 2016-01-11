@@ -1,20 +1,7 @@
 <section class="content">
-
-    <?php echo $bgConfig->getStudentBgConfigAuthor(); ?>
-
-    <ul>
-        <?php foreach ($people as $person): ?>
-            <li>
-                <?php echo $person->getPersonName(); ?><br>
-                <?php echo $person->getPersonRg(); ?><br>
-                <img src="/recruitment/registration/photo/<?php echo $person->getPersonId(); ?>">
-            </li>
-        <?php endforeach; ?>
-    </ul>
-
     <p> <?php echo $message ?> </p>
     <?php if ($configs): ?>
-        <div class="table-responsive col-xs-12 col-md-10 col-md-offset-1">
+        <div class="table-responsive col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
             <table id="config-table" class="table table-condensed table-striped">
                 <thead>
                     <tr>
@@ -42,31 +29,3 @@
         <p> Não há configurações cadastradas. </p>
     <?php endif; ?>
 </section>
-<script>
-
-    var standardConfig = (function () {
-        // your module code goes here
-        // var config = null;
-
-        /**
-         * 
-         * private functions
-         */
-
-        initDataTable = function () {
-
-            $('#config-table').DataTable({
-                dom: 'lftip',
-                paging: false
-            });
-        };
-
-        return {
-            init: function () {
-                initDataTable();
-            }
-        };
-
-    }());
-
-</script>

@@ -28,7 +28,7 @@ class StudentBgConfigController extends AbstractActionController
     
     
     /**
-     * exibe em uma tabela todas as configurações cadastradas
+     * Exibe em uma tabela todas as configurações cadastradas
      * 
      * @return ViewModel
      */
@@ -38,54 +38,19 @@ class StudentBgConfigController extends AbstractActionController
         try {
             $em = $this->getEntityManager();
             $configs = $em->getRepository('Documents\Entity\StudentBgConfig')->findAll();
-            
-            //1
-            $cId = 1;
-            $bgId = 38;
-            
-            $bgSelected = $em->getRepository('Documents\Entity\StudentBgConfig')
-                       ->findOneBy(array(
-                           'studentBgConfigId' => $bgId
-                       ));
-            
-            $classSelected = $em->getReference('SchoolManagement\Entity\StudentClass',
-                    $cId);
-            
-            $enrolls = $classSelected->getEnrollments();
-            
-            foreach($enrolls as $enroll) {
-                $people[] = $enroll->getRegistration()->getPerson();
-            }
-            
-            
-            
         } catch (\Exception $ex) {
             $message = $ex->getMessage();
         }      
         
-        $this->layout()->toolbar = array(
-            'menu' => array(
-                array(
-                    'url' => '/documents/student-bg-config/delete/$id',
-                    'title' => 'Remover',
-                    'description' => 'Permite remover uma configuração',
-                    'class' => 'fa fa-trash-o bg-red',
-                    'fntype' => 'selectedAjaxClick',
-                ),
-            ),
-        );
-        
         return new ViewModel([
             'configs' => $configs,
             'message' => $message,
-            'people' => $people,
-            'bgConfig' => $bgSelected,
         ]); 
     }
     
     
     /**
-     * grava no banco dados uma configuração de fundo 
+     * Grava no banco dados uma configuração de fundo 
      * 
      * @return ViewModel
      */
@@ -131,7 +96,6 @@ class StudentBgConfigController extends AbstractActionController
                                 'Erro: ' . $ex->getMessage();
                     }
                 }
-                $message = $data['bg_img']['tmp_name']; 
             }
         }
         return new ViewModel(array(
@@ -141,7 +105,7 @@ class StudentBgConfigController extends AbstractActionController
     }
     
     /**
-     * remove do banco de dados a configuração de fundo selecionada
+     * Remove do banco de dados a configuração de fundo selecionada
      * 
      * @return JsonModel
      */
