@@ -8,61 +8,48 @@
 
 namespace Recruitment\Form;
 
-use Recruitment\Form\Settings\PersonSettings;
+use Doctrine\Common\Persistence\ObjectManager;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use Recruitment\Form\Fieldset\RegistrationFieldset;
 use Recruitment\Model\CaptchaImage;
 use Zend\Form\Form;
+use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
  * Description of RegistrationForm
  *
- * @author marcio
+ * @author Márcio Dias <marciojr91@gmail.com>
  */
-abstract class RegistrationForm extends Form
+class RegistrationForm extends Form implements InputFilterProviderInterface
 {
 
-    public function __construct($name = null)
+    public function __construct(ObjectManager $obj)
     {
-        parent::__construct($name);
+        parent::__construct('registration');
 
-        $captchaImg = new CaptchaImage(array(
-            'width' => '350',
-            'height' => '100',
-            'dotNoiseLevel' => '60',
-            'lineNoiseLevel' => 3,
-            'expiration' => '360',
-        ));
+        $this->setHydrator(new DoctrineHydrator($obj));
 
-
-        $personElements = PersonSettings::createPersonElements();
-
-        $this
-            ->add($personElements['person_firstname'])
-            ->add($personElements['person_lastname'])
-            ->add($personElements['person_gender'])
-            ->add($personElements['person_birthday'])
-            ->add($personElements['person_cpf'])
-            ->add($personElements['person_rg'])
-            ->add($personElements['person_phone'])
-            ->add($personElements['person_email'])
-            ->add($personElements['person_confirm_email']);
-
+        // Add the user fieldset, and set it as the base fieldset
+        $registrationFieldset = new RegistrationFieldset($obj);
+        $registrationFieldset->setUseAsBaseFieldset(true);
+        $this->add($registrationFieldset);
 
         $this->add(array(
-                'name' => 'registration_consent',
+                'name' => 'registrationConsent',
                 'type' => 'checkbox',
                 'options' => array(
-                    'label' => 'Declaro ter lido o edital do processo seletivo de alunos do CATS '
-                    . 'e estar ciente de todas as etapas e documentos exigidos neste processo seletivo.*',
+                    'label' => 'Declaro ter lido o edital do processo seletivo e estar ciente de todas as etapas e'
+                    . ' documentos exigidos neste processo seletivo.*',
                     'checked_value' => true,
                     'unchecked_value' => false,
                 ),
             ))
             ->add(array(
-                'name' => 'registration_captcha',
+                'name' => 'registrationCaptcha',
                 'type' => 'Zend\Form\Element\Captcha',
                 'options' => array(
                     'label' => 'Insira o código da imagem*',
-                    'captcha' => $captchaImg,
+                    'captcha' => new CaptchaImage(),
                 ),
                 'attributes' => array(
                     'id' => 'captcha_input',
@@ -70,13 +57,25 @@ abstract class RegistrationForm extends Form
                 )
             ))
             ->add(array(
-                'name' => 'registation_confirm',
+                'name' => 'submit',
                 'type' => 'submit',
                 'attributes' => array(
-                    'class' => 'btn btn-success btn-block',
-                    'value' => 'Concluir',
-                ),
+                    'class' => 'btn btn-primary btn-block',
+                    'value' => 'Criar',
+                )
         ));
+    }
+
+    public function getInputFilterSpecification()
+    {
+        return array(
+            'registrationConsent' => array(
+                'required' => true,
+            ),
+            'registrationCaptcha' => array(
+                'required' => true,
+            ),
+        );
     }
 
 }

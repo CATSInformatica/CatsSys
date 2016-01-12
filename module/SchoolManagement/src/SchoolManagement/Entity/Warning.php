@@ -52,7 +52,5 @@ class Warning
      * @ORM\Column(name="warning_comment", type="text", nullable=false)
      */
     private $warningComment;
-    
-    
 
 }

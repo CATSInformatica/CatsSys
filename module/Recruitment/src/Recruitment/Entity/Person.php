@@ -136,7 +136,7 @@ class Person
     /**
      *
      * @var User
-     * @ORM\OneToOne(targetEntity="\Authentication\Entity\User")
+     * @ORM\OneToOne(targetEntity="\Authentication\Entity\User", fetch="EXTRA_LAZY")
      * @ORM\JoinColumn(name="user_id", referencedColumnName="user_id")
      */
     private $user;
@@ -180,6 +180,16 @@ class Person
     public function getPersonId()
     {
         return $this->personId;
+    }
+
+    /**
+     * @param integer $personId
+     * @return Person
+     */
+    public function setPersonId($personId)
+    {
+        $this->personId = $personId;
+        return $this;
     }
 
     /**
@@ -486,7 +496,7 @@ class Person
      */
     public function addRegistration(Registration $registration)
     {
-        $this->registrations[] = $registration;
+        $this->registrations->add($registration);
         return $this;
     }
 

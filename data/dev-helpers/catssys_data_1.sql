@@ -16,7 +16,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
-INSERT INTO `person` VALUES (1,NULL,'MÁRCIO','DIAS DE OLIVEIRA JUNIOR',2,'MG-16.793.501','109.775.886-96','marciojr91@gmail.com',NULL,'1.png','(35)3622-5963',NULL,'1991-12-06'),(2,NULL,'THELMA','ADIELLY DO CATS',1,'MG-18.245.654','486.958.733-58','thelmaad@outlook.com.br',NULL,'default-female-profile.png','(35)98755-5864',NULL,'1994-07-08'),(3,NULL,'MARÍLIA ','DIAS DA SILVA OLIVEIRA',1,'MG- 20.022.616','127.689.006-05','mariliadias24@gmail.com',NULL,'3.png','(35) 91706577',NULL,'1998-09-14');
+INSERT INTO `person` VALUES (1,NULL,'MÁRCIO','DIAS DE OLIVEIRA JUNIOR',2,'MG-16.793.501','109.775.886-96','marciojr91@gmail.com',NULL,'1.png','(35)3622-5963',NULL,'1991-12-06'),(2,NULL,'THELMA','ADIELLY DO CATS',1,'MG-18.245.654','486.958.733-58','thelmaad@outlook.com.br',NULL,'default-female-profile.png','(35)98755-5864',NULL,'1994-07-08'),(3,NULL,'MARÍLIA ','DIAS DA SILVA OLIVEIRA',1,'MG- 20.022.616','127.689.006-05','mariliadias24@gmail.com',NULL,'3.png','(35) 91706577',NULL,'1998-09-14'),(4,NULL,'NANCY','DE CASTRO',1,'SP-11.111.333','556.479.304-84','nacy@bol.uol.com.br',NULL,'default-female-profile.png','(40)99999-5555',NULL,'1980-07-09');
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -28,13 +28,4 @@ LOCK TABLES `person_has_address` WRITE;
 /*!40000 ALTER TABLE `person_has_address` DISABLE KEYS */;
 INSERT INTO `person_has_address` VALUES (1,60502);
 /*!40000 ALTER TABLE `person_has_address` ENABLE KEYS */;
-UNLOCK TABLES;
-
---
--- Dumping data for table `person_relative`
---
-
-LOCK TABLES `person_relative` WRITE;
-/*!40000 ALTER TABLE `person_relative` DISABLE KEYS */;
-/*!40000 ALTER TABLE `person_relative` ENABLE KEYS */;
 UNLOCK TABLES;
