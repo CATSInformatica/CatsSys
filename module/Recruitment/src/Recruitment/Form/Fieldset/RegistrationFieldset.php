@@ -23,14 +23,18 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class RegistrationFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
-    public function __construct(ObjectManager $obj)
+    public function __construct(ObjectManager $obj, $options = null)
     {
+        if (is_array($options) && !array_key_exists('person', $options)) {
+            throw new \InvalidArgumentException('`options` array must contain the key `person`');
+        }
+
         parent::__construct('registration');
 
         $this->setHydrator(new DoctrineHydrator($obj))
             ->setObject(new Registration());
 
-        $this->add(new PersonFieldset($obj));
+        $this->add(new PersonFieldset($obj, $options['person']));
 
         $this->add(array(
             'name' => 'recruitmentKnowAbout',

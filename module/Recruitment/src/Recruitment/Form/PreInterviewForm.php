@@ -21,13 +21,13 @@ use Zend\Form\Form;
 class PreInterviewForm extends Form
 {
 
-    public function __construct(ObjectManager $obj)
+    public function __construct(ObjectManager $obj, $options = null)
     {
         parent::__construct('pre-interview');
         $this->setHydrator(new DoctrineHydrator($obj));
         
         // Add the user fieldset, and set it as the base fieldset
-        $registrationFieldset = new RegistrationFieldset($obj);
+        $registrationFieldset = new RegistrationFieldset($obj, $options);
         $registrationFieldset->setUseAsBaseFieldset(true);
         $this->add($registrationFieldset);
         
@@ -36,7 +36,7 @@ class PreInterviewForm extends Form
             'type' => 'submit',
             'attributes' => array(
                 'class' => 'btn btn-primary btn-block',
-                'value' => 'Criar',
+                'value' => 'Concluir',
             )
         ));
     }

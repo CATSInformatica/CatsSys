@@ -191,12 +191,23 @@ class Registration extends \Recruitment\Entity\Registration implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getRegistrationDate()
+    public function getRegistrationDate($format = 'd/m/Y \\à\\s H:i:s')
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRegistrationDate', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRegistrationDate', array($format));
 
-        return parent::getRegistrationDate();
+        return parent::getRegistrationDate($format);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getRegistrationDateAsDateTime()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRegistrationDateAsDateTime', array());
+
+        return parent::getRegistrationDateAsDateTime();
     }
 
     /**

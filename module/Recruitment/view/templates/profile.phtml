@@ -66,7 +66,7 @@ $addresses = $person->getAddresses();
                     <li class="list-group-item">
                         <b>Inscrito em </b> <a class="pull-right">
                             <?php
-                            echo $registration->getRegistrationDate()->format('d/m/Y H:i:s');
+                            echo $registration->getRegistrationDate();
                             ?>
                         </a>
                     </li>
@@ -88,7 +88,7 @@ $addresses = $person->getAddresses();
 
                 <p class="text-muted">
                     <?php
-                    echo $person->getPersonBirthday()->format('d/m/Y');
+                    echo $person->getPersonBirthday();
                     if ($config['showAge']) {
                         echo ' (' . $person->getPersonAge() . ' anos)';
                     }
@@ -174,7 +174,7 @@ $addresses = $person->getAddresses();
                             <!-- timeline time label -->
                             <li class="time-label">
                                 <span class="bg-green">
-                                    <?php echo $registration->getRegistrationDate()->format('H:i \o\n l jS F Y'); ?>
+                                    <?php echo $registration->getRegistrationDate('H:i \o\n l jS F Y'); ?>
                                 </span>
                             </li>
                             <!-- /.timeline-label -->
@@ -183,7 +183,8 @@ $addresses = $person->getAddresses();
                                 <i class="fa fa-pencil bg-green"></i>
                                 <div class="timeline-item">
                                     <span class="time"><i class="fa fa-clock-o"></i> 
-                                        Há <?php echo $today->diff($registration->getRegistrationDate())->d ?> dias
+                                        Há <?php 
+                                        echo $today->diff($registration->getRegistrationDateAsDateTime())->d ?> dias
                                     </span>
                                     <h3 class="timeline-header">Inscrição realizada.</h3>
                                 </div>

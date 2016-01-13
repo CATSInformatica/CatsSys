@@ -16,7 +16,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `person` WRITE;
 /*!40000 ALTER TABLE `person` DISABLE KEYS */;
-INSERT INTO `person` VALUES (1,NULL,'MÁRCIO','DIAS DE OLIVEIRA JUNIOR',2,'MG-16.793.501','109.775.886-96','marciojr91@gmail.com',NULL,'1.png','(35)3622-5963',NULL,'1991-12-06'),(2,NULL,'THELMA','ADIELLY DO CATS',1,'MG-18.245.654','486.958.733-58','thelmaad@outlook.com.br',NULL,'default-female-profile.png','(35)98755-5864',NULL,'1994-07-08'),(3,NULL,'MARÍLIA ','DIAS DA SILVA OLIVEIRA',1,'MG- 20.022.616','127.689.006-05','mariliadias24@gmail.com',NULL,'3.png','(35) 91706577',NULL,'1998-09-14'),(4,NULL,'NANCY','DE CASTRO',1,'SP-11.111.333','556.479.304-84','nacy@bol.uol.com.br',NULL,'default-female-profile.png','(40)99999-5555',NULL,'1980-07-09');
+INSERT INTO `person` VALUES (1,NULL,'PEDRO','JOSÉ MANUEL DA COSTA',2,'MG-22.333.431','736.372.103-39','pedrojose@email.com.br',NULL,'1.png','(35)3434-4545',NULL,'1991-12-06'),(2,NULL,'SHELMA','ADELLY DO CATS',1,'MG-18.245.654','486.958.733-58','shelmaad@outlook.com.br',NULL,'default-female-profile.png','(35)98755-5864',NULL,'1994-07-08'),(3,NULL,'MARÍLIA ','PÊRA ABACATE MAMÃO',1,'MG- 23.343.614','278.645.183-38','mariliapera@gmail.com',NULL,'3.png','(35) 54706871',NULL,'1998-09-14'),(4,NULL,'NANCY','DE CASTRO',1,'SP-11.111.333','556.479.304-84','nacy@bol.uol.com.br',NULL,'default-female-profile.png','(40)99999-5555',NULL,'1980-07-09');
 /*!40000 ALTER TABLE `person` ENABLE KEYS */;
 UNLOCK TABLES;
 

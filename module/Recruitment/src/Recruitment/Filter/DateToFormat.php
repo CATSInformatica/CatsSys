@@ -108,8 +108,7 @@ class DateToFormat extends AbstractFilter
      * @return string|mixed
      */
     public function filter($value)
-    {
-
+    {   
         if (!is_string($value) || empty($value)) {
             return $value;
         }

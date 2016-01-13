@@ -120,6 +120,10 @@ return array(
         ),
         'template_map' => array(
             'profile/template' => __DIR__ . '/../view/templates/profile.phtml',
+            'person/template' => __DIR__ . '/../view/templates/person.phtml',
+            'relative/template' => __DIR__ . '/../view/templates/relative.phtml',
+            'disclosure/template' => __DIR__ . '/../view/templates/disclosure.phtml',
+            'address/template' => __DIR__ . '/../view/templates/address.phtml',
             'pre-interview/template' => __DIR__ . '/../view/templates/pre-interview.phtml',
         ),
         'display_exceptions' => true,

@@ -68,7 +68,7 @@ class Registration
     /**
      *
      * @var Recruitment
-     * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Recruitment", inversedBy="registrations", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Recruitment", inversedBy="registrations")
      * @ORM\JoinColumn(name="recruitment_id", referencedColumnName="recruitment_id", nullable=false)
      */
     private $recruitment;
@@ -83,7 +83,8 @@ class Registration
 
     /**
      * @var Person
-     * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Person", inversedBy="registrations", fetch="EAGER")
+     * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Person", inversedBy="registrations", fetch="EAGER", 
+     * cascade={"persist"})
      * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id", nullable=false)
      */
     private $person;
@@ -119,9 +120,19 @@ class Registration
 
     /**
      * 
+     * @param string $format
+     * @return string
+     */
+    public function getRegistrationDate($format = 'd/m/Y \à\s H:i:s')
+    {
+        return $this->registrationDate->format($format);
+    }
+
+    /**
+     * 
      * @return \DateTime
      */
-    public function getRegistrationDate()
+    public function getRegistrationDateAsDateTime()
     {
         return $this->registrationDate;
     }

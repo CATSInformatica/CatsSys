@@ -122,7 +122,7 @@ class RegistrationController extends AbstractActionController
             if ($form->isValid()) {
 
                 try {
-                    // verifica se a pessoa já está cadastrada, se não estiver cria um novo cadastro.
+                    // verifica se a pessoa já está cadastrada.
 
                     $newPerson = $registration->getPerson();
 
@@ -145,29 +145,34 @@ class RegistrationController extends AbstractActionController
                     $registration->setRecruitment($recruitment);
 
                     // salva no banco
-                    $em->persist($registration->getPerson());
                     $em->persist($registration);
                     $em->flush();
 
                     // redirecionar para a página que gera o comprovante de inscrição e envia o email.
-                    $message = 'Inscrição efetuada com sucesso.';
-                    $form = null;
+
+                    return new ViewModel(array(
+                        'message' => 'Inscrição efetuada com sucesso.',
+                        'form' => null,
+                    ));
                 } catch (Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
                         $message = 'Não é possível fazer mais de uma inscrição em um mesmo processo seletivo.';
                         $form = null;
                     } else {
                         $message = 'Erro inesperado.Por favor, tente novamente ou'
-                            . ' entre em contato com o administrador do sistema: ';
+                            . ' entre em contato com o administrador do sistema: ' . $ex->getMessage();
                     }
+
+                    return new ViewModel(array(
+                        'message' => $message,
+                        'form' => $form,
+                    ));
                 }
             }
-        } else {
-            $message = '';
         }
 
         return new ViewModel(array(
-            'message' => $message,
+            'message' => '',
             'form' => $form,
         ));
     }
@@ -203,7 +208,7 @@ class RegistrationController extends AbstractActionController
                             'data-id' => $r->getRegistrationId()
                         ],
                         $r->getRegistrationNumber(),
-                        $r->getRegistrationDate()->format('d/m/Y H:i:s'),
+                        $r->getRegistrationDate(),
                         $person->getPersonFirstName() . ' ' . $person->getPersonLastName(),
                         $person->getPersonCpf(),
                         $person->getPersonRg(),
@@ -273,7 +278,7 @@ class RegistrationController extends AbstractActionController
             try {
 
                 $em = $this->getEntityManager();
-                $registration = $em->find('Recruitment\Entity\Registration', $id);
+                $person = $em->find('Recruitment\Entity\Person', $id);
 
                 $targetDir = self::PROFILE_DIR;
                 $targetName = $id;
@@ -313,7 +318,6 @@ class RegistrationController extends AbstractActionController
                     throw new \RuntimeException($messages);
                 }
 
-                $person = $registration->getPerson();
                 $person->setPersonPhoto($targetName);
 
                 $em->persist($person);
@@ -324,7 +328,7 @@ class RegistrationController extends AbstractActionController
                     'file' => '/recruitment/registration/photo/' . $id,
                 ));
             } catch (Exception $ex) {
-                return new ViewModel(array(
+                return new JsonModel(array(
                     'message' => $ex->getMessage(),
                     'file' => null,
                 ));

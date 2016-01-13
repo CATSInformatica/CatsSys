@@ -22,12 +22,53 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class PersonFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
-    public function __construct(ObjectManager $obj)
+    /**
+     * 
+     * @param ObjectManager $obj
+     * @param array $options array com as chaves 'relative', mostrar/ocultar parentes 
+     * e 'address' mostrar/ocultar endereço
+     * @throws \InvalidArgumentException
+     */
+    public function __construct(ObjectManager $obj,
+        $options = array(
+        'relative' => false,
+        'address' => false,
+    ), $name = 'person')
     {
-        parent::__construct('person');
+        if (is_array($options) &&
+            (!array_key_exists('relative', $options) || !array_key_exists('address', $options))) {
+            throw new \InvalidArgumentException('`options` array must contain the keys `relative` and `address`');
+        }
+
+        parent::__construct($name);
 
         $this->setHydrator(new DoctrineHydrator($obj))
             ->setObject(new Person());
+
+        if ($options['relative']) {
+            $relativeFieldset = new RelativeFieldset($obj, $options['address']);
+
+            $this->add(array(
+                'type' => 'Zend\Form\Element\Collection',
+                'name' => 'relatives',
+                'options' => array(
+                    'count' => 1,
+                    'target_element' => $relativeFieldset,
+                ),
+            ));
+        }
+
+        if ($options['address']) {
+            $addressFieldset = new AddressFieldset($obj);
+            $this->add(array(
+                'type' => 'Zend\Form\Element\Collection',
+                'name' => 'addresses',
+                'options' => array(
+                    'count' => 1,
+                    'target_element' => $addressFieldset,
+                ),
+            ));
+        }
 
         $this->add(array(
             'name' => 'personFirstName',

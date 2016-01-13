@@ -119,7 +119,8 @@ class Address
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity="Recruitment\Entity\Person", mappedBy="addresses", fetch="EXTRA_LAZY")
+     * @ORM\ManyToMany(targetEntity="Recruitment\Entity\Person", mappedBy="addresses", fetch="EXTRA_LAZY", 
+     * cascade={"persist"})
      */
     private $people;
 
@@ -216,11 +217,11 @@ class Address
 
     /**
      * 
-     * @return Collection
+     * @return array
      */
-    public function getPople()
+    public function getPeople()
     {
-        return $this->people;
+        return $this->people->toArray();
     }
 
     /**
@@ -312,16 +313,6 @@ class Address
     }
 
     /**
-     * @param Collection $people
-     * @return Recruitment\Entity\Address
-     */
-    public function setPeople(Collection $people)
-    {
-        $this->people = $people;
-        return $this;
-    }
-
-    /**
      * Add person
      *
      * @param Person $person
@@ -330,7 +321,6 @@ class Address
      */
     public function addPerson(Person $person)
     {
-        $person->addAddress($this);
         $this->people->add($person);
         return $this;
     }

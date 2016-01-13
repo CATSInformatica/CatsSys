@@ -43,7 +43,7 @@ class Relative
     /**
      *
      * @var Person 
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="relatives")
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="relatives", cascade={"persist"})
      * @ORM\JoinColumn(name="person_relative_id", referencedColumnName="person_id", nullable=false)
      */
     private $relative;
@@ -80,9 +80,7 @@ class Relative
      */
     public function setPerson(Person $person)
     {
-        $person->addisRelativeOf($this);
         $this->person = $person;
-        return $this;
     }
 
     /**

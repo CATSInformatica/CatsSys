@@ -1,0 +1,67 @@
+<div class="box">
+    <div class="box-header with-border">
+        <h3 class="box-title"><?php echo 'Informações Pessoais' . (isset($suffix) ? $suffix : ''); ?></h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="col-xs-12 col-md-4">
+            <?php echo $this->formRow($form->get('personFirstName')); ?>
+        </div>
+        <div class="col-xs-12 col-md-8">
+            <?php echo $this->formRow($form->get('personLastName')); ?>
+        </div>
+        <div class="col-xs-12 col-md-12">
+            <?php echo $this->formRow($form->get('personGender')); ?>
+        </div>
+
+        <div class="form-group">
+            <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-4">
+                    <?php echo $this->formRow($form->get('personBirthday')); ?>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <?php echo $this->formRow($form->get('personCpf')); ?>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <?php echo $this->formRow($form->get('personRg')); ?>
+                </div>
+            </div>
+        </div>
+        <div class="form-group">
+            <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-4">
+                    <?php echo $this->formRow($form->get('personPhone')); ?>
+                </div>
+                <div class="col-xs-12 col-md-4">
+                    <?php
+                    $personEmail = $form->get('personEmail');
+                    $value = $personEmail->getValue();
+                    ?>
+                    <?php echo $this->formRow($personEmail); ?>
+                </div>                    
+                <div class="col-xs-12 col-md-4">
+                    <?php echo $this->formRow($form->get('personEmailConfirm')->setValue($value)); ?>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<?php
+if ($form->has('addresses')) {
+    echo $this->partial('address/template',
+        array(
+        'suffix' => (isset($suffix) ? $suffix : null),
+        'forms' => $form->get('addresses'),
+    ));
+}
+
+if ($form->has('relatives')) {
+    echo $this->partial('relative/template', array(
+        'forms' => $form->get('relatives'),
+    ));
+}

@@ -121,7 +121,8 @@ class Person
     /**
      * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="Address", inversedBy="people", fetch="EXTRA_LAZY")
+     * @ORM\ManyToMany(targetEntity="Address", inversedBy="people", fetch="EXTRA_LAZY", cascade={"persist"},  
+     *      orphanRemoval=true)
      * @ORM\JoinTable(name="person_has_address",
      *   joinColumns={
      *     @ORM\JoinColumn(name="person_id", referencedColumnName="person_id", nullable=false)
@@ -156,9 +157,9 @@ class Person
     private $isRelativeOf;
 
     /**
-     *
      * @var Collection
-     * @ORM\OneToMany(targetEntity="Relative", mappedBy="relative", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="Relative", mappedBy="relative", fetch="EXTRA_LAZY", 
+     * cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $relatives;
 
@@ -212,11 +213,15 @@ class Person
 
     /**
      * 
-     * @return \Datetime
+     * @param string $format
+     * @return mixed string | null
      */
-    public function getPersonBirthday()
+    public function getPersonBirthday($format = 'd/m/Y')
     {
-        return $this->personBirthday;
+        if ($this->personBirthday instanceof \DateTime) {
+            return $this->personBirthday->format($format);
+        }
+        return null;
     }
 
     /**
@@ -408,24 +413,18 @@ class Person
     }
 
     /**
-     * @param Collection $addresses
-     */
-    public function setAddresses(Collection $addresses)
-    {
-        $this->addresses = $addresses;
-        return $this;
-    }
-
-    /**
      * Add address
      *
-     * @param Address $address
+     * @param Collection $addresses
      *
      * @return Person
      */
-    public function addAddress(Address $address)
+    public function addAddresses(Collection $addresses)
     {
-        $this->addresses->add($address);
+        foreach ($addresses as $addr) {
+            $addr->addPerson($this);
+            $this->addresses->add($addr);
+        }
         return $this;
     }
 
@@ -440,13 +439,16 @@ class Person
     }
 
     /**
-     * Remove address
      *
-     * @param Address $address
+     * @param Collection $addresses
+     * @return Person
      */
-    public function removeAddress(Address $address)
+    public function removeAddresses(Collection $addresses)
     {
-        $this->addresses->removeElement($address);
+        foreach ($addresses as $addr) {
+            $addr->removePerson($this);
+            $this->addresses->removeElement($addr);
+        }
         return $this;
     }
 
@@ -522,38 +524,16 @@ class Person
 
     /**
      * 
-     * @param Relative $relative
-     * @return Person
-     */
-    public function addIsRelativeOf(Relative $relative)
-    {
-        $this->isRelativeOf->add($relative);
-        return $this;
-    }
-
-    /**
-     * 
-     * @param Relative $relative
-     * @return Person
-     */
-    public function removeIsRelativeOf(Relative $relative)
-    {
-        $this->isRelativeOf->removeElement($relative);
-        return $this;
-    }
-
-    /**
-     * 
      * @return array
      */
     public function getRelatives()
     {
-        return $this->relatives->toArray();
+        return $this->relatives;
     }
 
     /**
      * 
-     * @param Relative $relative
+     * @param Recruitment\Entity\Relative $relative
      * @return Person
      */
     public function addRelative(Relative $relative)
@@ -564,12 +544,28 @@ class Person
 
     /**
      * 
-     * @param Relative $relative
+     * @param Collection $relatives
      * @return Person
      */
-    public function removeRelative(Relative $relative)
+    public function addRelatives(Collection $relatives)
     {
-        $this->relatives->removeElement($relative);
+        foreach ($relatives as $relative) {
+            $relative->setPerson($this);
+            $this->relatives->add($relative);
+        }
+        return $this;
+    }
+
+    /**
+     * I don't know if it works but...
+     * @param Collection $relatives
+     * @return Person
+     */
+    public function removeRelatives(Collection $relatives)
+    {
+        foreach ($relatives as $relative) {
+            $this->relatives->removeElement($relative);
+        }
         return $this;
     }
 

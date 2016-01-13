@@ -23,14 +23,14 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class RegistrationForm extends Form implements InputFilterProviderInterface
 {
 
-    public function __construct(ObjectManager $obj)
+    public function __construct(ObjectManager $obj, $options = null)
     {
         parent::__construct('registration');
 
         $this->setHydrator(new DoctrineHydrator($obj));
 
         // Add the user fieldset, and set it as the base fieldset
-        $registrationFieldset = new RegistrationFieldset($obj);
+        $registrationFieldset = new RegistrationFieldset($obj, $options);
         $registrationFieldset->setUseAsBaseFieldset(true);
         $this->add($registrationFieldset);
 

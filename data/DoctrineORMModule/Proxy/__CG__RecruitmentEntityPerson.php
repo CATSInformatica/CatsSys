@@ -224,12 +224,12 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
-    public function getPersonBirthday()
+    public function getPersonBirthday($format = 'd/m/Y')
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPersonBirthday', array());
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getPersonBirthday', array($format));
 
-        return parent::getPersonBirthday();
+        return parent::getPersonBirthday($format);
     }
 
     /**
@@ -433,23 +433,12 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
-    public function setAddresses(\Doctrine\Common\Collections\Collection $addresses)
+    public function addAddresses(\Doctrine\Common\Collections\Collection $addresses)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setAddresses', array($addresses));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addAddresses', array($addresses));
 
-        return parent::setAddresses($addresses);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addAddress(\Recruitment\Entity\Address $address)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addAddress', array($address));
-
-        return parent::addAddress($address);
+        return parent::addAddresses($addresses);
     }
 
     /**
@@ -466,12 +455,12 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
-    public function removeAddress(\Recruitment\Entity\Address $address)
+    public function removeAddresses(\Doctrine\Common\Collections\Collection $addresses)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeAddress', array($address));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeAddresses', array($addresses));
 
-        return parent::removeAddress($address);
+        return parent::removeAddresses($addresses);
     }
 
     /**
@@ -554,28 +543,6 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
-    public function addIsRelativeOf(\Recruitment\Entity\Relative $relative)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addIsRelativeOf', array($relative));
-
-        return parent::addIsRelativeOf($relative);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function removeIsRelativeOf(\Recruitment\Entity\Relative $relative)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeIsRelativeOf', array($relative));
-
-        return parent::removeIsRelativeOf($relative);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getRelatives()
     {
 
@@ -598,12 +565,23 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
-    public function removeRelative(\Recruitment\Entity\Relative $relative)
+    public function addRelatives(\Doctrine\Common\Collections\Collection $relatives)
     {
 
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRelative', array($relative));
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addRelatives', array($relatives));
 
-        return parent::removeRelative($relative);
+        return parent::addRelatives($relatives);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeRelatives(\Doctrine\Common\Collections\Collection $relatives)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRelatives', array($relatives));
+
+        return parent::removeRelatives($relatives);
     }
 
     /**

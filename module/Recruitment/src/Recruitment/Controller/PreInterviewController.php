@@ -13,11 +13,9 @@ use DateTime;
 use Exception;
 use Recruitment\Entity\Address;
 use Recruitment\Entity\Person;
-use Recruitment\Entity\PreInterview;
 use Recruitment\Entity\Relative;
 use Recruitment\Form\CpfFilter;
 use Recruitment\Form\CpfForm;
-use Recruitment\Form\PreInterviewFilter;
 use Recruitment\Form\PreInterviewForm;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
@@ -150,7 +148,6 @@ class PreInterviewController extends AbstractActionController
     {
         $studentContainer = new Container('pre_interview');
 
-
         // id de inscrição não está na sessão redireciona para o início
         if (!$studentContainer->offsetExists('regId')) {
             return $this->redirect()->toRoute('recruitment/pre-interview',
@@ -160,21 +157,20 @@ class PreInterviewController extends AbstractActionController
         }
         $rid = $studentContainer->offsetGet('regId');
 
-
+        // Se ao menos um documento não foi enviado redireciona para a página de documentos da pré-entrevista
         $prefix = self::PRE_INTERVIEW_DIR . $rid;
 
         $files['personal'] = file_exists($prefix . self::PERSONAL_FILE_SUFFIX);
         $files['income'] = file_exists($prefix . self::INCOME_FILE_SUFFIX);
         $files['expendure'] = file_exists($prefix . self::EXPENDURE_FILE_SUFFIX);
 
-        // se ao menos um documento não foi enviado redireciona para a página de documentos da pré-entrevista
         if (!$files['personal'] || !$files['income'] || !$files['expendure']) {
             return $this->redirect()->toRoute('recruitment/pre-interview',
                     array(
                     'action' => 'studentPreInterviewFilesAction',
             ));
         }
-        $message = null;
+
         $request = $this->getRequest();
 
         try {
@@ -193,75 +189,41 @@ class PreInterviewController extends AbstractActionController
                     'message' => 'O formulário de pré-entrevista já foi enviado.',
                 ));
             }
+
             $person = $registration->getPerson();
-            $isUnderage = $person->isPersonUnderage();
 
-            $form = new PreInterviewForm('Pre-interview', [], $isUnderage);
+            $options = array(
+                'person' => array(
+                    'relative' => $person->isPersonUnderage(),
+                    'address' => true,
+                ),
+            );
 
-            // se é um envio de formulário
+            $form = new PreInterviewForm($em, $options);
+            $form->bind($registration);
             if ($request->isPost()) {
-                $data = $request->getPost();
-                $form->setInputFilter(new PreInterviewFilter($isUnderage));
-                $form->setData($data);
-
-                // se o formulário é válido
+                $form->setData($request->getPost());
                 if ($form->isValid()) {
-                    $data = $form->getData();
 
-                    // cria uma nova pré-entrevista e insere os valores do formulário
-                    $preInterview = new PreInterview();
-
-                    $preInterview
-                        ->setPreInterviewPersonalInfo($rid . self::PERSONAL_FILE_SUFFIX)
-                        ->setPreInterviewIncomeProof($rid . self::INCOME_FILE_SUFFIX)
-                        ->setPreInterviewExpenseReceipt($rid . self::EXPENDURE_FILE_SUFFIX)
-                        ->setPreInterviewElementarySchoolType($data['elementary_school_type'])
-                        ->setPreInterviewHighSchoolType($data['high_school_type'])
-                        ->setPreInterviewHighSchool($data['high_school'])
-                        ->setPreInterviewHSConclusionYear($data['hs_conclusion_year'])
-                        ->setPreInterviewPreparationSchool($data['preparation_school'])
-                        ->setPreInterviewLanguageCourse($data['language_course'])
-                        ->setPreInterviewCurrentStudy($data['current_study'])
-                        ->setPreInterviewLiveWithNumber($data['live_with_number'])
-                        ->setPreInterviewNumberOfRooms($data['number_of_rooms'])
-                        ->setPreInterviewMeansOfTransport($data['means_of_transport'])
-                        ->setPreInterviewMonthlyIncome($data['monthly_income'])
-                        ->setPreInterviewFatherEducationGrade($data['father_education_grade'])
-                        ->setPreInterviewMotherEducationGrade($data['mother_education_grade'])
-                        ->setPreInterviewExpectFromUs($data['expect_from_us']);
-
-                    foreach ($data['live_with_you'] as $lwy) {
-                        $preInterview->addPreInterviewLiveWithYou($lwy);
-                    }
-
-                    // inserção do endereço do candidato
-                    $this->insertOrUpdateAddress($person, $data);
-
-                    // se o candidato é menor de idade insere os dados do responsável
-                    if ($isUnderage) {
-                        $this->insertOrUpdateRelative($person, $data);
-                    }
-
-                    // salva tudo no banco de dados
-                    $preInterview->setRegistration($registration);
-                    $em->persist($preInterview);
+                    // manage duplicates in address, and relatives
+                    
+                    $em->persist($registration);
                     $em->flush();
-
-                    // limpa a sessão e informa que a pré-entrevista foi concluída com sucesso.
-                    $form = null;
-                    $studentContainer->getManager()->getStorage()->clear('pre_interview');
-                    $message = 'Pré-entrevista concluída com com sucesso.';
                 }
             }
         } catch (Exception $ex) {
-            $registration = $form = null;
-            $message = 'Erro inesperado. Por favor, entre em contato com o administrador do sistema.';
+            return new ViewModel(array(
+                'registration' => null,
+                'form' => null,
+                'message' => 'Erro inesperado. Por favor, entre em contato com o administrador do sistema.',
+//                'message' => $ex->getMessage(),
+            ));
         }
 
         return new ViewModel(array(
             'registration' => $registration,
             'form' => $form,
-            'message' => $message,
+            'message' => '',
         ));
     }
 
@@ -507,6 +469,54 @@ class PreInterviewController extends AbstractActionController
         return new ViewModel(array(
             'message' => $message,
         ));
+    }
+
+    private function foo()
+    {
+//        $data = $form->getData();
+//
+//                    // cria uma nova pré-entrevista e insere os valores do formulário
+//                    $preInterview = new PreInterview();
+//
+//                    $preInterview
+//                        ->setPreInterviewPersonalInfo($rid . self::PERSONAL_FILE_SUFFIX)
+//                        ->setPreInterviewIncomeProof($rid . self::INCOME_FILE_SUFFIX)
+//                        ->setPreInterviewExpenseReceipt($rid . self::EXPENDURE_FILE_SUFFIX)
+//                        ->setPreInterviewElementarySchoolType($data['elementary_school_type'])
+//                        ->setPreInterviewHighSchoolType($data['high_school_type'])
+//                        ->setPreInterviewHighSchool($data['high_school'])
+//                        ->setPreInterviewHSConclusionYear($data['hs_conclusion_year'])
+//                        ->setPreInterviewPreparationSchool($data['preparation_school'])
+//                        ->setPreInterviewLanguageCourse($data['language_course'])
+//                        ->setPreInterviewCurrentStudy($data['current_study'])
+//                        ->setPreInterviewLiveWithNumber($data['live_with_number'])
+//                        ->setPreInterviewNumberOfRooms($data['number_of_rooms'])
+//                        ->setPreInterviewMeansOfTransport($data['means_of_transport'])
+//                        ->setPreInterviewMonthlyIncome($data['monthly_income'])
+//                        ->setPreInterviewFatherEducationGrade($data['father_education_grade'])
+//                        ->setPreInterviewMotherEducationGrade($data['mother_education_grade'])
+//                        ->setPreInterviewExpectFromUs($data['expect_from_us']);
+//
+//                    foreach ($data['live_with_you'] as $lwy) {
+//                        $preInterview->addPreInterviewLiveWithYou($lwy);
+//                    }
+//
+//                    // inserção do endereço do candidato
+//                    $this->insertOrUpdateAddress($person, $data);
+//
+//                    // se o candidato é menor de idade insere os dados do responsável
+//                    if ($isUnderage) {
+//                        $this->insertOrUpdateRelative($person, $data);
+//                    }
+//
+//                    // salva tudo no banco de dados
+//                    $preInterview->setRegistration($registration);
+//                    $em->persist($preInterview);
+//                    $em->flush();
+//
+//                    // limpa a sessão e informa que a pré-entrevista foi concluída com sucesso.
+//                    $studentContainer->getManager()->getStorage()->clear('pre_interview');
+//                    $message = 'Pré-entrevista concluída com com sucesso.';
     }
 
 }

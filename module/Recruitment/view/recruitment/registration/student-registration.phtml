@@ -1,55 +1,24 @@
 <section class="content">
     <?php echo $this->message; ?>
     <?php if ($this->form !== null): ?>
+        <?php $form->prepare(); ?>
         <div class="row">
             <div class="col-xs-12 col-md-8 col-md-offset-2">
-
-                <?php $form->prepare(); ?>
-
                 <?php echo $this->form()->openTag($form); ?>
                 <?php
                 $registration = $form->get('registration');
                 $person = $registration->get('person');
-                ?>
-                <div class="col-xs-12 col-md-4">
-                    <?php echo $this->formRow($person->get('personFirstName')); ?>
-                </div>
-                <div class="col-xs-12 col-md-8">
-                    <?php echo $this->formRow($person->get('personLastName')); ?>
-                </div>
-                <div class="col-xs-12 col-md-12">
-                    <?php echo $this->formRow($person->get('personGender')); ?>
-                </div>
 
-                <div class="form-group">
-                    <div class="col-xs-12 col-md-12">
-                        <div class="col-xs-12 col-md-4">
-                            <?php echo $this->formRow($person->get('personBirthday')); ?>
-                        </div>
-                        <div class="col-xs-12 col-md-4">
-                            <?php echo $this->formRow($person->get('personCpf')); ?>
-                        </div>
-                        <div class="col-xs-12 col-md-4">
-                            <?php echo $this->formRow($person->get('personRg')); ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="form-group">
-                    <div class="col-xs-12 col-md-12">
-                        <div class="col-xs-12 col-md-4">
-                            <?php echo $this->formRow($person->get('personPhone')); ?>
-                        </div>
-                        <div class="col-xs-12 col-md-4">
-                            <?php echo $this->formRow($person->get('personEmail')); ?>
-                        </div>                    
-                        <div class="col-xs-12 col-md-4">
-                            <?php echo $this->formRow($person->get('personEmailConfirm')); ?>
-                        </div>
-                    </div>
-                </div>
-                <div class="col-xs-12 col-md-12">
-                    <?php echo $this->formRow($registration->get('recruitmentKnowAbout')); ?>
-                </div>
+                echo $this->partial('person/template', array(
+                    'form' => $person,
+                ));
+
+                echo $this->partial('disclosure/template',
+                    array(
+                    'form' => $registration,
+                ));
+                ?>
+
                 <div class="col-xs-12 col-md-12">
                     <div class="form-group">
                         <div class="col-xs-12 col-md-12">
@@ -72,11 +41,8 @@
                 <div class="col-xs-12 col-md-12">
                     <?php echo $this->formRow($form->get('submit')); ?>
                 </div>
-
             </div>
-
             <?php echo $this->form()->closeTag(); ?>
-
         </div>
     </div>
 <?php endif; ?>

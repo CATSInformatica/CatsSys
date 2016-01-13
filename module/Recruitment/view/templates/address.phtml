@@ -1,0 +1,45 @@
+
+<?php foreach ($forms as $form): ?>
+    <div class="box">
+        <div class="box-header with-border">
+            <h3 class="box-title"><?php echo 'Endereço' . (isset($suffix) ? $suffix : ''); ?></h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <div class="box-body">
+            <div class="form-group">
+                <div class="col-xs-12 col-md-12">
+                    <div class="col-xs-12 col-md-2">
+                        <?php echo $this->formRow($form->get('addressPostalCode')); ?>
+                    </div>
+                    <div class="col-xs-12 col-md-2">
+                        <?php echo $this->formRow($form->get('addressState')); ?>
+                    </div>
+                    <div class="col-xs-12 col-md-4">
+                        <?php echo $this->formRow($form->get('addressCity')); ?>
+                    </div>
+                    <div class="col-xs-12 col-md-4">
+                        <?php echo $this->formRow($form->get('addressNeighborhood')); ?>
+                    </div>
+                </div>
+            </div>
+            <div class="form-group">
+                <div class="col-xs-12 col-md-12">
+                    <div class="col-xs-12 col-md-6">
+                        <?php echo $this->formRow($form->get('addressStreet')); ?>
+                    </div>
+                    <div class="col-xs-12 col-md-3">
+                        <?php echo $this->formRow($form->get('addressNumber')); ?>
+                    </div>
+                    <div class="col-xs-12 col-md-3">
+                        <?php echo $this->formRow($form->get('addressComplement')); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <?php
+endforeach;
