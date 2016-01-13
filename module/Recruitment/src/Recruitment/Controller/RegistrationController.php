@@ -485,7 +485,7 @@ class RegistrationController extends AbstractActionController
                             'data-id' => $r->getRegistrationId()
                         ],
                         $r->getRegistrationNumber(),
-                        $r->getRegistrationDate()->format('d/m/Y H:i:s'),
+                        $r->getRegistrationDate(),
                         $person->getPersonFirstName() . ' ' . $person->getPersonLastName(),
                         $person->getPersonCpf(),
                         $person->getPersonRg(),
