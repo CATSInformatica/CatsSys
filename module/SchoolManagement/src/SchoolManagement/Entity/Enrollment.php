@@ -60,9 +60,16 @@ class Enrollment
      */
     private $enrollmentEndDate;
 
+    /**
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="SchoolManagement\Entity\Warning", mappedBy="enrollment", fetch="EXTRA_LAZY")
+     */
+    private $warnings;
+
     public function __construct()
     {
         $this->enrollmentBeginDate = new \DateTime('now');
+        $this->warnings = new ArrayCollection();
     }
 
     /**
@@ -110,6 +117,15 @@ class Enrollment
 
     /**
      * 
+     * @return Colletion
+     */
+    public function getWarnings()
+    {
+        return $this->warnings;
+    }
+
+    /**
+     * 
      * @param StudentClass $class
      * @return SchoolManagement\Entity\Enrollment
      */
@@ -149,6 +165,17 @@ class Enrollment
     public function setEnrollmentEndDate($enrollmentEndDate)
     {
         $this->enrollmentEndDate = $enrollmentEndDate;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param Collection
+     * @return SchoolManagement\Entity\Enrollment
+     */
+    public function setWarnings($warnings)
+    {
+        $this->$warnings = $warnings;
         return $this;
     }
 

@@ -64,10 +64,10 @@ class Enrollment extends \SchoolManagement\Entity\Enrollment implements \Doctrin
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'enrollmentId', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'class', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'registration', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'enrollmentBeginDate', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'enrollmentEndDate');
+            return array('__isInitialized__', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'enrollmentId', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'class', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'registration', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'enrollmentBeginDate', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'enrollmentEndDate', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'warnings');
         }
 
-        return array('__isInitialized__', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'enrollmentId', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'class', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'registration', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'enrollmentBeginDate', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'enrollmentEndDate');
+        return array('__isInitialized__', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'enrollmentId', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'class', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'registration', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'enrollmentBeginDate', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'enrollmentEndDate', '' . "\0" . 'SchoolManagement\\Entity\\Enrollment' . "\0" . 'warnings');
     }
 
     /**
@@ -235,6 +235,17 @@ class Enrollment extends \SchoolManagement\Entity\Enrollment implements \Doctrin
     /**
      * {@inheritDoc}
      */
+    public function getWarnings()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getWarnings', array());
+
+        return parent::getWarnings();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function setClass(\SchoolManagement\Entity\StudentClass $class)
     {
 
@@ -274,6 +285,17 @@ class Enrollment extends \SchoolManagement\Entity\Enrollment implements \Doctrin
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEnrollmentEndDate', array($enrollmentEndDate));
 
         return parent::setEnrollmentEndDate($enrollmentEndDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setWarnings($warnings)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setWarnings', array($warnings));
+
+        return parent::setWarnings($warnings);
     }
 
 }

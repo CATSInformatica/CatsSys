@@ -1,5 +1,7 @@
 <section class="content">
+    
     <p> <?php echo $message ?> </p>
+    
     <?php if ($configs): ?>
         <div class="table-responsive col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
             <table id="config-table" class="table table-condensed table-striped">
@@ -29,3 +31,25 @@
         <p> Não há configurações cadastradas. </p>
     <?php endif; ?>
 </section>
+
+<script>
+
+    var standardConfig = (function () {
+
+        initDataTable = function () {
+
+            $('#config-table').DataTable({
+                dom: 'lftip',
+                paging: false
+            });
+        };
+
+        return {
+            init: function () {
+                initDataTable();
+            }
+        };
+
+    }());
+
+</script>

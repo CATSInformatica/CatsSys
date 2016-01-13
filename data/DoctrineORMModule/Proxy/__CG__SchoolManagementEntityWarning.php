@@ -64,10 +64,10 @@ class Warning extends \SchoolManagement\Entity\Warning implements \Doctrine\ORM\
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'enrollment', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningType', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningDate', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningComment');
+            return array('__isInitialized__', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningId', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'enrollment', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningType', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningDate', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningComment');
         }
 
-        return array('__isInitialized__', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'enrollment', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningType', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningDate', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningComment');
+        return array('__isInitialized__', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningId', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'enrollment', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningType', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningDate', '' . "\0" . 'SchoolManagement\\Entity\\Warning' . "\0" . 'warningComment');
     }
 
     /**
@@ -173,4 +173,118 @@ class Warning extends \SchoolManagement\Entity\Warning implements \Doctrine\ORM\
     }
 
     
+    /**
+     * {@inheritDoc}
+     */
+    public function getWarningId()
+    {
+        if ($this->__isInitialized__ === false) {
+            return (int)  parent::getWarningId();
+        }
+
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getWarningId', array());
+
+        return parent::getWarningId();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getEnrollment()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEnrollment', array());
+
+        return parent::getEnrollment();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getWarningType()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getWarningType', array());
+
+        return parent::getWarningType();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getWarningDate()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getWarningDate', array());
+
+        return parent::getWarningDate();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getWarningComment()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getWarningComment', array());
+
+        return parent::getWarningComment();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setWarningId($warningId)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setWarningId', array($warningId));
+
+        return parent::setWarningId($warningId);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setEnrollment(\SchoolManagement\Entity\Enrollment $enrollment)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEnrollment', array($enrollment));
+
+        return parent::setEnrollment($enrollment);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setWarningType(\SchoolManagement\Entity\WarningType $warningType)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setWarningType', array($warningType));
+
+        return parent::setWarningType($warningType);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setWarningDate(\DateTime $warningDate)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setWarningDate', array($warningDate));
+
+        return parent::setWarningDate($warningDate);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setWarningComment($warningComment)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setWarningComment', array($warningComment));
+
+        return parent::setWarningComment($warningComment);
+    }
+
 }

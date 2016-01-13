@@ -13,7 +13,6 @@ use Documents\Form\StudentIdCardFilter;
 use Documents\Form\StudentsBoardForm;
 use Documents\Form\StudentsBoardFilter;
 use Documents\Model\StudentIdCardPdf;
-use Documents\View\StudentIdCard;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 

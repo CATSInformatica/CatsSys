@@ -207,6 +207,27 @@ return array(
                         'action' => 'create',
                         'icon' => 'fa fa-exclamation-triangle'
                     ),
+                    array(
+                        'label' => 'Given warnings',
+                        'route' => 'school-management/school-warning',
+                        'action' => 'given',
+                        'icon' => 'fa fa-exclamation-triangle',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/school-management/school-warning/delete-given/$id',
+                                'title' => 'Remover',
+                                'description' => 'Permite remover uma advertência dada',
+                                'class' => 'fa fa-trash-o bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
+                        ),
+                    ),
+                    array(
+                        'label' => 'Give a warning',
+                        'route' => 'school-management/school-warning',
+                        'action' => 'give',
+                        'icon' => 'fa fa-exclamation-triangle'
+                    ),
                 ),
             ),
         ),

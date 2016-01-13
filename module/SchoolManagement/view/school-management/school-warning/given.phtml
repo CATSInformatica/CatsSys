@@ -1,0 +1,58 @@
+<section class="content">
+    
+    <p><?php echo $message; ?></p>
+
+    <div class="table-responsive col-xs-10 col-md-8 col-md-offset-2">
+        <table id="warning-table" class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Pessoa</th>
+                    <th class="text-center">Turma</th>
+                    <th class="text-center">Tipo</th>
+                    <th class="text-center">Comentário</th>
+                    <th class="text-center">Data</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php foreach ($this->warnings as $w): ?>
+                    <tr class="cats-row" data-id="<?php echo $w->getWarningId() ?>">
+                        <td class="text-center"> <?php echo $w->getWarningId() ?></td>
+                        <td class="text-center"> <?php echo $w->getEnrollment()
+                                ->getRegistration()->getPerson()->getPersonName(); ?></td>
+                        <td class="text-center"> <?php echo $w->getEnrollment()
+                                ->getClass()->getClassName(); ?></td>
+                        <td class="text-center"> <?php echo $w->getWarningType()
+                                ->getWarningTypeName(); ?></td>
+                        <td class="text-center"> <?php echo $w->getWarningComment(); ?></td>
+                        <td class="text-center"> <?php echo $w->getWarningDate()
+                                ->format('d/m/Y'); ?></td>
+                    </tr>
+                <?php endforeach; ?>
+            </tbody>
+        </table>
+    </div>
+</div>
+</section>
+
+<script>
+
+    var standardConfig = (function () {
+
+        initDataTable = function () {
+
+            $('#warning-table').DataTable({
+                dom: 'lftip',
+                paging: false
+            });
+        };
+
+        return {
+            init: function () {
+                initDataTable();
+            }
+        };
+
+    }());
+
+</script>
