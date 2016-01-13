@@ -35,7 +35,6 @@ return array(
                         'options' => array(
                             'route' => '/index[/:action]',
                             'constraints' => array(
-                                'controller' => 'Authorization\Controller\Index',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                             'defaults' => array(

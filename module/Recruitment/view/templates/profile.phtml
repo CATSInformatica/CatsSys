@@ -304,27 +304,50 @@ $addresses = $person->getAddresses();
                     <div class="tab-pane" id="documentation">
                         <div class="row">
                             <div class="col-md-4 col-sm-6 col-xs-12">
-                                <div class="info-box">
-                                    <span class="info-box-icon bg-aqua"><i class="fa fa-user"></i></span>
+                                <a href="<?php
+                                echo $this->url('recruitment/pre-interview',
+                                    array(
+                                    'action' => 'getUploadedFile',
+                                    'file' => 'personal',
+                                    'rid' => $registration->getRegistrationId(),
+                                ));
+                                ?>"
+                                   target="_blank">
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-aqua"><i class="fa fa-user"></i></span>
 
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Informações pessoais</span>               
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Informações pessoais</span>
+                                            Informações pessoais.pdf
+                                        </div>
+                                        <!-- /.info-box-content -->
                                     </div>
-                                    <!-- /.info-box-content -->
-                                </div>
-                                <!-- /.info-box -->
+                                    <!-- /.info-box -->
+                                </a>
                             </div>
                             <!-- /.col -->
                             <div class="col-md-4 col-sm-6 col-xs-12">
-                                <div class="info-box">
-                                    <span class="info-box-icon bg-red"><i class="fa fa-money"></i></span>
+                                <a href="<?php
+                                echo $this->url('recruitment/pre-interview',
+                                    array(
+                                    'action' => 'getUploadedFile',
+                                    'file' => 'income',
+                                    'rid' => $registration->getRegistrationId(),
+                                ));
+                                ?>"
+                                   target="_blank">
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-green"><i class="fa fa-dollar"></i></span>
 
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Comprovantes de renda</span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Comprovantes de renda</span>
+                                            Comprovantes de renda.pdf
+
+                                        </div>
+                                        <!-- /.info-box-content -->
                                     </div>
-                                    <!-- /.info-box-content -->
-                                </div>
-                                <!-- /.info-box -->
+                                    <!-- /.info-box -->
+                                </a>
                             </div>
                             <!-- /.col -->
 
@@ -332,15 +355,26 @@ $addresses = $person->getAddresses();
                             <div class="clearfix visible-sm-block"></div>
 
                             <div class="col-md-4 col-sm-6 col-xs-12">
-                                <div class="info-box">
-                                    <span class="info-box-icon bg-green"><i class="fa fa-dollar"></i></span>
+                                <a href="<?php
+                                echo $this->url('recruitment/pre-interview',
+                                    array(
+                                    'action' => 'getUploadedFile',
+                                    'file' => 'expendure',
+                                    'rid' => $registration->getRegistrationId(),
+                                ));
+                                ?>"
+                                   target="_blank">
+                                    <div class="info-box">
+                                        <span class="info-box-icon bg-red"><i class="fa fa-dollar"></i></span>
 
-                                    <div class="info-box-content">
-                                        <span class="info-box-text">Comprovantes de despesas</span>
+                                        <div class="info-box-content">
+                                            <span class="info-box-text">Comprovantes de despesas</span>
+                                            Comprovantes de despesas.pdf
+                                        </div>
+                                        <!-- /.info-box-content -->
                                     </div>
-                                    <!-- /.info-box-content -->
-                                </div>
-                                <!-- /.info-box -->
+                                    <!-- /.info-box -->
+                                </a>
                             </div>
                             <!-- /.col -->
                         </div>
@@ -356,10 +390,13 @@ $addresses = $person->getAddresses();
                     <!-- /.tab-pane -->
 
                 <?php endif; ?>
-                <?php if (isset($config['tabs']['info'])): ?>
+                <?php if ($config['tabs']['info']): ?>
 
                     <div class="tab-pane" id="info">
-                        <p> Dados de inscrição, pre-entrevista, entrevista, ... </p>
+                        <?php $form = $config['tabs']['info']; ?>
+
+                        <?php echo $this->form($form); ?>
+
                     </div>
                     <!-- /.tab-pane -->
 

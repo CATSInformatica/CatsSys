@@ -15,6 +15,7 @@ return array(
             'Recruitment\Controller\Registration' => Controller\RegistrationController::class,
             'Recruitment\Controller\Captcha' => Controller\CaptchaController::class,
             'Recruitment\Controller\PreInterview' => Controller\PreInterviewController::class,
+            'Recruitment\Controller\Interview' => Controller\InterviewController::class,
         ),
     ),
     'router' => array(
@@ -91,7 +92,20 @@ return array(
                                 'action' => 'index',
                             ),
                         )
-                    )
+                    ),
+                    'interview' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/interview[/:action[/:id]]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Recruitment\Controller\Interview',
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),
@@ -106,6 +120,7 @@ return array(
         ),
         'template_map' => array(
             'profile/template' => __DIR__ . '/../view/templates/profile.phtml',
+            'pre-interview/template' => __DIR__ . '/../view/templates/pre-interview.phtml',
         ),
         'display_exceptions' => true,
     ),
@@ -189,7 +204,7 @@ return array(
                         'icon' => 'fa fa-users',
                         'toolbar' => array(
                             array(
-                                'url' => '/recruitment/registration/studentProfile/$id',
+                                'url' => '/recruitment/interview/student/$id',
                                 'title' => 'Perfil do Candidato',
                                 'description' => 'Analizar Perfil do Candidato',
                                 'class' => 'fa fa-file-text-o bg-blue',
@@ -199,11 +214,11 @@ return array(
                         ),
                         'pages' => array(
                             array(
-                                'label' => 'Student profile',
-                                'route' => 'recruitment/registration',
-                                'action' => 'studentProfile',
-                                'resource' => 'Recruitment\Controller\Registration',
-                                'privilege' => 'studentProfile',
+                                'label' => 'Student Interview',
+                                'route' => 'recruitment/interview',
+                                'action' => 'student',
+                                'resource' => 'Recruitment\Controller\Interview',
+                                'privilege' => 'student',
                                 'icon' => 'fa fa-user',
                                 'toolbar' => array(
                                     array(

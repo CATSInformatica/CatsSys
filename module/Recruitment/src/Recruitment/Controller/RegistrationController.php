@@ -12,21 +12,15 @@ use Database\Service\EntityManagerService;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
-use Recruitment\Entity\Person;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\Registration;
-use Recruitment\Form\StudentRegistrationFilter;
-use Recruitment\Form\StudentRegistrationForm;
+use Recruitment\Form\RegistrationForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 
 /**
- * 
- * @todo Fazer as actions de convocação e aceitação
- * 
- * 
  * Description of RegistrationController
  * 
  * @author marcio
@@ -78,7 +72,7 @@ class RegistrationController extends AbstractActionController
      *  - Existe um processo seletivo aberto \Recruitment\Entity\Recruitment
      *  - A pessoa que está se inscrevendo ainda não fez a inscrição no processo seletivo vigente
      * 
-     * Ao fazer a inscrição, caso a pessoa já possua cadastro, o dados pessoais serão atualizados
+     * Ao fazer a inscrição, caso a pessoa já possua cadastro, alguns dados pessoais serão atualizados
      * e uma nova inscrição será cadastrada, ou seja:
      *  - Update em Recruitment\Entity\Person
      *  - Insert em Recruitment\Entity\Registration
@@ -114,75 +108,62 @@ class RegistrationController extends AbstractActionController
         }
 
         // Se existe um processo seletivo de alunos vigente ....
+        $form = new RegistrationForm($em);
 
         $request = $this->getRequest();
-        $message = null;
-        $form = new StudentRegistrationForm($request->getBaseUrl() . '/recruitment/captcha/generate', 'Inscrição');
-
-        // Se a requisição for post (o formulário foi preenchido e envidado para o servidor)
+        // Se a requisição for post (o formulário foi preenchido e enviado para o servidor)
         if ($request->isPost()) {
-            $data = $request->getPost();
-            $form->setInputFilter(new StudentRegistrationFilter());
-            $form->setData($data);
+
+            $registration = new Registration();
+            $form->bind($registration);
+            $form->setData($request->getPost());
 
             // Se o formulário de inscrição foi preenchido corretamente
             if ($form->isValid()) {
-                // recupera os dados tratados pelo filtro do formulário de inscrição
-                $data = $form->getData();
-                try {
 
+                try {
                     // verifica se a pessoa já está cadastrada, se não estiver cria um novo cadastro.
 
+                    $newPerson = $registration->getPerson();
+
                     $person = $em->getRepository('Recruitment\Entity\Person')->findOneBy(array(
-                        'personCpf' => $data['person_cpf'],
+                        'personCpf' => $newPerson->getPersonCpf(),
                     ));
 
-                    if ($person == null) {
-                        $person = new Person();
+                    // Se a pessoa já possui cadastro atualiza alguns dos dados
+                    if ($person !== null) {
+                        $person->setPersonPhone($newPerson->getPersonPhone());
+                        $person->setPersonEmail($newPerson->getPersonEmail());
+                        $person->setPersonRg($newPerson->getPersonRg());
+                        $registration->setPerson($person);
+                    } else {
+                        // se não possui define a imagem padrão do perfil
+                        $newPerson->setPersonPhoto();
                     }
 
-                    // atualiza ou insere pela primeira vez os dados pessoais de cadastro
-                    $person->setPersonFirstName($data['person_firstname'])
-                        ->setPersonLastName($data['person_lastname'])
-                        ->setPersonGender($data['person_gender'])
-                        ->setPersonPhoto()
-                        ->setPersonBirthday(new DateTime($data['person_birthday']))
-                        ->setPersonRg($data['person_rg'])
-                        ->setPersonCpf($data['person_cpf'])
-                        ->setPersonEmail($data['person_email'])
-                        ->setPersonPhone($data['person_phone']);
-
-                    // cria uma nova inscrição 
-                    $registration = new Registration();
-
-                    // concatena as opções de como soube do processo seletivo
-                    foreach ($data['registration_know_about'] as $rka) {
-                        $registration->addRegistrationKnowAbout($rka);
-                    }
-
-                    // atribui a qual processo seletivo e pessoa a inscrição pertence
+                    // atribui a qual processo seletivo a inscrição pertence
                     $registration->setRecruitment($recruitment);
-                    $registration->setPerson($person);
 
-                    $em->persist($person);
+                    // salva no banco
+                    $em->persist($registration->getPerson());
                     $em->persist($registration);
-
                     $em->flush();
 
                     // redirecionar para a página que gera o comprovante de inscrição e envia o email.
                     $message = 'Inscrição efetuada com sucesso.';
                     $form = null;
                 } catch (Exception $ex) {
-
                     if ($ex instanceof UniqueConstraintViolationException) {
                         $message = 'Não é possível fazer mais de uma inscrição em um mesmo processo seletivo.';
                         $form = null;
                     } else {
                         $message = 'Erro inesperado.Por favor, tente novamente ou'
-                            . ' entre em contato com o administrador do sistema.';
+                            . ' entre em contato com o administrador do sistema: ';
                     }
                 }
             }
+        } else {
+            $message = '';
         }
 
         return new ViewModel(array(
@@ -235,37 +216,6 @@ class RegistrationController extends AbstractActionController
 
             return new JsonModel($resultSet);
         }
-    }
-
-    /**
-     * 
-     * @return ViewModel Retorna a inscrição do candidato que possui a inscrição com id = $id
-     */
-    public function studentProfileAction()
-    {
-        $id = $this->params('id', false);
-
-        if ($id) {
-            try {
-                $em = $this->getEntityManager();
-                $registration = $em->find('Recruitment\Entity\Registration', $id);
-
-                return new ViewModel(array(
-                    'message' => '',
-                    'registration' => $registration
-                ));
-            } catch (Exception $ex) {
-                return new ViewModel(array(
-                    'message' => 'Não foi possível encontrar o registro do candidato: ' . $ex->getMessage(),
-                    'registration' => null
-                ));
-            }
-        }
-
-        return new ViewModel(array(
-            'message' => 'nenhum candidato foi especificado.',
-            'registration' => null
-        ));
     }
 
     /**
