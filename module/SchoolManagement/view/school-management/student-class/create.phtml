@@ -1,43 +1,24 @@
 <section class="content">
-    
+
     <p><?php echo $this->message; ?></p>
 
     <div class="row">
         <?php if ($form !== null): ?>
             <div class="col-xs-12 col-md-6 col-md-offset-3">
-                <?php
-                $form->prepare();
-                echo $this->form()->openTag($form);
-                ?>
-
-                <div class='form-group'>
-                    <label for='class_name'>Nome da Turma</label>
-                    <?php
-                    echo $this->formRow($form->get('class_name'));
-                    ?>
+                <?php echo $this->form()->openTag($form); ?>
+                <div class="col-xs-12 col-md-12">
+                    <?php echo $this->formRow($form->get('class_name')); ?>
                 </div>
-
-                <div class="row">
-                    <div class="form-group col-xs-12 col-md-6">
-                        <label for='class_begin_date'>Data de Início das aulas</label>
-                        <?php
-                        echo $this->formRow($form->get('class_begin_date'));
-                        ?>
-                    </div>
-                    <div class="form-group col-xs-12 col-md-6">
-                        <label for='class_end_date'>Data de Término das aulas</label>
-                        <?php
-                        echo $this->formRow($form->get('class_end_date'));
-                        ?>
-                    </div>
+                <div class="col-xs-12 col-md-6">
+                    <?php echo $this->formRow($form->get('class_begin_date')); ?>
                 </div>
-
-                <div class="form-group">
-                    <?php
-                    echo $this->formSubmit($form->get('Submit'));
-                    ?>
-                    <?php echo $this->form()->closeTag(); ?>
+                <div class="col-xs-12 col-md-6">
+                    <?php echo $this->formRow($form->get('class_end_date')); ?>
                 </div>
+                <div class="col-xs-12 col-md-12">
+                    <?php echo $this->formRow($form->get('Submit')); ?>
+                </div>
+                <?php echo $this->form()->closeTag(); ?>
 
             </div>
         <?php endif; ?>

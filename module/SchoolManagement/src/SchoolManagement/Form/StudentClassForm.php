@@ -23,34 +23,48 @@ class StudentClassForm extends Form
         parent::__construct($name, $options);
 
         $this->add(array(
-                    'name' => 'class_name',
-                    'attributes' => array(
-                        'type' => 'text',
-                        'class' => 'form-control',
-                        'placeholder' => 'Ex.: Turma de 2015',
-                    ),
-                ))
-                ->add(array(
-                    'name' => 'class_begin_date',
-                    'attributes' => array(
-                        'type' => 'text',
-                        'class' => 'form-control datepicker text-center',
-                    ),
-                ))
-                ->add(array(
-                    'name' => 'class_end_date',
-                    'attributes' => array(
-                        'type' => 'text',
-                        'class' => 'form-control datepicker text-center',
-                    ),
-                ))
-                ->add(array(
-                    'name' => 'Submit',
-                    'attributes' => array(
-                        'type' => 'button',
-                        'class' => 'btn btn-primary btn-block',
-                        'value' => 'Criar',
-                    )
+                'name' => 'class_name',
+                'attributes' => array(
+                    'type' => 'text',
+                    'class' => 'form-control',
+                    'placeholder' => 'Ex.: Turma de 2015',
+                ),
+                'options' => array(
+                    'label' => 'Nome da turma',
+                ),
+            ))
+            ->add(array(
+                'name' => 'class_begin_date',
+                'attributes' => array(
+                    'type' => 'text',
+                    'class' => 'datepicker text-center',
+                    'placeholder' => 'Ex: 01/02/2015',
+                ),
+                'options' => array(
+                    'label' => 'Data de início das aulas',
+                    'add-on-prepend' => '<i class="glyphicon glyphicon-calendar"></i>',
+                ),
+            ))
+            ->add(array(
+                'name' => 'class_end_date',
+                'attributes' => array(
+                    'type' => 'text',
+                    'class' => 'datepicker text-center',
+                    'add-on-prepend' => '<i class="glyphicon glyphicon-calendar"></i>',
+                    'placeholder' => 'Ex: 01/12/2015',
+                ),
+                'options' => array(
+                    'label' => 'Data de término das aulas',
+                    'add-on-prepend' => '<i class="glyphicon glyphicon-calendar"></i>',
+                ),
+            ))
+            ->add(array(
+                'name' => 'Submit',
+                'attributes' => array(
+                    'type' => 'button',
+                    'class' => 'btn btn-primary btn-block',
+                    'value' => 'Criar',
+                ),
         ));
     }
 
