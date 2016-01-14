@@ -433,7 +433,7 @@ class PreInterviewController extends AbstractActionController
             if ($studentContainer->offsetExists('regId')) {
                 $rid = $studentContainer->offsetGet('regId');
             } else {
-                return $this->redirect()->toRoute('authorization/default');
+                return $this->redirect()->toRoute('authorization/index');
             }
         }
 

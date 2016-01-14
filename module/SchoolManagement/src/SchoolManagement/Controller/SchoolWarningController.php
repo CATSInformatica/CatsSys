@@ -238,7 +238,7 @@ class SchoolWarningController extends AbstractActionController
                     $warning = new Warning();
                     $warning->setEnrollment($enrollment)
                             ->setWarningType($wt_by_id[$data['warning_id']])
-                            ->setWarningDate(new \DateTime('now'))
+                            ->setWarningDate(new \DateTime($data['warning_date']))
                             ->setWarningComment($data['warning_comment']);
                     
                     //  Adiciona uma referência no array $warnings da tabela Enrollment
@@ -290,7 +290,8 @@ class SchoolWarningController extends AbstractActionController
                     
                 $em->remove($warning);
                 $em->flush();
-                $message = 'Advertência removida com sucesso.';
+                return $this->redirect()->toRoute('school-management/school-warning',
+                        array('action' => 'given'));
             } catch (Exception $ex) {
                 $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                         'Erro: ' . $ex->getMessage();

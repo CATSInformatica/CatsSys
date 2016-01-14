@@ -29,3 +29,12 @@ LOCK TABLES `person_has_address` WRITE;
 INSERT INTO `person_has_address` VALUES (1,60502);
 /*!40000 ALTER TABLE `person_has_address` ENABLE KEYS */;
 UNLOCK TABLES;
+
+--
+-- Dumping data for table `person_relative`
+--
+
+LOCK TABLES `person_relative` WRITE;
+/*!40000 ALTER TABLE `person_relative` DISABLE KEYS */;
+/*!40000 ALTER TABLE `person_relative` ENABLE KEYS */;
+UNLOCK TABLES;

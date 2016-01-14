@@ -34,7 +34,7 @@ class CaptchaImage extends Image
      * @var string
      */
     protected $imgUrl = self::DEFAULT_URL;
-
+    
     /**
      * Image font file
      *
@@ -42,13 +42,7 @@ class CaptchaImage extends Image
      */
     protected $font = './data/fonts/Arial.ttf';
 
-    public function __construct($options = array(
-        'width' => '350',
-        'height' => '100',
-        'dotNoiseLevel' => '60',
-        'lineNoiseLevel' => 3,
-        'expiration' => '360',
-    ))
+    public function __construct($options = null)
     {
         parent::__construct($options);
     }

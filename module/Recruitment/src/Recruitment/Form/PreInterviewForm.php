@@ -8,13 +8,14 @@
 
 namespace Recruitment\Form;
 
-use Doctrine\Common\Persistence\ObjectManager;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use Recruitment\Form\Fieldset\RegistrationFieldset;
+use Recruitment\Entity\PreInterview;
+use Recruitment\Form\Settings\AddressSettings;
+use Recruitment\Form\Settings\PersonSettings;
+use Recruitment\Form\Settings\RelativeSettings;
 use Zend\Form\Form;
 
 /**
- * Description of InterviewForm
+ * Description of PreInterviewForm
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
@@ -39,6 +40,17 @@ class PreInterviewForm extends Form
                 'value' => 'Concluir',
             )
         ));
+    }
+
+    protected function getYears()
+    {
+        $year = date('Y');
+        $options = [];
+        for ($i = 1; $i < 51; $i++) {
+            $options[$year] = $year--;
+        }
+
+        return $options;
     }
 
 }

@@ -27,6 +27,21 @@ class GiveWarningFilter extends InputFilter
                 ->add(array(
                     'name' => 'class_id',
                     'required' => true,
+                ))                               
+                ->add(array(
+                    'name' => 'warning_date',
+                    'required' => true,
+                    'filters' => array(
+                        array('name' => 'StripTags'),
+                        array('name' => 'StringTrim'),
+                        array(
+                            'name' => 'Recruitment\Filter\DateToFormat',
+                            'options' => array(
+                                'inputFormat' => 'd/m/Y',
+                                'outputFormat' => 'Y-m-d'
+                            ),
+                        ),
+                    ),
                 ))
                 ->add(array(
                     'name' => 'warning_id',

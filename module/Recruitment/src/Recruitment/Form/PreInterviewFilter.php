@@ -18,7 +18,7 @@ use Zend\InputFilter\InputFilter;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class PreInterviewFilterOld extends InputFilter
+class PreInterviewFilter extends InputFilter
 {
 
     public function __construct($isUnderage = false)

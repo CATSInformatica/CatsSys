@@ -8,6 +8,7 @@
 
 namespace Recruitment\Controller;
 
+use Recruitment\Form\StudentRegistrationForm;
 use Recruitment\Model\CaptchaImage;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
@@ -47,11 +48,11 @@ class CaptchaController extends AbstractActionController
 
     public function refreshAction()
     {
-        $captcha = new CaptchaImage();
+        $form = new StudentRegistrationForm('Inscrição');
+        $captcha = $form->get('registration_captcha')->getCaptcha();
         $data = array();
         $data['id'] = $captcha->generate();
         $data['src'] = $captcha->getImgUrl() . $captcha->getId() . $captcha->getSuffix();
-
         return new JsonModel($data);
     }
 

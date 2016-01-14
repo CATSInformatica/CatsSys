@@ -45,6 +45,17 @@ class GiveWarningForm extends Form
                 )
             ))
             ->add(array(
+                'name' => 'warning_date',
+                'type' => 'text',
+                'options' => array(
+                    'label' => 'Data da Advertência',
+                ),
+                'attributes' => array(
+                    'class' => 'form-control datepicker text-center',
+                    'value' => ('22/04/1500'), 
+                )
+            ))
+            ->add(array(
                 'name' => 'warning_id',
                 'type' => 'Zend\Form\Element\Select',
                 'options' => array(

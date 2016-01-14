@@ -88,7 +88,8 @@ class StudentBgConfigController extends AbstractActionController
                     $em->persist($bgConfig);
                     $em->flush();
 
-                    $this->redirect()->toRoute('documents/student-bg-config', array('action' => 'index'));
+                    $this->redirect()->toRoute('documents/student-bg-config', 
+                            array('action' => 'index'));
                 } catch (Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
                         $message = 'Esta configuração já existe.';

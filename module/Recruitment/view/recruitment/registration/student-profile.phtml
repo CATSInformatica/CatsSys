@@ -1,12 +1,11 @@
 <section class="content">
-
+    
     <p><?php echo $this->message; ?></p>
-
+    
     <?php if ($this->registration !== null): ?>
 
         <?php
-        echo $this->partial('profile/template',
-            array(
+        echo $this->partial('profile/template', array(
             'registration' => $registration,
             'config' => array(
                 'isPhotoEditable' => true,
@@ -15,13 +14,13 @@
                     'recruitment-timeline' => true,
                     'documentation' => true,
                     'score' => true,
-                    'info' => $form,
+                    'info' => true,
                 ),
             ),
         ));
         ?>
 
-<?php endif; ?>
+    <?php endif; ?>
 </section>
 
 <script>

@@ -51,6 +51,8 @@
             );
         }
 
+
+
         echo $this->partial('profile/template',
             array(
             'registration' => $registration,
@@ -59,7 +61,7 @@
                 'showAge' => true,
                 'tabs' => array(
                     'recruitment-timeline' => $TimelineItens,
-                    'info' => false,
+                    'info' => true,
                 ),
             ),
         ));
