@@ -9,6 +9,7 @@
 namespace SchoolManagement\Controller;
 
 use Database\Service\EntityManagerService;
+use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Exception\ConstraintViolationException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
@@ -279,19 +280,19 @@ class SchoolWarningController extends AbstractActionController
                 $warning = $em->getReference('SchoolManagement\Entity\Warning', $id);
                 
                 //  Deleta a referencia do array $warnings da tabela Enrollment
-                $enrollment_warnings = $warning->getEnrollment()->getWarnings();
+                $enrollment_warnings = $warning->getEnrollment()->getWarnings()
+                        ->toArray();
                 $warnings = array();
                 foreach ($enrollment_warnings as $ew) {
                     if ($ew !== $warning) {
                         $warnings[] = $ew;
                     }
                 }
-                $warning->getEnrollment()->setWarnings($warnings);
+                $warning->getEnrollment()->setWarnings(new ArrayCollection($warnings));
                     
                 $em->remove($warning);
                 $em->flush();
-                return $this->redirect()->toRoute('school-management/school-warning',
-                        array('action' => 'given'));
+                $message = 'Advertência removida com sucesso.';
             } catch (Exception $ex) {
                 $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                         'Erro: ' . $ex->getMessage();

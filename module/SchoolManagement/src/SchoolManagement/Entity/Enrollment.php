@@ -9,6 +9,7 @@
 namespace SchoolManagement\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\ArrayCollection;
 use SchoolManagement\Entity\StudentClass;
 use Recruitment\Entity\Registration;
 
