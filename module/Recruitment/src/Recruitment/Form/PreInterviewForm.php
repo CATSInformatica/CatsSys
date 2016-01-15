@@ -8,10 +8,9 @@
 
 namespace Recruitment\Form;
 
-use Recruitment\Entity\PreInterview;
-use Recruitment\Form\Settings\AddressSettings;
-use Recruitment\Form\Settings\PersonSettings;
-use Recruitment\Form\Settings\RelativeSettings;
+use Doctrine\Common\Persistence\ObjectManager;
+use Recruitment\Form\Fieldset\RegistrationFieldset;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Form;
 
 /**
@@ -26,12 +25,12 @@ class PreInterviewForm extends Form
     {
         parent::__construct('pre-interview');
         $this->setHydrator(new DoctrineHydrator($obj));
-        
+
         // Add the user fieldset, and set it as the base fieldset
         $registrationFieldset = new RegistrationFieldset($obj, $options);
         $registrationFieldset->setUseAsBaseFieldset(true);
         $this->add($registrationFieldset);
-        
+
         $this->add(array(
             'name' => 'submit',
             'type' => 'submit',
@@ -40,17 +39,6 @@ class PreInterviewForm extends Form
                 'value' => 'Concluir',
             )
         ));
-    }
-
-    protected function getYears()
-    {
-        $year = date('Y');
-        $options = [];
-        for ($i = 1; $i < 51; $i++) {
-            $options[$year] = $year--;
-        }
-
-        return $options;
     }
 
 }

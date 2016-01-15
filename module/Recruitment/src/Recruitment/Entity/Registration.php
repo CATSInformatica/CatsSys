@@ -8,9 +8,11 @@
 
 namespace Recruitment\Entity;
 
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
-use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\Person;
+use Recruitment\Entity\Recruitment;
 
 /**
  * Description of Registration
@@ -24,17 +26,6 @@ use Recruitment\Entity\Person;
 class Registration
 {
 
-    /**
-     * $registrationKnowAbout possible values
-     */
-    const FAMILY = 'Familiares';
-    const UNIVERSIRTY_STUDENTS = 'Alunos da UNIFEI';
-    const STUDENTS = 'Alunos do CATS';
-    const FRIENDS = 'Amigos';
-    const INTERNET = 'Internet';
-    const COMMON_COMMUNICATION_CHANNELS = 'Rádio, Televisão ou Jornais';
-    const SCHOOL = 'Divulgação em sua escola';
-    const VOLUNTEERS = 'Voluntários do CATS';
     const REGISTRATION_PAD_LENGTH = 8;
 
     /**
@@ -99,15 +90,23 @@ class Registration
     private $person;
 
     /**
-     *
-     * @var string
-     * @ORM\Column(name="registration_know_about", type="string", length=500, nullable=false)
+     * 
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity="RecruitmentKnowAbout", fetch="EAGER")
+     * @ORM\JoinTable(name="registration_recruitment_know_about",
+     *      joinColumns={@ORM\JoinColumn(name="registration_id", 
+     *          referencedColumnName="registration_id")
+     *      },
+     *      inverseJoinColumns={@ORM\JoinColumn(name="recruitment_know_about_id", 
+     *          referencedColumnName="recruitment_know_about_id")}
+     * )
      */
-    private $registrationKnowAbout;
+    private $recruitmentKnowAbout;
 
     public function __construct()
     {
         $this->registrationDate = new \DateTime('now');
+        $this->recruitmentKnowAbout = new ArrayCollection();
     }
 
     /**
@@ -220,42 +219,11 @@ class Registration
 
     /**
      * 
-     * @return string
+     * @return array
      */
-    public function getRegistrationKnowAbout()
+    public function getRecruitmentKnowAbout()
     {
-        return $this->registrationKnowAbout;
-    }
-
-    /**
-     * 
-     * @param string $registrationKnowAbout
-     * @return Registration
-     * @throws \InvalidArgumentException
-     */
-    public function addRegistrationKnowAbout($registrationKnowAbout)
-    {
-        if (in_array($registrationKnowAbout,
-                array(
-                self::FAMILY,
-                self::UNIVERSIRTY_STUDENTS,
-                self::STUDENTS,
-                self::FRIENDS,
-                self::INTERNET,
-                self::COMMON_COMMUNICATION_CHANNELS,
-                self::SCHOOL,
-                self::VOLUNTEERS,
-            ))) {
-
-            if ($this->registrationKnowAbout != null) {
-                $this->registrationKnowAbout .= ';' . $registrationKnowAbout;
-            } else {
-                $this->registrationKnowAbout = $registrationKnowAbout;
-            }
-
-            return $this;
-        }
-        throw new \InvalidArgumentException('invalid registration know about.');
+        return $this->recruitmentKnowAbout;
     }
 
     /**
@@ -310,6 +278,28 @@ class Registration
     {
         $this->preInterview = $preInterview;
         return $this;
+    }
+
+    /**
+     * 
+     * @param Collection $arr
+     */
+    public function addRecruitmentKnowAbout(Collection $arr)
+    {
+        foreach ($arr as $element) {
+            $this->recruitmentKnowAbout->add($element);
+        }
+    }
+
+    /**
+     * 
+     * @param Collection $arr
+     */
+    public function removeRecruitmentKnowAbout(Collection $arr)
+    {
+        foreach ($arr as $element) {
+            $this->recruitmentKnowAbout->removeElement($element);
+        }
     }
 
 }
