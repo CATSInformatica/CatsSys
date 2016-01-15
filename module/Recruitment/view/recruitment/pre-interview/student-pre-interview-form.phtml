@@ -30,6 +30,7 @@
 
                 $regForm = $form->get('registration');
                 $personForm = $regForm->get('person');
+                $preInForm = $regForm->get('preInterview');
 
                 echo $this->partial('person/template',
                     array(
@@ -39,6 +40,11 @@
                 echo $this->partial('disclosure/template',
                     array(
                     'form' => $regForm,
+                ));
+
+                echo $this->partial('pre-interview/template',
+                    array(
+                    'form' => $preInForm,
                 ));
                 ?>
 

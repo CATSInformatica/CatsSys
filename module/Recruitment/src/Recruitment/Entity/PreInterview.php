@@ -8,6 +8,9 @@
 
 namespace Recruitment\Entity;
 
+use DateTime;
+use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Recruitment\Entity\Registration;
 
@@ -92,16 +95,6 @@ class PreInterview
     const MORE_THAN_SIX = 7;
 
     /**
-     * Quem mora com você?
-     */
-    const LIVE_WITH_YOU_ALONE = 'Moro sozinho.';
-    const LIVE_WITH_YOU_CHILDREN = 'Filhos.';
-    const LIVE_WITH_YOU_PARENTS = 'Moro com pai e/ou mãe.';
-    const LIVE_WITH_YOU_SIBLINGS = 'Irmãos.';
-    const LIVE_WITH_YOU_LIFE_PARTNER = 'Esposa, marido, companheiro(a).';
-    const LIVE_WITH_YOU_OTHER = 'Outro.';
-
-    /**
      * Bicicleta, carona. 
      * A pé, carona.
      * Transporte escolar (gratuito).
@@ -171,7 +164,7 @@ class PreInterview
 
     /**
      *
-     * @var \DateTime
+     * @var DateTime
      * @ORM\Column(name="pre_inteview_date", type="datetime", nullable=false)
      */
     private $preInterviewDate;
@@ -252,9 +245,16 @@ class PreInterview
     private $preInterviewLiveWithNumber;
 
     /**
-     *
-     * @var string
-     * @ORM\Column(name="pre_interview_live_with_you", type="string", length=120, nullable=false)
+     * 
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity="RecruitmentLiveWithYou", fetch="EAGER")
+     * @ORM\JoinTable(name="pre_interview_recruitment_live_with_you",
+     *      joinColumns={@ORM\JoinColumn(name="pre_interview_id", 
+     *          referencedColumnName="pre_interview_id")
+     *      },
+     *      inverseJoinColumns={@ORM\JoinColumn(name="recruitment_live_with_you_id", 
+     *          referencedColumnName="recruitment_live_with_you_id")}
+     * )
      */
     private $preInterviewLiveWithYou;
 
@@ -301,7 +301,8 @@ class PreInterview
 
     public function __construct()
     {
-        $this->preInterviewDate = new \DateTime('now');
+        $this->preInterviewDate = new DateTime('now');
+        $this->preInterviewLiveWithYou = new ArrayCollection();
     }
 
     /**
@@ -315,7 +316,7 @@ class PreInterview
 
     /**
      * 
-     * @return \DateTime
+     * @return DateTime
      */
     public function getPreInterviewDate()
     {
@@ -414,11 +415,33 @@ class PreInterview
 
     /**
      * 
-     * @return string
+     * @return Collection
      */
     public function getPreInterviewLiveWithYou()
     {
         return $this->preInterviewLiveWithYou;
+    }
+
+    /**
+     * 
+     * @param Collection $lwyCollection
+     */
+    public function addPreInterviewLiveWithYou(Collection $lwyCollection)
+    {
+        foreach ($lwyCollection as $element) {
+            $this->preInterviewLiveWithYou->add($element);
+        }
+    }
+
+    /**
+     * 
+     * @param Collection $lwyCollection
+     */
+    public function removePreInterviewLiveWithYou(Collection $lwyCollection)
+    {
+        foreach ($lwyCollection as $element) {
+            $this->preInterviewLiveWithYou->removeElement($element);
+        }
     }
 
     /**
@@ -578,44 +601,6 @@ class PreInterview
 
     /**
      * 
-     * @param string $liveWithYou
-     * @return Recruitment\Entity\PreInterview
-     */
-    public function addPreInterviewLiveWithYou($liveWithYou)
-    {
-
-        if (in_array($liveWithYou,
-                array(
-                self::LIVE_WITH_YOU_ALONE,
-                self::LIVE_WITH_YOU_CHILDREN,
-                self::LIVE_WITH_YOU_CHILDREN,
-                self::LIVE_WITH_YOU_PARENTS,
-                self::LIVE_WITH_YOU_CHILDREN,
-                self::LIVE_WITH_YOU_SIBLINGS,
-                self::LIVE_WITH_YOU_CHILDREN,
-                self::LIVE_WITH_YOU_LIFE_PARTNER,
-                self::LIVE_WITH_YOU_CHILDREN,
-                self::LIVE_WITH_YOU_OTHER,
-            ))) {
-
-            if ($this->preInterviewLiveWithYou !== null) {
-                $this->preInterviewLiveWithYou .= ';' . $liveWithYou;
-            } else {
-                $this->preInterviewLiveWithYou = $liveWithYou;
-            }
-
-            return $this;
-        }
-        throw new \InvalidArgumentException('invalid pre-interview live with you option.');
-    }
-
-    public function clearPreInterviewLiveWithYou()
-    {
-        $this->preInterviewLiveWithYou = null;
-    }
-
-    /**
-     * 
      * @param integer $preInterviewMeansOfTransport
      * @return Recruitment\Entity\PreInterview
      */
@@ -716,7 +701,6 @@ class PreInterview
      */
     public function setRegistration(Registration $registration)
     {
-        $registration->setPreInterview($this);
         $this->registration = $registration;
         return $this;
     }

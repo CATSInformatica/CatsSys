@@ -15,7 +15,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  * @ORM\Table(name="recruitment_know_about")
- * @ORM\Entity
+ * @ORM\Entity(readOnly=true)
  */
 class RecruitmentKnowAbout
 {

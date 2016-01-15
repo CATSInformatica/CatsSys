@@ -26,8 +26,8 @@ class RelativeFieldset extends Fieldset implements InputFilterProviderInterface
         $personFieldset = new PersonFieldset($obj,
             array(
             'relative' => false,
-            'address' => $address,
-        ), 'relative');
+            'address' => false,
+            ), 'relative');
 
         $this->add($personFieldset);
 
@@ -47,7 +47,7 @@ class RelativeFieldset extends Fieldset implements InputFilterProviderInterface
     {
         return array(
             'relativeRelationship' => array(
-                'name' => 'relative_relationship',
+                'name' => 'relativeRelationship',
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),

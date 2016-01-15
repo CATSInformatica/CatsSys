@@ -1,69 +1,31 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+namespace Recruitment\Form\Fieldset;
 
-namespace Recruitment\Form;
-
+use Doctrine\Common\Persistence\ObjectManager;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Recruitment\Entity\PreInterview;
-use Recruitment\Form\Settings\AddressSettings;
-use Recruitment\Form\Settings\PersonSettings;
-use Recruitment\Form\Settings\RelativeSettings;
-use Zend\Form\Form;
+use Zend\Form\Fieldset;
+use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
- * Description of PreInterviewForm
+ * Description of PreInterviewFieldset
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class PreInterviewForm extends Form
+class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
-    public function __construct($name = null, $options = array(), $isUnderage = false)
+    public function __construct(ObjectManager $obj)
     {
-        parent::__construct($name, $options);
+        parent::__construct('preInterview');
 
-        $addressElements = AddressSettings::createAddressElements();
-        $this->add($addressElements['postal_code']);
-        $this->add($addressElements['state']);
-        $this->add($addressElements['city']);
-        $this->add($addressElements['neighborhood']);
-        $this->add($addressElements['street']);
-        $this->add($addressElements['number']);
-        $this->add($addressElements['complement']);
+        $this->setHydrator(new DoctrineHydrator($obj))
+            ->setObject(new PreInterview());
 
-        if ($isUnderage) {
-            $relativeSuffix = '_relative';
-            $personElements = PersonSettings::createPersonElements($relativeSuffix);
-            $this
-                ->add($personElements['person_firstname'])
-                ->add($personElements['person_lastname'])
-                ->add($personElements['person_gender'])
-                ->add($personElements['person_birthday'])
-                ->add($personElements['person_cpf'])
-                ->add($personElements['person_rg'])
-                ->add($personElements['person_phone'])
-                ->add($personElements['person_email'])
-                ->add($personElements['person_confirm_email']);
-
-            $relativeElements = RelativeSettings::createRelativeElements();
-            $this->add($relativeElements['relative_relationship']);
-
-            $addressElements = AddressSettings::createAddressElements($relativeSuffix);
-            $this->add($addressElements['postal_code']);
-            $this->add($addressElements['state']);
-            $this->add($addressElements['city']);
-            $this->add($addressElements['neighborhood']);
-            $this->add($addressElements['street']);
-            $this->add($addressElements['number']);
-            $this->add($addressElements['complement']);
-        }
 
         $this->add(array(
-                'name' => 'elementary_school_type',
+                'name' => 'preInterviewElementarySchoolType',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'Tipo de escola onde cursou ensino fundamental (4° a 8ª série)',
@@ -77,7 +39,7 @@ class PreInterviewForm extends Form
                 )
             ))
             ->add(array(
-                'name' => 'high_school_type',
+                'name' => 'preInterviewHighSchoolType',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'Em que tipo de escola você cursou ou está cursando o ensino médio (1° ao 3° ano)?',
@@ -92,7 +54,7 @@ class PreInterviewForm extends Form
                 )
             ))
             ->add(array(
-                'name' => 'high_school',
+                'name' => 'preInterviewHighSchool',
                 'type' => 'text',
                 'options' => array(
                     'label' => 'Escola onde cursou ou está cursando o ensino médio',
@@ -102,16 +64,16 @@ class PreInterviewForm extends Form
                 ),
             ))
             ->add(array(
-                'name' => 'hs_conclusion_year',
+                'name' => 'preInterviewHSConclusionYear',
                 'type' => 'select',
                 'options' => array(
                     'label' => 'Conclusão',
                     'empty_option' => 'Ano',
-                    'value_options' => $this->getYears(),
+                    'value_options' => self::getYears(),
                 ),
             ))
             ->add(array(
-                'name' => 'preparation_school',
+                'name' => 'preInterviewPreparationSchool',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'Frequentou curso pré-vestibular?',
@@ -124,7 +86,7 @@ class PreInterviewForm extends Form
                 ),
             ))
             ->add(array(
-                'name' => 'language_course',
+                'name' => 'preInterviewLanguageCourse',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'Você já fez ou faz algum curso de idioma?',
@@ -138,7 +100,7 @@ class PreInterviewForm extends Form
                 ),
             ))
             ->add(array(
-                'name' => 'current_study',
+                'name' => 'preInterviewCurrentStudy',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'Você estuda atualmente?',
@@ -153,7 +115,7 @@ class PreInterviewForm extends Form
                 ),
             ))
             ->add(array(
-                'name' => 'live_with_number',
+                'name' => 'preInterviewLiveWithNumber',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'Quantas pessoas moram em sua casa (incluindo você)?',
@@ -169,22 +131,17 @@ class PreInterviewForm extends Form
                 ),
             ))
             ->add(array(
-                'name' => 'live_with_you',
-                'type' => 'MultiCheckbox',
+                'name' => 'preInterviewLiveWithYou',
+                'type' => 'DoctrineModule\Form\Element\ObjectMultiCheckbox',
                 'options' => array(
-                    'label' => 'Quem mora com você?',
-                    'value_options' => array(
-                        PreInterview::LIVE_WITH_YOU_ALONE => 'Moro sozinho.',
-                        PreInterview::LIVE_WITH_YOU_CHILDREN => 'Filhos.',
-                        PreInterview::LIVE_WITH_YOU_PARENTS => 'Moro com pai e/ou mãe.',
-                        PreInterview::LIVE_WITH_YOU_SIBLINGS => 'Irmãos.',
-                        PreInterview::LIVE_WITH_YOU_LIFE_PARTNER => 'Esposa, marido, companheiro(a).',
-                        PreInterview::LIVE_WITH_YOU_OTHER => 'Outro.',
-                    ),
+                    'label' => 'Quem mora com você?*',
+                    'object_manager' => $obj,
+                    'target_class' => 'Recruitment\Entity\RecruitmentLiveWithYou',
+                    'property' => 'recruitmentLiveWithYouDescription',
                 ),
             ))
             ->add(array(
-                'name' => 'number_of_rooms',
+                'name' => 'preInterviewNumberOfRooms',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'Quantos cômodos possui sua residência (banheiro não entra na contagem)?',
@@ -200,7 +157,7 @@ class PreInterviewForm extends Form
                 ),
             ))
             ->add(array(
-                'name' => 'means_of_transport',
+                'name' => 'preInterviewMeansOfTransport',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'Qual o principal meio de transporte você utilizará para chegar no CATS?',
@@ -215,7 +172,7 @@ class PreInterviewForm extends Form
                 ),
             ))
             ->add(array(
-                'name' => 'monthly_income',
+                'name' => 'preInterviewMonthlyIncome',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'Qual sua renda mensal individual?',
@@ -234,7 +191,7 @@ class PreInterviewForm extends Form
                     ),
                 ),
             ))->add(array(
-                'name' => 'father_education_grade',
+                'name' => 'preInterviewFatherEducationGrade',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'Qual o grau de escolaridade de seu pai?',
@@ -259,7 +216,7 @@ class PreInterviewForm extends Form
                 ),
             ))
             ->add(array(
-                'name' => 'mother_education_grade',
+                'name' => 'preInterviewMotherEducationGrade',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'Qual o grau de escolaridade de sua mãe?',
@@ -284,7 +241,7 @@ class PreInterviewForm extends Form
                 )
             ))
             ->add(array(
-                'name' => 'expect_from_us',
+                'name' => 'preInterviewExpectFromUs',
                 'attributes' => array(
                     'type' => 'textarea',
                     'rows' => 6,
@@ -292,25 +249,92 @@ class PreInterviewForm extends Form
                 'options' => array(
                     'label' => 'O que você espera que o CATS te proporcione?',
                 )
-            ))
-            ->add(array(
-                'name' => 'submit',
-                'attributes' => array(
-                    'type' => 'submit',
-                    'value' => 'Concluir',
-                    'class' => 'btn btn-success btn-block',
-                )
         ));
     }
 
-    protected function getYears()
+    public function getInputFilterSpecification()
     {
-        $year = date('Y');
+        return array(
+            'preInterviewElementarySchoolType' => array(
+                'required' => true,
+            ),
+            'preInterviewHighSchoolType' => array(
+                'required' => true,
+            ),
+            'preInterviewHighSchool' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StringToUpper'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'Zend\Validator\StringLength',
+                        'options' => array(
+                            'min' => 5,
+                            'max' => 150,
+                        ),
+                    ),
+                ),
+            ),
+            'preInterviewHSConclusionYear' => array(
+                'required' => true,
+            ),
+            'preInterviewPreparationSchool' => array(
+                'required' => true,
+            ),
+            'preInterviewLanguageCourse' => array(
+                'required' => true,
+            ),
+            'preInterviewCurrentStudy' => array(
+                'required' => true,
+            ),
+            'preInterviewLiveWithNumber' => array(
+                'required' => true,
+            ),
+            'preInterviewLiveWithYou' => array(
+                'required' => true,
+            ),
+            'preInterviewNumberOfRooms' => array(
+                'required' => true,
+            ),
+            'preInterviewMeansOfTransport' => array(
+                'required' => true,
+            ),
+            'preInterviewMonthlyIncome' => array(
+                'required' => true,
+            ),
+            'preInterviewFatherEducationGrade' => array(
+                'required' => true,
+            ),
+            'preInterviewMotherEducationGrade' => array(
+                'required' => true,
+            ),
+            'preInterviewExpectFromUs' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StringTrim'),
+                    array('name' => 'StripTags'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'Zend\Validator\StringLength',
+                        'options' => array(
+                            'min' => 20,
+                            'max' => 200,
+                        ),
+                    ),
+                ),
+            ),
+        );
+    }
+
+    protected static function getYears()
+    {
+        $year = date('Y') + 2;
         $options = [];
         for ($i = 1; $i < 51; $i++) {
             $options[$year] = $year--;
         }
-
         return $options;
     }
 

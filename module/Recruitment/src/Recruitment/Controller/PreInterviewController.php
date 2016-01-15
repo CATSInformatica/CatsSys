@@ -197,6 +197,7 @@ class PreInterviewController extends AbstractActionController
                     'relative' => $person->isPersonUnderage(),
                     'address' => true,
                 ),
+                'pre_interview' => true,
             );
 
             $form = new PreInterviewForm($em, $options);
@@ -207,7 +208,16 @@ class PreInterviewController extends AbstractActionController
 
                     // manage duplicates in address, and relatives
                     $this->adjustAddresses($person);
-                    $em->merge($registration);
+                    $this->adjustRelatives($person);
+
+                    $preInterview = $registration->getPreInterview();
+                    $preInterview
+                        ->setPreInterviewPersonalInfo($rid . self::PERSONAL_FILE_SUFFIX)
+                        ->setPreInterviewIncomeProof($rid . self::INCOME_FILE_SUFFIX)
+                        ->setPreInterviewExpenseReceipt($rid . self::EXPENDURE_FILE_SUFFIX);
+
+
+                    $em->persist($registration);
                     $em->flush();
 //                    $studentContainer->getManager()->getStorage()->clear('pre_interview');
 
@@ -255,7 +265,7 @@ class PreInterviewController extends AbstractActionController
             ));
 
             $addressId = $address->getAddressId();
-//
+
             if ($addressId === null) {
                 // endereço existe mas não existe um id associado
                 if ($addr !== null) {
@@ -268,8 +278,9 @@ class PreInterviewController extends AbstractActionController
                     if ($addressId != $addr->getAddressId()) {
                         $person->addAddress($addr);
                     }
+                    continue;
                 } else {
-                    // endereço é atualiza para um novo endereço, não existente no banco de dados.
+                    // endereço é atualizado para um novo endereço não existente no banco de dados.
                     $nAddress = new Address();
                     $nAddress->setAddressPostalCode($address->getAddressPostalCode());
                     $nAddress->setAddressState($address->getAddressState());
@@ -288,63 +299,49 @@ class PreInterviewController extends AbstractActionController
     }
 
     /**
-     * Salva o responsável se necessário, endereço se necessário, faz a associação candidato ~ responsável se 
-     * necessário ou executa atualização do parentesco
-     * 
+     * Faz verificações para evitar violações de restrição unique nos responsáveis
      * @param Person $person
-     * @param type $data
      */
-    public function insertOrUpdateRelative(Person $person, $data)
+    protected function adjustRelatives(Person $person)
     {
         $em = $this->getEntityManager();
+        $relatives = $person->getRelatives();
+        foreach ($relatives as $relative) {
 
-        $personRelative = $em->getRepository('Recruitment\Entity\Person')->findOneBy(array(
-            'personCpf' => $data['person_cpf_relative'],
-        ));
+            $relativeId = $relative->getRelativeId();
+            // se o responsável já existe então verifica se é o mesmo ou é diferente
+            if ($relativeId !== null) {
+                $rel = $em->getRepository('Recruitment\Entity\Relative')->findOneBy(array(
+                    'person' => $person,
+                    'relative' => $relative->getRelative(),
+                ));
 
-        $relative = null;
-        if ($personRelative !== null) {
-            $relative = $em->getRepository('Recruitment\Entity\Relative')->findOneBy(array(
-                'person' => $person->getPersonId(),
-                'relative' => $personRelative->getPersonId(),
+                // responsável encontrado na banco de dados
+                if ($rel !== null) {
+                    // responsável é diferente
+                    if ($relativeId != $rel->getRelativeId()) {
+                        $person->addRelative($rel);
+                        $person->removeRelative($relative);
+                        $em->detach($relative);
+                    }
+                    continue;
+                }
+            }
+
+            // dados do responsável que foi cadastrado
+            $rperson = $relative->getRelative();
+
+            // verifica se ele existe no banco de dados
+            $pers = $em->getRepository('Recruitment\Entity\Person')->findOneBy(array(
+                'personCpf' => $rperson->getPersonCpf(),
             ));
-        } else {
-            $personRelative = new Person();
-            $personRelative
-                ->setPersonFirstName($data['person_firstname_relative'])
-                ->setPersonLastName($data['person_lastname_relative'])
-                ->setPersonGender($data['person_gender_relative'])
-                ->setPersonBirthday(new \DateTime($data['person_birthday_relative']))
-                ->setPersonCpf($data['person_cpf_relative'])
-                ->setPersonRg($data['person_rg_relative'])
-                ->setPersonPhone($data['person_phone_relative'])
-                ->setPersonEmail($data['person_email_relative'])
-                ->setPersonPhoto();
 
-            $em->persist($personRelative);
+            // se existe define o responsável
+            if ($pers !== null) {
+                $relative->setRelative($pers);
+                $em->detach($rperson);
+            }
         }
-
-        if ($relative === null) {
-            $relative = new Relative();
-            $relative
-                ->setPerson($person)
-                ->setRelative($personRelative);
-        }
-
-        $relative->setRelativeRelationship($data['relative_relationship']);
-
-        $this->insertOrUpdateAddress($personRelative,
-            array(
-            'postal_code' => $data['postal_code_relative'],
-            'state' => $data['state_relative'],
-            'city' => $data['city_relative'],
-            'neighborhood' => $data['neighborhood_relative'],
-            'street' => $data['street_relative'],
-            'number' => $data['number_relative'],
-            'complement' => $data['complement_relative'],
-        ));
-
-        $em->persist($relative);
     }
 
     /**

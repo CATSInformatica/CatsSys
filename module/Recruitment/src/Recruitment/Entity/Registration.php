@@ -76,7 +76,8 @@ class Registration
     /**
      *
      * @var Recruitment\Entity\PreInterview
-     * @ORM\OneToOne(targetEntity="Recruitment\Entity\PreInterview", mappedBy="registration")
+     * @ORM\OneToOne(targetEntity="Recruitment\Entity\PreInterview", mappedBy="registration",
+     *  cascade={"persist", "merge"})
      * @ORM\JoinColumn(name="pre_inteview_id", referencedColumnName="pre_interview_id")
      */
     private $preInterview;
@@ -219,7 +220,7 @@ class Registration
 
     /**
      * 
-     * @return array
+     * @return Collection
      */
     public function getRecruitmentKnowAbout()
     {
@@ -276,6 +277,7 @@ class Registration
      */
     public function setPreInterview(PreInterview $preInterview)
     {
+        $preInterview->setRegistration($this);
         $this->preInterview = $preInterview;
         return $this;
     }

@@ -323,6 +323,28 @@ class PreInterview extends \Recruitment\Entity\PreInterview implements \Doctrine
     /**
      * {@inheritDoc}
      */
+    public function addPreInterviewLiveWithYou(\Doctrine\Common\Collections\Collection $lwyCollection)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addPreInterviewLiveWithYou', array($lwyCollection));
+
+        return parent::addPreInterviewLiveWithYou($lwyCollection);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removePreInterviewLiveWithYou(\Doctrine\Common\Collections\Collection $lwyCollection)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removePreInterviewLiveWithYou', array($lwyCollection));
+
+        return parent::removePreInterviewLiveWithYou($lwyCollection);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getPreInterviewMeansOfTransport()
     {
 
@@ -483,28 +505,6 @@ class PreInterview extends \Recruitment\Entity\PreInterview implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPreInterviewLiveWithNumber', array($preInterviewLiveWithNumber));
 
         return parent::setPreInterviewLiveWithNumber($preInterviewLiveWithNumber);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function addPreInterviewLiveWithYou($liveWithYou)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addPreInterviewLiveWithYou', array($liveWithYou));
-
-        return parent::addPreInterviewLiveWithYou($liveWithYou);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function clearPreInterviewLiveWithYou()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'clearPreInterviewLiveWithYou', array());
-
-        return parent::clearPreInterviewLiveWithYou();
     }
 
     /**

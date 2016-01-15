@@ -554,6 +554,28 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
+    public function addIsRelativeOf(\Recruitment\Entity\Relative $rel)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addIsRelativeOf', array($rel));
+
+        return parent::addIsRelativeOf($rel);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isRelativeOf(\Recruitment\Entity\Relative $rel)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isRelativeOf', array($rel));
+
+        return parent::isRelativeOf($rel);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getRelatives()
     {
 
@@ -571,6 +593,28 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'addRelative', array($relative));
 
         return parent::addRelative($relative);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hasRelative(\Recruitment\Entity\Relative $relative)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasRelative', array($relative));
+
+        return parent::hasRelative($relative);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeRelative(\Recruitment\Entity\Relative $relative)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRelative', array($relative));
+
+        return parent::removeRelative($relative);
     }
 
     /**

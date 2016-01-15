@@ -8,7 +8,6 @@
 
 namespace Recruitment\Form;
 
-use Recruitment\Form\Settings\CpfSettings;
 use Zend\InputFilter\InputFilter;
 
 /**
@@ -21,7 +20,18 @@ class CpfFilter extends InputFilter
 
     public function __construct()
     {
-        $this->add(CpfSettings::createCpfFilter());
+        $this->add(array(
+            'name' => 'person_cpf',
+            'required' => true,
+            'filters' => array(
+                array('name' => 'StripTags')
+            ),
+            'validators' => array(
+                array(
+                    'name' => 'Recruitment\Validator\Cpf',
+                ),
+            ),
+        ));
     }
 
 }

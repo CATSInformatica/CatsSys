@@ -35,7 +35,7 @@ class Relative
     /**
      *
      * @var Person
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="isRelativeOf")
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="relatives")
      * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id", nullable=false)
      */
     private $person;
@@ -43,7 +43,7 @@ class Relative
     /**
      *
      * @var Person 
-     * @ORM\ManyToOne(targetEntity="Person", inversedBy="relatives", cascade={"persist"})
+     * @ORM\ManyToOne(targetEntity="Person", inversedBy="isRelativeOf", cascade={"persist"})
      * @ORM\JoinColumn(name="person_relative_id", referencedColumnName="person_id", nullable=false)
      */
     private $relative;
@@ -75,10 +75,10 @@ class Relative
 
     /**
      * 
-     * @param Person $person
+     * @param mixed Person|null $person
      * @return Relative
      */
-    public function setPerson(Person $person)
+    public function setPerson($person)
     {
         $this->person = $person;
     }
@@ -94,12 +94,14 @@ class Relative
 
     /**
      * 
-     * @param Person $person
+     * @param mixed Person|null $person
      * @return Relative
      */
-    public function setRelative(Person $person)
+    public function setRelative($person)
     {
-        $person->addRelative($this);
+        if ($person !== null) {
+            $person->addIsRelativeOf($this);
+        }
         $this->relative = $person;
         return $this;
     }

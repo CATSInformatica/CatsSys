@@ -151,13 +151,13 @@ class Person
     /**
      *
      * @var Collection 
-     * @ORM\OneToMany(targetEntity="Relative", mappedBy="person", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="Relative", mappedBy="relative", fetch="EXTRA_LAZY")
      */
     private $isRelativeOf;
 
     /**
      * @var Collection
-     * @ORM\OneToMany(targetEntity="Relative", mappedBy="relative", fetch="EXTRA_LAZY", 
+     * @ORM\OneToMany(targetEntity="Relative", mappedBy="person", fetch="EXTRA_LAZY", 
      * cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $relatives;
@@ -318,7 +318,7 @@ class Person
      */
     public function getAddresses()
     {
-        return $this->addresses->toArray();
+        return $this->addresses;
     }
 
     /**
@@ -533,12 +533,35 @@ class Person
      */
     public function getIsRelativeOf()
     {
-        return $this->isRelativeOf->toArray();
+        return $this->isRelativeOf;
     }
 
     /**
      * 
-     * @return array
+     * @param Recruitment\Entity\Relative $rel
+     * @return Person
+     */
+    public function addIsRelativeOf(Relative $rel)
+    {
+        if (!$this->isRelativeOf($rel)) {
+            $this->isRelativeOf->add($rel);
+        }
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Recruitment\Entity\Relative $rel
+     * @return bool
+     */
+    public function isRelativeOf(Relative $rel)
+    {
+        return $this->isRelativeOf->contains($rel);
+    }
+
+    /**
+     * 
+     * @return Collection
      */
     public function getRelatives()
     {
@@ -552,7 +575,33 @@ class Person
      */
     public function addRelative(Relative $relative)
     {
-        $this->relatives->add($relative);
+        if (!$this->hasRelative($relative)) {
+            $relative->setPerson($this);
+            $this->relatives->add($relative);
+        }
+
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \Recruitment\Entity\Relative $relative
+     * @return type
+     */
+    public function hasRelative(Relative $relative)
+    {
+        return $this->relatives->contains($relative);
+    }
+
+    /**
+     * 
+     * @param \Recruitment\Entity\Relative $relative
+     * @return Person
+     */
+    public function removeRelative(Relative $relative)
+    {
+        $relative->setPerson(null);
+        $this->relatives->removeElement($relative);
         return $this;
     }
 
