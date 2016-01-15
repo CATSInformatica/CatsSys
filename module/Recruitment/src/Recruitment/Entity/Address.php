@@ -17,7 +17,7 @@ use Recruitment\Entity\Person;
  * Description of People
  * @author Márcio
  * @ORM\Table(name="address",
- *      uniqueConstraints={@ORM\UniqueConstraint(name="addr_unique_idx", columns={"address_country", "address_state",
+ *      uniqueConstraints={@ORM\UniqueConstraint(name="addr_unique_idx", columns={"address_state",
  *      "address_city", "address_neighborhood", "address_street", "address_number","address_complement"})}
  * )
  * @ORM\Entity
@@ -52,6 +52,7 @@ class Address
     const STATE_SP = 'SP';
     const STATE_SE = 'SE';
     const STATE_TO = 'TO';
+    const COUNTRY_BRA = 'BRASIL';
 
     /**
      * @var integer
@@ -119,8 +120,7 @@ class Address
 
     /**
      * @var Collection
-     * @ORM\ManyToMany(targetEntity="Recruitment\Entity\Person", mappedBy="addresses", fetch="EXTRA_LAZY", 
-     * cascade={"persist"})
+     * @ORM\ManyToMany(targetEntity="Recruitment\Entity\Person", mappedBy="addresses", fetch="EXTRA_LAZY")
      */
     private $people;
 
@@ -130,6 +130,7 @@ class Address
     public function __construct()
     {
         $this->people = new ArrayCollection();
+        $this->addressCountry = self::COUNTRY_BRA;
     }
 
     /**
@@ -141,6 +142,17 @@ class Address
     public function getAddressId()
     {
         return $this->addressId;
+    }
+
+    /**
+     * 
+     * @param integer $addressId
+     * @return Recruitment\Entity\Address
+     */
+    public function setAddressId($addressId)
+    {
+        $this->addressId = $addressId;
+        return $this;
     }
 
     /**
@@ -297,7 +309,7 @@ class Address
      */
     public function setAddressNumber($addressNumber)
     {
-        $this->addressNumber = $addressNumber;
+        $this->addressNumber = ($addressNumber !== '') ? $addressNumber : null;
         return $this;
     }
 

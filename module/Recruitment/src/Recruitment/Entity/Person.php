@@ -121,8 +121,7 @@ class Person
     /**
      * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="Address", inversedBy="people", fetch="EXTRA_LAZY", cascade={"persist"},  
-     *      orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity="Address", inversedBy="people", fetch="EXTRA_LAZY", cascade={"persist"})
      * @ORM\JoinTable(name="person_has_address",
      *   joinColumns={
      *     @ORM\JoinColumn(name="person_id", referencedColumnName="person_id", nullable=false)
@@ -415,6 +414,31 @@ class Person
             $addr->addPerson($this);
             $this->addresses->add($addr);
         }
+        return $this;
+    }
+
+    /**
+     * @param Address $address
+     * @return Person
+     */
+    public function removeAddress(Address $address)
+    {
+        $address->removePerson($this);
+        $this->addresses->removeElement($address);
+        return $this;
+    }
+
+    /**
+     * @param Address $address
+     * @return Person
+     */
+    public function addAddress(Address $address)
+    {
+        if (!$this->hasAddress($address)) {
+            $address->addPerson($this);
+            $this->addresses->add($address);
+        }
+
         return $this;
     }
 

@@ -164,11 +164,12 @@ class RecruitmentController extends AbstractActionController
                 $recruitment = $em->getReference('Recruitment\Entity\Recruitment', $id);
                 $currentDate = new DateTime('now');
                 if ($currentDate < $recruitment->getRecruitmentBeginDate()) {
+                    unlink(self::EDITAL_DIR . $recruitment->getRecruitmentPublicNotice());
                     $em->remove($recruitment);
                     $em->flush();
-                    return $this->redirect()->toRoute('recruitment/recruitment',
-                            array(
-                            'action' => 'index'
+
+                    return new JsonModel(array(
+                        'message' => 'processo seletivo removido com sucesso.'
                     ));
                 }
 

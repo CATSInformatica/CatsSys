@@ -206,9 +206,16 @@ class PreInterviewController extends AbstractActionController
                 if ($form->isValid()) {
 
                     // manage duplicates in address, and relatives
-                    
-                    $em->persist($registration);
+                    $this->adjustAddresses($person);
+                    $em->merge($registration);
                     $em->flush();
+//                    $studentContainer->getManager()->getStorage()->clear('pre_interview');
+
+                    return new ViewModel(array(
+                        'registration' => null,
+                        'form' => null,
+                        'message' => 'Pré-entrevista concluída com com sucesso.',
+                    ));
                 }
             }
         } catch (Exception $ex) {
@@ -216,7 +223,7 @@ class PreInterviewController extends AbstractActionController
                 'registration' => null,
                 'form' => null,
                 'message' => 'Erro inesperado. Por favor, entre em contato com o administrador do sistema.',
-//                'message' => $ex->getMessage(),
+                'message' => $ex->getMessage(),
             ));
         }
 
@@ -228,50 +235,56 @@ class PreInterviewController extends AbstractActionController
     }
 
     /**
-     * Salva o endereço do candidato que está fazendo a pré-entrevista
-     * 
-     * Se o endereço não existe no banco de dados faz o cadastro e associa ao candidato
-     * Se o endereço existe e o candidato ainda não possui tal endereço faz apenas a associação do endereço
-     * se o endereço existe e o candidato já possui tal endereço não faz nada.
+     * Faz as verificações para evitar violações de restrição unique nos endereços
      * 
      * @param Person $person
-     * @param array $data
-     * @return null
+     * @return void
      */
-    protected function insertOrUpdateAddress(Person $person, $data)
+    protected function adjustAddresses(Person $person)
     {
         $em = $this->getEntityManager();
+        $addresses = $person->getAddresses();
+        foreach ($addresses as $address) {
+            $addr = $em->getRepository('Recruitment\Entity\Address')->findOneBy(array(
+                'addressState' => $address->getAddressState(),
+                'addressCity' => $address->getAddressCity(),
+                'addressNeighborhood' => $address->getAddressNeighborhood(),
+                'addressStreet' => $address->getAddressStreet(),
+                'addressNumber' => $address->getAddressNumber(),
+                'addressComplement' => $address->getAddressComplement(),
+            ));
 
-        $address = $em->getRepository('Recruitment\Entity\Address')->findOneBy(array(
-            'addressCountry' => 'BRASIL',
-            'addressState' => $data['state'],
-            'addressCity' => $data['city'],
-            'addressNeighborhood' => $data['neighborhood'],
-            'addressStreet' => $data['street'],
-            'addressNumber' => $data['number'],
-            'addressComplement' => $data['complement'],
-        ));
-
-        if ($address !== null) {
-            if (!$person->hasAddress($address)) {
-                $address->addPerson($person);
+            $addressId = $address->getAddressId();
+//
+            if ($addressId === null) {
+                // endereço existe mas não existe um id associado
+                if ($addr !== null) {
+                    $person->removeAddress($address);
+                    $person->addAddress($addr);
+                }
             } else {
-                return;
-            }
-        } else {
-            $address = new Address();
-            $address->setAddressPostalCode($data['postal_code'])
-                ->setAddressCountry('BRASIL')
-                ->setAddressState($data['state'])
-                ->setAddressCity($data['city'])
-                ->setAddressNeighborhood($data['neighborhood'])
-                ->setAddressStreet($data['street'])
-                ->setAddressNumber($data['number'])
-                ->setAddressComplement($data['complement'])
-                ->addPerson($person);
-        }
+                if ($addr !== null) {
+                    // Endereço é atualizado para um endereço já cadastrado no banco de dados.
+                    if ($addressId != $addr->getAddressId()) {
+                        $person->addAddress($addr);
+                    }
+                } else {
+                    // endereço é atualiza para um novo endereço, não existente no banco de dados.
+                    $nAddress = new Address();
+                    $nAddress->setAddressPostalCode($address->getAddressPostalCode());
+                    $nAddress->setAddressState($address->getAddressState());
+                    $nAddress->setAddressCity($address->getAddressCity());
+                    $nAddress->setAddressNeighborhood($address->getAddressNeighborhood());
+                    $nAddress->setAddressStreet($address->getAddressStreet());
+                    $nAddress->setAddressNumber($address->getAddressNumber());
+                    $nAddress->setAddressComplement($address->getAddressComplement());
+                    $person->addAddress($nAddress);
+                }
 
-        $em->persist($address);
+                $person->removeAddress($address);
+                $em->detach($address);
+            }
+        }
     }
 
     /**
@@ -469,54 +482,6 @@ class PreInterviewController extends AbstractActionController
         return new ViewModel(array(
             'message' => $message,
         ));
-    }
-
-    private function foo()
-    {
-//        $data = $form->getData();
-//
-//                    // cria uma nova pré-entrevista e insere os valores do formulário
-//                    $preInterview = new PreInterview();
-//
-//                    $preInterview
-//                        ->setPreInterviewPersonalInfo($rid . self::PERSONAL_FILE_SUFFIX)
-//                        ->setPreInterviewIncomeProof($rid . self::INCOME_FILE_SUFFIX)
-//                        ->setPreInterviewExpenseReceipt($rid . self::EXPENDURE_FILE_SUFFIX)
-//                        ->setPreInterviewElementarySchoolType($data['elementary_school_type'])
-//                        ->setPreInterviewHighSchoolType($data['high_school_type'])
-//                        ->setPreInterviewHighSchool($data['high_school'])
-//                        ->setPreInterviewHSConclusionYear($data['hs_conclusion_year'])
-//                        ->setPreInterviewPreparationSchool($data['preparation_school'])
-//                        ->setPreInterviewLanguageCourse($data['language_course'])
-//                        ->setPreInterviewCurrentStudy($data['current_study'])
-//                        ->setPreInterviewLiveWithNumber($data['live_with_number'])
-//                        ->setPreInterviewNumberOfRooms($data['number_of_rooms'])
-//                        ->setPreInterviewMeansOfTransport($data['means_of_transport'])
-//                        ->setPreInterviewMonthlyIncome($data['monthly_income'])
-//                        ->setPreInterviewFatherEducationGrade($data['father_education_grade'])
-//                        ->setPreInterviewMotherEducationGrade($data['mother_education_grade'])
-//                        ->setPreInterviewExpectFromUs($data['expect_from_us']);
-//
-//                    foreach ($data['live_with_you'] as $lwy) {
-//                        $preInterview->addPreInterviewLiveWithYou($lwy);
-//                    }
-//
-//                    // inserção do endereço do candidato
-//                    $this->insertOrUpdateAddress($person, $data);
-//
-//                    // se o candidato é menor de idade insere os dados do responsável
-//                    if ($isUnderage) {
-//                        $this->insertOrUpdateRelative($person, $data);
-//                    }
-//
-//                    // salva tudo no banco de dados
-//                    $preInterview->setRegistration($registration);
-//                    $em->persist($preInterview);
-//                    $em->flush();
-//
-//                    // limpa a sessão e informa que a pré-entrevista foi concluída com sucesso.
-//                    $studentContainer->getManager()->getStorage()->clear('pre_interview');
-//                    $message = 'Pré-entrevista concluída com com sucesso.';
     }
 
 }

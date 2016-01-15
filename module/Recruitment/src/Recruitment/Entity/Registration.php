@@ -211,7 +211,7 @@ class Registration
      * @param Person $person
      * @return Registration
      */
-    function setPerson(Person $person)
+    public function setPerson(Person $person)
     {
         $person->addRegistration($this);
         $this->person = $person;
