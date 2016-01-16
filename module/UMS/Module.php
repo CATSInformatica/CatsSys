@@ -8,9 +8,6 @@
 
 namespace UMS;
 
-use Zend\Session\Container;
-use Zend\View\HelperPluginManager;
-
 /**
  * Description of Module
  *
