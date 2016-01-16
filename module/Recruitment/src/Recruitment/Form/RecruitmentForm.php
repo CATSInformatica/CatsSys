@@ -64,7 +64,6 @@ class RecruitmentForm extends Form
                 'attributes' => array(
                     'type' => 'text',
                     'class' => 'form-control datepicker text-center',
-                    'value' => $date->format('d/m/Y'),
                 ),
                 'options' => array(
                     'label' => 'Data de início',
@@ -76,7 +75,6 @@ class RecruitmentForm extends Form
                 'attributes' => array(
                     'type' => 'text',
                     'class' => 'form-control datepicker text-center',
-                    'value' => $date->format('d/m/Y')
                 ),
                 'options' => array(
                     'label' => 'Data de término',
