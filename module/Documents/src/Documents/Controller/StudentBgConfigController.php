@@ -78,7 +78,7 @@ class StudentBgConfigController extends AbstractActionController
                     
                     $bgImgNewName = 'bg'.time().'.png';
                     move_uploaded_file($data['bg_img']['tmp_name'], './public/img/' . $bgImgNewName);
-                    chmod('./public/img/' . $bgImgNewName, 0777);
+                    chmod('./public/img/' . $bgImgNewName, 0775);
                     
                     $bgConfig = new StudentBgConfig();
                     $bgConfig->setStudentBgConfigPhrase($data['bg_phrase'])
@@ -119,9 +119,9 @@ class StudentBgConfigController extends AbstractActionController
             try {
                 $em = $this->getEntityManager();
 
-                $bg_config = $em->getReference('Documents\Entity\StudentBgConfig', $id);
-                unlink('./public/img/' . $bg_config->getStudentBgConfigImg());
-                $em->remove($bg_config);
+                $bgConfig = $em->getReference('Documents\Entity\StudentBgConfig', $id);
+                unlink('./public/img/' . $bgConfig->getStudentBgConfigImg());
+                $em->remove($bgConfig);
                 $em->flush();
                 $message = 'Configuração removida com sucesso.';
             } catch (Exception $ex) {

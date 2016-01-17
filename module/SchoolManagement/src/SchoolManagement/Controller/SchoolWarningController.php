@@ -42,17 +42,17 @@ class SchoolWarningController extends AbstractActionController
     {
         try {
             $em = $this->getEntityManager();
-            $warningTypes = $em->getRepository('SchoolManagement\Entity\WarningType')->findAll();
+            $wTypes = $em->getRepository('SchoolManagement\Entity\WarningType')->findAll();
             $message = null;
         } catch (Exception $ex) {
             $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                     'Erro: ' . $ex->getMessage();
-            $warningTypes = null;
+            $wTypes = null;
         }
 
         return new ViewModel(array(
             'message' => $message,
-            'warningTypes' => $warningTypes,
+            'warningTypes' => $wTypes,
         ));
     }
 
@@ -181,7 +181,7 @@ class SchoolWarningController extends AbstractActionController
         
         try {
             $em = $this->getEntityManager();
-            $warnings_types = $em->getRepository('SchoolManagement\Entity\WarningType')
+            $wTypes = $em->getRepository('SchoolManagement\Entity\WarningType')
                     ->findAll();
             $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')
                     ->findAll();
@@ -191,28 +191,29 @@ class SchoolWarningController extends AbstractActionController
         
         //  Obtém todas as turmas e seleciona seus nomes
         foreach ($classes as $class) {
-            $class_names[$class->getClassId()] = $class->getClassName();
+            $classById[$class->getClassId()] = $class;
+            $classNames[$class->getClassId()] = $class->getClassName();
             
             //  Obtém todos os alunos e seleciona seus nomes
-            $enrollments = $class->getEnrollments();
+            $enrollments = $class->getEnrollments()->toArray();
             foreach ($enrollments as $enrollment) {
-                $person_by_id[$enrollment->getRegistration()->getPerson()
+                $personById[$enrollment->getRegistration()->getPerson()
                         ->getPersonId()] = $enrollment->getRegistration()->getPerson();
-                $names[$enrollment->getEnrollmentId()] = $enrollment->getRegistration()
+                $sNames[$enrollment->getEnrollmentId()] = $enrollment->getRegistration()
                         ->getPerson()->getPersonName();
             }             
         }
         
         //  Obtém todos os tipos de advertência e seleciona seus nomes
-        foreach ($warnings_types as $wt) {
-            $wt_by_id[$wt->getWarningTypeId()] = $wt;
-            $wt_names[$wt->getWarningTypeId()] = $wt->getWarningTypeName();
+        foreach ($wTypes as $wType) {
+            $wTypeById[$wType->getWarningTypeId()] = $wType;
+            $wTypeNames[$wType->getWarningTypeId()] = $wType->getWarningTypeName();
         }
         
         $options = array(
-            'names' => $names,
-            'warning_names' => $wt_names,
-            'class_names' => $class_names
+            'names' => $sNames,
+            'warning_names' => $wTypeNames,
+            'class_names' => $classNames
         );        
         $form = new GiveWarningForm('Give a Warning Form', $options);    
         
@@ -223,22 +224,34 @@ class SchoolWarningController extends AbstractActionController
             if ($form->isValid()) {
                 $data = $form->getData();
                 
-                $pRegistrations = $person_by_id[$data['person_id']]->getRegistrations();
-                $registration = null;
-                foreach ($pRegistrations as $pr) {
-                    if ($pr->getRecruitment()->getRecruitmentType() === 1) {
-                        $registration = $pr;
+                $enrollments = $classById[$data['class_id']]->getEnrollments()
+                        ->toArray();
+                $pRegistrations = $personById[$data['person_id']]->getRegistrations();
+                $pEnrollment = null;
+                foreach ($enrollments as $enrollment) {           
+                    foreach ($pRegistrations as $pr) {
+                        if ($enrollment->getRegistration() === $pr) {
+                            $pEnrollment = $enrollment;
+                            break;
+                        }
+                    }
+                    if ($pEnrollment !== null) {
                         break;
                     }
-                }                
-                $enrollment = $em->getRepository('SchoolManagement\Entity\Enrollment')
-                        ->findOneByRegistration($registration);                
+                }
+                if ($pEnrollment === null) {
+                    $message = 'Este aluno não está matriculado na turma indicada.';
+                    return new ViewModel(array(
+                        'message' => $message,
+                        'form' => $form,
+                    ));
+                }
                         
                 try {
                     //  Adiciona uma referência na tabela Warning
                     $warning = new Warning();
-                    $warning->setEnrollment($enrollment)
-                            ->setWarningType($wt_by_id[$data['warning_id']])
+                    $warning->setEnrollment($pEnrollment)
+                            ->setWarningType($wTypeById[$data['warning_id']])
                             ->setWarningDate(new \DateTime($data['warning_date']))
                             ->setWarningComment($data['warning_comment']);
                     
@@ -280,10 +293,10 @@ class SchoolWarningController extends AbstractActionController
                 $warning = $em->getReference('SchoolManagement\Entity\Warning', $id);
                 
                 //  Deleta a referencia do array $warnings da tabela Enrollment
-                $enrollment_warnings = $warning->getEnrollment()->getWarnings()
+                $enrollmentWarnings = $warning->getEnrollment()->getWarnings()
                         ->toArray();
                 $warnings = array();
-                foreach ($enrollment_warnings as $ew) {
+                foreach ($enrollmentWarnings as $ew) {
                     if ($ew !== $warning) {
                         $warnings[] = $ew;
                     }
