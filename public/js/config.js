@@ -10,8 +10,8 @@ requirejs.config({
     paths: {
         jquery: 'AdminLTE/plugins/jQuery/jQuery-2.1.4.min',
         bootstrap: 'AdminLTE/bootstrap/js/bootstrap.min',
-//        slimscroll: 'AdminLTE/plugins/slimScroll/jquery.slimscroll.min',
-//        adminlte: 'AdminLTE/dist/js/app.min',
+        slimscroll: 'AdminLTE/plugins/slimScroll/jquery.slimscroll.min',
+        adminlte: 'AdminLTE/dist/js/app.min',
         bootbox: 'bootbox.js/bootbox',
         jquerydatatable: 'AdminLTE/plugins/datatables/jquery.dataTables.min',
         datatable: 'AdminLTE/plugins/datatables/dataTables.bootstrap.min',
@@ -34,12 +34,12 @@ requirejs.config({
             deps: ['jquery']
         },
         adminlte: {
-            deps: ['slimscroll', 'bootstrap', 'jquery']
+            deps: ['bootstrap', 'jquery', 'slimscroll']
         }
     }
 });
 
-define(['app/models/Toolbar'], function (Toolbar) {
+define(['app/models/Toolbar', 'jquery', 'bootstrap', 'adminlte'], function (Toolbar) {
 
     var config = {
         toolbarElement: '.system-toolbar',

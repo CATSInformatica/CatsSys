@@ -34,7 +34,7 @@
         ?>
 
     </head>
-    <body class="skin-blue">
+    <body class="skin-blue fixed" style="background: white;">
 
         <!-- Wrapper -->
         <div class="wrapper">
@@ -138,7 +138,7 @@
             </aside>
 
             <!-- Right side column. Contains the content of the page -->
-            <div class="content-wrapper">
+            <div class="content-wrapper" style="height: 100% !important;">
                 <!-- Main content -->
                 <section class="content-header">
                     <?php
@@ -151,14 +151,6 @@
                 <?php echo $this->content; ?>
 
             </div><!-- /.right-side -->
-
-            <footer class="main-footer">
-                <div class="pull-right hidden-xs">
-                    <b>Versão</b> 0.1
-                </div>
-                <strong>&copy 2003-<?php echo date('Y'); ?> <a href="http://www.familiacats.com.br/">CATS</a>.</strong> Todos os direitos reservados.
-            </footer>
-
 
             <!-- Control Sidebar -->
             <aside class="control-sidebar control-sidebar-dark">
@@ -178,82 +170,68 @@
                     </div>
                 </div>
             </aside>
-
-            <!-- /.control-sidebar -->
-            <!-- Add the sidebar's background. This div must be placed
-                 immediately after the control sidebar -->
             <div class="control-sidebar-bg"></div>
         </div>
-
-        <?php
-        echo $this->inlineScript()
-            // AdminLTE App
-            ->prependFile($this->basePath('vendor/AdminLTE/dist/js/app.min.js'))
-            // Bootstrap 3.3.5
-            ->prependFile($this->basePath('vendor/AdminLTE/bootstrap/js/bootstrap.min.js'))
-            // jQuery 2.1.4
-            ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
-        ?>
-
-        <script data-main="/js/config" src="/vendor/requirejs/require.js" ></script>
-        <script>
-            require(['config'], function () {
-
-                // for file inputs
-                $(document).on('change', '.btn-file :file', function () {
-                    var input = $(this),
-                            numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                    input.trigger('fileselect', [numFiles, label]);
-                });
-
-                // change user active role
-                $(function () {
-
-                    $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
-                        $(this).siblings('.btn-file-name').text(label);
-                    });
-
-                    $('.role').on('click', function () {
-                        var role = $(this);
-                        var jsonRole = JSON.stringify({
-                            'role': role.text().toLowerCase()
-                        });
-                        $.ajax({
-                            url: '/authorization/role/changeActiveUserRole',
-                            type: 'POST',
-                            dataType: 'json',
-                            async: true,
-                            data: jsonRole,
-                            success: function (msg) {
-
-                                // change role in menu
-                                if (msg.success) {
-                                    var newActiveRole = role.text();
-                                    role.text($('.active-role').text());
-                                    $('.active-role').text(newActiveRole);
-                                }
-
-                                console.log(msg);
-                            },
-                            error: function (msg) {
-                                console.log(msg);
-                            }
-                        });
-                    });
-
-                    // deprecated
-                    if (typeof standardConfig !== 'undefined') {
-                        standardConfig.init();
-                    }
-
-                    if (typeof appConfig !== 'undefined') {
-                        require([appConfig.getScriptSrc()], function (pageScript) {
-                            pageScript.init();
-                        });
-                    }
-                });
-            });
-        </script>
     </body>
+    <script data-main="/js/config" src="/vendor/requirejs/require.js" ></script>
+    <script>
+        require(['config'], function () {
+
+            // for file inputs
+            $(document).on('change', '.btn-file :file', function () {
+                var input = $(this),
+                        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                input.trigger('fileselect', [numFiles, label]);
+            });
+
+            // change user active role
+            $(function () {
+
+                $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
+                    $(this).siblings('.btn-file-name').text(label);
+                });
+
+                $('.role').on('click', function () {
+                    var role = $(this);
+                    var jsonRole = JSON.stringify({
+                        'role': role.text().toLowerCase()
+                    });
+                    $.ajax({
+                        url: '/authorization/role/changeActiveUserRole',
+                        type: 'POST',
+                        dataType: 'json',
+                        async: true,
+                        data: jsonRole,
+                        success: function (msg) {
+
+                            // change role in menu
+                            if (msg.success) {
+                                var newActiveRole = role.text();
+                                role.text($('.active-role').text());
+                                $('.active-role').text(newActiveRole);
+                            }
+
+                            console.log(msg);
+                        },
+                        error: function (msg) {
+                            console.log(msg);
+                        }
+                    });
+                });
+
+                // deprecated
+                if (typeof standardConfig !== 'undefined') {
+                    standardConfig.init();
+                }
+
+                if (typeof appConfig !== 'undefined') {
+                    require([appConfig.getScriptSrc()], function (pageScript) {
+                        pageScript.init();
+                    });
+                }
+            });
+        });
+    </script>
+</div>
 </html>

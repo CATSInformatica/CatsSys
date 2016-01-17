@@ -36,7 +36,7 @@ $modules = array(
 
 if ($env === 'development') {
     // zend developer tools helper to see doctrine operations, database MER and other things
-    $modules[] = 'ZendDeveloperTools';
+//    $modules[] = 'ZendDeveloperTools';
 }
 
 
