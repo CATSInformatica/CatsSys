@@ -1,7 +1,7 @@
 <section class="content">
-    
+
     <p><?php echo $this->message; ?></p>
-    
+
     <?php if ($this->recruitments !== null): ?>
         <div class="row">
             <form class="form-inline col-xs-12 col-md-10 col-md-offset-1">
@@ -50,47 +50,15 @@
 
 <script>
 
-    var standardConfig = (function () {
-        // your module code goes here
-        // var config = null;
-
-        /**
-         * 
-         * private functions
-         */
-
-        initDataTable = function () {
-
-            var recruitmentTable = $('#recruitment-table').DataTable({
-                iDisplayLength: 10,
-                dom: 'lftip',
-//                paging: false,
-                ajax: {
-                    url: "/recruitment/registration/getStudentRegistrations",
-                    type: "POST",
-                    data: function () {
-                        var rid = $('#recruitment_id').val();
-                        $('#recruitment-button').data('prev', rid);
-                        return {
-                            rid: rid
-                        };
-                    }
-                }
-            });
-
-            $('#recruitment-button').click(function () {
-                if ($(this).data('prev') !== $('#recruitment_id').val()) {
-                    recruitmentTable.ajax.reload();
-                }
-            });
-        };
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/recruitment/registration/index';
 
         return {
-            init: function () {
-                initDataTable();
+            getScriptSrc: function () {
+                return scriptSrc;
             }
         };
 
-    }());
+    })();
 
 </script>

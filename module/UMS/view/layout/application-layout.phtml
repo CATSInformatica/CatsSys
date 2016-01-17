@@ -34,7 +34,7 @@
         ?>
 
     </head>
-    <body class="skin-blue fixed">
+    <body class="skin-blue">
 
         <!-- Wrapper -->
         <div class="wrapper">
@@ -184,401 +184,75 @@
                  immediately after the control sidebar -->
             <div class="control-sidebar-bg"></div>
         </div>
-        <script>
-            var AdminLTEOptions = {
-                //Add slimscroll to navbar menus
-                //This requires you to load the slimscroll plugin
-                //in every page before app.js
-                navbarMenuSlimscroll: true,
-                navbarMenuSlimscrollWidth: "3px", //The width of the scroll bar
-                navbarMenuHeight: "200px", //The height of the inner menu
-                //General animation speed for JS animated elements such as box collapse/expand and
-                //sidebar treeview slide up/down. This options accepts an integer as milliseconds,
-                //'fast', 'normal', or 'slow'
-                animationSpeed: 500,
-                //Sidebar push menu toggle button selector
-                sidebarToggleSelector: "[data-toggle='offcanvas']",
-                //Activate sidebar push menu
-                sidebarPushMenu: true,
-                //Activate sidebar slimscroll if the fixed layout is set (requires SlimScroll Plugin)
-                sidebarSlimScroll: true,
-                //Enable sidebar expand on hover effect for sidebar mini
-                //This option is forced to true if both the fixed layout and sidebar mini
-                //are used together
-                sidebarExpandOnHover: false,
-                //BoxRefresh Plugin
-                enableBoxRefresh: true,
-                //Bootstrap.js tooltip
-                enableBSToppltip: true,
-                BSTooltipSelector: "[data-toggle='tooltip']",
-                //Enable Fast Click. Fastclick.js creates a more
-                //native touch experience with touch devices. If you
-                //choose to enable the plugin, make sure you load the script
-                //before AdminLTE's app.js
-                enableFastclick: false,
-                //Control Sidebar Options
-                enableControlSidebar: true,
-                controlSidebarOptions: {
-                    //Which button should trigger the open/close event
-                    toggleBtnSelector: "[data-toggle='control-sidebar']",
-                    //The sidebar selector
-                    selector: ".control-sidebar",
-                    //Enable slide over content
-                    slide: true
-                },
-                //Box Widget Plugin. Enable this plugin
-                //to allow boxes to be collapsed and/or removed
-                enableBoxWidget: true,
-                //Box Widget plugin options
-                boxWidgetOptions: {
-                    boxWidgetIcons: {
-                        //Collapse icon
-                        collapse: 'fa-minus',
-                        //Open icon
-                        open: 'fa-plus',
-                        //Remove icon
-                        remove: 'fa-times'
-                    },
-                    boxWidgetSelectors: {
-                        //Remove button selector
-                        remove: '[data-widget="remove"]',
-                        //Collapse button selector
-                        collapse: '[data-widget="collapse"]'
-                    }
-                },
-                //Direct Chat plugin options
-//                    directChat: {
-//                        //Enable direct chat by default
-//                        enable: true,
-//                        //The button to open and close the chat contacts pane
-//                        contactToggleSelector: '[data-widget="chat-pane-toggle"]'
-//                    },
-                //Define the set of colors to use globally around the website
-                colors: {
-                    lightBlue: "#3c8dbc",
-                    red: "#f56954",
-                    green: "#00a65a",
-                    aqua: "#00c0ef",
-                    yellow: "#f39c12",
-                    blue: "#0073b7",
-                    navy: "#001F3F",
-                    teal: "#39CCCC",
-                    olive: "#3D9970",
-                    lime: "#01FF70",
-                    orange: "#FF851B",
-                    fuchsia: "#F012BE",
-                    purple: "#8E24AA",
-                    maroon: "#D81B60",
-                    black: "#222222",
-                    gray: "#d2d6de"
-                },
-                //The standard screen sizes that bootstrap uses.
-                //If you change these in the variables.less file, change
-                //them here too.
-                screenSizes: {
-                    xs: 480,
-                    sm: 768,
-                    md: 992,
-                    lg: 1200
-                }
-            };
-        </script>
 
         <?php
         echo $this->inlineScript()
-            //DropzoneJS
-            ->prependFile($this->basePath('vendor/dropzone/dist/min/dropzone.min.js'))
-            // BootboxJS
-            ->prependFile($this->basePath('vendor/bootbox.js/bootbox.js'))
             // AdminLTE App
             ->prependFile($this->basePath('vendor/AdminLTE/dist/js/app.min.js'))
-            // SlimScroll Plugin
-            ->prependFile($this->basePath('vendor/AdminLTE/plugins/slimScroll/jquery.slimscroll.min.js'))
-            //DataTable
-            ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.min.js'))
-            ->prependFile($this->basePath('vendor/AdminLTE/plugins/datatables/jquery.dataTables.min.js'))
-            // Bootstrap Datepicker
-            ->prependFile($this->basePath('vendor/eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min.js'))
-            // Moment
-            ->prependFile($this->basePath('vendor/moment/min/moment-with-locales.min.js'))
             // Bootstrap 3.3.5
             ->prependFile($this->basePath('vendor/AdminLTE/bootstrap/js/bootstrap.min.js'))
             // jQuery 2.1.4
             ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
         ?>
 
+        <script data-main="/js/config" src="/vendor/requirejs/require.js" ></script>
         <script>
+            require(['config'], function () {
 
-            /**
-             * @todo Transformar os seletores hardcoded (i.e. '.system-toolbar', ...) em parâmetros globais
-             * 
-             */
-            var toolbarConfig = (function (config) {
+                // for file inputs
+                $(document).on('change', '.btn-file :file', function () {
+                    var input = $(this),
+                            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                    input.trigger('fileselect', [numFiles, label]);
+                });
 
-                var fnTypes = {};
+                // change user active role
+                $(function () {
 
-                initClick = function () {
-
-                    $('.system-toolbar').on('click', 'li', function (e) {
-                        // nenhuma ação é executada se não estiver especificada abaixo
-                        e.preventDefault();
-                        var fnType = $(this).data('fntype');
-                        if (fnTypes.hasOwnProperty(fnType)) {
-                            fnTypes[fnType].call(this, $(this));
-                        } else {
-                            bootbox.alert('fnType: (' + fnType + ') não definida.');
-                        }
+                    $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
+                        $(this).siblings('.btn-file-name').text(label);
                     });
-                };
 
-                fnTypes.selectedHttpClick = function (toolbarItem) {
-                    var selectedResult = getSelectedItemInfo(toolbarItem, false);
-                    if (selectedResult !== null) {
-                        window.open(selectedResult.url, selectedResult.target);
-                    } else {
-                        bootbox.alert('Nenhuma item (ex: linha de uma tabela) foi escolhido.');
-                    }
-                };
+                    $('.role').on('click', function () {
+                        var role = $(this);
+                        var jsonRole = JSON.stringify({
+                            'role': role.text().toLowerCase()
+                        });
+                        $.ajax({
+                            url: '/authorization/role/changeActiveUserRole',
+                            type: 'POST',
+                            dataType: 'json',
+                            async: true,
+                            data: jsonRole,
+                            success: function (msg) {
 
-                fnTypes.selectedAjaxClick = function (toolbarItem) {
-
-                    bootbox.confirm('Tem certeza que deseja executar ' +
-                            'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
-                        if (result) {
-                            var selectedResult = getSelectedItemInfo(toolbarItem, false);
-                            if (selectedResult !== null) {
-                                $.ajax({
-                                    url: selectedResult.url,
-                                    type: 'GET',
-                                    success: function (data) {
-                                        bootbox.alert(data.message);
-                                    },
-                                    error: function (jqXHR, textStatus, errorThrown) {
-                                        bootbox.alert(textStatus);
-                                    }
-                                });
-                            } else {
-                                bootbox.alert('Nenhuma item (ex: linha de uma tabela) foi escolhido.');
-                            }
-                        } else {
-                            bootbox.alert('Ação abortada.');
-                        }
-                    });
-                };
-
-                fnTypes.ajaxClick = function (toolbarItem) {
-                    bootbox.confirm('Tem certeza que deseja executar ' +
-                            'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
-                        if (result) {
-                            var itemInfo = getItemInfo(toolbarItem, false);
-
-                            $.ajax({
-                                url: itemInfo.url,
-                                type: 'GET',
-                                success: function (data) {
-                                    bootbox.alert(data.message);
-                                },
-                                error: function (jqXHR, textStatus, errorThrown) {
-                                    bootbox.alert(textStatus);
+                                // change role in menu
+                                if (msg.success) {
+                                    var newActiveRole = role.text();
+                                    role.text($('.active-role').text());
+                                    $('.active-role').text(newActiveRole);
                                 }
-                            });
 
-                        } else {
-                            bootbox.alert('Ação abortada.');
-                        }
-                    });
-                };
-
-                fnTypes.httpClick = function (toolbarItem) {
-                    bootbox.confirm('Tem certeza que deseja executar ' +
-                            'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
-                        if (result) {
-                            var selectedResult = getItemInfo(toolbarItem, false);
-                            window.open(selectedResult.url, selectedResult.target);
-                        } else {
-                            bootbox.alert('Ação abortada.');
-                        }
-                    });
-                };
-
-                fnTypes.ajaxUrlClick = function (toolbarItem) {
-                    bootbox.confirm('Tem certeza que deseja executar ' +
-                            'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
-                        if (result) {
-                            var itemInfo = getItemInfo(toolbarItem, true);
-
-                            $.ajax({
-                                url: itemInfo.url,
-                                type: 'GET',
-                                success: function (data) {
-                                    bootbox.alert(data.message);
-                                },
-                                error: function (jqXHR, textStatus, errorThrown) {
-                                    bootbox.alert(textStatus);
-                                }
-                            });
-
-                        } else {
-                            bootbox.alert('Ação abortada.');
-                        }
-                    });
-                };
-
-                fnTypes.selectedAjaxUrlClick = function (toolbarItem) {
-                    bootbox.confirm('Tem certeza que deseja executar ' +
-                            'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
-                        if (result) {
-                            var selectedResult = getSelectedItemInfo(toolbarItem, true);
-
-                            if (selectedResult !== null) {
-
-                                $.ajax({
-                                    url: selectedResult.url,
-                                    type: 'GET',
-                                    success: function (data) {
-                                        bootbox.alert(data.message);
-                                    },
-                                    error: function (jqXHR, textStatus, errorThrown) {
-                                        bootbox.alert(textStatus);
-                                    }
-                                });
-                            } else {
-                                bootbox.alert('Nenhuma item (ex: linha de uma tabela) foi escolhido.');
+                                console.log(msg);
+                            },
+                            error: function (msg) {
+                                console.log(msg);
                             }
-                        } else {
-                            bootbox.alert('Ação abortada.');
-                        }
+                        });
                     });
-                };
 
-
-                getSelectedItemInfo = function (toolbarItem, buildUrl) {
-                    if ($('.cats-selected-row').length > 0) {
-                        var item = toolbarItem.find('a');
-
-                        var params = '';
-
-                        if (buildUrl) {
-                            var urlArr = window.location.pathname.split('/');
-                            params = '/' + urlArr.slice(4, urlArr.length).join('/');
-                        }
-
-                        var url = item.attr('href');
-                        var target = item.attr('target');
-                        url = url.replace('$id', $('.cats-selected-row').data('id'));
-
-                        return {
-                            url: url + params,
-                            target: (typeof target !== 'undefined' ? target : '_self')
-                        };
+                    // deprecated
+                    if (typeof standardConfig !== 'undefined') {
+                        standardConfig.init();
                     }
 
-                    return null;
-                };
-
-                getItemInfo = function (toolbarItem, buildUrl) {
-                    var item = toolbarItem.find('a');
-                    var params = '';
-
-                    if (buildUrl) {
-                        var urlArr = window.location.pathname.split('/');
-                        params = '/' + urlArr.slice(4, urlArr.length).join('/');
-                    }
-
-                    var url = item.attr('href');
-                    var target = item.attr('target');
-
-                    return {
-                        url: url + params,
-                        target: (typeof target !== 'undefined' ? target : '_self')
-                    };
-                };
-                // toolbar actions
-
-                return {
-                    init: function () {
-                        initClick();
-                    },
-                    closeToolbar: function () {
-                        $('.control-sidebar').removeClass('control-sidebar-open');
-                    },
-                    openToolbar: function () {
-                        if (!$('.control-sidebar').hasClass('control-sidebar-open')) {
-                            $('.control-sidebar').addClass('control-sidebar-open');
-                        }
-                    }
-                };
-            }());
-        </script>
-
-        <script>
-
-            // for file inputs
-            $(document).on('change', '.btn-file :file', function () {
-                var input = $(this),
-                        numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                input.trigger('fileselect', [numFiles, label]);
-            });
-
-            // change user active role
-            $(document).ready(function () {
-
-                $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
-                    $(this).siblings('.btn-file-name').text(label);
-                });
-
-                $('.role').on('click', function () {
-                    var role = $(this);
-                    var jsonRole = JSON.stringify({
-                        'role': role.text().toLowerCase()
-                    });
-                    $.ajax({
-                        url: '/authorization/role/changeActiveUserRole',
-                        type: 'POST',
-                        dataType: 'json',
-                        async: true,
-                        data: jsonRole,
-                        success: function (msg) {
-
-                            // change role in menu
-                            if (msg.success) {
-                                var newActiveRole = role.text();
-                                role.text($('.active-role').text());
-                                $('.active-role').text(newActiveRole);
-                            }
-
-                            console.log(msg);
-                        },
-                        error: function (msg) {
-                            console.log(msg);
-                        }
-                    });
-                });
-
-                // select row on click
-                $('table').on('click', '.cats-row', function () {
-                    $(this).siblings('tr')
-                            .removeClass('cats-selected-row')
-                            .find('td')
-                            .removeClass('cats-selected-bg');
-
-                    $(this).toggleClass('cats-selected-row');
-
-                    $(this).find('td').toggleClass('cats-selected-bg');
-                    if ($(this).hasClass('cats-selected-row')) {
-                        toolbarConfig.openToolbar();
-                    } else {
-                        toolbarConfig.closeToolbar();
+                    if (typeof appConfig !== 'undefined') {
+                        require([appConfig.getScriptSrc()], function (pageScript) {
+                            pageScript.init();
+                        });
                     }
                 });
-
-                if (typeof toolbarConfig !== 'undefined') {
-                    toolbarConfig.init();
-                }
-                if (typeof standardConfig !== 'undefined') {
-                    standardConfig.init();
-                }
             });
         </script>
     </body>

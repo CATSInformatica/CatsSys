@@ -34,30 +34,14 @@
 </section>
 
 <script>
-
-    var standardConfig = (function () {
-        // your module code goes here
-        // var config = null;
-
-        /**
-         * 
-         * private functions
-         */
-
-        initDataTable = function () {
-
-            var recruitmentTable = $('#recruitment-table').DataTable({
-                dom: 'lftip',
-                paging: false
-            });
-        };
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/recruitment/recruitment/index';
 
         return {
-            init: function () {
-                initDataTable();
+            getScriptSrc: function () {
+                return scriptSrc;
             }
         };
 
-    }());
-
+    })();
 </script>

@@ -15,6 +15,7 @@
     "bootbox.js": "bootbox#~4.4.0",
     "dropzone": "~4.2.0",
     "moment": "~2.10.6",
-    "eonasdan-bootstrap-datetimepicker": "~4.17.37"
+    "eonasdan-bootstrap-datetimepicker": "~4.17.37",
+    "requirejs": "~2.1.22"
   }
 }
