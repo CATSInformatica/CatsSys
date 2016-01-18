@@ -16,6 +16,7 @@
     "dropzone": "~4.2.0",
     "moment": "~2.10.6",
     "eonasdan-bootstrap-datetimepicker": "~4.17.37",
-    "requirejs": "~2.1.22"
+    "requirejs": "~2.1.22",
+    "jquery.maskedinput": "~1.4.1"
   }
 }

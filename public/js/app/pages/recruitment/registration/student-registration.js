@@ -5,7 +5,7 @@
  */
 
 
-define(['moment', 'jquery', 'datetimepicker'], function (moment) {
+define(['moment', 'masks', 'jquery', 'datetimepicker'], function (moment, masks) {
     var form = (function () {
         // your module code goes here
         // var config = null;
@@ -24,6 +24,7 @@ define(['moment', 'jquery', 'datetimepicker'], function (moment) {
                 viewDate: moment().subtract(21, 'years')
             });
         };
+        
         initCaptchaOperations = function () {
             $('#captcha_input-refresh').click(function () {
                 $.ajax({
@@ -36,10 +37,20 @@ define(['moment', 'jquery', 'datetimepicker'], function (moment) {
                 });
             });
         };
+
+        initMasks = function () {
+            masks.bind({
+                phone: "input[name='registration[person][personPhone]']",
+                cpf: "input[name='registration[person][personCpf]']",
+                date: "input[name='registration[person][personBirthday]']"
+            });
+        };
+
         return {
             init: function () {
                 initDatepickers();
                 initCaptchaOperations();
+                initMasks();
             }
         };
     }());

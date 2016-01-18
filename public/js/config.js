@@ -10,6 +10,7 @@ requirejs.config({
     paths: {
         jquery: 'AdminLTE/plugins/jQuery/jQuery-2.1.4.min',
         bootstrap: 'AdminLTE/bootstrap/js/bootstrap.min',
+        jmaskedinput: 'jquery.maskedinput/dist/jquery.maskedinput.min',
         slimscroll: 'AdminLTE/plugins/slimScroll/jquery.slimscroll.min',
         adminlte: 'AdminLTE/dist/js/app.min',
         bootbox: 'bootbox.js/bootbox',
@@ -18,6 +19,7 @@ requirejs.config({
         datetimepicker: 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min',
         moment: 'moment/min/moment-with-locales.min',
         dropzone: 'dropzone/dist/min/dropzone-amd-module.min',
+        masks: '/js/app/masks/masks',
         app: '/js/app'
     },
     shim: {
@@ -35,6 +37,9 @@ requirejs.config({
         },
         adminlte: {
             deps: ['bootstrap', 'jquery', 'slimscroll']
+        },
+        jmaskedinput: {
+            deps: ['jquery']
         }
     }
 });

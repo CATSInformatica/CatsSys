@@ -4,25 +4,28 @@
  * and open the template in the editor.
  */
 
-define(['moment', 'masks', 'jquery', 'datetimepicker'], function (moment, masks) {
-    var create = (function () {
+define(['moment', 'masks', 'datetimepicker', 'jquery'], function (moment, masks) {
+    var student = (function () {
 
         initDatepickers = function () {
-
             $('.datepicker').closest('.input-group').datetimepicker({
                 format: 'DD/MM/YYYY',
-                minDate: moment(),
+                minDate: moment().subtract(100, 'years'),
                 useCurrent: false,
-                maxDate: moment().add(18, 'months'),
+                maxDate: moment().subtract(15, 'years'),
                 locale: 'pt-br',
                 viewMode: 'years',
-                viewDate: moment()
+                viewDate: moment().subtract(21, 'years')
             });
         };
 
         initMasks = function () {
             masks.bind({
-                date: "input[name='recruitment_begindate'], input[name='recruitment_enddate']"
+                phone: "input[name='registration[person][personPhone]']",
+                cpf: "input[name='registration[person][personCpf]']",
+                date: "input[name='registration[person][personBirthday]']",
+                zip: "input[name*=addressPostalCode]",
+                number4: "input[name*=addressNumber]"
             });
         };
 
@@ -32,8 +35,8 @@ define(['moment', 'masks', 'jquery', 'datetimepicker'], function (moment, masks)
                 initMasks();
             }
         };
-
     }());
 
-    return create;
+    return student;
+
 });
