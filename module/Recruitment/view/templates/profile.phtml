@@ -182,8 +182,7 @@ $addresses = $person->getAddresses();
                                 <i class="fa fa-pencil bg-green"></i>
                                 <div class="timeline-item">
                                     <span class="time"><i class="fa fa-clock-o"></i> 
-                                        Há <?php 
-                                        echo $today->diff($registration->getRegistrationDateAsDateTime())->d ?> dias
+                                        Há <?php echo $today->diff($registration->getRegistrationDateAsDateTime())->d ?> dias
                                     </span>
                                     <h3 class="timeline-header">Inscrição realizada.</h3>
                                 </div>
@@ -395,7 +394,37 @@ $addresses = $person->getAddresses();
                     <div class="tab-pane" id="info">
                         <?php $form = $config['tabs']['info']; ?>
 
-                        <?php echo $this->form($form); ?>
+                        <?php
+                        $form->prepare();
+                        echo $this->form()->openTag($form);
+
+                        $regForm = $form->get('registration');
+                        $personForm = $regForm->get('person');
+                        $preInForm = $regForm->get('preInterview');
+
+                        echo $this->partial('person/template',
+                            array(
+                            'form' => $personForm,
+                        ));
+
+                        echo $this->partial('disclosure/template',
+                            array(
+                            'form' => $regForm,
+                        ));
+
+                        echo $this->partial('pre-interview/template',
+                            array(
+                            'form' => $preInForm,
+                        ));
+                        ?>
+
+                        <div class="form-group">
+                            <div class="col-xs-12 col-md-12">
+                                <?php echo $this->formRow($form->get('submit')->setValue('Salvar')); ?>
+                            </div>
+                        </div>
+
+                        <?php echo $this->form()->closeTag(); ?>
 
                     </div>
                     <!-- /.tab-pane -->

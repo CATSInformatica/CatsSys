@@ -11,12 +11,11 @@ namespace Recruitment\Controller;
 use Database\Service\EntityManagerService;
 use DateTime;
 use Exception;
-use Recruitment\Entity\Address;
-use Recruitment\Entity\Person;
-use Recruitment\Entity\Relative;
 use Recruitment\Form\CpfFilter;
 use Recruitment\Form\CpfForm;
 use Recruitment\Form\PreInterviewForm;
+use Recruitment\Service\AddressService;
+use Recruitment\Service\RelativeService;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -37,7 +36,7 @@ class PreInterviewController extends AbstractActionController
     const INCOME_FILE_SUFFIX = '_income.pdf';
     const EXPENDURE_FILE_SUFFIX = '_expendure.pdf';
 
-    use EntityManagerService;
+    use EntityManagerService, RelativeService, AddressService;
 
     /**
      * @todo Verificar se a entrevista do candidato já foi feita, se sim, faz o bloqueio da pré-entrevista.
@@ -219,7 +218,7 @@ class PreInterviewController extends AbstractActionController
 
                     $em->persist($registration);
                     $em->flush();
-//                    $studentContainer->getManager()->getStorage()->clear('pre_interview');
+                    $studentContainer->getManager()->getStorage()->clear('pre_interview');
 
                     return new ViewModel(array(
                         'registration' => null,
@@ -242,106 +241,6 @@ class PreInterviewController extends AbstractActionController
             'form' => $form,
             'message' => '',
         ));
-    }
-
-    /**
-     * Faz as verificações para evitar violações de restrição unique nos endereços
-     * 
-     * @param Person $person
-     * @return void
-     */
-    protected function adjustAddresses(Person $person)
-    {
-        $em = $this->getEntityManager();
-        $addresses = $person->getAddresses();
-        foreach ($addresses as $address) {
-            $addr = $em->getRepository('Recruitment\Entity\Address')->findOneBy(array(
-                'addressState' => $address->getAddressState(),
-                'addressCity' => $address->getAddressCity(),
-                'addressNeighborhood' => $address->getAddressNeighborhood(),
-                'addressStreet' => $address->getAddressStreet(),
-                'addressNumber' => $address->getAddressNumber(),
-                'addressComplement' => $address->getAddressComplement(),
-            ));
-
-            $addressId = $address->getAddressId();
-
-            if ($addressId === null) {
-                // endereço existe mas não existe um id associado
-                if ($addr !== null) {
-                    $person->removeAddress($address);
-                    $person->addAddress($addr);
-                }
-            } else {
-                if ($addr !== null) {
-                    // Endereço é atualizado para um endereço já cadastrado no banco de dados.
-                    if ($addressId != $addr->getAddressId()) {
-                        $person->addAddress($addr);
-                    }
-                    continue;
-                } else {
-                    // endereço é atualizado para um novo endereço não existente no banco de dados.
-                    $nAddress = new Address();
-                    $nAddress->setAddressPostalCode($address->getAddressPostalCode());
-                    $nAddress->setAddressState($address->getAddressState());
-                    $nAddress->setAddressCity($address->getAddressCity());
-                    $nAddress->setAddressNeighborhood($address->getAddressNeighborhood());
-                    $nAddress->setAddressStreet($address->getAddressStreet());
-                    $nAddress->setAddressNumber($address->getAddressNumber());
-                    $nAddress->setAddressComplement($address->getAddressComplement());
-                    $person->addAddress($nAddress);
-                }
-
-                $person->removeAddress($address);
-                $em->detach($address);
-            }
-        }
-    }
-
-    /**
-     * Faz verificações para evitar violações de restrição unique nos responsáveis
-     * @param Person $person
-     */
-    protected function adjustRelatives(Person $person)
-    {
-        $em = $this->getEntityManager();
-        $relatives = $person->getRelatives();
-        foreach ($relatives as $relative) {
-
-            $relativeId = $relative->getRelativeId();
-            // se o responsável já existe então verifica se é o mesmo ou é diferente
-            if ($relativeId !== null) {
-                $rel = $em->getRepository('Recruitment\Entity\Relative')->findOneBy(array(
-                    'person' => $person,
-                    'relative' => $relative->getRelative(),
-                ));
-
-                // responsável encontrado na banco de dados
-                if ($rel !== null) {
-                    // responsável é diferente
-                    if ($relativeId != $rel->getRelativeId()) {
-                        $person->addRelative($rel);
-                        $person->removeRelative($relative);
-                        $em->detach($relative);
-                    }
-                    continue;
-                }
-            }
-
-            // dados do responsável que foi cadastrado
-            $rperson = $relative->getRelative();
-
-            // verifica se ele existe no banco de dados
-            $pers = $em->getRepository('Recruitment\Entity\Person')->findOneBy(array(
-                'personCpf' => $rperson->getPersonCpf(),
-            ));
-
-            // se existe define o responsável
-            if ($pers !== null) {
-                $relative->setRelative($pers);
-                $em->detach($rperson);
-            }
-        }
     }
 
     /**
