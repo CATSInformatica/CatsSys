@@ -21,8 +21,8 @@ class Cpf extends AbstractValidator
      * @var array
      */
     protected $messageTemplates = array(
-        self::INVALID_NUMBERS => "Numeração do Cpf não é válida.",
-        self::INVALID_FORMAT => "Formato inválido. O Cpf deve estar no formato: 999.999.999-99",
+        self::INVALID_NUMBERS => "Invalid Cpf",
+        self::INVALID_FORMAT => "Invalid format. The only valid format is XXX.XXX.XXX-XX",
     );
 
     /**
