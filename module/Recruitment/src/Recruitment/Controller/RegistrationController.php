@@ -190,9 +190,22 @@ class RegistrationController extends AbstractActionController
                 ));
 
                 foreach ($regs as $r) {
+
+                    if ($r->isAccepted()) {
+                        $status = 4;
+                    } else if ($r->hasPreInterview()) {
+                        $status = 3;
+                    } else if ($r->isCalled()) {
+                        $status = 2;
+                    } else if ($r->isConfirmed()) {
+                        $status = 1;
+                    } else {
+                        $status = 0;
+                    }
+
                     $person = $r->getPerson();
                     $resultSet['data'][] = array(
-                        'DT_RowClass' => 'cats-row',
+                        'DT_RowClass' => 'cats-row status-' . $status,
                         'DT_RowAttr' => [
                             'data-id' => $r->getRegistrationId()
                         ],

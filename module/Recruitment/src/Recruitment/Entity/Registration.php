@@ -304,4 +304,39 @@ class Registration
         }
     }
 
+    /**
+     * 
+     * @return bool
+     */
+    public function hasPreInterview()
+    {
+        return $this->preInterview !== null;
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    public function isAccepted()
+    {
+        return $this->preInterview !== null;
+    }
+
+    /**
+     * @return bool
+     */
+    public function isCalled()
+    {
+        return $this->registrationConvocationDate !== null;
+    }
+
+    /**
+     * 
+     * @return bool
+     */
+    public function isConfirmed()
+    {
+        return $this->registrationConfirmationDate !== null;
+    }
+
 }
