@@ -1,16 +1,19 @@
 <?php
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
  */
+
 namespace Recruitment\Form;
+
 use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use Recruitment\Form\Fieldset\RegistrationFieldset;
 use Recruitment\Model\CaptchaImage;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
+
 /**
  * Description of RegistrationForm
  *
@@ -18,12 +21,30 @@ use Zend\InputFilter\InputFilterProviderInterface;
  */
 class RegistrationForm extends Form implements InputFilterProviderInterface
 {
-    public function __construct(ObjectManager $obj, $options = null)
+
+    const TYPE_STUDENT = 0;
+    const TYPE_VOLUNTEER = 1;
+
+    public function __construct(ObjectManager $obj, $type = self::TYPE_STUDENT, $options = null)
     {
         parent::__construct('registration');
         $this->setHydrator(new DoctrineHydrator($obj));
-        // Add the user fieldset, and set it as the base fieldset
-        $registrationFieldset = new RegistrationFieldset($obj, $options);
+
+        // Add the fieldset, and set it as the base fieldset
+
+        switch ($type) {
+            case self::TYPE_STUDENT:
+                $registrationFieldset = new Fieldset\StudentRegistrationFieldset($obj, $options);
+                break;
+            case self::TYPE_VOLUNTEER:
+                throw new \RuntimeException('type not implemented yet');
+//                $registrationFieldset = new VolunteerRegistrationFieldset($obj, $options);
+//                break;
+            default:
+                throw new \InvalidArgumentException('the type of registration form must be either `TYPE_STUDENT` or '
+                . '`TYPE_VOLUNTEER`');
+        }
+
         $registrationFieldset->setUseAsBaseFieldset(true);
         $this->add($registrationFieldset);
         $this->add(array(
@@ -57,6 +78,7 @@ class RegistrationForm extends Form implements InputFilterProviderInterface
                 )
         ));
     }
+
     public function getInputFilterSpecification()
     {
         return array(
@@ -68,4 +90,5 @@ class RegistrationForm extends Form implements InputFilterProviderInterface
             ),
         );
     }
+
 }

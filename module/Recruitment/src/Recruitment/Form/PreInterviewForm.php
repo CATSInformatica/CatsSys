@@ -9,7 +9,6 @@
 namespace Recruitment\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use Recruitment\Form\Fieldset\RegistrationFieldset;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Form;
 
@@ -27,7 +26,7 @@ class PreInterviewForm extends Form
         $this->setHydrator(new DoctrineHydrator($obj));
 
         // Add the user fieldset, and set it as the base fieldset
-        $registrationFieldset = new RegistrationFieldset($obj, $options);
+        $registrationFieldset = new Fieldset\StudentRegistrationFieldset($obj, $options);
         $registrationFieldset->setUseAsBaseFieldset(true);
         $this->add($registrationFieldset);
 

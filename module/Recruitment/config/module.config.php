@@ -254,6 +254,14 @@ return array(
                         ),
                     ),
                     array(
+                        'label' => 'Volunteer registration form',
+                        'route' => 'recruitment/registration',
+                        'action' => 'volunteerRegistration',
+                        'resource' => 'Recruitment\Controller\Registration',
+                        'privilege' => 'volunteerRegistration',
+                        'icon' => 'fa fa-user-plus',
+                    ),
+                    array(
                         'label' => 'Student registration form',
                         'route' => 'recruitment/registration',
                         'action' => 'studentRegistration',

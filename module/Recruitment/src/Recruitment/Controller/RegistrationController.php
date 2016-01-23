@@ -166,6 +166,24 @@ class RegistrationController extends AbstractActionController
         ));
     }
 
+    public function volunteerRegistrationAction()
+    {
+//        $request = $this->getRequest();
+
+        $em = $this->getEntityManager();
+        $form = new RegistrationForm($em, RegistrationForm::TYPE_VOLUNTEER,
+            array(
+            'person' => array(
+                'address' => true,
+                'relative' => false,
+            ),
+        ));
+
+        return new ViewModel(array(
+            'form' => $form,
+        ));
+    }
+
     /**
      * Busca todos as inscrições pro processo seletivo $rid. 
      * Esta action é acessada via ajax pelo DataTable

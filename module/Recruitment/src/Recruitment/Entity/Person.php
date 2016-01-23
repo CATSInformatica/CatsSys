@@ -161,6 +161,8 @@ class Person
      * cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $relatives;
+    
+    
 
     /**
      * Constructor

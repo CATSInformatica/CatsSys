@@ -215,7 +215,6 @@ class PreInterviewController extends AbstractActionController
                         ->setPreInterviewIncomeProof($rid . self::INCOME_FILE_SUFFIX)
                         ->setPreInterviewExpenseReceipt($rid . self::EXPENDURE_FILE_SUFFIX);
 
-
                     $em->persist($registration);
                     $em->flush();
                     $studentContainer->getManager()->getStorage()->clear('pre_interview');

@@ -103,6 +103,10 @@ class Registration
      * )
      */
     private $recruitmentKnowAbout;
+    
+    
+    
+    
 
     public function __construct()
     {

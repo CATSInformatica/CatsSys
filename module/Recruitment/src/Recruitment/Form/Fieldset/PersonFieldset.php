@@ -47,7 +47,7 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
             ->setObject(new Person());
 
         if ($options['relative']) {
-            $relativeFieldset = new RelativeFieldset($obj, $options['address']);
+            $relativeFieldset = new RelativeFieldset($obj);
 
             $this->add(array(
                 'type' => 'Zend\Form\Element\Collection',
@@ -171,11 +171,24 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
                 'label' => 'Reinsira o endereço de email*',
             ),
         ));
+
+        $this->add(array(
+            'name' => 'personSocialMedia',
+            'type' => 'text',
+            'attributes' => array(
+                'placeholder' => 'https://www.facebook.com/cats.familia',
+            ),
+            'options' => array(
+                'label' => 'Link para seu perfil no Facebook',
+                'add-on-prepend' => '<a href="https://www.facebook.com" target="_blank">'
+                . '<i class="fa fa-facebook"></i></a>',
+            )
+        ));
     }
 
     public function getInputFilterSpecification()
     {
-        return array(
+        array(
             'personFirstName' => array(
                 'required' => true,
                 'filters' => array(
@@ -300,6 +313,12 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
                 ),
             ),
         );
+
+        if ($this->useSocialMedia) {
+            $specification['personSocialMedia'] = array(
+                'required' => false,
+            );
+        }
     }
 
 }
