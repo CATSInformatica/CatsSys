@@ -22,7 +22,7 @@ define(['jquery', 'datatable'], function () {
                 dom: 'lftip',
 //                paging: false,
                 ajax: {
-                    url: "/recruitment/registration/getStudentRegistrations",
+                    url: "/recruitment/registration/getRegistrations",
                     type: "POST",
                     data: function () {
                         var rid = $('#recruitment_id').val();
@@ -31,7 +31,8 @@ define(['jquery', 'datatable'], function () {
                             rid: rid
                         };
                     }
-                }
+                },
+                columnDefs: [{targets: 6, className: 'text-center'}]
             });
 
             $('#recruitment-button').click(function () {

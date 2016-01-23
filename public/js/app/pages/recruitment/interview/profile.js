@@ -53,11 +53,10 @@ define(['dropzone', 'bootbox', 'moment', 'masks', 'datetimepicker', 'jquery'], f
 
         initMasks = function () {
             masks.bind({
-                phone: "input[name='registration[person][personPhone]']",
-                cpf: "input[name='registration[person][personCpf]']",
-                date: "input[name='registration[person][personBirthday]']",
-                zip: "input[name*=addressPostalCode]",
-                number4: "input[name*=addressNumber]"
+                phone: "input[name*=personPhone]",
+                cpf: "input[name*=personCpf]",
+                date: "input[name*=personBirthday]",
+                zip: "input[name*=addressPostalCode]"
             });
         };
 

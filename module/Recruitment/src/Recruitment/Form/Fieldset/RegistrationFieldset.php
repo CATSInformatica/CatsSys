@@ -9,8 +9,6 @@
 namespace Recruitment\Form\Fieldset;
 
 use Doctrine\Common\Persistence\ObjectManager;
-use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use Recruitment\Entity\Registration;
 use Zend\Form\Fieldset;
 
 /**
@@ -28,10 +26,6 @@ abstract class RegistrationFieldset extends Fieldset
         }
 
         parent::__construct('registration');
-
-        $this->setHydrator(new DoctrineHydrator($obj))
-            ->setObject(new Registration());
-
         $this->add(new PersonFieldset($obj, $options['person']));
     }
 

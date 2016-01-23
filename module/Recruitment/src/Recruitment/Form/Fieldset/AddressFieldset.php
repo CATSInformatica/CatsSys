@@ -107,7 +107,7 @@ class AddressFieldset extends Fieldset implements InputFilterProviderInterface
             ))
             ->add(array(
                 'name' => 'addressNumber',
-                'type' => 'text',
+                'type' => 'number',
                 'options' => array(
                     'label' => 'Número',
                 ),
@@ -199,6 +199,12 @@ class AddressFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => false,
                 'validators' => array(
                     array('name' => 'Zend\Validator\Digits'),
+                    array(
+                        'name' => 'LessThan',
+                        'options' => array(
+                            'max' => 100000,
+                        ),
+                    ),
                 ),
             ),
             'addressComplement' => array(

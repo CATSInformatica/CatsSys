@@ -21,14 +21,13 @@ use Zend\Form\View\Helper\Captcha\Image;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Recruitment\Service\AddressService;
+use Recruitment\Service\PersonService;
 
 /**
  * 
  * @todo Fazer as actions de convocação e aceitação
- * 
- * 
  * Description of RegistrationController
- * 
  * @author marcio
  */
 class RegistrationController extends AbstractActionController
@@ -36,7 +35,9 @@ class RegistrationController extends AbstractActionController
 
     const PROFILE_DIR = './data/profile/';
 
-    use EntityManagerService;
+    use EntityManagerService,
+        AddressService,
+        PersonService;
 
     /**
      * 
@@ -49,11 +50,32 @@ class RegistrationController extends AbstractActionController
      */
     public function indexAction()
     {
+
         try {
 
             $em = $this->getEntityManager();
             $recruitments = $em->getRepository('Recruitment\Entity\Recruitment')->findBy(
                 array('recruitmentType' => Recruitment::STUDENT_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
+            );
+
+            return new ViewModel(array(
+                'message' => null,
+                'recruitments' => $recruitments,
+            ));
+        } catch (Exception $ex) {
+            return new ViewModel(array(
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.',
+                'recruitments' => null,
+            ));
+        }
+    }
+
+    public function volunteerRegistrationsAction()
+    {
+        try {
+            $em = $this->getEntityManager();
+            $recruitments = $em->getRepository('Recruitment\Entity\Recruitment')->findBy(
+                array('recruitmentType' => Recruitment::VOLUNTEER_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
             );
 
             return new ViewModel(array(
@@ -120,21 +142,10 @@ class RegistrationController extends AbstractActionController
             // Se o formulário de inscrição foi preenchido corretamente
             if ($form->isValid()) {
                 try {
+
                     // verifica se a pessoa já está cadastrada.
-                    $newPerson = $registration->getPerson();
-                    $person = $em->getRepository('Recruitment\Entity\Person')->findOneBy(array(
-                        'personCpf' => $newPerson->getPersonCpf(),
-                    ));
-                    // Se a pessoa já possui cadastro atualiza alguns dos dados
-                    if ($person !== null) {
-                        $person->setPersonPhone($newPerson->getPersonPhone());
-                        $person->setPersonEmail($newPerson->getPersonEmail());
-                        $person->setPersonRg($newPerson->getPersonRg());
-                        $registration->setPerson($person);
-                    } else {
-                        // se não possui define a imagem padrão do perfil
-                        $newPerson->setPersonPhoto();
-                    }
+                    $this->adjustPerson($registration);
+
                     // atribui a qual processo seletivo a inscrição pertence
                     $registration->setRecruitment($recruitment);
                     // salva no banco
@@ -151,7 +162,7 @@ class RegistrationController extends AbstractActionController
                         $form = null;
                     } else {
                         $message = 'Erro inesperado.Por favor, tente novamente ou'
-                            . ' entre em contato com o administrador do sistema: ' . $ex->getMessage();
+                            . ' entre em contato com o administrador do sistema: ';
                     }
                     return new ViewModel(array(
                         'message' => $message,
@@ -168,16 +179,73 @@ class RegistrationController extends AbstractActionController
 
     public function volunteerRegistrationAction()
     {
-//        $request = $this->getRequest();
 
-        $em = $this->getEntityManager();
+        try {
+            $em = $this->getEntityManager();
+            // Busca por um processo seletivo aberto
+            $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')
+                ->findByTypeAndBetweenBeginAndEndDates(Recruitment::VOLUNTEER_RECRUITMENT_TYPE, new DateTime('now'));
+            if ($recruitment === null) {
+                return new ViewModel(array(
+                    'message' => 'Não existe nenhum processo seletivo de voluntários vigente no momento.',
+                    'form' => null,
+                ));
+            }
+        } catch (Exception $ex) {
+            return new ViewModel(array(
+                'message' => 'Verificar a existência de processos seletivos em aberto.',
+                'form' => null,
+            ));
+        }
+
+        $request = $this->getRequest();
         $form = new RegistrationForm($em, RegistrationForm::TYPE_VOLUNTEER,
             array(
             'person' => array(
                 'address' => true,
                 'relative' => false,
+                'social_media' => true,
             ),
         ));
+
+        if ($request->isPost()) {
+
+            $registration = new Registration();
+            $form->bind($registration);
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+
+                try {
+                    // verifica se a pessoa já está cadastrada.
+                    $this->adjustPerson($registration);
+
+                    // atribui a qual processo seletivo a inscrição pertence
+                    $registration->setRecruitment($recruitment);
+                    // salva no banco
+                    $em->persist($registration);
+                    $em->flush();
+                    // redirecionar para a página que gera o comprovante de inscrição e envia o email.
+                    return new ViewModel(array(
+                        'message' => 'Inscrição efetuada com sucesso. Um de nosso voluntários entrará em contato com você'
+                        . ' para agendar uma entrevista.',
+                        'form' => null,
+                    ));
+                } catch (Exception $ex) {
+                    if ($ex instanceof UniqueConstraintViolationException) {
+                        $message = 'Não é possível fazer mais de uma inscrição em um mesmo processo seletivo.';
+                        $form = null;
+                    } else {
+                        $message = 'Erro inesperado. Por favor, tente novamente ou'
+                            . ' entre em contato com o administrador do sistema: ';
+                    }
+                    return new ViewModel(array(
+                        'message' => $message,
+                        'form' => $form,
+                    ));
+                }
+            }
+        }
 
         return new ViewModel(array(
             'form' => $form,
@@ -190,7 +258,7 @@ class RegistrationController extends AbstractActionController
      * 
      * @return JsonModel
      */
-    public function getStudentRegistrationsAction()
+    public function getRegistrationsAction()
     {
         $request = $this->getRequest();
         if ($request->isPost()) {
@@ -210,20 +278,20 @@ class RegistrationController extends AbstractActionController
                 foreach ($regs as $r) {
 
                     if ($r->isAccepted()) {
-                        $status = 4;
+                        $status = 'APROVADO';
                     } else if ($r->hasPreInterview()) {
-                        $status = 3;
+                        $status = 'PRE-ENTREVISTA REALIZADA';
                     } else if ($r->isCalled()) {
-                        $status = 2;
+                        $status = 'CONVOCADO PARA PRÉ-ENTREVISTA';
                     } else if ($r->isConfirmed()) {
-                        $status = 1;
+                        $status = 'CONFIRMADO';
                     } else {
-                        $status = 0;
+                        $status = 'INSCRITO';
                     }
 
                     $person = $r->getPerson();
                     $resultSet['data'][] = array(
-                        'DT_RowClass' => 'cats-row status-' . $status,
+                        'DT_RowClass' => 'cats-row',
                         'DT_RowAttr' => [
                             'data-id' => $r->getRegistrationId()
                         ],
@@ -233,6 +301,7 @@ class RegistrationController extends AbstractActionController
                         $person->getPersonCpf(),
                         $person->getPersonRg(),
                         $person->getPersonEmail(),
+                        $status,
                     );
                 }
             } catch (Exception $ex) {

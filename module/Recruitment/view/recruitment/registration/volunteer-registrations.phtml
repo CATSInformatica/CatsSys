@@ -9,14 +9,12 @@
                     <label for="recruitment_id">Processo seletivo: </label>
                     <select class="form-control" id="recruitment_id">
                         <?php foreach ($this->recruitments as $recruitment): ?>
-
                             <option value="<?php echo $recruitment->getRecruitmentId(); ?>" >
                                 <?php
                                 echo $recruitment->getRecruitmentNumber() . 'º Processo seletivo de ' .
                                 $recruitment->getRecruitmentYear();
                                 ?>
                             </option>
-
                         <?php endforeach; ?>
                     </select>
                 </div>
@@ -44,22 +42,17 @@
                 </table>
             </div>
         </div>
-
     <?php endif; ?>
-
 </section>
 
 <script>
 
     appConfig = (function () {
         var scriptSrc = 'app/pages/recruitment/registration/registrations';
-
         return {
             getScriptSrc: function () {
                 return scriptSrc;
             }
         };
-
     })();
-
 </script>

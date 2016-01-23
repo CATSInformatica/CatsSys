@@ -16,7 +16,12 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class RelativeFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
-    public function __construct(ObjectManager $obj, $options = false)
+    public function __construct(ObjectManager $obj,
+        $options = array(
+        'relative' => false,
+        'address' => false,
+        'social_media' => false,
+    ))
     {
         if (is_array($options) && !key_exists('address', $options)) {
             throw new \InvalidArgumentException('The options array must contain the key `address`');
@@ -27,12 +32,7 @@ class RelativeFieldset extends Fieldset implements InputFilterProviderInterface
         $this->setHydrator(new DoctrineHydrator($obj))
             ->setObject(new Relative());
 
-        $personFieldset = new PersonFieldset($obj,
-            array(
-            'relative' => false,
-            'address' => false,
-            ), 'relative');
-
+        $personFieldset = new PersonFieldset($obj, $options, 'relative');
         $this->add($personFieldset);
 
         $this->add(array(

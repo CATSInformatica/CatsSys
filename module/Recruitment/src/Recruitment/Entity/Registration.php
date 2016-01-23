@@ -29,6 +29,10 @@ class Registration
     const REGISTRATION_PAD_LENGTH = 8;
 
     /**
+     * COMMON ATTRIBUTES
+     */
+
+    /**
      *
      * @var integer
      * @ORM\Column(name="registration_id", type="integer", nullable=false)
@@ -91,6 +95,10 @@ class Registration
     private $person;
 
     /**
+     * STUDENT SPECIFIC ATTRIBUTES
+     */
+
+    /**
      * 
      * @var Collection
      * @ORM\ManyToMany(targetEntity="RecruitmentKnowAbout", fetch="EAGER")
@@ -103,10 +111,121 @@ class Registration
      * )
      */
     private $recruitmentKnowAbout;
-    
-    
-    
-    
+
+    /**
+     * VOLUNTEER SPECIFIC ATTRIBUTES
+     */
+
+    /**
+     * @var string
+     * @ORM\Column(name="registration_occupation", type="string", length=200)
+     */
+    private $occupation;
+
+    /**
+     * @var string
+     * @ORM\Column(name="registration_education", type="string", length=200)
+     */
+    private $education;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="registration_volunteer_work", type="string", length=200)
+     */
+    private $volunteerWork;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="registration_howandwhen_knowus", type="string", length=200)
+     */
+    private $howAndWhenKnowUs;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="registration_whywork_withus", type="string", length=200)
+     */
+    private $whyWorkWithUs;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="registration_volunteer_workwithus", type="string", length=200)
+     */
+    private $volunteerWithUs;
+
+    /**
+     * self-evaluation levels
+     */
+    const SELF_EVALUATION_LEVEL_1 = 1;
+    const SELF_EVALUATION_LEVEL_2 = 2;
+    const SELF_EVALUATION_LEVEL_3 = 3;
+    const SELF_EVALUATION_LEVEL_4 = 4;
+    const SELF_EVALUATION_LEVEL_5 = 5;
+
+    /**
+     *
+     * @var integer
+     * @ORM\Column(name="registration_responsibility", type="smallint")
+     */
+    private $responsibility;
+
+    /**
+     *
+     * @var integer
+     * @ORM\Column(name="registration_proactive", type="smallint")
+     */
+    private $proactive;
+
+    /**
+     *
+     * @var integer
+     * @ORM\Column(name="registration_volunteer_spirit", type="smallint")
+     */
+    private $volunteerSpirit;
+
+    /**
+     *
+     * @var integer
+     * @ORM\Column(name="registration_commitment", type="smallint")
+     */
+    private $commitment;
+
+    /**
+     *
+     * @var integer
+     * @ORM\Column(name="registration_team_work", type="smallint")
+     */
+    private $teamWork;
+
+    /**
+     *
+     * @var integer
+     * @ORM\Column(name="registration_efficiency", type="smallint")
+     */
+    private $efficiency;
+
+    /**
+     * @var integer
+     * @ORM\Column(name="registration_courtesy", type="smallint")
+     */
+    private $courtesy;
+
+    /**
+     * 
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity="RegistrationStatus", fetch="EXTRA_LAZY")
+     * @ORM\JoinTable(name="registration_has_status",
+     *      joinColumns={@ORM\JoinColumn(name="registration_id", 
+     *          referencedColumnName="registration_id")
+     *      },
+     *      inverseJoinColumns={@ORM\JoinColumn(name="registration_status_id", 
+     *          referencedColumnName="registration_status_id")}
+     * )
+     */
+    private $registrationStatus;
 
     public function __construct()
     {
@@ -341,6 +460,266 @@ class Registration
     public function isConfirmed()
     {
         return $this->registrationConfirmationDate !== null;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getOccupation()
+    {
+        return $this->occupation;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getEducation()
+    {
+        return $this->education;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getVolunteerWork()
+    {
+        return $this->volunteerWork;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getHowAndWhenKnowUs()
+    {
+        return $this->howAndWhenKnowUs;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getWhyWorkWithUs()
+    {
+        return $this->whyWorkWithUs;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getVolunteerWithUs()
+    {
+        return $this->volunteerWithUs;
+    }
+
+    /**
+     * 
+     * @param string $occupation
+     * @return Self
+     */
+    public function setOccupation($occupation)
+    {
+        $this->occupation = $occupation;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $education
+     * @return Self
+     */
+    public function setEducation($education)
+    {
+        $this->education = $education;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $volunteerWork
+     * @return Self
+     */
+    public function setVolunteerWork($volunteerWork)
+    {
+        $this->volunteerWork = $volunteerWork;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $howAndWhenKnowUs
+     * @return Self
+     */
+    public function setHowAndWhenKnowUs($howAndWhenKnowUs)
+    {
+        $this->howAndWhenKnowUs = $howAndWhenKnowUs;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $whyWorkWithUs
+     * @return Self
+     */
+    public function setWhyWorkWithUs($whyWorkWithUs)
+    {
+        $this->whyWorkWithUs = $whyWorkWithUs;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $volunteerWithUs
+     * @return Self
+     */
+    public function setVolunteerWithUs($volunteerWithUs)
+    {
+        $this->volunteerWithUs = $volunteerWithUs;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getResponsibility()
+    {
+        return $this->responsibility;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getProactive()
+    {
+        return $this->proactive;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getVolunteerSpirit()
+    {
+        return $this->volunteerSpirit;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getCommitment()
+    {
+        return $this->commitment;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getTeamWork()
+    {
+        return $this->teamWork;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getEfficiency()
+    {
+        return $this->efficiency;
+    }
+
+    /**
+     * 
+     * @return integer
+     */
+    public function getCourtesy()
+    {
+        return $this->courtesy;
+    }
+
+    /**
+     * 
+     * @param integer $responsibility
+     * @return Self
+     */
+    public function setResponsibility($responsibility)
+    {
+        $this->responsibility = $responsibility;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param integer $proactive
+     * @return Self
+     */
+    public function setProactive($proactive)
+    {
+        $this->proactive = $proactive;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param integer $volunteerSpirit
+     * @return Self
+     */
+    public function setVolunteerSpirit($volunteerSpirit)
+    {
+        $this->volunteerSpirit = $volunteerSpirit;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param integer $commitment
+     * @return Self
+     */
+    public function setCommitment($commitment)
+    {
+        $this->commitment = $commitment;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param integer $teamWork
+     * @return Self
+     */
+    public function setTeamWork($teamWork)
+    {
+        $this->teamWork = $teamWork;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param integer $efficiency
+     * @return Self
+     */
+    public function setEfficiency($efficiency)
+    {
+        $this->efficiency = $efficiency;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param integer $courtesy
+     * @return Self
+     */
+    public function setCourtesy($courtesy)
+    {
+        $this->courtesy = $courtesy;
+        return $this;
     }
 
 }

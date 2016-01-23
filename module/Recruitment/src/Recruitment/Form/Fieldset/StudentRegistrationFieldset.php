@@ -3,7 +3,9 @@
 namespace Recruitment\Form\Fieldset;
 
 use Doctrine\Common\Persistence\ObjectManager;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use InvalidArgumentException;
+use Recruitment\Entity\Registration;
 use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
@@ -19,6 +21,9 @@ final class StudentRegistrationFieldset extends RegistrationFieldset implements 
         if (is_array($options) && !array_key_exists('pre_interview', $options)) {
             throw new InvalidArgumentException('`options` array must contain the key `pre_interview`');
         }
+
+        $this->setHydrator(new DoctrineHydrator($obj))
+            ->setObject(new Registration());
 
         parent::__construct($obj, $options);
 

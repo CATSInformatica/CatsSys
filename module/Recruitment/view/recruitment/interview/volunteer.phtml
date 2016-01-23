@@ -1,0 +1,39 @@
+<section class="content">
+
+    <p><?php echo $this->message; ?></p>
+
+    <?php if ($this->registration !== null): ?>
+
+        <?php
+        echo $this->partial('profile/template',
+            array(
+            'registration' => $registration,
+            'config' => array(
+                'isPhotoEditable' => true,
+                'showAge' => false,
+                'tabs' => array(
+                    // need to be rewritted to volunteers
+//                    'recruitment-timeline' => false,
+//                    'documentation' => false,
+//                    'score' => false,
+                    'info' => $form,
+                ),
+            ),
+        ));
+        ?>
+
+    <?php endif; ?>
+</section>
+
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/recruitment/interview/profile';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+</script>

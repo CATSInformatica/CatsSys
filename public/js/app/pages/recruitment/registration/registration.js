@@ -24,7 +24,7 @@ define(['moment', 'masks', 'jquery', 'datetimepicker'], function (moment, masks)
                 viewDate: moment().subtract(21, 'years')
             });
         };
-        
+
         initCaptchaOperations = function () {
             $('#captcha_input-refresh').click(function () {
                 $.ajax({
@@ -42,7 +42,8 @@ define(['moment', 'masks', 'jquery', 'datetimepicker'], function (moment, masks)
             masks.bind({
                 phone: "input[name='registration[person][personPhone]']",
                 cpf: "input[name='registration[person][personCpf]']",
-                date: "input[name='registration[person][personBirthday]']"
+                date: "input[name='registration[person][personBirthday]']",
+                zip: "input[name*=addressPostalCode]"
             });
         };
 

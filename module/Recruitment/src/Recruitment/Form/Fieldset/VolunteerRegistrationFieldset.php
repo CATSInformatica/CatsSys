@@ -1,0 +1,347 @@
+<?php
+
+namespace Recruitment\Form\Fieldset;
+
+use Doctrine\Common\Persistence\ObjectManager;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use Recruitment\Entity\Registration;
+use Zend\InputFilter\InputFilterProviderInterface;
+
+/**
+ * Description of VolunteerRegistrationFieldset
+ *
+ * @author Márcio Dias <marciojr91@gmail.com>
+ */
+final class VolunteerRegistrationFieldset extends RegistrationFieldset implements InputFilterProviderInterface
+{
+
+    public function __construct(ObjectManager $obj, $options = null)
+    {
+        $this->setHydrator(new DoctrineHydrator($obj))
+            ->setObject(new Registration());
+
+        parent::__construct($obj, $options);
+
+        $this
+            ->add(array(
+                'name' => 'occupation',
+                'type' => 'textarea',
+                'attributes' => array(
+                    'rows' => 5,
+                ),
+                'options' => array(
+                    'label' => 'Ocupação (acadêmica e/ou profissional)*',
+                ),
+            ))
+            ->add(array(
+                'name' => 'education',
+                'type' => 'textarea',
+                'attributes' => array(
+                    'rows' => 5,
+                ),
+                'options' => array(
+                    'label' => 'Escolaridade (onde estudou, quando, cursos, etc.)*',
+                ),
+            ))
+            ->add(array(
+                'name' => 'volunteerWork',
+                'type' => 'textarea',
+                'attributes' => array(
+                    'rows' => 5,
+                ),
+                'options' => array(
+                    'label' => 'Já fez trabalho voluntário? Descreva*',
+                ),
+            ))
+            ->add(array(
+                'name' => 'howAndWhenKnowUs',
+                'type' => 'textarea',
+                'attributes' => array(
+                    'rows' => 5,
+                ),
+                'options' => array(
+                    'label' => 'Como e quando nos conheceu?*',
+                ),
+            ))
+            ->add(array(
+                'name' => 'whyWorkWithUs',
+                'type' => 'textarea',
+                'attributes' => array(
+                    'rows' => 5,
+                ),
+                'options' => array(
+                    'label' => 'Por que escolheu se inscrever?*',
+                ),
+            ))
+            ->add(array(
+                'name' => 'volunteerWithUs',
+                'type' => 'textarea',
+                'attributes' => array(
+                    'rows' => 5,
+                ),
+                'options' => array(
+                    'label' => 'O que espera do trabalho voluntário?*',
+                ),
+            ))
+            ->add(array(
+                'name' => 'whyWorkWithUs',
+                'type' => 'textarea',
+                'attributes' => array(
+                    'rows' => 5,
+                ),
+                'options' => array(
+                    'label' => 'Por que escolheu se inscrever?*',
+                ),
+            ))
+            ->add(array(
+                'name' => 'responsibility',
+                'type' => 'radio',
+                'attributes' => array(
+                ),
+                'options' => array(
+                    'label' => 'Responsabilidade*',
+                    'value_options' => array(
+                        Registration::SELF_EVALUATION_LEVEL_1 => Registration::SELF_EVALUATION_LEVEL_1,
+                        Registration::SELF_EVALUATION_LEVEL_2 => Registration::SELF_EVALUATION_LEVEL_2,
+                        Registration::SELF_EVALUATION_LEVEL_3 => Registration::SELF_EVALUATION_LEVEL_3,
+                        Registration::SELF_EVALUATION_LEVEL_4 => Registration::SELF_EVALUATION_LEVEL_4,
+                        Registration::SELF_EVALUATION_LEVEL_5 => Registration::SELF_EVALUATION_LEVEL_5,
+                    ),
+                    'inline' => true,
+                ),
+            ))
+            ->add(array(
+                'name' => 'proactive',
+                'type' => 'radio',
+                'attributes' => array(
+                ),
+                'options' => array(
+                    'label' => 'Proatividade*',
+                    'value_options' => array(
+                        Registration::SELF_EVALUATION_LEVEL_1 => Registration::SELF_EVALUATION_LEVEL_1,
+                        Registration::SELF_EVALUATION_LEVEL_2 => Registration::SELF_EVALUATION_LEVEL_2,
+                        Registration::SELF_EVALUATION_LEVEL_3 => Registration::SELF_EVALUATION_LEVEL_3,
+                        Registration::SELF_EVALUATION_LEVEL_4 => Registration::SELF_EVALUATION_LEVEL_4,
+                        Registration::SELF_EVALUATION_LEVEL_5 => Registration::SELF_EVALUATION_LEVEL_5,
+                    ),
+                    'inline' => true,
+                ),
+            ))
+            ->add(array(
+                'name' => 'volunteerSpirit',
+                'type' => 'radio',
+                'attributes' => array(
+                ),
+                'options' => array(
+                    'label' => 'Espírito Voluntário',
+                    'value_options' => array(
+                        Registration::SELF_EVALUATION_LEVEL_1 => Registration::SELF_EVALUATION_LEVEL_1,
+                        Registration::SELF_EVALUATION_LEVEL_2 => Registration::SELF_EVALUATION_LEVEL_2,
+                        Registration::SELF_EVALUATION_LEVEL_3 => Registration::SELF_EVALUATION_LEVEL_3,
+                        Registration::SELF_EVALUATION_LEVEL_4 => Registration::SELF_EVALUATION_LEVEL_4,
+                        Registration::SELF_EVALUATION_LEVEL_5 => Registration::SELF_EVALUATION_LEVEL_5,
+                    ),
+                    'inline' => true,
+                ),
+            ))
+            ->add(array(
+                'name' => 'commitment',
+                'type' => 'radio',
+                'attributes' => array(
+                ),
+                'options' => array(
+                    'label' => 'Comprometimento*',
+                    'value_options' => array(
+                        Registration::SELF_EVALUATION_LEVEL_1 => Registration::SELF_EVALUATION_LEVEL_1,
+                        Registration::SELF_EVALUATION_LEVEL_2 => Registration::SELF_EVALUATION_LEVEL_2,
+                        Registration::SELF_EVALUATION_LEVEL_3 => Registration::SELF_EVALUATION_LEVEL_3,
+                        Registration::SELF_EVALUATION_LEVEL_4 => Registration::SELF_EVALUATION_LEVEL_4,
+                        Registration::SELF_EVALUATION_LEVEL_5 => Registration::SELF_EVALUATION_LEVEL_5,
+                    ),
+                    'inline' => true,
+                ),
+            ))
+            ->add(array(
+                'name' => 'teamWork',
+                'type' => 'radio',
+                'attributes' => array(
+                ),
+                'options' => array(
+                    'label' => 'Trabalho em Grupo*',
+                    'value_options' => array(
+                        Registration::SELF_EVALUATION_LEVEL_1 => Registration::SELF_EVALUATION_LEVEL_1,
+                        Registration::SELF_EVALUATION_LEVEL_2 => Registration::SELF_EVALUATION_LEVEL_2,
+                        Registration::SELF_EVALUATION_LEVEL_3 => Registration::SELF_EVALUATION_LEVEL_3,
+                        Registration::SELF_EVALUATION_LEVEL_4 => Registration::SELF_EVALUATION_LEVEL_4,
+                        Registration::SELF_EVALUATION_LEVEL_5 => Registration::SELF_EVALUATION_LEVEL_5,
+                    ),
+                    'inline' => true,
+                ),
+            ))
+            ->add(array(
+                'name' => 'efficiency',
+                'type' => 'radio',
+                'attributes' => array(
+                ),
+                'options' => array(
+                    'label' => 'Eficiência*',
+                    'value_options' => array(
+                        Registration::SELF_EVALUATION_LEVEL_1 => Registration::SELF_EVALUATION_LEVEL_1,
+                        Registration::SELF_EVALUATION_LEVEL_2 => Registration::SELF_EVALUATION_LEVEL_2,
+                        Registration::SELF_EVALUATION_LEVEL_3 => Registration::SELF_EVALUATION_LEVEL_3,
+                        Registration::SELF_EVALUATION_LEVEL_4 => Registration::SELF_EVALUATION_LEVEL_4,
+                        Registration::SELF_EVALUATION_LEVEL_5 => Registration::SELF_EVALUATION_LEVEL_5,
+                    ),
+                    'inline' => true,
+                ),
+            ))
+            ->add(array(
+                'name' => 'courtesy',
+                'type' => 'radio',
+                'attributes' => array(
+                ),
+                'options' => array(
+                    'label' => 'Cortesia*',
+                    'value_options' => array(
+                        Registration::SELF_EVALUATION_LEVEL_1 => Registration::SELF_EVALUATION_LEVEL_1,
+                        Registration::SELF_EVALUATION_LEVEL_2 => Registration::SELF_EVALUATION_LEVEL_2,
+                        Registration::SELF_EVALUATION_LEVEL_3 => Registration::SELF_EVALUATION_LEVEL_3,
+                        Registration::SELF_EVALUATION_LEVEL_4 => Registration::SELF_EVALUATION_LEVEL_4,
+                        Registration::SELF_EVALUATION_LEVEL_5 => Registration::SELF_EVALUATION_LEVEL_5,
+                    ),
+                    'inline' => true,
+                ),
+            ))
+        ;
+    }
+
+    public function getInputFilterSpecification()
+    {
+        return array(
+            'occupation' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StringTrim'),
+                    array('name' => 'StripTags'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'min' => 20,
+                            'max' => 200,
+                            'inclusive' => true,
+                        ),
+                    ),
+                ),
+            ),
+            'education' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StringTrim'),
+                    array('name' => 'StripTags'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'min' => 20,
+                            'max' => 200,
+                            'inclusive' => true,
+                        ),
+                    ),
+                ),
+            ),
+            'volunteerWork' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StringTrim'),
+                    array('name' => 'StripTags'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'min' => 20,
+                            'max' => 200,
+                            'inclusive' => true,
+                        ),
+                    ),
+                ),
+            ),
+            'howAndWhenKnowUs' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StringTrim'),
+                    array('name' => 'StripTags'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'min' => 20,
+                            'max' => 200,
+                            'inclusive' => true,
+                        ),
+                    ),
+                ),
+            ),
+            'whyWorkWithUs' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StringTrim'),
+                    array('name' => 'StripTags'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'min' => 20,
+                            'max' => 200,
+                            'inclusive' => true,
+                        ),
+                    ),
+                ),
+            ),
+            'volunteerWithUs' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StringTrim'),
+                    array('name' => 'StripTags'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'min' => 20,
+                            'max' => 200,
+                            'inclusive' => true,
+                        ),
+                    ),
+                ),
+            ),
+            'responsibility' => array(
+                'required' => true,
+            ),
+            'proactive' => array(
+                'required' => true,
+            ),
+            'volunteerSpirit' => array(
+                'required' => true,
+            ),
+            'commitment' => array(
+                'required' => true,
+            ),
+            'teamWork' => array(
+                'required' => true,
+            ),
+            'efficiency' => array(
+                'required' => true,
+            ),
+            'courtesy' => array(
+                'required' => true,
+            ),
+        );
+    }
+
+}

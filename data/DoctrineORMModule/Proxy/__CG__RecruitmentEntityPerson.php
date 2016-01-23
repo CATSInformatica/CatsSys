@@ -191,6 +191,17 @@ class Person extends \Recruitment\Entity\Person implements \Doctrine\ORM\Proxy\P
     /**
      * {@inheritDoc}
      */
+    public function setPersonId($id)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setPersonId', array($id));
+
+        return parent::setPersonId($id);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
     public function getPersonFirstName()
     {
 

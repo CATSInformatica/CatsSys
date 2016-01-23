@@ -48,7 +48,7 @@ $addresses = $person->getAddresses();
                             'Candidato' : 'Candidata';
                         echo ($recruitment->getRecruitmentType() ==
                         \Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE) ?
-                            '<br> (Processo Seletivo de Alunos)' : ' Processo Seletivo de Voluntários';
+                            '<br>(Processo Seletivo de Alunos)' : '<br>(Processo Seletivo de Voluntários)';
                         ?>
 
                     <?php endif; ?>
@@ -395,27 +395,35 @@ $addresses = $person->getAddresses();
                         <?php $form = $config['tabs']['info']; ?>
 
                         <?php
+                        $rType = $recruitment->getRecruitmentType();
                         $form->prepare();
                         echo $this->form()->openTag($form);
 
                         $regForm = $form->get('registration');
                         $personForm = $regForm->get('person');
-                        $preInForm = $regForm->get('preInterview');
 
                         echo $this->partial('person/template',
                             array(
                             'form' => $personForm,
                         ));
 
-                        echo $this->partial('disclosure/template',
-                            array(
-                            'form' => $regForm,
-                        ));
 
-                        echo $this->partial('pre-interview/template',
-                            array(
-                            'form' => $preInForm,
-                        ));
+                        if ($rType == Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE) {
+                            echo $this->partial('disclosure/template',
+                                array(
+                                'form' => $regForm,
+                            ));
+
+                            echo $this->partial('pre-interview/template',
+                                array(
+                                'form' => $regForm->get('preInterview'),
+                            ));
+                        } else {
+                            echo $this->partial('volunteer/template',
+                                array(
+                                'form' => $regForm,
+                            ));
+                        }
                         ?>
 
                         <div class="form-group">

@@ -33,13 +33,16 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
         $options = array(
         'relative' => false,
         'address' => false,
+        'social_media' => false,
     ), $name = 'person')
     {
         if (is_array($options) &&
-            (!array_key_exists('relative', $options) || !array_key_exists('address', $options))) {
-            throw new \InvalidArgumentException('`options` array must contain the keys `relative` and `address`');
+            (!array_key_exists('relative', $options) ||
+            !array_key_exists('address', $options) ||
+            !array_key_exists('social_media', $options))) {
+            throw new \InvalidArgumentException('`options` array must contain the keys `relative`, `address`'
+            . ' and `social_media`');
         }
-
 
         parent::__construct($name);
 
@@ -172,23 +175,25 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
             ),
         ));
 
-        $this->add(array(
-            'name' => 'personSocialMedia',
-            'type' => 'text',
-            'attributes' => array(
-                'placeholder' => 'https://www.facebook.com/cats.familia',
-            ),
-            'options' => array(
-                'label' => 'Link para seu perfil no Facebook',
-                'add-on-prepend' => '<a href="https://www.facebook.com" target="_blank">'
-                . '<i class="fa fa-facebook"></i></a>',
-            )
-        ));
+        if ($options['social_media']) {
+            $this->add(array(
+                'name' => 'personSocialMedia',
+                'type' => 'text',
+                'attributes' => array(
+                    'placeholder' => 'https://www.facebook.com/cats.familia',
+                ),
+                'options' => array(
+                    'label' => 'Link para seu perfil no Facebook',
+                    'add-on-prepend' => '<a href="https://www.facebook.com" target="_blank">'
+                    . '<i class="fa fa-facebook"></i></a>',
+                ),
+            ));
+        }
     }
 
     public function getInputFilterSpecification()
     {
-        array(
+        return array(
             'personFirstName' => array(
                 'required' => true,
                 'filters' => array(
@@ -312,13 +317,10 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
                     ),
                 ),
             ),
-        );
-
-        if ($this->useSocialMedia) {
-            $specification['personSocialMedia'] = array(
+            'personSocialMedia' => array(
                 'required' => false,
-            );
-        }
+            ),
+        );
     }
 
 }

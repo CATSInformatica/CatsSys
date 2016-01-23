@@ -161,8 +161,6 @@ class Person
      * cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $relatives;
-    
-    
 
     /**
      * Constructor
@@ -182,6 +180,17 @@ class Person
     public function getPersonId()
     {
         return $this->personId;
+    }
+
+    /**
+     * 
+     * @param type $id
+     * @return Person
+     */
+    public function setPersonId($id)
+    {
+        $this->personId = $id;
+        return $this;
     }
 
     /**
@@ -413,8 +422,10 @@ class Person
     public function addAddresses(Collection $addresses)
     {
         foreach ($addresses as $addr) {
-            $addr->addPerson($this);
-            $this->addresses->add($addr);
+            if (!$this->hasAddress($addr)) {
+                $addr->addPerson($this);
+                $this->addresses->add($addr);
+            }
         }
         return $this;
     }

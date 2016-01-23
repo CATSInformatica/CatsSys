@@ -37,9 +37,8 @@ class RegistrationForm extends Form implements InputFilterProviderInterface
                 $registrationFieldset = new Fieldset\StudentRegistrationFieldset($obj, $options);
                 break;
             case self::TYPE_VOLUNTEER:
-                throw new \RuntimeException('type not implemented yet');
-//                $registrationFieldset = new VolunteerRegistrationFieldset($obj, $options);
-//                break;
+                $registrationFieldset = new Fieldset\VolunteerRegistrationFieldset($obj, $options);
+                break;
             default:
                 throw new \InvalidArgumentException('the type of registration form must be either `TYPE_STUDENT` or '
                 . '`TYPE_VOLUNTEER`');
@@ -52,7 +51,7 @@ class RegistrationForm extends Form implements InputFilterProviderInterface
                 'type' => 'checkbox',
                 'options' => array(
                     'label' => 'Declaro ter lido o edital do processo seletivo e estar ciente de todas as etapas e'
-                    . ' documentos exigidos neste processo seletivo.*',
+                    . ' documentos exigidos*',
                     'checked_value' => true,
                     'unchecked_value' => false,
                 ),
@@ -74,7 +73,7 @@ class RegistrationForm extends Form implements InputFilterProviderInterface
                 'type' => 'submit',
                 'attributes' => array(
                     'class' => 'btn btn-primary btn-block',
-                    'value' => 'Criar',
+                    'value' => 'Inscrever',
                 )
         ));
     }
