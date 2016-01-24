@@ -386,4 +386,48 @@ class Registration extends \Recruitment\Entity\Registration implements \Doctrine
         return parent::removeRecruitmentKnowAbout($arr);
     }
 
+    /**
+     * {@inheritDoc}
+     */
+    public function hasPreInterview()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasPreInterview', array());
+
+        return parent::hasPreInterview();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isAccepted()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isAccepted', array());
+
+        return parent::isAccepted();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isCalled()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isCalled', array());
+
+        return parent::isCalled();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function isConfirmed()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'isConfirmed', array());
+
+        return parent::isConfirmed();
+    }
+
 }

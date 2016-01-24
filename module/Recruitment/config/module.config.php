@@ -16,6 +16,7 @@ return array(
             'Recruitment\Controller\Captcha' => Controller\CaptchaController::class,
             'Recruitment\Controller\PreInterview' => Controller\PreInterviewController::class,
             'Recruitment\Controller\Interview' => Controller\InterviewController::class,
+            'Recruitment\Controller\CsvViewer' => Controller\CsvViewerController::class,
         ),
     ),
     'router' => array(
@@ -106,6 +107,19 @@ return array(
                             ),
                         ),
                     ),
+                    'csv-viewer' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/csv-viewer[/:action]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Recruitment\Controller\CsvViewer',
+                                'action' => 'index',
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),
@@ -158,7 +172,6 @@ return array(
                 'uri' => '#',
                 'icon' => 'fa fa-users',
                 'order' => 6,
-                'resource' => 'Recruitment\Controller\Recruitment',
                 'pages' => array(
                     array(
                         'label' => 'Show recruitments',
@@ -191,6 +204,14 @@ return array(
                         'resource' => 'Recruitment\Controller\Recruitment',
                         'privilege' => 'create',
                         'icon' => 'fa fa-user-plus'
+                    ),
+                    array(
+                        'label' => 'CSV Viewer',
+                        'route' => 'recruitment/csv-viewer',
+                        'action' => 'index',
+                        'resource' => 'Recruitment\Controller\CsvViewer',
+                        'privilege' => 'index',
+                        'icon' => 'fa fa-info-circle',
                     ),
                 ),
             ),
