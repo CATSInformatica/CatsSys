@@ -23,9 +23,10 @@ class TimestampForm extends Form implements InputFilterProviderInterface
             'type' => 'text',
             'attributes' => array(
                 'class' => 'text-center',
+                'placeholder' => date('d/m/Y H:i'),
             ),
             'options' => array(
-                'label' => 'Data de operação',
+                'label' => 'Data de agendamento',
                 'add-on-prepend' => '<i class="fa fa-clock-o"></i>',
             ),
         ));
@@ -50,6 +51,13 @@ class TimestampForm extends Form implements InputFilterProviderInterface
                         'name' => 'Zend\Validator\Date',
                         'options' => array(
                             'format' => 'Y-m-d H:i',
+                        ),
+                    ),
+                    array(
+                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'options' => array(
+                            'format' => 'Y-m-d H:i',
+                            'inclusive' => true,
                         ),
                     ),
                 ),

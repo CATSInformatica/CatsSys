@@ -5,7 +5,7 @@
  */
 
 
-define(['moment', 'datetimepicker', 'datatable'], function (moment) {
+define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, masks) {
     var index = (function () {
         // your module code goes here
         // var config = null;
@@ -17,7 +17,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
 
         initDatepickers = function () {
             $("input[name=timestamp]").closest(".input-group").datetimepicker({
-                format: 'DD/MM/YYYY H:mm',
+                format: 'DD/MM/YYYY HH:mm',
                 minDate: moment(),
                 useCurrent: false,
                 maxDate: moment().add(1, 'years'),
@@ -53,14 +53,22 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             });
         };
 
+        initMasks = function () {
+            masks.bind({
+                datetimeNoSeconds: 'input[name=timestamp]'
+            });
+        };
+
         return {
             init: function () {
                 initDatepickers();
                 initDataTable();
+                initMasks();
             },
             getDataOf: function (statusAction) {
+
                 return {
-//                    id: $('#identity').data('identity')
+                    timestamp: $('input[name=timestamp]').val()
                 };
             }
         };

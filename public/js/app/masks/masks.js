@@ -39,6 +39,11 @@ define(['jquery', 'jmaskedinput'], function () {
         if (masks.hasOwnProperty("datetime")) {
             $(masks.datetime).mask("99/99/9999 99:99:99");
         }
+
+        if (masks.hasOwnProperty("datetimeNoSeconds")) {
+            $(masks.datetimeNoSeconds).mask("99/99/9999 99:99");
+        }
+
     };
 
     return {

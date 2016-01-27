@@ -24,6 +24,7 @@ use Recruitment\Service\RegistrationStatusService;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\Form\View\Helper\Captcha\Image;
+use Zend\Json\Json;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -385,7 +386,7 @@ class RegistrationController extends AbstractActionController
             try {
 
                 $em = $this->getEntityManager();
-                $data = $request->getPost();
+                $data = $request->getPost()->toArray();
 
                 if (isset($data['timestamp'])) {
                     $form = new TimestampForm();
@@ -396,6 +397,10 @@ class RegistrationController extends AbstractActionController
                     } else {
                         throw new InvalidArgumentException('Data inválida');
                     }
+
+                    $dt = new \DateTime($data['timestamp']);
+                } else {
+                    $dt = null;
                 }
 
                 $registration = $em->getReference('Recruitment\Entity\Registration', $rid);
@@ -403,10 +408,10 @@ class RegistrationController extends AbstractActionController
                 /**
                  * Atualizar status do candidato
                  */
-                $this->updateRegistrationStatus($registration, $sid, $data['timestamp']);
+                $this->updateRegistrationStatus($registration, $sid, $dt);
 
-//                $em->persist($registration);
-//                $em->flush();
+                $em->persist($registration);
+                $em->flush();
 
                 return new JsonModel(array(
                     'message' => 'Situação do candidato alterada para ' . RecruitmentStatus::statusTypeToString($sid),

@@ -200,6 +200,22 @@ class Registration
      */
     private $registrationStatus;
 
+    /**
+     *
+     * @var VolunteerInterview
+     * @ORM\OneToOne(targetEntity="VolunteerInterview", inversedBy="registration")
+     * @ORM\JoinColumn(name="volunteer_interview_id", referencedColumnName="volunteer_interview_id")
+     */
+    private $volunteerInterview;
+
+    /**
+     *
+     * @var StudentInterview
+     * @ORM\OneToOne(targetEntity="StudentInterview", inversedBy="registration")
+     * @ORM\JoinColumn(name="student_interview_id", referencedColumnName="student_interview_id")
+     */
+    private $studentInterview;
+
     public function __construct()
     {
         $this->registrationDate = new \DateTime('now');
@@ -666,6 +682,46 @@ class Registration
         $result = $this->registrationStatus->matching($criteria);
 
         return $result->toArray()[0];
+    }
+
+    /**
+     * 
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function getVolunteerInterview()
+    {
+        return $this->volunteerInterview;
+    }
+
+    /**
+     * 
+     * @param Recruitment\Entity\VolunteerInterview $volunteerInterview
+     * @return Recruitment\Entity\Registration
+     */
+    public function setVolunteerInterview(VolunteerInterview $volunteerInterview)
+    {
+        $this->volunteerInterview = $volunteerInterview;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return StudentInterview
+     */
+    public function getStudentInterview()
+    {
+        return $this->studentInterview;
+    }
+
+    /**
+     * 
+     * @param Recruitment\Entity\StudentInterview $studentInterview
+     * @return Recruitment\Entity\Registration
+     */
+    public function setStudentInterview(StudentInterview $studentInterview)
+    {
+        $this->studentInterview = $studentInterview;
+        return $this;
     }
 
 }
