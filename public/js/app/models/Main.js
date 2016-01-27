@@ -9,6 +9,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
 
     var fnTypes = {};
     var config = {};
+    var pageConfig = {};
 
     initClick = function () {
         $(config.toolbarElement).on('click', config.toolbarItem, function (e) {
@@ -24,7 +25,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
     };
 
     fnTypes.selectedHttpClick = function (toolbarItem) {
-        var selectedResult = getSelectedItemInfo(toolbarItem, false);
+        var selectedResult = getSelectedItemInfo(toolbarItem);
         if (selectedResult !== null) {
             window.open(selectedResult.url, selectedResult.target);
         } else {
@@ -35,13 +36,13 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
     fnTypes.selectedAjaxClick = function (toolbarItem) {
 
         bootbox.confirm('Tem certeza que deseja executar ' +
-                'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
+                'esta ação? [' + toolbarItem.data('title') + ']', function (result) {
             if (result) {
-                var selectedResult = getSelectedItemInfo(toolbarItem, false);
+                var selectedResult = getSelectedItemInfo(toolbarItem);
                 if (selectedResult !== null) {
                     $.ajax({
                         url: selectedResult.url,
-                        type: 'GET',
+                        type: 'POST',
                         success: function (data) {
                             bootbox.alert(data.message);
                         },
@@ -60,13 +61,13 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
 
     fnTypes.ajaxClick = function (toolbarItem) {
         bootbox.confirm('Tem certeza que deseja executar ' +
-                'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
+                'esta ação? [' + toolbarItem.data('title') + ']', function (result) {
             if (result) {
-                var itemInfo = getItemInfo(toolbarItem, false);
+                var itemInfo = getItemInfo(toolbarItem);
 
                 $.ajax({
                     url: itemInfo.url,
-                    type: 'GET',
+                    type: 'POST',
                     success: function (data) {
                         bootbox.alert(data.message);
                     },
@@ -81,29 +82,22 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
         });
     };
 
-    fnTypes.httpClick = function (toolbarItem) {
+    fnTypes.ajaxPostClick = function (toolbarItem) {
         bootbox.confirm('Tem certeza que deseja executar ' +
-                'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
+                'esta ação? [' + toolbarItem.data('title') + ']', function (result) {
             if (result) {
-                var selectedResult = getItemInfo(toolbarItem, false);
-                window.open(selectedResult.url, selectedResult.target);
-            } else {
-                bootbox.alert('Ação abortada.');
-            }
-        });
-    };
-
-    fnTypes.ajaxUrlClick = function (toolbarItem) {
-        bootbox.confirm('Tem certeza que deseja executar ' +
-                'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
-            if (result) {
-                var itemInfo = getItemInfo(toolbarItem, true);
-
+                var itemInfo = getItemInfo(toolbarItem);
                 $.ajax({
                     url: itemInfo.url,
-                    type: 'GET',
+                    type: 'POST',
+                    data: pageConfig.getDataOf(toolbarItem.attr('id')),
                     success: function (data) {
                         bootbox.alert(data.message);
+
+                        /**
+                         * callback on page config
+                         */
+
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
                         bootbox.alert(textStatus);
@@ -116,19 +110,23 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
         });
     };
 
-    fnTypes.selectedAjaxUrlClick = function (toolbarItem) {
+    fnTypes.ajaxPostSelectedClick = function (toolbarItem) {
         bootbox.confirm('Tem certeza que deseja executar ' +
-                'esta ação? (' + toolbarItem.data('title') + ')', function (result) {
+                'esta ação? [' + toolbarItem.data('title') + ']', function (result) {
             if (result) {
-                var selectedResult = getSelectedItemInfo(toolbarItem, true);
-
+                var selectedResult = getSelectedItemInfo(toolbarItem);
                 if (selectedResult !== null) {
-
                     $.ajax({
                         url: selectedResult.url,
-                        type: 'GET',
+                        type: 'POST',
+                        data: pageConfig.getDataOf(toolbarItem.attr('id')),
                         success: function (data) {
                             bootbox.alert(data.message);
+
+                            /**
+                             * callback on page config
+                             */
+
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
                             bootbox.alert(textStatus);
@@ -143,23 +141,30 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
         });
     };
 
-    getSelectedItemInfo = function (toolbarItem, buildUrl) {
+
+
+    fnTypes.httpClick = function (toolbarItem) {
+        bootbox.confirm('Tem certeza que deseja executar ' +
+                'esta ação? [' + toolbarItem.data('title') + ']', function (result) {
+            if (result) {
+                var selectedResult = getItemInfo(toolbarItem);
+                window.open(selectedResult.url, selectedResult.target);
+            } else {
+                bootbox.alert('Ação abortada.');
+            }
+        });
+    };
+
+    getSelectedItemInfo = function (toolbarItem) {
         if ($(config.toolbarSelectedItem).length > 0) {
             var item = toolbarItem.find('a');
-
-            var params = '';
-
-            if (buildUrl) {
-                var urlArr = window.location.pathname.split('/');
-                params = '/' + urlArr.slice(4, urlArr.length).join('/');
-            }
 
             var url = item.attr('href');
             var target = item.attr('target');
             url = url.replace('$id', $(config.toolbarSelectedItem).data('id'));
 
             return {
-                url: url + params,
+                url: url,
                 target: (typeof target !== 'undefined' ? target : '_self')
             };
         }
@@ -167,20 +172,13 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
         return null;
     };
 
-    getItemInfo = function (toolbarItem, buildUrl) {
+    getItemInfo = function (toolbarItem) {
         var item = toolbarItem.find('a');
-        var params = '';
-
-        if (buildUrl) {
-            var urlArr = window.location.pathname.split('/');
-            params = '/' + urlArr.slice(4, urlArr.length).join('/');
-        }
-
         var url = item.attr('href');
         var target = item.attr('target');
 
         return {
-            url: url + params,
+            url: url,
             target: (typeof target !== 'undefined' ? target : '_self')
         };
     };
@@ -240,9 +238,11 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
             config.toolbarContainer = conf.toolbarContainer || '';
             config.toolbarContainerOpen = conf.toolbarContainerOpen || '';
         },
+        setPageConfig: function (pageConf) {
+            pageConfig = pageConf;
+        },
         closeToolbar: closeToolbar,
         openToolbar: openToolbar
     };
 
 });
-        

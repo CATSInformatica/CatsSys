@@ -142,7 +142,7 @@ class RecruitmentController extends AbstractActionController
                     }
 
                     return new ViewModel(array(
-                        'message' => $ex->getCode() . ': ' . $ex->getMessage(),
+                        'message' => $ex->getMessage(),
                         'form' => null,
                     ));
                 }

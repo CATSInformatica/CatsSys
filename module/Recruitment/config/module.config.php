@@ -16,6 +16,7 @@ return array(
             'Recruitment\Controller\Captcha' => Controller\CaptchaController::class,
             'Recruitment\Controller\PreInterview' => Controller\PreInterviewController::class,
             'Recruitment\Controller\Interview' => Controller\InterviewController::class,
+            'Recruitment\Controller\Address' => Controller\AddressController::class,
         ),
     ),
     'router' => array(
@@ -50,12 +51,13 @@ return array(
                     'registration' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/registration[/:action[/:id]]',
+                            'route' => '/registration[/:action[/:id[/:sid]]]',
                             'constraints' => array(
                                 '__NAMESPACE__' => 'Recruitment\Controller',
                                 'controller' => 'Registration',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
+                                'sid' => '[0-9]+',
                             ),
                             'defaults' => array(
                                 'controller' => 'Recruitment\Controller\Registration',
@@ -103,6 +105,18 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'Recruitment\Controller\Interview',
+                            ),
+                        ),
+                    ),
+                    'address' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/address[/:action]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Recruitment\Controller\Address',
                             ),
                         ),
                     ),
@@ -232,7 +246,7 @@ return array(
                                         'title' => 'Confirmar',
                                         'description' => 'Confirmar/Desconfirmar a inscrição do candidato.',
                                         'class' => 'fa fa-check bg-red',
-                                        'fntype' => 'ajaxUrlClick',
+                                        'fntype' => 'ajaxPostClick',
                                     ),
                                     array(
                                         'url' => '/recruitment/registration/convocation',
@@ -240,7 +254,7 @@ return array(
                                         'title' => 'Convocar',
                                         'description' => 'Convocar/Desconvocar o candidato para a pré-entrevista.',
                                         'class' => 'fa fa-users bg-blue fn-ajaxClick',
-                                        'fntype' => 'ajaxUrlClick',
+                                        'fntype' => 'ajaxPostClick',
                                     ),
                                     array(
                                         'url' => '/recruitment/registration/acceptance',
@@ -248,7 +262,7 @@ return array(
                                         'id' => 'fn-acceptance',
                                         'description' => 'Aprova/remove aprovação do candidato. A aprovação é condição suficiente para a matrícula.',
                                         'class' => 'fa fa-graduation-cap bg-yellow',
-                                        'fntype' => 'ajaxUrlClick',
+                                        'fntype' => 'ajaxPostClick',
                                     ),
                                 ),
                             ),
@@ -266,9 +280,75 @@ return array(
                                 'url' => '/recruitment/interview/volunteer/$id',
                                 'title' => 'Perfil do Candidato',
                                 'description' => 'Analizar Perfil do Candidato',
-                                'class' => 'fa fa-file-text-o bg-blue',
+                                'class' => 'fa fa-user-plus bg-navy',
                                 'target' => '_blank',
                                 'fntype' => 'selectedHttpClick',
+                            ),
+                            array(
+                                // const STATUSTYPE_CALLEDFOR_INTERVIEW = 1;
+                                'url' => '/recruitment/registration/updateStatus/$id/1',
+                                'title' => 'Convocar (entrevista)',
+                                'id' => 'fn-convocation-interview',
+                                'description' => 'Convocar o candidato para a entrevista na data escolhida',
+                                'class' => 'fa fa-users bg-green',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ),
+                            array(
+                                // const STATUSTYPE_INTERVIEW_WAITINGLIST = 4;
+                                'url' => '/recruitment/registration/updateStatus/$id/4',
+                                'title' => 'Lista de Espera (entrevista)',
+                                'description' => '',
+                                'class' => 'fa fa-file-text-o bg-blue',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
+                            array(
+                                // const STATUSTYPE_INTERVIEW_APPROVED = 5;
+                                'url' => '/recruitment/registration/updateStatus/$id/5',
+                                'title' => 'Aprovar',
+                                'description' => 'Aprovar candidato',
+                                'class' => 'fa fa-check bg-green',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
+                            array(
+                                // const STATUSTYPE_INTERVIEW_DISAPPROVED = 6;
+                                'url' => '/recruitment/registration/updateStatus/$id/6',
+                                'title' => 'Reprovar',
+                                'description' => 'Reprovar Candidato',
+                                'class' => 'fa fa-close bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
+                            array(
+                                // const STATUSTYPE_VOLUNTEER = 7;
+                                'url' => '/recruitment/registration/updateStatus/$id/7',
+                                'title' => 'Voluntário',
+                                'description' => 'Altera a situação do candidato para voluntário regular',
+                                'class' => 'fa fa-user bg-green',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
+                            array(
+                                // const STATUSTYPE_CALLEDFOR_TESTCLASS = 8;
+                                'url' => '/recruitment/registration/updateStatus/$id/8',
+                                'title' => 'Convocar (aula teste)',
+                                'id' => 'fn-convocation-testclas',
+                                'description' => 'Convoca o candidato para aula teste',
+                                'class' => 'fa fa-graduation-cap bg-green',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ),
+                            array(
+                                // const STATUSTYPE_TESTCLASS_WAITINGLIST = 10;
+                                'url' => '/recruitment/registration/updateStatus/$id/10',
+                                'title' => 'Lista de Espera (aula teste)',
+                                'description' => '',
+                                'class' => 'fa fa-file-text-o bg-blue',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
+                            array(
+                                // const STATUSTYPE_CANCELED_REGISTRATION = 2;
+                                'url' => '/recruitment/registration/updateStatus/$id/2',
+                                'title' => 'Cancelar Inscrição',
+                                'description' => 'Invalida a inscrição do candidato',
+                                'class' => 'fa fa-trash bg-red',
+                                'fntype' => 'selectedAjaxClick',
                             ),
                         ),
                         'pages' => array(
@@ -279,49 +359,15 @@ return array(
                                 'resource' => 'Recruitment\Controller\Interview',
                                 'privilege' => 'volunteer',
                                 'icon' => 'fa fa-user',
-//                                'toolbar' => array(
-//                                    array(
-//                                        'url' => '/recruitment/registration/confirmation',
-//                                        'id' => 'fn-confirmation',
-//                                        'title' => 'Confirmar',
-//                                        'description' => 'Confirmar/Desconfirmar a inscrição do candidato.',
-//                                        'class' => 'fa fa-check bg-red',
-//                                        'fntype' => 'ajaxUrlClick',
-//                                    ),
-//                                    array(
-//                                        'url' => '/recruitment/registration/convocation',
-//                                        'id' => 'fn-convocation',
-//                                        'title' => 'Convocar',
-//                                        'description' => 'Convocar/Desconvocar o candidato para a pré-entrevista.',
-//                                        'class' => 'fa fa-users bg-blue fn-ajaxClick',
-//                                        'fntype' => 'ajaxUrlClick',
-//                                    ),
-//                                    array(
-//                                        'url' => '/recruitment/registration/acceptance',
-//                                        'title' => 'Aprovar Candidato',
-//                                        'id' => 'fn-acceptance',
-//                                        'description' => 'Aprova/remove aprovação do candidato. A aprovação é condição suficiente para a matrícula.',
-//                                        'class' => 'fa fa-graduation-cap bg-yellow',
-//                                        'fntype' => 'ajaxUrlClick',
-//                                    ),
-//                                ),
                             ),
                         ),
                     ),
                     array(
-                        'label' => 'Volunteer registration form',
+                        'label' => 'Registration form',
                         'route' => 'recruitment/registration',
-                        'action' => 'volunteerRegistration',
+                        'action' => 'registrationForm',
                         'resource' => 'Recruitment\Controller\Registration',
-                        'privilege' => 'volunteerRegistration',
-                        'icon' => 'fa fa-user-plus',
-                    ),
-                    array(
-                        'label' => 'Student registration form',
-                        'route' => 'recruitment/registration',
-                        'action' => 'studentRegistration',
-                        'resource' => 'Recruitment\Controller\Registration',
-                        'privilege' => 'studentRegistration',
+                        'privilege' => 'registrationForm',
                         'icon' => 'fa fa-user-plus',
                     ),
                     array(

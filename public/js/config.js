@@ -44,19 +44,6 @@ requirejs.config({
     }
 });
 
-define(['app/models/Toolbar', 'jquery', 'bootstrap', 'adminlte'], function (Toolbar) {
-
-    var config = {
-        toolbarElement: '.system-toolbar',
-        toolbarItem: 'li',
-        toolbarSelectedItem: '.cats-selected-row',
-        toolbarContainer: '.control-sidebar',
-        toolbarContainerOpen: 'control-sidebar-open'
-    };
-
-    Toolbar.setConfig(config);
-    Toolbar.init();
-
-
+define(['jquery', 'bootstrap', 'adminlte'], function () {
 
 });

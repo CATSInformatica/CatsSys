@@ -5,7 +5,6 @@
         <div class="row">
             <div class="col-xs-12 col-md-8 col-md-offset-2">
                 <?php echo $this->form()->openTag($form); ?>
-
                 <?php
                 $registration = $form->get('registration');
                 $person = $registration->get('person');
@@ -13,10 +12,17 @@
                     'form' => $person,
                 ));
 
-                echo $this->partial('volunteer/template',
-                    array(
-                    'form' => $registration,
-                ));
+                if ($type === Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE) {
+                    echo $this->partial('disclosure/template',
+                        array(
+                        'form' => $registration,
+                    ));
+                } else {
+                    echo $this->partial('volunteer/template',
+                        array(
+                        'form' => $registration,
+                    ));
+                }
                 ?>
 
                 <div class="col-xs-12 col-md-12">

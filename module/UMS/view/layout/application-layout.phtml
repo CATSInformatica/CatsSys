@@ -185,51 +185,69 @@
                 input.trigger('fileselect', [numFiles, label]);
             });
 
+            $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
+                $(this).siblings('.btn-file-name').text(label);
+            });
+
             // change user active role
             $(function () {
 
-                $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
-                    $(this).siblings('.btn-file-name').text(label);
+
+
+//                $('.role').on('click', function () {
+//                    var role = $(this);
+//                    var jsonRole = JSON.stringify({
+//                        'role': role.text().toLowerCase()
+//                    });
+//                    $.ajax({
+//                        url: '/authorization/role/changeActiveUserRole',
+//                        type: 'POST',
+//                        dataType: 'json',
+//                        async: true,
+//                        data: jsonRole,
+//                        success: function (msg) {
+//
+//                            // change role in menu
+//                            if (msg.success) {
+//                                var newActiveRole = role.text();
+//                                role.text($('.active-role').text());
+//                                $('.active-role').text(newActiveRole);
+//                            }
+//
+//                            console.log(msg);
+//                        },
+//                        error: function (msg) {
+//                            console.log(msg);
+//                        }
+//                    });
+//                });
+
+                require(['app/models/Main'], function (Main) {
+
+                    var config = {
+                        toolbarElement: '.system-toolbar',
+                        toolbarItem: 'li',
+                        toolbarSelectedItem: '.cats-selected-row',
+                        toolbarContainer: '.control-sidebar',
+                        toolbarContainerOpen: 'control-sidebar-open'
+                    };
+
+                    if (typeof appConfig !== 'undefined') {
+                        require([appConfig.getScriptSrc()], function (pageScript) {
+                            Main.setPageConfig(pageScript);
+                            pageScript.init();
+                        });
+                    }
+
+                    // deprecated
+                    if (typeof standardConfig !== 'undefined') {
+                        standardConfig.init();
+                    }
+
+                    Main.setConfig(config);
+                    Main.init();
                 });
 
-                $('.role').on('click', function () {
-                    var role = $(this);
-                    var jsonRole = JSON.stringify({
-                        'role': role.text().toLowerCase()
-                    });
-                    $.ajax({
-                        url: '/authorization/role/changeActiveUserRole',
-                        type: 'POST',
-                        dataType: 'json',
-                        async: true,
-                        data: jsonRole,
-                        success: function (msg) {
-
-                            // change role in menu
-                            if (msg.success) {
-                                var newActiveRole = role.text();
-                                role.text($('.active-role').text());
-                                $('.active-role').text(newActiveRole);
-                            }
-
-                            console.log(msg);
-                        },
-                        error: function (msg) {
-                            console.log(msg);
-                        }
-                    });
-                });
-
-                // deprecated
-                if (typeof standardConfig !== 'undefined') {
-                    standardConfig.init();
-                }
-
-                if (typeof appConfig !== 'undefined') {
-                    require([appConfig.getScriptSrc()], function (pageScript) {
-                        pageScript.init();
-                    });
-                }
             });
         });
     </script>

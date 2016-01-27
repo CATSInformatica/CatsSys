@@ -10,6 +10,10 @@ namespace Recruitment\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use InvalidArgumentException;
+use Recruitment\Entity\Recruitment;
+use Recruitment\Form\Fieldset\StudentRegistrationFieldset;
+use Recruitment\Form\Fieldset\VolunteerRegistrationFieldset;
 use Recruitment\Model\CaptchaImage;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
@@ -22,10 +26,7 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class RegistrationForm extends Form implements InputFilterProviderInterface
 {
 
-    const TYPE_STUDENT = 0;
-    const TYPE_VOLUNTEER = 1;
-
-    public function __construct(ObjectManager $obj, $type = self::TYPE_STUDENT, $options = null)
+    public function __construct(ObjectManager $obj, $type = Recruitment::STUDENT_RECRUITMENT_TYPE, $options = null)
     {
         parent::__construct('registration');
         $this->setHydrator(new DoctrineHydrator($obj));
@@ -33,15 +34,15 @@ class RegistrationForm extends Form implements InputFilterProviderInterface
         // Add the fieldset, and set it as the base fieldset
 
         switch ($type) {
-            case self::TYPE_STUDENT:
-                $registrationFieldset = new Fieldset\StudentRegistrationFieldset($obj, $options);
+            case Recruitment::STUDENT_RECRUITMENT_TYPE:
+                $registrationFieldset = new StudentRegistrationFieldset($obj, $options);
                 break;
-            case self::TYPE_VOLUNTEER:
-                $registrationFieldset = new Fieldset\VolunteerRegistrationFieldset($obj, $options);
+            case Recruitment::VOLUNTEER_RECRUITMENT_TYPE:
+                $registrationFieldset = new VolunteerRegistrationFieldset($obj, $options);
                 break;
             default:
-                throw new \InvalidArgumentException('the type of registration form must be either `TYPE_STUDENT` or '
-                . '`TYPE_VOLUNTEER`');
+                throw new InvalidArgumentException('the type of registration form must be either'
+                . ' `STUDENT_RECRUITMENT_TYPE` or `VOLUNTEER_RECRUITMENT_TYPE`');
         }
 
         $registrationFieldset->setUseAsBaseFieldset(true);

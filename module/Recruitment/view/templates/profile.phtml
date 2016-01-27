@@ -34,7 +34,8 @@ $addresses = $person->getAddresses();
                     </span>
                 <?php endif; ?>
 
-                <h3 class="profile-username text-center">
+                <h3 class="profile-username text-center" id="identity"
+                    data-identity="<?php echo $registration->getRegistrationId(); ?>">
                     <?php echo $person->getPersonName(); ?>
                 </h3>
 
@@ -106,16 +107,6 @@ $addresses = $person->getAddresses();
                     <?php echo $person->getPersonEmail(); ?>
                 </p>
 
-                <?php if ($recruitment->getRecruitmentType() == Recruitment\Entity\Recruitment::VOLUNTEER_RECRUITMENT_TYPE): ?>
-
-                    <strong><i class="fa fa-book margin-r-5"></i> Formação</strong>
-
-                    <p class="text-muted">
-                        B.S. in Computer Science from the University of Tennessee at Knoxville
-                    </p>
-
-                <?php endif; ?>
-
                 <strong><i class="fa fa-map-marker margin-r-5"></i> Endereço</strong>
 
                 <p class="text-muted">
@@ -167,134 +158,24 @@ $addresses = $person->getAddresses();
 
                     <div class="tab-pane active" id="recruitment-timeline">
 
-                        <?php $today = new \DateTime('now'); ?>
-                        <!-- The timeline -->
-                        <ul class="timeline timeline">
-                            <!-- timeline time label -->
-                            <li class="time-label">
-                                <span class="bg-green">
-                                    <?php echo $registration->getRegistrationDate('H:i \o\n l jS F Y'); ?>
-                                </span>
-                            </li>
-                            <!-- /.timeline-label -->
-                            <!-- timeline item -->
-                            <li>
-                                <i class="fa fa-pencil bg-green"></i>
-                                <div class="timeline-item">
-                                    <span class="time"><i class="fa fa-clock-o"></i> 
-                                        Há <?php echo $today->diff($registration->getRegistrationDateAsDateTime())->d ?> dias
-                                    </span>
-                                    <h3 class="timeline-header">Inscrição realizada.</h3>
-                                </div>
-                            </li>
-                            <!-- /.timeline item -->
+                        <?php $rstatus = $registration->getRegistrationStatus(); ?>
 
-                            <?php if ($registration->getRegistrationConfirmationDate() instanceof \DateTime): ?>
-
-                                <!-- timeline time label -->
-                                <li class="time-label">
-                                    <span class="bg-red">
-                                        <?php echo $registration->getRegistrationConfirmationDate()->format('H:i \o\n l jS F Y'); ?>
-                                    </span>
-                                </li>
-                                <!-- /.timeline-label -->
-                                <!-- timeline item -->
-                                <li>
-                                    <i class="fa fa-check bg-red"></i>
-                                    <div class="timeline-item">
-                                        <span class="time"><i class="fa fa-clock-o"></i> 
-                                            Há <?php echo $today->diff($registration->getRegistrationConfirmationDate())->d ?> dias
-                                        </span>
-                                        <h3 class="timeline-header">Confirmação realizada.</h3>
-                                    </div>
-                                </li>
-                                <!-- /.timeline item -->
-
-                            <?php endif; ?>
-
-                            <?php if ($registration->getRegistrationConvocationDate() instanceof \DateTime): ?>
-
-                                <!-- timeline time label -->
-                                <li class="time-label">
-                                    <span class="bg-blue">
-                                        <?php echo $registration->getRegistrationConvocationDate()->format('H:i \o\n l jS F Y'); ?>
-                                    </span>
-                                </li>
-                                <!-- /.timeline-label -->
-                                <!-- timeline item -->
-                                <li>
-                                    <i class="fa fa-users bg-blue"></i>
-                                    <div class="timeline-item">
-                                        <span class="time"><i class="fa fa-clock-o"></i> 
-                                            Há <?php echo $today->diff($registration->getRegistrationConvocationDate())->d ?> dias
-                                        </span>
-                                        <h3 class="timeline-header">Convocação Realizada.</h3>
-                                    </div>
-                                </li>
-                                <!-- /.timeline item -->
-
-                            <?php endif; ?>
-
-                            <?php if ($registration->getRegistrationAcceptanceDate() instanceof \DateTime): ?>
-
-                                <!-- timeline time label -->
-                                <li class="time-label">
-                                    <span class="bg-yellow">
-                                        <?php echo $registration->getRegistrationAcceptanceDate()->format('H:i \o\n l jS F Y'); ?>
-                                    </span>
-                                </li>
-                                <!-- /.timeline-label -->
-                                <!-- timeline item -->
-                                <li>
-                                    <i class="fa fa-graduation-cap bg-yellow"></i>
-                                    <div class="timeline-item">
-                                        <span class="time"><i class="fa fa-clock-o"></i> 
-                                            Há <?php echo $today->diff($registration->getRegistrationAcceptanceDate())->d ?> dias
-                                        </span>
-                                        <h3 class="timeline-header">Aprovação concedida.</h3>
-                                    </div>
-                                </li>
-                                <!-- /.timeline item -->
-
-                            <?php endif; ?>
-                            <?php if (is_array($config['tabs']['recruitment-timeline'])): ?>
-                                <?php
-                                foreach ($config['tabs']['recruitment-timeline'] as $timelineItem):
-                                    ?>
-
-                                    <!-- timeline time label -->
-                                    <li class="time-label">
-                                        <span class="<?php echo $timelineItem['color']; ?>">
-                                            <?php echo $timelineItem['title']; ?>
-                                        </span>
-                                    </li>
-                                    <!-- /.timeline-label -->
-                                    <!-- timeline item -->
-                                    <li>
-                                        <i class="<?php
-                                        echo $timelineItem['icon'] . ' ' .
-                                        $timelineItem['color'];
-                                        ?>"></i>
-                                        <div class="timeline-item">
-                                            <span class="time"><i class="fa fa-clock-o"></i> 
-                                                <?php echo $timelineItem['time']; ?>
-                                            </span>
-                                            <h3 class="timeline-header">
-                                                <?php echo $timelineItem['content-header']; ?>
-                                            </h3>
-                                        </div>
-                                    </li>
-                                    <!-- /.timeline item -->
-
+                        <table class="table">
+                            <thead>
+                                <tr>
+                                    <th> Situação </th>
+                                    <th> Data </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($rstatus as $st): ?>
+                                    <tr>
+                                        <td><?php echo $st->getRecruitmentStatus()->getStatusType(); ?></td>
+                                        <td><?php echo $st->getTimestamp() ?></td>
+                                    </tr>
                                 <?php endforeach; ?>
-                            <?php endif; ?>
-
-
-                            <!-- END timeline item -->
-                            <li>
-                                <i class="fa fa-clock-o bg-gray"></i>
-                            </li>
-                        </ul>
+                            </tbody>
+                        </table>
                     </div>
 
                 <?php endif; ?>

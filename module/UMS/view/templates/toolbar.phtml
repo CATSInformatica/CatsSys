@@ -14,11 +14,11 @@ $activePage = $this->navigation($container)->findOneBy('active', 1);
     <ul class="control-sidebar-menu <?php echo $this->navigation($container)->menu()->getUlClass(); ?>">
         <?php foreach ($menu as $item): ?>
             <li
+            <?php echo empty($item['id']) ? ' ' : ' id="' . $item['id'] . '" '; ?>
                 data-fntype="<?php echo $item['fntype']; ?>" 
                 data-title="<?php echo $item['title']; ?>"
                 >
-                <a 
-                <?php echo empty($item['id']) ? ' ' : ' id="' . $item['id'] . '" '; ?>
+                <a
                     href="<?php echo $item['url']; ?>"
                     <?php echo empty($item['target']) ? ' ' : 'target="' . $item['target'] . '"'; ?> 
                     >

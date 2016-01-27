@@ -60,11 +60,18 @@ define(['dropzone', 'bootbox', 'moment', 'masks', 'datetimepicker', 'jquery'], f
             });
         };
 
+
+
         return {
             init: function () {
                 initImageUpload();
                 initDatepickers();
                 initMasks();
+            },
+            getDataOf: function (identity) {
+                return {
+                    id: $('#identity').data('identity')
+                };
             }
         };
     }());

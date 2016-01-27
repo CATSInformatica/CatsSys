@@ -64,10 +64,10 @@ class Registration extends \Recruitment\Entity\Registration implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationId', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationConfirmationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationConvocationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationAcceptanceDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'preInterview', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'person', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitmentKnowAbout');
+            return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationId', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'preInterview', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'person', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitmentKnowAbout', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'occupation', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'education', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerWork', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'howAndWhenKnowUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'whyWorkWithUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerWithUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'responsibility', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'proactive', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerSpirit', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'commitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'teamWork', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'efficiency', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'courtesy', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationStatus');
         }
 
-        return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationId', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationConfirmationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationConvocationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationAcceptanceDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'preInterview', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'person', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitmentKnowAbout');
+        return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationId', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'preInterview', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'person', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitmentKnowAbout', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'occupation', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'education', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerWork', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'howAndWhenKnowUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'whyWorkWithUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerWithUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'responsibility', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'proactive', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerSpirit', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'commitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'teamWork', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'efficiency', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'courtesy', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationStatus');
     }
 
     /**
@@ -213,50 +213,6 @@ class Registration extends \Recruitment\Entity\Registration implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getRegistrationConfirmationDate()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRegistrationConfirmationDate', array());
-
-        return parent::getRegistrationConfirmationDate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setRegistrationConfirmationDate($registrationConfirmationDate)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRegistrationConfirmationDate', array($registrationConfirmationDate));
-
-        return parent::setRegistrationConfirmationDate($registrationConfirmationDate);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function getRegistrationConvocationDate()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRegistrationConvocationDate', array());
-
-        return parent::getRegistrationConvocationDate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setRegistrationConvocationDate($registrationConvocationDate)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRegistrationConvocationDate', array($registrationConvocationDate));
-
-        return parent::setRegistrationConvocationDate($registrationConvocationDate);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getRecruitment()
     {
 
@@ -312,28 +268,6 @@ class Registration extends \Recruitment\Entity\Registration implements \Doctrine
     /**
      * {@inheritDoc}
      */
-    public function getRegistrationAcceptanceDate()
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRegistrationAcceptanceDate', array());
-
-        return parent::getRegistrationAcceptanceDate();
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setRegistrationAcceptanceDate($registrationAcceptanceDate)
-    {
-
-        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setRegistrationAcceptanceDate', array($registrationAcceptanceDate));
-
-        return parent::setRegistrationAcceptanceDate($registrationAcceptanceDate);
-    }
-
-    /**
-     * {@inheritDoc}
-     */
     public function getRegistrationNumber()
     {
 
@@ -384,6 +318,358 @@ class Registration extends \Recruitment\Entity\Registration implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRecruitmentKnowAbout', array($arr));
 
         return parent::removeRecruitmentKnowAbout($arr);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hasPreInterview()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasPreInterview', array());
+
+        return parent::hasPreInterview();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getOccupation()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getOccupation', array());
+
+        return parent::getOccupation();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getEducation()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEducation', array());
+
+        return parent::getEducation();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getVolunteerWork()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVolunteerWork', array());
+
+        return parent::getVolunteerWork();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getHowAndWhenKnowUs()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getHowAndWhenKnowUs', array());
+
+        return parent::getHowAndWhenKnowUs();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getWhyWorkWithUs()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getWhyWorkWithUs', array());
+
+        return parent::getWhyWorkWithUs();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getVolunteerWithUs()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVolunteerWithUs', array());
+
+        return parent::getVolunteerWithUs();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setOccupation($occupation)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setOccupation', array($occupation));
+
+        return parent::setOccupation($occupation);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setEducation($education)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEducation', array($education));
+
+        return parent::setEducation($education);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setVolunteerWork($volunteerWork)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVolunteerWork', array($volunteerWork));
+
+        return parent::setVolunteerWork($volunteerWork);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setHowAndWhenKnowUs($howAndWhenKnowUs)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setHowAndWhenKnowUs', array($howAndWhenKnowUs));
+
+        return parent::setHowAndWhenKnowUs($howAndWhenKnowUs);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setWhyWorkWithUs($whyWorkWithUs)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setWhyWorkWithUs', array($whyWorkWithUs));
+
+        return parent::setWhyWorkWithUs($whyWorkWithUs);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setVolunteerWithUs($volunteerWithUs)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVolunteerWithUs', array($volunteerWithUs));
+
+        return parent::setVolunteerWithUs($volunteerWithUs);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getResponsibility()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getResponsibility', array());
+
+        return parent::getResponsibility();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getProactive()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getProactive', array());
+
+        return parent::getProactive();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getVolunteerSpirit()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVolunteerSpirit', array());
+
+        return parent::getVolunteerSpirit();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCommitment()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCommitment', array());
+
+        return parent::getCommitment();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getTeamWork()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getTeamWork', array());
+
+        return parent::getTeamWork();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getEfficiency()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getEfficiency', array());
+
+        return parent::getEfficiency();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCourtesy()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCourtesy', array());
+
+        return parent::getCourtesy();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setResponsibility($responsibility)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setResponsibility', array($responsibility));
+
+        return parent::setResponsibility($responsibility);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setProactive($proactive)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setProactive', array($proactive));
+
+        return parent::setProactive($proactive);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setVolunteerSpirit($volunteerSpirit)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVolunteerSpirit', array($volunteerSpirit));
+
+        return parent::setVolunteerSpirit($volunteerSpirit);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCommitment($commitment)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCommitment', array($commitment));
+
+        return parent::setCommitment($commitment);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setTeamWork($teamWork)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setTeamWork', array($teamWork));
+
+        return parent::setTeamWork($teamWork);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setEfficiency($efficiency)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setEfficiency', array($efficiency));
+
+        return parent::setEfficiency($efficiency);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setCourtesy($courtesy)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setCourtesy', array($courtesy));
+
+        return parent::setCourtesy($courtesy);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getRegistrationStatus()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getRegistrationStatus', array());
+
+        return parent::getRegistrationStatus();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addRegistrationStatus(\Recruitment\Entity\RegistrationStatus $regStatus)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'addRegistrationStatus', array($regStatus));
+
+        return parent::addRegistrationStatus($regStatus);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function hasRegistrationStatus(\Recruitment\Entity\RegistrationStatus $regStatus)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'hasRegistrationStatus', array($regStatus));
+
+        return parent::hasRegistrationStatus($regStatus);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function removeRegistrationStatus(\Recruitment\Entity\RegistrationStatus $regStatus)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'removeRegistrationStatus', array($regStatus));
+
+        return parent::removeRegistrationStatus($regStatus);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getCurrentRegistrationStatus()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCurrentRegistrationStatus', array());
+
+        return parent::getCurrentRegistrationStatus();
     }
 
 }

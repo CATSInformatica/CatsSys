@@ -41,8 +41,9 @@ trait PersonService
 
             $this->adjustAddresses($newPerson);
             $person->addAddresses($newPerson->getAddresses());
-
+            $newPerson->removeAddresses($newPerson->getAddresses());
             $registration->setPerson($person);
+            
         } else {
             $this->adjustAddresses($newPerson);
             //imagem padrão do perfil

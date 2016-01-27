@@ -9,6 +9,7 @@
 namespace Recruitment\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Recruitment\Entity\Recruitment;
 
 /**
  * Description of Registration
@@ -19,31 +20,26 @@ class Registration extends EntityRepository
 {
 
     /**
-     * Busca por todos as inscrições do processo seletivo $rid cuja data de aprovação não é nula
+     * Busca a última inscrição com cpf $cpf do processo seletivo de alunos
      * 
-     * @param integer $rid
-     * @return array
+     * @param string $cpf
+     * @return mixed Recruitment\Entity\Registration | null
      */
-    public function findByAccepted($rid)
-    {
-
-        return $this->_em
-                ->createQuery('SELECT rg FROM Recruitment\Entity\Registration rg '
-                    . 'WHERE rg.recruitment = :rid AND '
-                    . ' rg.registrationAcceptanceDate IS NOT NULL'
-                )
-                ->setParameter('rid', $rid)
-                ->getResult();
-    }
-
     public function findOneByPersonCpf($cpf)
     {
         return $this->_em
-        ->createQuery('SELECT r FROM Recruitment\Entity\Registration r '
-            . 'JOIN r.person p WHERE p.personCpf = :cpf '
-            . 'ORDER BY r.recruitment DESC')
-            ->setParameter('cpf', $cpf)
-            ->getOneOrNullResult();
+                ->createQuery('SELECT r FROM Recruitment\Entity\Registration r '
+                    . 'JOIN r.person p '
+                    . 'JOIN r.recruitment re '
+                    . 'WHERE p.personCpf = :cpf '
+                    . 'AND re.recruitmentType = :rtype '
+                    . 'ORDER BY r.registrationId DESC')
+                ->setParameters(array(
+                    'cpf' => $cpf,
+                    'rtype' => Recruitment::STUDENT_RECRUITMENT_TYPE,
+                ))
+                ->setMaxResults(1)
+                ->getOneOrNullResult();
     }
 
 }

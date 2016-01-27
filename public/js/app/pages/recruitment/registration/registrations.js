@@ -5,7 +5,7 @@
  */
 
 
-define(['jquery', 'datatable'], function () {
+define(['moment', 'datetimepicker', 'datatable'], function (moment) {
     var index = (function () {
         // your module code goes here
         // var config = null;
@@ -14,6 +14,17 @@ define(['jquery', 'datatable'], function () {
          * 
          * private functions
          */
+
+        initDatepickers = function () {
+            $("input[name=timestamp]").closest(".input-group").datetimepicker({
+                format: 'DD/MM/YYYY H:mm',
+                minDate: moment(),
+                useCurrent: false,
+                maxDate: moment().add(1, 'years'),
+                locale: 'pt-br',
+                viewDate: moment()
+            });
+        };
 
         initDataTable = function () {
 
@@ -44,7 +55,13 @@ define(['jquery', 'datatable'], function () {
 
         return {
             init: function () {
+                initDatepickers();
                 initDataTable();
+            },
+            getDataOf: function (statusAction) {
+                return {
+//                    id: $('#identity').data('identity')
+                };
             }
         };
 

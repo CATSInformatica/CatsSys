@@ -1,5 +1,5 @@
 LOCK TABLES `resource` WRITE;
-INSERT INTO `resource` VALUES (2,'Authentication\\Controller\\Login'),(5,'Authentication\\Controller\\User'),(3,'Authorization\\Controller\\Index'),(7,'Authorization\\Controller\\Privilege'),(8,'Authorization\\Controller\\Resource'),(6,'Authorization\\Controller\\Role'),(10,'DoctrineModule\\Controller\\Cli'),(12,'Documents\\Controller\\StudentBgConfig'),(19,'Documents\\Controller\\GeneratePdf'),(16,'Recruitment\\Controller\\Captcha'),(18,'Recruitment\\Controller\\Interview'),(17,'Recruitment\\Controller\\PreInterview'),(9,'Recruitment\\Controller\\Recruitment'),(11,'Recruitment\\Controller\\Registration'),(14,'SchoolManagement\\Controller\\Enrollment'),(15,'SchoolManagement\\Controller\\SchoolWarning'),(13,'SchoolManagement\\Controller\\StudentClass'),(1,'Site\\Controller\\Index'),(4,'UMS\\Controller\\Index');
+INSERT INTO `resource` VALUES (2,'Authentication\\Controller\\Login'),(5,'Authentication\\Controller\\User'),(3,'Authorization\\Controller\\Index'),(7,'Authorization\\Controller\\Privilege'),(8,'Authorization\\Controller\\Resource'),(6,'Authorization\\Controller\\Role'),(10,'DoctrineModule\\Controller\\Cli'),(12,'Documents\\Controller\\StudentBgConfig'),(19,'Documents\\Controller\\GeneratePdf'),(16,'Recruitment\\Controller\\Captcha'),(18,'Recruitment\\Controller\\Interview'),(17,'Recruitment\\Controller\\PreInterview'),(9,'Recruitment\\Controller\\Recruitment'),(11,'Recruitment\\Controller\\Registration'),(14,'SchoolManagement\\Controller\\Enrollment'),(15,'SchoolManagement\\Controller\\SchoolWarning'),(13,'SchoolManagement\\Controller\\StudentClass'),(1,'Site\\Controller\\Index'),(4,'UMS\\Controller\\Index'),(20,'Recruitment\\Controller\\Address');
 UNLOCK TABLES;
 
 LOCK TABLES `role` WRITE;
@@ -24,6 +24,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `recruitment` WRITE;
 INSERT INTO `recruitment` VALUES (1,2,2016,'2015-12-23 00:00:00','2016-06-18 00:00:00','201621.pdf',1);
+INSERT INTO `recruitment` VALUES (2,1,2016,'2016-01-23 00:00:00','2016-06-18 00:00:00','201612.pdf',2);
 UNLOCK TABLES;
 
 LOCK TABLES `recruitment_know_about` WRITE;
@@ -32,16 +33,6 @@ UNLOCK TABLES;
 
 LOCK TABLES `recruitment_live_with_you` WRITE;
 INSERT INTO `recruitment_live_with_you` VALUES (1, 'Moro sozinho.'), (2, 'Filhos.'), (3, 'Moro com pai e/ou mãe.'), (4, 'Irmãos.'), (5, 'Esposa, marido, companheiro(a).'), (6, 'Outro.');
-UNLOCK TABLES;
-
-LOCK TABLES `registration` WRITE;
-INSERT INTO `registration` VALUES 
-(1,1,NULL,1,'2016-01-12 19:14:09','2016-01-12 19:42:35','2016-01-12 19:42:38','2016-01-12 20:24:01', NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL),
-(2,1,NULL,4,'2016-01-12 19:31:44',NULL,NULL,NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL, NULL);
-UNLOCK TABLES;
-
-LOCK TABLES `registration_recruitment_know_about` WRITE;
-INSERT INTO `registration_recruitment_know_about` VALUES (1,2),(1,4),(1,5),(1,8),(2,3),(2,5);
 UNLOCK TABLES;
 
 LOCK TABLES `class` WRITE;
@@ -54,6 +45,20 @@ INSERT INTO `warning_type` VALUES (1,'INDISCIPLINA [ORAL]','Advertência dada or
 /*!40000 ALTER TABLE `warning_type` ENABLE KEYS */;
 UNLOCK TABLES;
 
-LOCK TABLES `enrollment` WRITE;
-INSERT INTO `enrollment` VALUES (1,1,1,'2016-01-12 20:27:36',NULL);
+LOCK TABLES `recruitment_status` WRITE;
+INSERT INTO `recruitment_status` VALUES 
+(1, 0),
+(2, 1),
+(3, 2),
+(4, 3),
+(5, 4),
+(6, 5),
+(7, 6),
+(8, 7),
+(9, 8),
+(10, 9),
+(11, 10),
+(12, 11),
+(13, 12),
+(14, 13);
 UNLOCK TABLES;

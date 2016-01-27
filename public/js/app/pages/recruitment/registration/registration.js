@@ -5,7 +5,7 @@
  */
 
 
-define(['moment', 'masks', 'jquery', 'datetimepicker'], function (moment, masks) {
+define(['moment', 'masks', 'app/models/Service', 'jquery', 'datetimepicker'], function (moment, masks, service) {
     var form = (function () {
         // your module code goes here
         // var config = null;
@@ -47,11 +47,18 @@ define(['moment', 'masks', 'jquery', 'datetimepicker'], function (moment, masks)
             });
         };
 
+        initServices = function () {
+            service.bindZipService({
+                dataHolder: $('input[name*=addressPostalCode]')
+            });
+        };
+
         return {
             init: function () {
                 initDatepickers();
                 initCaptchaOperations();
                 initMasks();
+                initServices();
             }
         };
     }());

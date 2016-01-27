@@ -9,19 +9,20 @@
 namespace Recruitment\Controller;
 
 use Database\Service\EntityManagerService;
-use DateTime;
 use Exception;
 use Recruitment\Form\CpfFilter;
 use Recruitment\Form\CpfForm;
 use Recruitment\Form\PreInterviewForm;
 use Recruitment\Service\AddressService;
 use Recruitment\Service\RelativeService;
+use Recruitment\Service\RegistrationStatusService;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Recruitment\Entity\RecruitmentStatus;
 
 /**
  * Description of PreInterviewController
@@ -36,7 +37,10 @@ class PreInterviewController extends AbstractActionController
     const INCOME_FILE_SUFFIX = '_income.pdf';
     const EXPENDURE_FILE_SUFFIX = '_expendure.pdf';
 
-    use EntityManagerService, RelativeService, AddressService;
+    use EntityManagerService,
+        RelativeService,
+        AddressService,
+        RegistrationStatusService;
 
     /**
      * @todo Verificar se a entrevista do candidato já foi feita, se sim, faz o bloqueio da pré-entrevista.
@@ -50,21 +54,23 @@ class PreInterviewController extends AbstractActionController
 
         if ($request->isPost()) {
             $data = $request->getPost();
-            $form->setInputFilter(new CpfFilter());
             $form->setData($data);
 
             if ($form->isValid()) {
                 $data = $form->getData();
 
                 try {
-
                     $em = $this->getEntityManager();
 
                     $registration = $em->getRepository('Recruitment\Entity\Registration')
                         ->findOneByPersonCpf($data['person_cpf']);
 
+
                     if ($registration !== null) {
-                        if ($registration->getRegistrationConvocationDate() instanceof DateTime) {
+                        $status = $registration->getCurrentRegistrationStatus();
+
+                        if ($status->getRecruitmentStatus()->getNumericStatusType() ===
+                            RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW) {
 
                             $studentContainer = new Container('pre_interview');
                             $studentContainer->offsetSet('regId', $registration->getRegistrationId());
@@ -79,12 +85,12 @@ class PreInterviewController extends AbstractActionController
                     } else {
                         $message = 'Candidato não encontrado.';
                     }
-                } catch (Exception $ex) {
-                    $message = 'Erro inesperado, não foi possível encontrar uma inscrição associada a este cpf.'
+                } catch (\Exception $ex) {
+                    $message = 'Erro inesperado. Não foi possível encontrar uma inscrição associada a este cpf.'
                         . $ex->getMessage();
                 }
             } else {
-                $message = '';
+                $message = null;
             }
         } else {
             $message = null;
@@ -195,6 +201,7 @@ class PreInterviewController extends AbstractActionController
                 'person' => array(
                     'relative' => $person->isPersonUnderage(),
                     'address' => true,
+                    'social_media' => false,
                 ),
                 'pre_interview' => true,
             );
@@ -214,6 +221,8 @@ class PreInterviewController extends AbstractActionController
                         ->setPreInterviewPersonalInfo($rid . self::PERSONAL_FILE_SUFFIX)
                         ->setPreInterviewIncomeProof($rid . self::INCOME_FILE_SUFFIX)
                         ->setPreInterviewExpenseReceipt($rid . self::EXPENDURE_FILE_SUFFIX);
+
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE);
 
                     $em->persist($registration);
                     $em->flush();

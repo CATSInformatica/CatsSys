@@ -12,17 +12,21 @@ use Database\Service\EntityManagerService;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
+use InvalidArgumentException;
 use Recruitment\Entity\Recruitment;
+use Recruitment\Entity\RecruitmentStatus;
 use Recruitment\Entity\Registration;
 use Recruitment\Form\RegistrationForm;
+use Recruitment\Form\TimestampForm;
+use Recruitment\Service\AddressService;
+use Recruitment\Service\PersonService;
+use Recruitment\Service\RegistrationStatusService;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\Form\View\Helper\Captcha\Image;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use Recruitment\Service\AddressService;
-use Recruitment\Service\PersonService;
 
 /**
  * 
@@ -37,7 +41,8 @@ class RegistrationController extends AbstractActionController
 
     use EntityManagerService,
         AddressService,
-        PersonService;
+        PersonService,
+        RegistrationStatusService;
 
     /**
      * 
@@ -78,14 +83,18 @@ class RegistrationController extends AbstractActionController
                 array('recruitmentType' => Recruitment::VOLUNTEER_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
             );
 
+            $form = new TimestampForm();
+
             return new ViewModel(array(
                 'message' => null,
                 'recruitments' => $recruitments,
+                'form' => $form,
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
                 'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.',
                 'recruitments' => null,
+                'form' => null,
             ));
         }
     }
@@ -112,101 +121,39 @@ class RegistrationController extends AbstractActionController
      * 
      * @return ViewModel Formulário de inscrição
      */
-    public function studentRegistrationAction()
+    public function registrationFormAction()
     {
-        try {
-            $em = $this->getEntityManager();
-            // Busca por um processo seletivo aberto
-            $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-                ->findByTypeAndBetweenBeginAndEndDates(Recruitment::STUDENT_RECRUITMENT_TYPE, new DateTime('now'));
-            if ($recruitment === null) {
-                return new ViewModel(array(
-                    'message' => 'Não existe nenhum processo seletivo de alunos vigente no momento.',
-                    'form' => null,
-                ));
-            }
-        } catch (Exception $ex) {
-            return new ViewModel(array(
-                'message' => 'Erro ao buscar processos seletivos vigentes.',
-                'form' => null,
-            ));
-        }
-        // Se existe um processo seletivo de alunos vigente ....
-        $form = new RegistrationForm($em);
-        $request = $this->getRequest();
-        // Se a requisição for post (o formulário foi preenchido e enviado para o servidor)
-        if ($request->isPost()) {
-            $registration = new Registration();
-            $form->bind($registration);
-            $form->setData($request->getPost());
-            // Se o formulário de inscrição foi preenchido corretamente
-            if ($form->isValid()) {
-                try {
-
-                    // verifica se a pessoa já está cadastrada.
-                    $this->adjustPerson($registration);
-
-                    // atribui a qual processo seletivo a inscrição pertence
-                    $registration->setRecruitment($recruitment);
-                    // salva no banco
-                    $em->persist($registration);
-                    $em->flush();
-                    // redirecionar para a página que gera o comprovante de inscrição e envia o email.
-                    return new ViewModel(array(
-                        'message' => 'Inscrição efetuada com sucesso.',
-                        'form' => null,
-                    ));
-                } catch (Exception $ex) {
-                    if ($ex instanceof UniqueConstraintViolationException) {
-                        $message = 'Não é possível fazer mais de uma inscrição em um mesmo processo seletivo.';
-                        $form = null;
-                    } else {
-                        $message = 'Erro inesperado.Por favor, tente novamente ou'
-                            . ' entre em contato com o administrador do sistema: ';
-                    }
-                    return new ViewModel(array(
-                        'message' => $message,
-                        'form' => $form,
-                    ));
-                }
-            }
-        }
-        return new ViewModel(array(
-            'message' => '',
-            'form' => $form,
-        ));
-    }
-
-    public function volunteerRegistrationAction()
-    {
+        $type = (int) $this->params('id', Recruitment::STUDENT_RECRUITMENT_TYPE);
 
         try {
             $em = $this->getEntityManager();
             // Busca por um processo seletivo aberto
             $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-                ->findByTypeAndBetweenBeginAndEndDates(Recruitment::VOLUNTEER_RECRUITMENT_TYPE, new DateTime('now'));
+                ->findByTypeAndBetweenBeginAndEndDates($type, new DateTime('now'));
             if ($recruitment === null) {
                 return new ViewModel(array(
-                    'message' => 'Não existe nenhum processo seletivo de voluntários vigente no momento.',
+                    'message' => 'Não existe nenhum processo seletivo vigente no momento.',
                     'form' => null,
                 ));
             }
         } catch (Exception $ex) {
             return new ViewModel(array(
-                'message' => 'Verificar a existência de processos seletivos em aberto.',
+                'message' => 'Não foi possível verificar a existência de processos seletivos abertos.',
                 'form' => null,
             ));
         }
 
-        $request = $this->getRequest();
-        $form = new RegistrationForm($em, RegistrationForm::TYPE_VOLUNTEER,
-            array(
+        $options = array(
             'person' => array(
                 'address' => true,
                 'relative' => false,
                 'social_media' => true,
-            ),
-        ));
+            )
+        );
+
+        $request = $this->getRequest();
+        $form = ($type === Recruitment::STUDENT_RECRUITMENT_TYPE ? new RegistrationForm($em) :
+                new RegistrationForm($em, $type, $options));
 
         if ($request->isPost()) {
 
@@ -220,15 +167,28 @@ class RegistrationController extends AbstractActionController
                     // verifica se a pessoa já está cadastrada.
                     $this->adjustPerson($registration);
 
+                    $this->updateRegistrationStatus(
+                        $registration, RecruitmentStatus::STATUSTYPE_REGISTERED,
+                        $registration->getRegistrationDateAsDateTime()
+                    );
+
                     // atribui a qual processo seletivo a inscrição pertence
                     $registration->setRecruitment($recruitment);
+
                     // salva no banco
                     $em->persist($registration);
                     $em->flush();
+
                     // redirecionar para a página que gera o comprovante de inscrição e envia o email.
+                    if ($type == Recruitment::STUDENT_RECRUITMENT_TYPE) {
+                        $message = 'Inscrição para o processo seletivo de alunos efetuada com sucesso.';
+                    } else {
+                        $message = 'Inscrição efetuada com sucesso. Um de nosso voluntários entrará em contato com você'
+                            . ' para agendar uma entrevista.';
+                    }
+
                     return new ViewModel(array(
-                        'message' => 'Inscrição efetuada com sucesso. Um de nosso voluntários entrará em contato com você'
-                        . ' para agendar uma entrevista.',
+                        'message' => $message,
                         'form' => null,
                     ));
                 } catch (Exception $ex) {
@@ -237,11 +197,12 @@ class RegistrationController extends AbstractActionController
                         $form = null;
                     } else {
                         $message = 'Erro inesperado. Por favor, tente novamente ou'
-                            . ' entre em contato com o administrador do sistema: ';
+                            . ' entre em contato com o administrador do sistema: ' . $ex->getMessage();
                     }
                     return new ViewModel(array(
                         'message' => $message,
                         'form' => $form,
+                        'type' => $type,
                     ));
                 }
             }
@@ -249,6 +210,7 @@ class RegistrationController extends AbstractActionController
 
         return new ViewModel(array(
             'form' => $form,
+            'type' => $type,
         ));
     }
 
@@ -277,17 +239,10 @@ class RegistrationController extends AbstractActionController
 
                 foreach ($regs as $r) {
 
-                    if ($r->isAccepted()) {
-                        $status = 'APROVADO';
-                    } else if ($r->hasPreInterview()) {
-                        $status = 'PRE-ENTREVISTA REALIZADA';
-                    } else if ($r->isCalled()) {
-                        $status = 'CONVOCADO PARA PRÉ-ENTREVISTA';
-                    } else if ($r->isConfirmed()) {
-                        $status = 'CONFIRMADO';
-                    } else {
-                        $status = 'INSCRITO';
-                    }
+                    $status = $r->getCurrentRegistrationStatus();
+
+                    $timestamp = $status->getTimestamp();
+                    $statusType = $status->getRecruitmentStatus()->getStatusType();
 
                     $person = $r->getPerson();
                     $resultSet['data'][] = array(
@@ -301,7 +256,7 @@ class RegistrationController extends AbstractActionController
                         $person->getPersonCpf(),
                         $person->getPersonRg(),
                         $person->getPersonEmail(),
-                        $status,
+                        $statusType . '<br>' . $timestamp,
                     );
                 }
             } catch (Exception $ex) {
@@ -310,6 +265,163 @@ class RegistrationController extends AbstractActionController
 
             return new JsonModel($resultSet);
         }
+    }
+
+    /**
+     * 
+     * Refactor merge confirmation, convocation and acceptance into one
+     * 
+     * @return JsonModel
+     */
+    public function confirmationAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+
+            try {
+                $data = $request->getPost();
+                $em = $this->getEntityManager();
+                $registration = $em->getReference('Recruitment\Entity\Registration', $data['id']);
+
+                $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_CONFIRMED);
+
+                $em->persist($registration);
+                $em->flush();
+
+                return new JsonModel(array(
+                    'message' => 'Candidato confirmado com sucesso.',
+                ));
+            } catch (Exception $ex) {
+                return new JsonModel(array(
+                    'message' => 'Erro inesperado: ' . $ex->getMessage(),
+                ));
+            }
+        }
+
+        return new JsonModel(array(
+            'message' => 'Esta url só pode ser acessada via POST.',
+        ));
+    }
+
+    public function convocationAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+
+            try {
+                $data = $request->getPost();
+                $em = $this->getEntityManager();
+                $registration = $em->getReference('Recruitment\Entity\Registration', $data['id']);
+
+                /**
+                 * Atualizar status do candidato
+                 */
+                $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW);
+
+                $em->persist($registration);
+                $em->flush();
+
+                return new JsonModel(array(
+                    'message' => 'Candidato convocado com sucesso.',
+                ));
+            } catch (Exception $ex) {
+                return new JsonModel(array(
+                    'message' => 'Erro inesperado: ' . $ex->getMessage(),
+                ));
+            }
+        }
+
+        return new JsonModel(array(
+            'message' => 'Esta url só pode ser acessada via POST.',
+        ));
+    }
+
+    public function acceptanceAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+
+            try {
+                $data = $request->getPost();
+                $em = $this->getEntityManager();
+                $registration = $em->getReference('Recruitment\Entity\Registration', $data['id']);
+
+                /**
+                 * Atualizar status do candidato
+                 */
+                $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED);
+
+                $em->persist($registration);
+                $em->flush();
+
+                return new JsonModel(array(
+                    'message' => 'Candidato aprovado com sucesso.',
+                ));
+            } catch (Exception $ex) {
+                return new JsonModel(array(
+                    'message' => 'Erro inesperado: ' . $ex->getMessage(),
+                ));
+            }
+        }
+
+        return new JsonModel(array(
+            'message' => 'Esta url só pode ser acessada via POST.',
+        ));
+    }
+
+    public function updateStatusAction()
+    {
+
+        $rid = $this->params('id', false);
+        $sid = $this->params('sid', false);
+
+        $request = $this->getRequest();
+
+        if ($request->isPost() && $rid && $sid) {
+
+            try {
+
+                $em = $this->getEntityManager();
+                $data = $request->getPost();
+
+                if (isset($data['timestamp'])) {
+                    $form = new TimestampForm();
+                    $form->setData($data);
+
+                    if ($form->isValid()) {
+                        $data = $form->getData();
+                    } else {
+                        throw new InvalidArgumentException('Data inválida');
+                    }
+                }
+
+                $registration = $em->getReference('Recruitment\Entity\Registration', $rid);
+
+                /**
+                 * Atualizar status do candidato
+                 */
+                $this->updateRegistrationStatus($registration, $sid, $data['timestamp']);
+
+//                $em->persist($registration);
+//                $em->flush();
+
+                return new JsonModel(array(
+                    'message' => 'Situação do candidato alterada para ' . RecruitmentStatus::statusTypeToString($sid),
+                ));
+            } catch (Exception $ex) {
+
+                return new JsonModel(array(
+                    'message' => 'Erro: ' . $ex->getMessage(),
+                ));
+            }
+        }
+
+        return new JsonModel(array(
+            'message' => 'Esta url só pode ser acessada via POST.',
+        ));
     }
 
     /**
@@ -423,172 +535,6 @@ class RegistrationController extends AbstractActionController
                 ));
             }
         }
-    }
-
-    /**
-     * Faz a confirmação/Desconfirma a inscrição de um candidato
-     * 
-     * @return JsonModel essa action é acionada via ajax
-     */
-    public function confirmationAction()
-    {
-        $id = $this->params('id', false);
-
-        if ($id) {
-
-            try {
-                $em = $this->getEntityManager();
-
-                $registration = $em->find('Recruitment\Entity\Registration', $id);
-
-                if ($registration->getRegistrationConfirmationDate() !== null) {
-                    $registration->setRegistrationConfirmationDate(null);
-                    $msg = 'Confirmação revogada com sucesso.';
-                } else {
-                    $registration->setRegistrationConfirmationDate(new \DateTime('now'));
-                    $msg = 'Candidato confirmado com sucesso.';
-                }
-
-                $em->persist($registration);
-                $em->flush();
-            } catch (Exception $ex) {
-                $msg = 'Erro ao tentar alterar a confirmação: ' . $ex->getMessage();
-            }
-
-            return new JsonModel(array(
-                'message' => $msg,
-            ));
-        }
-
-        return new JsonModel(array(
-            'message' => 'Nenhum identificador especificado.',
-        ));
-    }
-
-    /**
-     * Faz a convocação/Desconvoca um candidato para a pré-entrevista
-     * 
-     * @return JsonModel essa action é acionada via ajax
-     */
-    public function convocationAction()
-    {
-        $id = $this->params('id', false);
-
-        if ($id) {
-
-            try {
-                $em = $this->getEntityManager();
-
-                $registration = $em->find('Recruitment\Entity\Registration', $id);
-
-                if ($registration->getRegistrationConvocationDate() !== null) {
-                    $registration->setRegistrationConvocationDate(null);
-                    $msg = 'Convocação revogada com sucesso.';
-                } else {
-                    $registration->setRegistrationConvocationDate(new \DateTime('now'));
-                    $msg = 'Candidato convocado com sucesso.';
-                }
-
-                $em->persist($registration);
-                $em->flush();
-            } catch (Exception $ex) {
-                $msg = 'Erro ao tentar alterar a convocação: ' . $ex->getMessage();
-            }
-
-            return new JsonModel(array(
-                'message' => $msg,
-            ));
-        }
-
-        return new JsonModel(array(
-            'message' => 'Nenhum identificador especificado.',
-        ));
-    }
-
-    /**
-     * Faz a aprovação/Desprovação de um candidato
-     * 
-     * @return JsonModel essa action é acionada via ajax
-     */
-    public function acceptanceAction()
-    {
-        $id = $this->params('id', false);
-
-        if ($id) {
-
-            try {
-                $em = $this->getEntityManager();
-
-                $registration = $em->find('Recruitment\Entity\Registration', $id);
-
-                if ($registration->getRegistrationAcceptanceDate() !== null) {
-                    $registration->setRegistrationAcceptanceDate(null);
-                    $msg = 'Aprovação revogada com sucesso.';
-                } else {
-                    $registration->setRegistrationAcceptanceDate(new \DateTime('now'));
-                    $msg = 'Candidato aprovado com sucesso.';
-                }
-
-                $em->persist($registration);
-                $em->flush();
-            } catch (Exception $ex) {
-                $msg = 'Erro ao tentar alterar a aprovação: ' . $ex->getMessage();
-            }
-
-            return new JsonModel(array(
-                'message' => $msg,
-            ));
-        }
-
-        return new JsonModel(array(
-            'message' => 'Nenhum identificador especificado.',
-        ));
-    }
-
-    /**
-     * Retorna os candidatos do processo seletivo $id aptos a realizarem a matrícula
-     * 
-     * @return JsonModel
-     */
-    public function getAcceptedStudentsAction()
-    {
-        $request = $this->getRequest();
-        if ($request->isPost()) {
-
-            $rid = $request->getPost()['rid'];
-
-            $resultSet = ['data' => [
-            ]];
-
-            try {
-
-                $em = $this->getEntityManager();
-                $regs = $em->getRepository('Recruitment\Entity\Registration')
-                    ->findByAccepted($rid);
-
-                foreach ($regs as $r) {
-                    $person = $r->getPerson();
-                    $resultSet['data'][] = array(
-                        'DT_RowClass' => 'cats-row',
-                        'DT_RowAttr' => [
-                            'data-id' => $r->getRegistrationId()
-                        ],
-                        $r->getRegistrationNumber(),
-                        $r->getRegistrationDate(),
-                        $person->getPersonFirstName() . ' ' . $person->getPersonLastName(),
-                        $person->getPersonCpf(),
-                        $person->getPersonRg(),
-                        $person->getPersonEmail(),
-                    );
-                }
-            } catch (Exception $ex) {
-                return new JsonModel([$ex->getMessage()]);
-            }
-
-            return new JsonModel($resultSet);
-        }
-
-        return new JsonModel([]);
     }
 
 }

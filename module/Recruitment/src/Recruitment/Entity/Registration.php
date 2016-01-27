@@ -13,6 +13,7 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Recruitment\Entity\Person;
 use Recruitment\Entity\Recruitment;
+use Doctrine\Common\Collections\Criteria;
 
 /**
  * Description of Registration
@@ -47,27 +48,6 @@ class Registration
      * @ORM\Column(name="registration_date", type="datetime", nullable=false)
      */
     private $registrationDate;
-
-    /**
-     *
-     * @var \DateTime
-     * @ORM\Column(name="registration_confirmation_date", type="datetime", nullable=true)
-     */
-    private $registrationConfirmationDate;
-
-    /**
-     *
-     * @var \DateTime
-     * @ORM\Column(name="registration_convocation_date", type="datetime", nullable=true)
-     */
-    private $registrationConvocationDate;
-
-    /**
-     *
-     * @var \DateTime
-     * @ORM\Column(name="registration_acceptance_date", type="datetime", nullable=true)
-     */
-    private $registrationAcceptanceDate;
 
     /**
      *
@@ -118,41 +98,41 @@ class Registration
 
     /**
      * @var string
-     * @ORM\Column(name="registration_occupation", type="string", length=200)
+     * @ORM\Column(name="registration_occupation", type="string", length=200, nullable=true)
      */
     private $occupation;
 
     /**
      * @var string
-     * @ORM\Column(name="registration_education", type="string", length=200)
+     * @ORM\Column(name="registration_education", type="string", length=200, nullable=true)
      */
     private $education;
 
     /**
      *
      * @var string
-     * @ORM\Column(name="registration_volunteer_work", type="string", length=200)
+     * @ORM\Column(name="registration_volunteer_work", type="string", length=200, nullable=true)
      */
     private $volunteerWork;
 
     /**
      *
      * @var string
-     * @ORM\Column(name="registration_howandwhen_knowus", type="string", length=200)
+     * @ORM\Column(name="registration_howandwhen_knowus", type="string", length=200, nullable=true)
      */
     private $howAndWhenKnowUs;
 
     /**
      *
      * @var string
-     * @ORM\Column(name="registration_whywork_withus", type="string", length=200)
+     * @ORM\Column(name="registration_whywork_withus", type="string", length=200, nullable=true)
      */
     private $whyWorkWithUs;
 
     /**
      *
      * @var string
-     * @ORM\Column(name="registration_volunteer_workwithus", type="string", length=200)
+     * @ORM\Column(name="registration_volunteer_workwithus", type="string", length=200, nullable=true)
      */
     private $volunteerWithUs;
 
@@ -168,62 +148,55 @@ class Registration
     /**
      *
      * @var integer
-     * @ORM\Column(name="registration_responsibility", type="smallint")
+     * @ORM\Column(name="registration_responsibility", type="smallint", nullable=true)
      */
     private $responsibility;
 
     /**
      *
      * @var integer
-     * @ORM\Column(name="registration_proactive", type="smallint")
+     * @ORM\Column(name="registration_proactive", type="smallint", nullable=true)
      */
     private $proactive;
 
     /**
      *
      * @var integer
-     * @ORM\Column(name="registration_volunteer_spirit", type="smallint")
+     * @ORM\Column(name="registration_volunteer_spirit", type="smallint", nullable=true)
      */
     private $volunteerSpirit;
 
     /**
      *
      * @var integer
-     * @ORM\Column(name="registration_commitment", type="smallint")
+     * @ORM\Column(name="registration_commitment", type="smallint", nullable=true)
      */
     private $commitment;
 
     /**
      *
      * @var integer
-     * @ORM\Column(name="registration_team_work", type="smallint")
+     * @ORM\Column(name="registration_team_work", type="smallint", nullable=true)
      */
     private $teamWork;
 
     /**
      *
      * @var integer
-     * @ORM\Column(name="registration_efficiency", type="smallint")
+     * @ORM\Column(name="registration_efficiency", type="smallint", nullable=true)
      */
     private $efficiency;
 
     /**
      * @var integer
-     * @ORM\Column(name="registration_courtesy", type="smallint")
+     * @ORM\Column(name="registration_courtesy", type="smallint", nullable=true)
      */
     private $courtesy;
 
     /**
-     * 
      * @var Collection
-     * @ORM\ManyToMany(targetEntity="RegistrationStatus", fetch="EXTRA_LAZY")
-     * @ORM\JoinTable(name="registration_has_status",
-     *      joinColumns={@ORM\JoinColumn(name="registration_id", 
-     *          referencedColumnName="registration_id")
-     *      },
-     *      inverseJoinColumns={@ORM\JoinColumn(name="registration_status_id", 
-     *          referencedColumnName="registration_status_id")}
-     * )
+     * @ORM\OneToMany(targetEntity="RegistrationStatus", mappedBy="registration", cascade={"persist", "remove"},
+     *      orphanRemoval=true)
      */
     private $registrationStatus;
 
@@ -231,6 +204,7 @@ class Registration
     {
         $this->registrationDate = new \DateTime('now');
         $this->recruitmentKnowAbout = new ArrayCollection();
+        $this->registrationStatus = new ArrayCollection();
     }
 
     /**
@@ -259,46 +233,6 @@ class Registration
     public function getRegistrationDateAsDateTime()
     {
         return $this->registrationDate;
-    }
-
-    /**
-     * 
-     * @return mixed \DateTime | null
-     */
-    public function getRegistrationConfirmationDate()
-    {
-        return $this->registrationConfirmationDate;
-    }
-
-    /**
-     * 
-     * @param mixed $registrationConfirmationDate \DateTime | null
-     * @return Registration
-     */
-    public function setRegistrationConfirmationDate($registrationConfirmationDate)
-    {
-        $this->registrationConfirmationDate = $registrationConfirmationDate;
-        return $this;
-    }
-
-    /**
-     * 
-     * @return mixed \DateTime | null
-     */
-    public function getRegistrationConvocationDate()
-    {
-        return $this->registrationConvocationDate;
-    }
-
-    /**
-     * 
-     * @param mixed $registrationConvocationDate \DateTime | null
-     * @return Registration
-     */
-    public function setRegistrationConvocationDate($registrationConvocationDate)
-    {
-        $this->registrationConvocationDate = $registrationConvocationDate;
-        return $this;
     }
 
     /**
@@ -348,26 +282,6 @@ class Registration
     public function getRecruitmentKnowAbout()
     {
         return $this->recruitmentKnowAbout;
-    }
-
-    /**
-     * 
-     * @return mixed \DateTime | null
-     */
-    public function getRegistrationAcceptanceDate()
-    {
-        return $this->registrationAcceptanceDate;
-    }
-
-    /**
-     * 
-     * @param mixed $registrationAcceptanceDate \DateTime | null
-     * @return \Recruitment\Entity\Registration
-     */
-    public function setRegistrationAcceptanceDate($registrationAcceptanceDate)
-    {
-        $this->registrationAcceptanceDate = $registrationAcceptanceDate;
-        return $this;
     }
 
     /**
@@ -434,32 +348,6 @@ class Registration
     public function hasPreInterview()
     {
         return $this->preInterview !== null;
-    }
-
-    /**
-     * 
-     * @return bool
-     */
-    public function isAccepted()
-    {
-        return $this->preInterview !== null;
-    }
-
-    /**
-     * @return bool
-     */
-    public function isCalled()
-    {
-        return $this->registrationConvocationDate !== null;
-    }
-
-    /**
-     * 
-     * @return bool
-     */
-    public function isConfirmed()
-    {
-        return $this->registrationConfirmationDate !== null;
     }
 
     /**
@@ -720,6 +608,64 @@ class Registration
     {
         $this->courtesy = $courtesy;
         return $this;
+    }
+
+    /**
+     * 
+     * @return Collection
+     */
+    public function getRegistrationStatus()
+    {
+        return $this->registrationStatus;
+    }
+
+    /**
+     * 
+     * @param RegistrationStatus $regStatus
+     * @return Self
+     */
+    public function addRegistrationStatus(RegistrationStatus $regStatus)
+    {
+        if (!$this->hasRegistrationStatus($regStatus)) {
+            $regStatus->setRegistration($this);
+            $this->registrationStatus->add($regStatus);
+        }
+        return $this;
+    }
+
+    /**
+     * 
+     * @param RegistrationStatus $regStatus
+     * @return bool
+     */
+    public function hasRegistrationStatus(RegistrationStatus $regStatus)
+    {
+        return $this->registrationStatus->contains($regStatus);
+    }
+
+    /**
+     * @param RegistrationStatus $regStatus
+     * @return Self
+     */
+    public function removeRegistrationStatus(RegistrationStatus $regStatus)
+    {
+        $this->registrationStatus->removeElement($regStatus);
+        return $this;
+    }
+
+    /**
+     * 
+     * @return RegistrationStatus
+     */
+    public function getCurrentRegistrationStatus()
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq("isCurrent", true))
+            ->setMaxResults(1);
+
+        $result = $this->registrationStatus->matching($criteria);
+
+        return $result->toArray()[0];
     }
 
 }
