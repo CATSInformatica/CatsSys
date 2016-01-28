@@ -60,8 +60,8 @@ class StudentClassForm extends Form
             ))
             ->add(array(
                 'name' => 'Submit',
+                'type' => 'submit',
                 'attributes' => array(
-                    'type' => 'button',
                     'class' => 'btn btn-primary btn-block',
                     'value' => 'Criar',
                 ),

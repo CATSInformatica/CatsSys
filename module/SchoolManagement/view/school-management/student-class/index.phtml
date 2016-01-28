@@ -1,5 +1,5 @@
 <section class="content">
-    
+
     <p><?php echo $message; ?></p>
 
     <div class="table-responsive col-xs-8 col-md-8 col-md-offset-2">
@@ -31,30 +31,14 @@
 
 <script>
 
-    var standardConfig = (function () {
-        // your module code goes here
-        // var config = null;
-
-        /**
-         * 
-         * private functions
-         */
-
-        initDataTable = function () {
-
-            $('#class-table').DataTable({
-                dom: 'lftip',
-                paging: false
-            });
-        };
-
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/class/index';
         return {
-            init: function () {
-                initDataTable();
+            getScriptSrc: function () {
+                return scriptSrc;
             }
         };
-
-    }());
+    })();
 
 </script>
 

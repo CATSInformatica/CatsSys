@@ -15,6 +15,7 @@ use Recruitment\Form\PreInterviewForm;
 use Recruitment\Form\VolunteerInterviewForm;
 use Recruitment\Service\AddressService;
 use Recruitment\Service\RelativeService;
+use Recruitment\Service\RegistrationStatusService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
@@ -28,7 +29,8 @@ class InterviewController extends AbstractActionController
 
     use EntityManagerService,
         RelativeService,
-        AddressService;
+        AddressService,
+        RegistrationStatusService;
 
     public function studentAction()
     {
@@ -108,16 +110,22 @@ class InterviewController extends AbstractActionController
                         ->getRecruitmentStatus()
                         ->getNumericStatusType();
 
-                    if (!in_array($currentStatusType,
-                            array(
-                            RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
-                            RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS,
-                        ))) {
-                        throw new \RuntimeException('Candidato não foi convocado para entrevista ou aula teste');
+                    if ($currentStatusType == RecruitmentStatus::STATUSTYPE_REGISTERED) {
+                        throw new \RuntimeException('Este candidato ainda não foi convocado para entrevista '
+                        . 'ou aula teste');
                     }
+
                     $form->setData($request->getPost());
 
                     if ($form->isValid()) {
+                        if (in_array($currentStatusType,
+                                array(
+                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
+                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS,
+                            ))) {
+                            $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_INTERVIEWED);
+                        }
+
                         $em->merge($registration);
                         $em->flush();
                     }

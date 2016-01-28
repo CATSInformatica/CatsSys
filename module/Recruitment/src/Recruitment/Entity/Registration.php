@@ -203,7 +203,7 @@ class Registration
     /**
      *
      * @var VolunteerInterview
-     * @ORM\OneToOne(targetEntity="VolunteerInterview", inversedBy="registration")
+     * @ORM\OneToOne(targetEntity="VolunteerInterview", inversedBy="registration", cascade={"persist", "merge"})
      * @ORM\JoinColumn(name="volunteer_interview_id", referencedColumnName="volunteer_interview_id")
      */
     private $volunteerInterview;
@@ -211,7 +211,7 @@ class Registration
     /**
      *
      * @var StudentInterview
-     * @ORM\OneToOne(targetEntity="StudentInterview", inversedBy="registration")
+     * @ORM\OneToOne(targetEntity="StudentInterview", inversedBy="registration", cascade={"persist", "merge"})
      * @ORM\JoinColumn(name="student_interview_id", referencedColumnName="student_interview_id")
      */
     private $studentInterview;

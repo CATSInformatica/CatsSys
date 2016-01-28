@@ -5,7 +5,7 @@
             <form class="form-inline col-xs-12 col-md-10 col-md-offset-1">
                 <div class="form-group">
                     <label for="recruitment_id">Processo seletivo: </label>
-                    <select class="form-control" id="recruitment_id" disabled>
+                    <select class="form-control" id="recruitment_id">
 
                         <option value="<?php echo $recruitment->getRecruitmentId(); ?>">
                             <?php
@@ -45,44 +45,13 @@
 
 <script>
 
-    var standardConfig = (function () {
-        // your module code goes here
-        // var config = null;
-
-        /**
-         * 
-         * private functions
-         */
-
-        initDataTable = function () {
-
-            var recruitmentTable = $('#recruitment-table').DataTable({
-                dom: 'lftip',
-                paging: false,
-                ajax: {
-                    url: "/recruitment/registration/getAcceptedStudents",
-                    type: "POST",
-                    data: function () {
-                        var rid = $('#recruitment_id').val();
-                        $('#recruitment-button').data('prev', rid);
-                        return {
-                            rid: rid
-                        };
-                    }
-                }
-            });
-
-            $('#recruitment-button').click(function () {
-                recruitmentTable.ajax.reload();
-            });
-        };
-
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/enrollment/index';
         return {
-            init: function () {
-                initDataTable();
+            getScriptSrc: function () {
+                return scriptSrc;
             }
         };
-
-    }());
+    })();
 
 </script>

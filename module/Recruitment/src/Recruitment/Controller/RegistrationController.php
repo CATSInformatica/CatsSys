@@ -429,6 +429,11 @@ class RegistrationController extends AbstractActionController
         ));
     }
 
+    public function getApprovedStudentsAction()
+    {
+        
+    }
+
     /**
      * 
      * Método seguro para exibição da foto de perfil

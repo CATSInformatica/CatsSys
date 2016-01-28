@@ -28,34 +28,15 @@
 
 <script>
 
-    var standardConfig = (function () {
-        // your module code goes here
-        // var config = null;
-
-        /**
-         * 
-         * private functions
-         */
-
-        initDatepickers = function () {
-            $('.datepicker').datepicker({
-                format: 'dd/mm/yyyy',
-                setDate: moment().format('DD/MM/YYYY'),
-                startDate: moment().format('DD/MM/YYYY'),
-                endDate: moment().add(2, 'years').format('DD/MM/YYYY'),
-                startView: 0,
-                autoclose: true,
-                language: 'pt-BR'
-            });
-        };
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/class/create';
 
         return {
-            init: function () {
-                initDatepickers();
+            getScriptSrc: function () {
+                return scriptSrc;
             }
         };
 
-    }());
-
+    })();
 
 </script>
