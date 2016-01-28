@@ -24,7 +24,6 @@ use Recruitment\Service\RegistrationStatusService;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\Form\View\Helper\Captcha\Image;
-use Zend\Json\Json;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -145,11 +144,12 @@ class RegistrationController extends AbstractActionController
         }
 
         $options = array(
+            'interview' => false,
             'person' => array(
                 'address' => true,
                 'relative' => false,
                 'social_media' => true,
-            )
+            ),
         );
 
         $request = $this->getRequest();

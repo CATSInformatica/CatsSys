@@ -20,6 +20,11 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
         $this->setHydrator(new DoctrineHydrator($obj))
             ->setObject(new Registration());
 
+        if (is_array($options) && !array_key_exists('interview', $options)) {
+            throw new \InvalidArgumentException('The `options` array must contain the key `interview`');
+        }
+
+
         parent::__construct($obj, $options);
 
         $this
@@ -213,6 +218,10 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                 ),
             ))
         ;
+
+        if ($options['interview']) {
+            $this->add(new VolunteerInterviewFieldset($obj));
+        }
     }
 
     public function getInputFilterSpecification()

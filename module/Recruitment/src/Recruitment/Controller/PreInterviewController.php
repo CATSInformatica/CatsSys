@@ -10,7 +10,6 @@ namespace Recruitment\Controller;
 
 use Database\Service\EntityManagerService;
 use Exception;
-use Recruitment\Form\CpfFilter;
 use Recruitment\Form\CpfForm;
 use Recruitment\Form\PreInterviewForm;
 use Recruitment\Service\AddressService;

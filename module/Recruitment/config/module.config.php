@@ -139,6 +139,7 @@ return array(
             'disclosure/template' => __DIR__ . '/../view/templates/disclosure.phtml',
             'address/template' => __DIR__ . '/../view/templates/address.phtml',
             'volunteer/template' => __DIR__ . '/../view/templates/volunteer.phtml',
+            'volunteer-interview/template' => __DIR__ . '/../view/templates/volunteer-interview.phtml',
             'pre-interview/template' => __DIR__ . '/../view/templates/pre-interview.phtml',
         ),
         'display_exceptions' => true,

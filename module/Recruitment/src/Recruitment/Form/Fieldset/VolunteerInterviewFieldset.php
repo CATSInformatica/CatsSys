@@ -13,7 +13,7 @@ use Zend\InputFilter\InputFilterProviderInterface;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterface
+class VolunteerInterviewFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
     public function __construct(ObjectManager $obj)
@@ -28,7 +28,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'name' => 'proactivity',
                 'type' => 'textarea',
                 'options' => array(
-                    'label' => '',
+                    'label' => 'Proatividade',
                 ),
                 'attributes' => array(
                     'rows' => 6,
@@ -38,7 +38,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'name' => 'commitmentAndEfficiency',
                 'type' => 'textarea',
                 'options' => array(
-                    'label' => '',
+                    'label' => 'Comprometimento e eficiência',
                 ),
                 'attributes' => array(
                     'rows' => 6,
@@ -48,7 +48,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'name' => 'volunteerProfile',
                 'type' => 'textarea',
                 'options' => array(
-                    'label' => '',
+                    'label' => 'Perfil Voluntário',
                 ),
                 'attributes' => array(
                     'rows' => 6,
@@ -58,7 +58,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'name' => 'interest',
                 'type' => 'textarea',
                 'options' => array(
-                    'label' => '',
+                    'label' => 'Interesse',
                 ),
                 'attributes' => array(
                     'rows' => 6,
@@ -68,7 +68,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'name' => 'interpersonalRelationship',
                 'type' => 'textarea',
                 'options' => array(
-                    'label' => '',
+                    'label' => 'Relacionamento Interpessoal',
                 ),
                 'attributes' => array(
                     'rows' => 6,
@@ -78,7 +78,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'name' => 'personality',
                 'type' => 'textarea',
                 'options' => array(
-                    'label' => '',
+                    'label' => 'Personalidade',
                 ),
                 'attributes' => array(
                     'rows' => 6,
@@ -88,7 +88,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'name' => 'coherence',
                 'type' => 'textarea',
                 'options' => array(
-                    'label' => '',
+                    'label' => 'Coerência',
                 ),
                 'attributes' => array(
                     'rows' => 6,
@@ -98,7 +98,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'name' => 'testClass',
                 'type' => 'textarea',
                 'options' => array(
-                    'label' => '',
+                    'label' => 'Aula teste',
                 ),
                 'attributes' => array(
                     'rows' => 6,
@@ -108,7 +108,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'name' => 'result',
                 'type' => 'textarea',
                 'options' => array(
-                    'label' => '',
+                    'label' => 'Resultado',
                 ),
                 'attributes' => array(
                     'rows' => 6,
