@@ -64,10 +64,10 @@ class Registration extends \Recruitment\Entity\Registration implements \Doctrine
     public function __sleep()
     {
         if ($this->__isInitialized__) {
-            return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationId', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'preInterview', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'person', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitmentKnowAbout', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'occupation', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'education', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerWork', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'howAndWhenKnowUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'whyWorkWithUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerWithUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'responsibility', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'proactive', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerSpirit', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'commitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'teamWork', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'efficiency', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'courtesy', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationStatus');
+            return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationId', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'preInterview', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'person', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitmentKnowAbout', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'occupation', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'education', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerWork', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'howAndWhenKnowUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'whyWorkWithUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerWithUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'responsibility', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'proactive', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerSpirit', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'commitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'teamWork', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'efficiency', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'courtesy', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationStatus', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerInterview', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'studentInterview');
         }
 
-        return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationId', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'preInterview', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'person', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitmentKnowAbout', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'occupation', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'education', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerWork', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'howAndWhenKnowUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'whyWorkWithUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerWithUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'responsibility', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'proactive', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerSpirit', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'commitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'teamWork', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'efficiency', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'courtesy', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationStatus');
+        return array('__isInitialized__', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationId', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationDate', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'preInterview', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'person', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'recruitmentKnowAbout', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'occupation', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'education', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerWork', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'howAndWhenKnowUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'whyWorkWithUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerWithUs', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'responsibility', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'proactive', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerSpirit', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'commitment', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'teamWork', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'efficiency', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'courtesy', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'registrationStatus', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'volunteerInterview', '' . "\0" . 'Recruitment\\Entity\\Registration' . "\0" . 'studentInterview');
     }
 
     /**
@@ -670,6 +670,50 @@ class Registration extends \Recruitment\Entity\Registration implements \Doctrine
         $this->__initializer__ && $this->__initializer__->__invoke($this, 'getCurrentRegistrationStatus', array());
 
         return parent::getCurrentRegistrationStatus();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getVolunteerInterview()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getVolunteerInterview', array());
+
+        return parent::getVolunteerInterview();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setVolunteerInterview(\Recruitment\Entity\VolunteerInterview $volunteerInterview)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setVolunteerInterview', array($volunteerInterview));
+
+        return parent::setVolunteerInterview($volunteerInterview);
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function getStudentInterview()
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'getStudentInterview', array());
+
+        return parent::getStudentInterview();
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function setStudentInterview(\Recruitment\Entity\StudentInterview $studentInterview)
+    {
+
+        $this->__initializer__ && $this->__initializer__->__invoke($this, 'setStudentInterview', array($studentInterview));
+
+        return parent::setStudentInterview($studentInterview);
     }
 
 }

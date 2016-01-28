@@ -680,7 +680,7 @@ class Registration
             ->setMaxResults(1);
 
         $result = $this->registrationStatus->matching($criteria);
-
+        
         return $result->toArray()[0];
     }
 

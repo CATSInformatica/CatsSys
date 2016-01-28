@@ -10,6 +10,7 @@ namespace Recruitment\Controller;
 
 use Database\Service\EntityManagerService;
 use Exception;
+use Recruitment\Entity\RecruitmentStatus;
 use Recruitment\Form\PreInterviewForm;
 use Recruitment\Form\VolunteerInterviewForm;
 use Recruitment\Service\AddressService;
@@ -90,6 +91,7 @@ class InterviewController extends AbstractActionController
 
                 $form = new VolunteerInterviewForm($em,
                     array(
+                    'interview' => true,
                     'person' => array(
                         'relative' => false,
                         'address' => true,
@@ -100,6 +102,19 @@ class InterviewController extends AbstractActionController
                 $form->bind($registration);
 
                 if ($request->isPost()) {
+
+                    $currentStatusType = $registration
+                        ->getCurrentRegistrationStatus()
+                        ->getRecruitmentStatus()
+                        ->getNumericStatusType();
+
+                    if (!in_array($currentStatusType,
+                            array(
+                            RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
+                            RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS,
+                        ))) {
+                        throw new \RuntimeException('Candidato não foi convocado para entrevista ou aula teste');
+                    }
                     $form->setData($request->getPost());
 
                     if ($form->isValid()) {
@@ -108,8 +123,6 @@ class InterviewController extends AbstractActionController
                     }
                 }
 
-
-
                 return new ViewModel(array(
                     'message' => '',
                     'registration' => $registration,
@@ -117,7 +130,7 @@ class InterviewController extends AbstractActionController
                 ));
             } catch (Exception $ex) {
                 return new ViewModel(array(
-                    'message' => 'Não foi possível encontrar o registro do candidato: ' . $ex->getMessage(),
+                    'message' => 'Erro: ' . $ex->getMessage(),
                     'registration' => null
                 ));
             }

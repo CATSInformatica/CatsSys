@@ -22,13 +22,6 @@
                         array(
                         'form' => $registration,
                     ));
-
-                    if ($registration->has('volunteerInterview')) {
-                        echo $this->partial('volunteer-interview/template',
-                            array(
-                            'form' => $registration->get('volunteerInterview'),
-                        ));
-                    }
                 }
                 ?>
 

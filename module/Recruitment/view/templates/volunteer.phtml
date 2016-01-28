@@ -142,3 +142,10 @@
         </div>
     </div>
 </div>
+
+<?php
+if ($form->has('volunteerInterview')) {
+    echo $this->partial('volunteer-interview/template', array(
+        'form' => $form->get('volunteerInterview'),
+    ));
+}
