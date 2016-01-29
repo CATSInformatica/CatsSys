@@ -42,4 +42,25 @@ class Registration extends EntityRepository
                 ->getOneOrNullResult();
     }
 
+    /**
+     * Busca todos as inscrições com status = $statusType do processo seletivo $rid
+     * 
+     * @param integer $rid
+     * @param integer $statusType
+     * @return array
+     */
+    public function findByStatusType($rid, $statusType)
+    {
+        return $this->_em
+                ->createQuery('SELECT r FROM Recruitment\Entity\Registration r '
+                    . 'JOIN r.registrationStatus rs WITH  rs.isCurrent = true '
+                    . 'JOIN rs.recruitmentStatus res WITH res.statusType = :stype '
+                    . 'WHERE r.recruitment = :rid')
+                ->setParameters(array(
+                    'rid' => $rid,
+                    'stype' => $statusType,
+                ))
+                ->getResult();
+    }
+
 }

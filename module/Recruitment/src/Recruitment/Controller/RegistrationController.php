@@ -17,6 +17,7 @@ use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\RecruitmentStatus;
 use Recruitment\Entity\Registration;
 use Recruitment\Form\RegistrationForm;
+use Recruitment\Form\SearchRegistrationsForm;
 use Recruitment\Form\TimestampForm;
 use Recruitment\Service\AddressService;
 use Recruitment\Service\PersonService;
@@ -55,22 +56,18 @@ class RegistrationController extends AbstractActionController
      */
     public function indexAction()
     {
-
         try {
-
             $em = $this->getEntityManager();
-            $recruitments = $em->getRepository('Recruitment\Entity\Recruitment')->findBy(
-                array('recruitmentType' => Recruitment::STUDENT_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
-            );
+            $form = new SearchRegistrationsForm($em, Recruitment::STUDENT_RECRUITMENT_TYPE);
 
             return new ViewModel(array(
                 'message' => null,
-                'recruitments' => $recruitments,
+                'form' => $form,
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
                 'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.',
-                'recruitments' => null,
+                'form' => null,
             ));
         }
     }
@@ -79,21 +76,15 @@ class RegistrationController extends AbstractActionController
     {
         try {
             $em = $this->getEntityManager();
-            $recruitments = $em->getRepository('Recruitment\Entity\Recruitment')->findBy(
-                array('recruitmentType' => Recruitment::VOLUNTEER_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
-            );
-
-            $form = new TimestampForm();
+            $form = new SearchRegistrationsForm($em, Recruitment::VOLUNTEER_RECRUITMENT_TYPE);
 
             return new ViewModel(array(
                 'message' => null,
-                'recruitments' => $recruitments,
                 'form' => $form,
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
                 'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.',
-                'recruitments' => null,
                 'form' => null,
             ));
         }
@@ -216,56 +207,62 @@ class RegistrationController extends AbstractActionController
     }
 
     /**
-     * Busca todos as inscrições pro processo seletivo $rid. 
-     * Esta action é acessada via ajax pelo DataTable
+     * Busca todos as inscrições pro processo seletivo $rid com status atual $sid. 
+     * Esta action é acessada via ajax pelo DataTable Precisa ser refeita
      * 
      * @return JsonModel
      */
     public function getRegistrationsAction()
     {
+
         $request = $this->getRequest();
+
+        $result = [];
+
         if ($request->isPost()) {
-
-            $rid = $request->getPost()['rid'];
-
-            $resultSet = ['data' => [
-            ]];
-
             try {
+
                 $em = $this->getEntityManager();
+                $form = new SearchRegistrationsForm($em);
+                $form->setData($request->getPost());
 
-                $regs = $em->getRepository('Recruitment\Entity\Registration')->findBy(array(
-                    'recruitment' => $rid,
-                ));
+                if ($form->isValid()) {
 
-                foreach ($regs as $r) {
+                    $data = $form->getData();
 
-                    $status = $r->getCurrentRegistrationStatus();
+                    $rid = $data['recruitment'];
+                    $sid = $data['registrationStatus'];
 
-                    $timestamp = $status->getTimestamp();
-                    $statusType = $status->getRecruitmentStatus()->getStatusType();
+                    $em = $this->getEntityManager();
+                    $regs = $em->getRepository('Recruitment\Entity\Registration')->findByStatusType($rid, $sid);
 
-                    $person = $r->getPerson();
-                    $resultSet['data'][] = array(
-                        'DT_RowClass' => 'cats-row',
-                        'DT_RowAttr' => [
-                            'data-id' => $r->getRegistrationId()
-                        ],
-                        $r->getRegistrationNumber(),
-                        $r->getRegistrationDate(),
-                        $person->getPersonFirstName() . ' ' . $person->getPersonLastName(),
-                        $person->getPersonCpf(),
-                        $person->getPersonRg(),
-                        $person->getPersonEmail(),
-                        $statusType . '<br>' . $timestamp,
-                    );
+                    foreach ($regs as $r) {
+                        $status = $r->getCurrentRegistrationStatus();
+                        $timestamp = $status->getTimestamp();
+                        $statusType = $status->getRecruitmentStatus()->getStatusType();
+
+                        $person = $r->getPerson();
+
+                        $result[] = array(
+                            'registrationId' => $r->getRegistrationId(),
+                            'registrationNumber' => $r->getRegistrationNumber(),
+                            'registrationDate' => $r->getRegistrationDate(),
+                            'personName' => $person->getPersonName(),
+                            'personCpf' => $person->getPersonCpf(),
+                            'personRg' => $person->getPersonRg(),
+                            'personEmail' => $person->getPersonEmail(),
+                            'status' => array(
+                                'type' => $statusType,
+                                'timestamp' => $timestamp,
+                            )
+                        );
+                    }
                 }
             } catch (Exception $ex) {
                 
             }
-
-            return new JsonModel($resultSet);
         }
+        return new JsonModel($result);
     }
 
     /**
@@ -427,11 +424,6 @@ class RegistrationController extends AbstractActionController
         return new JsonModel(array(
             'message' => 'Esta url só pode ser acessada via POST.',
         ));
-    }
-
-    public function getApprovedStudentsAction()
-    {
-        
     }
 
     /**

@@ -32,6 +32,25 @@ class RecruitmentStatus
     const STATUSTYPE_PREINTERVIEW_COMPLETE = 13;
 
     /**
+     * Descrição das constantes anteriores
+     */
+    const STATUSTYPEDESC_REGISTERED = 'INSCRITO';
+    const STATUSTYPEDESC_CALLEDFOR_INTERVIEW = 'CONVOCADO PARA ENTREVISTA';
+    const STATUSTYPEDESC_CANCELED_REGISTRATION = 'INSCRIÇÃO CANCELADA';
+    const STATUSTYPEDESC_INTERVIEWED = 'ENTREVISTADO';
+    const STATUSTYPEDESC_INTERVIEW_WAITINGLIST = 'LISTA DE ESPERA DA ENTREVISTA';
+    const STATUSTYPEDESC_INTERVIEW_APPROVED = 'APROVADO EM ENTREVISTA';
+    const STATUSTYPEDESC_INTERVIEW_DISAPPROVED = 'REPROVADO EM ENTREVISTA';
+    const STATUSTYPEDESC_VOLUNTEER = 'VOLUNTÁRIO';
+    const STATUSTYPEDESC_CALLEDFOR_TESTCLASS = 'CONVOCADO PARA AULA TESTE';
+    const STATUSTYPEDESC_TESTCLASS_COMPLETE = 'AULA TESTE COMPLETA';
+    const STATUSTYPEDESC_TESTCLASS_WAITINGLIST = 'LISTA DE ESPERA DA AULA TESTE';
+    const STATUSTYPEDESC_CONFIRMED = 'CONFIRMADO';
+    const STATUSTYPEDESC_CALLEDFOR_PREINTERVIEW = 'CONVOCADO PARA PRÉ-ENTREVISTA';
+    const STATUSTYPEDESC_PREINTERVIEW_COMPLETE = 'PRÉ-ENTREVISTA CONCUÍDA';
+    const STATUSTYPEDESC_INVALID = 'INVÁLIDO';
+
+    /**
      *
      * @var integer
      * @ORM\Column(name="recruitment_status_id", type="integer", nullable=false)
@@ -71,49 +90,49 @@ class RecruitmentStatus
     {
         switch ($sType) {
             case self::STATUSTYPE_REGISTERED:
-                $status = 'INSCRITO';
+                $status = self::STATUSTYPEDESC_REGISTERED;
                 break;
             case self::STATUSTYPE_CALLEDFOR_INTERVIEW:
-                $status = 'CONVOCADO PARA ENTREVISTA';
+                $status = self::STATUSTYPEDESC_CALLEDFOR_INTERVIEW;
                 break;
             case self::STATUSTYPE_CANCELED_REGISTRATION:
-                $status = 'INSCRIÇÃO CANCELADA';
+                $status = self::STATUSTYPEDESC_CANCELED_REGISTRATION;
                 break;
             case self::STATUSTYPE_INTERVIEWED:
-                $status = 'ENTREVISTADO';
+                $status = self::STATUSTYPEDESC_INTERVIEWED;
                 break;
             case self::STATUSTYPE_INTERVIEW_WAITINGLIST:
-                $status = 'LISTA DE ESPERA DA ENTREVISTA';
+                $status = self::STATUSTYPEDESC_INTERVIEW_WAITINGLIST;
                 break;
             case self::STATUSTYPE_INTERVIEW_APPROVED:
-                $status = 'APROVADO EM ENTREVISTA';
+                $status = self::STATUSTYPEDESC_INTERVIEW_APPROVED;
                 break;
             case self::STATUSTYPE_INTERVIEW_DISAPPROVED:
-                $status = 'REPROVADO EM ENTREVISTA';
+                $status = self::STATUSTYPEDESC_INTERVIEW_DISAPPROVED;
                 break;
             case self::STATUSTYPE_VOLUNTEER:
-                $status = 'VOLUNTÁRIO';
+                $status = self::STATUSTYPEDESC_VOLUNTEER;
                 break;
             case self::STATUSTYPE_CALLEDFOR_TESTCLASS:
-                $status = 'CONVOCADO PARA AULA TESTE';
+                $status = self::STATUSTYPEDESC_CALLEDFOR_TESTCLASS;
                 break;
             case self::STATUSTYPE_TESTCLASS_COMPLETE:
-                $status = 'AULA TESTE COMPLETA';
+                $status = self::STATUSTYPEDESC_TESTCLASS_COMPLETE;
                 break;
             case self::STATUSTYPE_TESTCLASS_WAITINGLIST:
-                $status = 'LISTA DE ESPERA DA AULA TESTE';
+                $status = self::STATUSTYPEDESC_TESTCLASS_WAITINGLIST;
                 break;
             case self::STATUSTYPE_CONFIRMED:
-                $status = 'CONFIRMADO';
+                $status = self::STATUSTYPEDESC_CONFIRMED;
                 break;
             case self::STATUSTYPE_CALLEDFOR_PREINTERVIEW:
-                $status = 'CONVOCADO PARA PRÉ-ENTREVISTA';
+                $status = self::STATUSTYPEDESC_CALLEDFOR_INTERVIEW;
                 break;
             case self::STATUSTYPE_PREINTERVIEW_COMPLETE:
-                $status = 'PRÉ-ENTREVISTA CONCUÍDA';
+                $status = self::STATUSTYPEDESC_PREINTERVIEW_COMPLETE;
                 break;
             default:
-                $status = 'INVÁLIDO';
+                $status = self::STATUSTYPEDESC_INVALID;
         }
 
         return $status;

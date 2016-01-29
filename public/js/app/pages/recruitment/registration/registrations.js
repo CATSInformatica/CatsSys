@@ -7,8 +7,8 @@
 
 define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, masks) {
     var index = (function () {
-        // your module code goes here
-        // var config = null;
+// your module code goes here
+// var config = null;
 
         /**
          * 
@@ -25,7 +25,6 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                 viewDate: moment()
             });
         };
-
         initDataTable = function () {
 
             var recruitmentTable = $('#recruitment-table').DataTable({
@@ -36,29 +35,43 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                     url: "/recruitment/registration/getRegistrations",
                     type: "POST",
                     data: function () {
-                        var rid = $('#recruitment_id').val();
-                        $('#recruitment-button').data('prev', rid);
                         return {
-                            rid: rid
+                            recruitment: $("select[name=recruitment]").val(),
+                            registrationStatus: $("select[name=registrationStatus]").val()
                         };
+                    },
+                    dataSrc: function (data) {
+                        var result = [];
+                        for (var i = 0; i < data.length; i++) {
+                            result.push({
+                                DT_RowClass: "cats-row",
+                                DT_RowAttr: {
+                                    "data-id": data[i].registrationId
+                                },
+                                0: data[i].registrationNumber,
+                                1: data[i].registrationDate,
+                                2: data[i].personName,
+                                3: data[i].personCpf,
+                                4: data[i].personRg,
+                                5: data[i].personEmail,
+                                6: data[i].status.type + '<br>' + data[i].status.timestamp
+                            });
+                        }
+
+                        return result;
                     }
                 },
                 columnDefs: [{targets: 6, className: 'text-center'}]
             });
-
-            $('#recruitment-button').click(function () {
-                if ($(this).data('prev') !== $('#recruitment_id').val()) {
-                    recruitmentTable.ajax.reload();
-                }
+            $('button[name=submit]').click(function () {
+                recruitmentTable.ajax.reload();
             });
         };
-
         initMasks = function () {
             masks.bind({
                 datetimeNoSeconds: 'input[name=timestamp]'
             });
         };
-
         return {
             init: function () {
                 initDatepickers();
@@ -72,8 +85,6 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                 };
             }
         };
-
     }());
-
     return index;
 });

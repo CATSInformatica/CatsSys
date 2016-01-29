@@ -1,3 +1,4 @@
 
 
-Corrigir candidatos aprovados no processo seletivo de alunos.
+Corrigir candidatos aprovados no processo seletivo de alunos. (enrollment)
+Corrigir busca de candidatos de um certo tipo de um certo processo seletivo (getRegistrations)

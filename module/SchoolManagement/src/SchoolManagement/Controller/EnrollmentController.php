@@ -13,10 +13,12 @@ use DateTime;
 use Doctrine\DBAL\Exception\ConstraintViolationException;
 use Exception;
 use Recruitment\Entity\Recruitment;
+use Recruitment\Form\SearchRegistrationsForm;
 use SchoolManagement\Entity\Enrollment;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Recruitment\Entity\RecruitmentStatus;
 
 /**
  * Description of EnrollmentController
@@ -30,23 +32,19 @@ class EnrollmentController extends AbstractActionController
 
     public function indexAction()
     {
-
         try {
-
             $em = $this->getEntityManager();
-            $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')->findOneBy(
-                array('recruitmentType' => Recruitment::STUDENT_RECRUITMENT_TYPE), array('recruitmentId' => 'DESC')
-            );
+            $form = new SearchRegistrationsForm($em, Recruitment::STUDENT_RECRUITMENT_TYPE);
+            $form->get('registrationStatus')->setValue(RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED);
 
             return new ViewModel(array(
                 'message' => null,
-                'recruitment' => $recruitment,
+                'form' => $form,
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
-                'message' => 'Erro inesperado. Por favor entre em contato'
-                . ' com o administrador do sistema: ' . $ex->getMessage(),
-                'recruitment' => null,
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema',
+                'form' => null,
             ));
         }
     }

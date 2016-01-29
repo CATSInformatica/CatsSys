@@ -2,37 +2,26 @@
 
     <p><?php echo $this->message; ?></p>
 
-    <?php if ($this->recruitments !== null): ?>
-        <div class="row">
-            <form class="form-inline col-xs-12 col-md-10 col-md-offset-1">
-                <div class="form-group">
-                    <label for="recruitment_id">Processo seletivo: </label>
-                    <select class="form-control" id="recruitment_id">
-                        <?php foreach ($this->recruitments as $recruitment): ?>
-                            <option value="<?php echo $recruitment->getRecruitmentId(); ?>" >
-                                <?php
-                                echo $recruitment->getRecruitmentNumber() . 'º Processo seletivo de ' .
-                                $recruitment->getRecruitmentYear();
-                                ?>
-                            </option>
-                        <?php endforeach; ?>
-                    </select>
-                </div>
-
-                <div class="form-group">
-                    <button type="button" class="btn btn-default" id="recruitment-button" data-prev="0"><i class="fa fa-search"></i></button>
-                </div>
-            </form>
-        </div>
-        <br>
+    <?php if ($form !== null): ?>
 
         <div class="row">
             <div class="col-xs-12 col-md-8 col-md-offset-2">
-
-                <?php if ($form !== null): ?>
-                    <?php echo $this->form($form); ?>
-                <?php endif; ?>
-
+                <?php echo $this->form()->openTag($form); ?>
+                <div class="col-xs-12 col-md-6">
+                    <?php echo $this->formRow($form->get('recruitment')); ?>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                    <?php echo $this->formRow($form->get('registrationStatus')); ?>
+                </div>
+                <div class="col-xs-12 col-md-12">
+                    <?php echo $this->formRow($form->get('submit')); ?>
+                </div>
+                <?php echo $this->form()->closeTag(); ?>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-xs-12 col-md-8 col-md-offset-2">
                 <div class="table-responsive">
                     <table class="table table-condensed table-bordered" id="recruitment-table">
                         <thead>
@@ -50,7 +39,9 @@
                 </div>
             </div>
         </div>
+
     <?php endif; ?>
+
 </section>
 
 <script>
