@@ -1,5 +1,26 @@
 LOCK TABLES `resource` WRITE;
-INSERT INTO `resource` VALUES (2,'Authentication\\Controller\\Login'),(5,'Authentication\\Controller\\User'),(3,'Authorization\\Controller\\Index'),(7,'Authorization\\Controller\\Privilege'),(8,'Authorization\\Controller\\Resource'),(6,'Authorization\\Controller\\Role'),(10,'DoctrineModule\\Controller\\Cli'),(12,'Documents\\Controller\\StudentBgConfig'),(19,'Documents\\Controller\\GeneratePdf'),(16,'Recruitment\\Controller\\Captcha'),(18,'Recruitment\\Controller\\Interview'),(17,'Recruitment\\Controller\\PreInterview'),(9,'Recruitment\\Controller\\Recruitment'),(11,'Recruitment\\Controller\\Registration'),(14,'SchoolManagement\\Controller\\Enrollment'),(15,'SchoolManagement\\Controller\\SchoolWarning'),(13,'SchoolManagement\\Controller\\StudentClass'),(1,'Site\\Controller\\Index'),(4,'UMS\\Controller\\Index'),(20,'Recruitment\\Controller\\Address');
+INSERT INTO `resource` VALUES 
+(2,'Authentication\\Controller\\Login'),
+(5,'Authentication\\Controller\\User'),
+(3,'Authorization\\Controller\\Index'),
+(7,'Authorization\\Controller\\Privilege'),
+(8,'Authorization\\Controller\\Resource'),
+(6,'Authorization\\Controller\\Role'),
+(10,'DoctrineModule\\Controller\\Cli'),
+(12,'Documents\\Controller\\StudentBgConfig'),
+(19,'Documents\\Controller\\GeneratePdf'),
+(16,'Recruitment\\Controller\\Captcha'),
+(18,'Recruitment\\Controller\\Interview'),
+(17,'Recruitment\\Controller\\PreInterview'),
+(9,'Recruitment\\Controller\\Recruitment'),
+(11,'Recruitment\\Controller\\Registration'),
+(20,'Recruitment\\Controller\\CsvViewer'),
+(14,'SchoolManagement\\Controller\\Enrollment'),
+(15,'SchoolManagement\\Controller\\SchoolWarning'),
+(13,'SchoolManagement\\Controller\\StudentClass'),
+(1,'Site\\Controller\\Index'),
+(4,'UMS\\Controller\\Index')
+(21,'Recruitment\\Controller\\Address');
 UNLOCK TABLES;
 
 LOCK TABLES `role` WRITE;

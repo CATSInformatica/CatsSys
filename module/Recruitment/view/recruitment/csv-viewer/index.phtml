@@ -1,0 +1,110 @@
+<section class="content">
+    <p><?php echo $this->message; ?></p>
+    <?php if ($info !== null) : ?>
+    <div class="row">
+        <div class="table-responsive col-xs-12 col-md-10 col-md-offset-1">
+            <table id="info-table" class="table table-bordered" cellspacing="0" width="100%">
+                <thead>
+                    <tr>
+                        <th class="text-center col-xs-3 col-md-3">
+                            <?php echo $info['title'][1] ?>
+                        </th>
+                        <th class="text-center"> Respostas </th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php 
+                    foreach ($info['content'] as $i => $data) { ?>
+                        <tr data-id="<?php echo $i ?>">
+                            <td class="text-center col-xs-3 col-md-3">
+                                <h4> <?php echo $data[1] . ' ' . $data[2] ?> </h4>
+                            </td>
+                            <td class="text-center">
+                                <div>                                    
+                                    <?php foreach ($info['blocks'] as $block) { ?>                                        
+                                        <div class="box box-default collapsed-box">
+                                            <div class="box-header with-border">
+                                                <h3 class="box-title">
+                                                    <?php echo $block['title']; ?>
+                                                </h3>
+                                                <div class="box-tools pull-right">
+                                                    <button class="btn btn-box-tool" data-widget="collapse">
+                                                        <i class="fa fa-plus"></i>
+                                                    </button>
+                                                </div>
+                                            </div>
+                                            <div class="box-body table-responsive">
+                                                <table class="table table-bordered table-hover">
+                                                    <?php for ($j = $block['boundary']/*START*/; $j < $block['nextBoundary']; ++$j) { ?>
+                                                    <?php 
+                                                    if ($j === 9) {
+                                                        //  Confirmação do email
+                                                        continue;
+                                                    } 
+                                                    if ($data[$j] === '') {
+                                                        //  Indicação clara de que o campo está vazio
+                                                        $data[$j] = '-';
+                                                    }
+                                                    ?>
+                                                    <tr>
+                                                        <?php 
+                                                        if ($block['nextBoundary'] - $block['boundary'] > 1) { ?>
+                                                            <td><b>
+                                                                <?php echo $info['title'][$j]; ?>
+                                                            </b></td>
+                                                        <?php
+                                                        } ?>
+                                                        <td>
+                                                            <?php echo $data[$j] ?>
+                                                        </td>
+                                                    </tr>
+                                                    <?php
+                                                        if ($j === 49 || $j === 98 || $j === 120) {
+                                                            if ($data[$j] === 'Não') {
+                                                                //  Indício de campos nulos para o resto do bloco
+                                                                break;
+                                                            } else if ($data[$j] === 'Sim') { 
+                                                                //  Respostas que não precisam ser mostradas
+                                                                continue;
+                                                            }
+                                                        }
+                                                    } ?>
+                                                </table>
+                                            </div>
+                                        </div> 
+                                    <?php
+                                    } ?>
+                                    <p>
+                                        <b> Data de submissão: </b>
+                                        <?php echo $data[0] ?>
+                                    </p>
+                                </div>                                
+                            </td>
+                        </tr>
+                    <?php 
+                    } ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+    <?php else : ?>
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2"> 
+                <?php echo $this->form($form); ?>
+            </div>
+        </div>
+    <?php endif; ?>
+</section>
+
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/recruitment/csv-viewer/index';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+</script>
