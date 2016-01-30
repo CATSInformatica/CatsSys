@@ -1,26 +1,25 @@
 LOCK TABLES `resource` WRITE;
 INSERT INTO `resource` VALUES 
-(2,'Authentication\\Controller\\Login'),
-(5,'Authentication\\Controller\\User'),
+(1,'Authentication\\Controller\\Login'),
+(2,'Authentication\\Controller\\User'),
 (3,'Authorization\\Controller\\Index'),
-(7,'Authorization\\Controller\\Privilege'),
-(8,'Authorization\\Controller\\Resource'),
+(4,'Authorization\\Controller\\Privilege'),
+(5,'Authorization\\Controller\\Resource'),
 (6,'Authorization\\Controller\\Role'),
-(10,'DoctrineModule\\Controller\\Cli'),
-(12,'Documents\\Controller\\StudentBgConfig'),
-(19,'Documents\\Controller\\GeneratePdf'),
-(16,'Recruitment\\Controller\\Captcha'),
-(18,'Recruitment\\Controller\\Interview'),
-(17,'Recruitment\\Controller\\PreInterview'),
-(9,'Recruitment\\Controller\\Recruitment'),
-(11,'Recruitment\\Controller\\Registration'),
-(20,'Recruitment\\Controller\\CsvViewer'),
-(14,'SchoolManagement\\Controller\\Enrollment'),
-(15,'SchoolManagement\\Controller\\SchoolWarning'),
-(13,'SchoolManagement\\Controller\\StudentClass'),
-(1,'Site\\Controller\\Index'),
-(4,'UMS\\Controller\\Index')
-(21,'Recruitment\\Controller\\Address');
+(7,'Documents\\Controller\\StudentBgConfig'),
+(8,'Documents\\Controller\\GeneratePdf'),
+(9,'Recruitment\\Controller\\Captcha'),
+(10,'Recruitment\\Controller\\Interview'),
+(11,'Recruitment\\Controller\\PreInterview'),
+(12,'Recruitment\\Controller\\Recruitment'),
+(13,'Recruitment\\Controller\\Registration'),
+(14,'Recruitment\\Controller\\CsvViewer'),
+(15,'SchoolManagement\\Controller\\Enrollment'),
+(16,'SchoolManagement\\Controller\\SchoolWarning'),
+(17,'SchoolManagement\\Controller\\StudentClass'),
+(18,'Site\\Controller\\Index'),
+(19,'UMS\\Controller\\Index'),
+(20,'Recruitment\\Controller\\Address');
 UNLOCK TABLES;
 
 LOCK TABLES `role` WRITE;
@@ -32,7 +31,9 @@ INSERT INTO `role_parent` VALUES (4,3);
 UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
-INSERT INTO `user` VALUES (2,'fcadmin','$2y$10$JDJ5JDEwJEd2aHRFUnJ3N.3GAusoQDlpCMaJ9Bp.uLPAyhECLyrEe','$2y$10$GvhtERrw4T.CRjZn3HjNBuK.qahSBQahtVQc9gow151c16mkrJIje',1,'2015-12-12 11:08:24'),(3,'fcmember','$2y$10$JDJ5JDEwJDFHdTBXTDZlM.bNrNv0hRukZgy8DnqxTgHq71RoEg8hi','$2y$10$1Gu0WL6e0FNwVMXU38VtT.KlSGlFtsu6adEUOr9ZdwFqroxCgt4/O',1,'2016-01-04 19:49:56');
+INSERT INTO `user` VALUES 
+(2,'fcadmin','$2y$10$JDJ5JDEwJEd2aHRFUnJ3N.3GAusoQDlpCMaJ9Bp.uLPAyhECLyrEe','$2y$10$GvhtERrw4T.CRjZn3HjNBuK.qahSBQahtVQc9gow151c16mkrJIje',1,'2015-12-12 11:08:24'),
+(3,'fcmember','$2y$10$JDJ5JDEwJDFHdTBXTDZlM.bNrNv0hRukZgy8DnqxTgHq71RoEg8hi','$2y$10$1Gu0WL6e0FNwVMXU38VtT.KlSGlFtsu6adEUOr9ZdwFqroxCgt4/O',1,'2016-01-04 19:49:56');
 UNLOCK TABLES;
 
 LOCK TABLES `user_has_role` WRITE;
@@ -40,7 +41,14 @@ INSERT INTO `user_has_role` VALUES (4,3),(5,2);
 UNLOCK TABLES;
 
 LOCK TABLES `privilege` WRITE;
-INSERT INTO `privilege` VALUES (9,1,3,NULL,1),(10,2,3,NULL,1),(11,3,3,'index',1),(12,4,4,NULL,1),(18,10,3,NULL,1),(19,11,3,'studentRegistration',1),(20,16,3,'generate',1);
+INSERT INTO `privilege` VALUES 
+(9,1,3,NULL,1),
+(10,2,3,NULL,1),
+(11,3,3,'index',1),
+(12,4,4,NULL,1),
+(18,10,3,NULL,1),
+(19,11,3,'registrationForm',1),
+(20,16,3,'generate',1);
 UNLOCK TABLES;
 
 LOCK TABLES `recruitment` WRITE;
@@ -49,11 +57,25 @@ INSERT INTO `recruitment` VALUES (2,1,2016,'2016-01-23 00:00:00','2016-06-18 00:
 UNLOCK TABLES;
 
 LOCK TABLES `recruitment_know_about` WRITE;
-INSERT INTO `recruitment_know_about` VALUES (2,'Alunos da UNIFEI'),(3,'Alunos do CATS'),(4,'Amigos'),(7,'Divulgação em sua escola'),(1,'Familiares'),(5,'Internet'),(6,'Rádio, Televisão ou Jornais'),(8,'Voluntários do CATS');
+INSERT INTO `recruitment_know_about` VALUES 
+(2,'Alunos da UNIFEI'),
+(3,'Alunos do CATS'),
+(4,'Amigos'),
+(7,'Divulgação em sua escola'),
+(1,'Familiares'),
+(5,'Internet'),
+(6,'Rádio, Televisão ou Jornais'),
+(8,'Voluntários do CATS');
 UNLOCK TABLES;
 
 LOCK TABLES `recruitment_live_with_you` WRITE;
-INSERT INTO `recruitment_live_with_you` VALUES (1, 'Moro sozinho.'), (2, 'Filhos.'), (3, 'Moro com pai e/ou mãe.'), (4, 'Irmãos.'), (5, 'Esposa, marido, companheiro(a).'), (6, 'Outro.');
+INSERT INTO `recruitment_live_with_you` VALUES 
+(1, 'Moro sozinho.'),
+(2, 'Filhos.'),
+(3, 'Moro com pai e/ou mãe.'),
+(4, 'Irmãos.'),
+(5, 'Esposa, marido, companheiro(a).'),
+(6, 'Outro.');
 UNLOCK TABLES;
 
 LOCK TABLES `class` WRITE;

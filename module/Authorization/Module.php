@@ -41,7 +41,9 @@ class Module
     {
         $application = $e->getApplication();
         $em = $application->getEventManager();
-//        $em->attach('route', array($this, 'onRoute'), -100);
+        if (getenv('APP_ENV') === 'production') {
+            $em->attach('route', array($this, 'onRoute'), -100);
+        }
     }
 
     // WORKING the main engine for ACL
@@ -94,5 +96,4 @@ class Module
             exit;
         }
     }
-
 }

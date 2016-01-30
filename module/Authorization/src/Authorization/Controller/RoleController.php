@@ -25,15 +25,17 @@ use Zend\View\Model\ViewModel;
  *
  * @author marcio
  */
-class RoleController extends AbstractActionController {
+class RoleController extends AbstractActionController
+{
 
     use EntityManagerService;
 
-    public function indexAction() {
+    public function indexAction()
+    {
         $entityManager = $this->getEntityManager();
         try {
             $roles = $entityManager->getRepository('Authorization\Entity\Role')
-                    ->findBy([], ['roleId' => 'asc']);
+                ->findBy([], ['roleId' => 'asc']);
             return new ViewModel(array(
                 'roles' => $roles,
             ));
@@ -49,12 +51,13 @@ class RoleController extends AbstractActionController {
      * Done
      * @return ViewModel
      */
-    public function createAction() {
+    public function createAction()
+    {
         $request = $this->getRequest();
 
         $entityManager = $this->getEntityManager();
         $roles = $entityManager->getRepository('Authorization\Entity\Role')
-                ->findAll();
+            ->findAll();
 
         $formRoles = [];
         foreach ($roles as $role) {
@@ -65,7 +68,7 @@ class RoleController extends AbstractActionController {
 
         if ($request->isPost()) {
             $data = $request->getPost();
-            $roleForm->setInputFilter(new RoleFilter);
+            $roleForm->setInputFilter(new RoleFilter());
             $roleForm->setData($data);
 
             if ($roleForm->isValid()) {
@@ -75,13 +78,9 @@ class RoleController extends AbstractActionController {
                 $role = new EntityRole();
                 $role->setRoleName($data['role_name']);
 
-//                echo '<pre>';
-//                print_r($data['role_parent']);
-//                exit;
-
                 foreach ($data['role_parent'] as $parentRoleId) {
-                    $role->addRole(
-                            $entityManager->getReference('Authorization\Entity\Role', $parentRoleId)
+                    $role->addParent(
+                        $entityManager->getReference('Authorization\Entity\Role', $parentRoleId)
                     );
                 }
 
@@ -89,7 +88,8 @@ class RoleController extends AbstractActionController {
                     $entityManager->persist($role);
                     $entityManager->flush();
 
-                    $this->redirect()->toRoute('authorization/role', array(
+                    $this->redirect()->toRoute('authorization/role',
+                        array(
                         'action' => 'index',
                     ));
                 } catch (Exception $ex) {
@@ -105,20 +105,8 @@ class RoleController extends AbstractActionController {
         ));
     }
 
-    public function editAction() {
-        $entityManager = $this->getEntityManager();
-
-//        $data = $entityManager->getReference('ATest', $id);
-//        $data->setName('ORM Tested');
-//        $entityManager->flush();
-//        $entityManager->
-//        
-//        $role1->setRoleName('guest');
-//        $entityManager->persist($role1);
-//        $entityManager->flush();
-    }
-
-    public function deleteAction() {
+    public function deleteAction()
+    {
         $roleId = $this->params()->fromRoute('id');
 
         if ($roleId) {
@@ -142,7 +130,8 @@ class RoleController extends AbstractActionController {
         ));
     }
 
-    public function changeActiveUserRoleAction() {
+    public function changeActiveUserRoleAction()
+    {
 
         $request = $this->getRequest();
 
@@ -170,7 +159,8 @@ class RoleController extends AbstractActionController {
         ));
     }
 
-    public function addRoleToUserAction() {
+    public function addRoleToUserAction()
+    {
         $request = $this->getRequest();
         $em = $this->getEntityManager();
 
@@ -194,15 +184,16 @@ class RoleController extends AbstractActionController {
             try {
                 $user = $em->getReference('Authentication\Entity\User', $data['user_id']);
                 $role = $em->getReference('Authorization\Entity\Role', $data['role_id']);
-                
+
                 $user->addRole($role);
                 $role->addUser($user);
                 $em->persist($user);
                 $em->persist($role);
                 $em->flush();
 
-                return $this->redirect()->toRoute('authentication/user', array(
-                            'action' => 'index'
+                return $this->redirect()->toRoute('authentication/user',
+                        array(
+                        'action' => 'index'
                 ));
             } catch (Exception $ex) {
                 return new ViewModel(array(

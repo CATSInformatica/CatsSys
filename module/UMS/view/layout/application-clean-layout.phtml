@@ -41,14 +41,6 @@
             <!-- Right side column. Contains the content of the page -->
             <div class="content-wrapper" style="height: 100% !important;">
                 <!-- Main content -->
-                <section class="content-header">
-                    <?php
-                    echo $this->navigation('navigation')
-                        ->breadcrumbs()
-                        ->setMinDepth(0)
-                        ->setPartial('header/template');
-                    ?>
-                </section>
                 <?php echo $this->content; ?>
             </div><!-- /.right-side -->
         </div>

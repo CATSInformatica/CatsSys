@@ -388,6 +388,9 @@ return array(
                         'label' => 'Formulário de Inscrição',
                         'route' => 'recruitment/registration',
                         'action' => 'registrationForm',
+                        'params' => array(
+                            'id' => 2,
+                        ),
                         'resource' => 'Recruitment\Controller\Registration',
                         'privilege' => 'registrationForm',
                         'icon' => 'fa fa-user-plus',
