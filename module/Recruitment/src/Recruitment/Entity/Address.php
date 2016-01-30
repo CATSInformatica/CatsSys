@@ -55,6 +55,7 @@ class Address
     const COUNTRY_BRA = 'BRASIL';
 
     /**
+     * 
      * @var integer
      * @ORM\Column(name="address_id", type="integer", nullable=false)
      * @ORM\Id
