@@ -77,10 +77,12 @@ class RegistrationController extends AbstractActionController
         try {
             $em = $this->getEntityManager();
             $form = new SearchRegistrationsForm($em, Recruitment::VOLUNTEER_RECRUITMENT_TYPE);
+            $timestampForm = new TimestampForm();
 
             return new ViewModel(array(
                 'message' => null,
                 'form' => $form,
+                'timestamp' => $timestampForm,
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(

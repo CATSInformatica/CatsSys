@@ -22,12 +22,11 @@ return array(
                     'enrollment' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/enrollment[/:action[/:id1[/:id2]]]',
+                            'route' => '/enrollment[/:action[/:id]]',
                             'constraints' => array(
                                 'controller' => 'SchoolManagement\Controller\Enrollment',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id1' => '[0-9]+',
-                                'id2' => '[0-9]+',
+                                'id' => '[0-9]+',
                             ),
                             'defaults' => array(
                                 'controller' => 'SchoolManagement\Controller\Enrollment',
@@ -140,40 +139,28 @@ return array(
                         'icon' => 'fa fa-users',
                         'toolbar' => array(
                             array(
-                                'url' => '/school-management/enrollment/studentProfile/$id',
+                                'url' => '/recruitment/interview/student/$id',
                                 'title' => 'Perfil do Candidato',
                                 'description' => 'Analizar Perfil do Candidato',
                                 'class' => 'fa fa-file-text-o bg-blue',
                                 'target' => '_blank',
                                 'fntype' => 'selectedHttpClick',
                             ),
-                        ),
-                        'pages' => array(
                             array(
-                                'label' => 'Student profile',
-                                'route' => 'school-management/enrollment',
-                                'action' => 'studentProfile',
-                                'resource' => 'SchoolManagement\Controller\Enrollment',
-                                'privilege' => 'studentProfile',
-                                'icon' => 'fa fa-user',
-                                'toolbar' => array(
-                                    array(
-                                        'url' => '/school-management/enrollment/enroll/$id',
-                                        'id' => 'fn-enroll',
-                                        'title' => 'Matricular',
-                                        'description' => 'Matricula o candidato em uma turma.',
-                                        'class' => 'fa fa-check bg-blue',
-                                        'fntype' => 'selectedAjaxUrlClick',
-                                    ),
-                                    array(
-                                        'url' => '/school-management/enrollment/unenroll/$id',
-                                        'id' => 'fn-unenroll',
-                                        'title' => 'Desmatricular',
-                                        'description' => 'Remove a matrícula do candidato na turma selecionada.',
-                                        'class' => 'fa fa-close bg-red',
-                                        'fntype' => 'selectedAjaxUrlClick',
-                                    ),
-                                ),
+                                'url' => '/school-management/enrollment/enroll/$id',
+                                'id' => 'fn-enroll',
+                                'title' => 'Matricular',
+                                'description' => 'Matricula o candidato em uma turma.',
+                                'class' => 'fa fa-check bg-blue',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ),
+                            array(
+                                'url' => '/school-management/enrollment/unenroll/$id',
+                                'id' => 'fn-unenroll',
+                                'title' => 'Desmatricular',
+                                'description' => 'Remove a matrícula do candidato na turma selecionada.',
+                                'class' => 'fa fa-close bg-red',
+                                'fntype' => 'ajaxPostSelectedClick',
                             ),
                         ),
                     ),

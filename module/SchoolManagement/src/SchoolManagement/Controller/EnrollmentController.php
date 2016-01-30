@@ -9,16 +9,16 @@
 namespace SchoolManagement\Controller;
 
 use Database\Service\EntityManagerService;
-use DateTime;
 use Doctrine\DBAL\Exception\ConstraintViolationException;
 use Exception;
 use Recruitment\Entity\Recruitment;
+use Recruitment\Entity\RecruitmentStatus;
 use Recruitment\Form\SearchRegistrationsForm;
 use SchoolManagement\Entity\Enrollment;
+use SchoolManagement\Form\SearchEnrollmentForm;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use Recruitment\Entity\RecruitmentStatus;
 
 /**
  * Description of EnrollmentController
@@ -35,11 +35,20 @@ class EnrollmentController extends AbstractActionController
         try {
             $em = $this->getEntityManager();
             $form = new SearchRegistrationsForm($em, Recruitment::STUDENT_RECRUITMENT_TYPE);
-            $form->get('registrationStatus')->setValue(RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED);
+            $form->get('recruitment')
+                ->setAttribute('disabled', true);
+            $form->get('registrationStatus')
+                ->setValue(RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED)
+                ->setAttribute('disabled', true);
+            $form->remove('submit');
+
+            $sclassForm = new SearchEnrollmentForm($em);
+
 
             return new ViewModel(array(
                 'message' => null,
                 'form' => $form,
+                'sclassForm' => $sclassForm,
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
@@ -50,69 +59,26 @@ class EnrollmentController extends AbstractActionController
     }
 
     /**
-     * Busca as informações de inscrição do candidato e as turmas disponíveis 
-     * (turmas que ainda não finalizaram as aulas)
-     * 
-     * @return ViewModel (message, registration, classes)
-     */
-    public function studentProfileAction()
-    {
-        $id = $this->params('id1', false);
-
-        if ($id) {
-
-            try {
-                $em = $this->getEntityManager();
-                $registration = $em->getRepository('Recruitment\Entity\Registration')->findOneBy(array(
-                    'registrationId' => $id
-                ));
-
-                $enrollments = $em->getRepository('SchoolManagement\Entity\Enrollment')->findBy(array(
-                    'registration' => $id
-                ));
-
-                $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')
-                    ->findByEndDateGratherThan(new DateTime('now'));
-
-                return new ViewModel(array(
-                    'message' => '',
-                    'registration' => $registration,
-                    'classes' => $classes,
-                    'enrollments' => $enrollments,
-                ));
-            } catch (Exception $ex) {
-
-                return new ViewModel(array(
-                    'message' => 'Não foi possível encontrar o registro do candidato: ' . $ex->getMessage(),
-                    'registration' => null,
-                    'classes' => null,
-                    'enrollments' => null,
-                ));
-            }
-        }
-
-        return new ViewModel(array(
-            'message' => 'nenhum candidato foi especificado.',
-            'registration' => null,
-            'classes' => null,
-            'enrollments' => null,
-        ));
-    }
-
-    /**
      * Faz a matrícula do aluno $sid na turma $cid
      */
     public function enrollAction()
     {
-        $cid = $this->params('id1', false);
-        $sid = $this->params('id2', false);
+        $sid = $this->params('id', false);
+        $request = $this->getRequest();
 
-        if ($sid && $cid) {
+        if ($sid && $request->isPost()) {
 
             try {
+
+                $data = $request->getPost();
+
+                if (!is_numeric($data['studentClass'])) {
+                    throw new \RuntimeException('Turma não especificada');
+                }
+
                 $em = $this->getEntityManager();
 
-                $class = $em->getReference('SchoolManagement\Entity\StudentClass', $cid);
+                $class = $em->getReference('SchoolManagement\Entity\StudentClass', $data['studentClass']);
                 $registration = $em->getReference('Recruitment\Entity\Registration', $sid);
                 $enrollment = new Enrollment();
 
@@ -130,11 +96,11 @@ class EnrollmentController extends AbstractActionController
                 if ($ex instanceof ConstraintViolationException) {
                     $message = 'Aluno já está matriculado nesta turma.';
                 } else {
-                    $message = 'Não foi possível encontrar o registro do candidato: ' . $ex->getMessage();
+                    $message = 'Erro: ' . $ex->getMessage();
                 }
             }
         } else {
-            $message = 'turma e/ou aluno não especificado(s).';
+            $message = 'Turma e/ou aluno não especificado(s).';
         }
 
         return new JsonModel(array(
@@ -149,17 +115,23 @@ class EnrollmentController extends AbstractActionController
      */
     public function unenrollAction()
     {
-        $cid = $this->params('id1', false);
-        $sid = $this->params('id2', false);
+        $sid = $this->params('id', false);
+        $request = $this->getRequest();
 
-        if ($sid && $cid) {
+        if ($sid && $request->isPost()) {
 
             try {
+
+                $data = $request->getPost();
+
+                if (!is_numeric($data['studentClass'])) {
+                    throw new \RuntimeException('Turma não especificada');
+                }
 
                 $em = $this->getEntityManager();
 
                 $enrollment = $em->getRepository('SchoolManagement\Entity\Enrollment')->findOneBy(array(
-                    'class' => $cid,
+                    'class' => $data['studentClass'],
                     'registration' => $sid
                 ));
 
@@ -173,10 +145,10 @@ class EnrollmentController extends AbstractActionController
                         . ' foram escolhidos corretamente.';
                 }
             } catch (Exception $ex) {
-                $message = 'Não foi possível encontrar o registro do candidato: ' . $ex->getMessage();
+                $message = 'Erro: ' . $ex->getMessage();
             }
         } else {
-            $message = 'turma e/ou aluno não especificado(s).';
+            $message = 'Turma e/ou aluno não especificado(s).';
         }
 
         return new JsonModel(array(

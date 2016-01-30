@@ -22,7 +22,7 @@ class StudentClass extends EntityRepository
     {
         return $this->_em
                         ->createQuery('SELECT sc FROM SchoolManagement\Entity\StudentClass sc '
-                                . 'WHERE sc.classEndDate > :date'
+                                . 'WHERE sc.classEndDate > :date ORDER BY sc.classId DESC'
                         )
                         ->setParameters(array(
                             'date' => $endDate,

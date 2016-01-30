@@ -36,7 +36,7 @@ $addresses = $person->getAddresses();
 
                 <h3 class="profile-username text-center" id="identity"
                     data-identity="<?php echo $registration->getRegistrationId(); ?>">
-                    <?php echo $person->getPersonName(); ?>
+                        <?php echo $person->getPersonName(); ?>
                 </h3>
 
                 <p class="text-muted text-center">
@@ -295,12 +295,14 @@ $addresses = $person->getAddresses();
                                 'form' => $regForm,
                             ));
 
-                            echo $this->partial('pre-interview/template',
-                                array(
-                                'form' => $regForm->get('preInterview'),
-                            ));
+                            if ($regForm->has('preInterview')) {
+                                echo $this->partial('pre-interview/template',
+                                    array(
+                                    'form' => $regForm->get('preInterview'),
+                                ));
+                            }
                         } else {
-                            
+
                             echo $this->partial('volunteer/template',
                                 array(
                                 'form' => $regForm,

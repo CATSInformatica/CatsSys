@@ -49,7 +49,7 @@ class InterviewController extends AbstractActionController
                         'address' => true,
                         'social_media' => false,
                     ),
-                    'pre_interview' => true,
+                    'pre_interview' => $registration->getPreInterview() !== null,
                 ));
 
                 $form->bind($registration);
@@ -105,10 +105,10 @@ class InterviewController extends AbstractActionController
 
                 if ($request->isPost()) {
 
-                    $currentStatusType = $registration
-                        ->getCurrentRegistrationStatus()
-                        ->getRecruitmentStatus()
-                        ->getNumericStatusType();
+                    $currentStatusType = (int) $registration
+                            ->getCurrentRegistrationStatus()
+                            ->getRecruitmentStatus()
+                            ->getNumericStatusType();
 
                     if ($currentStatusType == RecruitmentStatus::STATUSTYPE_REGISTERED) {
                         throw new \RuntimeException('Este candidato ainda não foi convocado para entrevista '
@@ -117,13 +117,16 @@ class InterviewController extends AbstractActionController
 
                     $form->setData($request->getPost());
 
+//                    echo $currentStatusType . ' ' . RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW;
+//                    exit;
+
                     if ($form->isValid()) {
-                        if (in_array($currentStatusType,
-                                array(
-                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
-                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS,
-                            ))) {
+
+                        if ($currentStatusType === RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW) {
                             $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_INTERVIEWED);
+                        } else if ($currentStatusType === RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS) {
+                            $this->updateRegistrationStatus($registration,
+                                RecruitmentStatus::STATUSTYPE_TESTCLASS_COMPLETE);
                         }
 
                         $em->merge($registration);

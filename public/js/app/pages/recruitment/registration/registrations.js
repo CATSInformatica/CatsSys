@@ -78,8 +78,13 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                 initDataTable();
                 initMasks();
             },
-            getDataOf: function (statusAction) {
+            getDataOf: function (action) {
 
+                if (action === "fn-enroll" || action === "fn-unenroll") {
+                    return {
+                        studentClass: $("select[name=studentClasses]").val()
+                    };
+                }
                 return {
                     timestamp: $('input[name=timestamp]').val()
                 };
