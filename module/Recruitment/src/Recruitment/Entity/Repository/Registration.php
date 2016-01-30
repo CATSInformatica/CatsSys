@@ -9,7 +9,7 @@
 namespace Recruitment\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
-use Recruitment\Entity\Recruitment;
+use Recruitment\Entity\Recruitment as Recruit;
 
 /**
  * Description of Registration
@@ -36,7 +36,7 @@ class Registration extends EntityRepository
                     . 'ORDER BY r.registrationId DESC')
                 ->setParameters(array(
                     'cpf' => $cpf,
-                    'rtype' => Recruitment::STUDENT_RECRUITMENT_TYPE,
+                    'rtype' => Recruit::STUDENT_RECRUITMENT_TYPE,
                 ))
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
