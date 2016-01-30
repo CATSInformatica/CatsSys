@@ -210,7 +210,7 @@ return array(
                 ),
             ),
             array(
-                'label' => 'Registration',
+                'label' => 'Inscrições',
                 'uri' => '#',
                 'icon' => 'fa fa-users',
                 'order' => 7,
@@ -364,7 +364,7 @@ return array(
                         ),
                     ),
                     array(
-                        'label' => 'Registration form',
+                        'label' => 'Formulário de Inscrição',
                         'route' => 'recruitment/registration',
                         'action' => 'registrationForm',
                         'resource' => 'Recruitment\Controller\Registration',

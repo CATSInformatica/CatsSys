@@ -1,0 +1,135 @@
+<?php echo $this->doctype(); ?>
+
+<html lang="pt_BR">
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle()->prepend('CatsSys'); ?>
+        <?php
+        echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+
+        <!-- Le styles -->
+        <?php
+        echo $this->headLink(array(
+                'rel' => 'shortcut icon',
+                'type' => 'image/vnd.microsoft.icon',
+                'href' => $this->basePath() . '/img/favicon.ico'))
+            // Bootstrap
+            ->appendStylesheet($this->basePath('vendor/AdminLTE/bootstrap/css/bootstrap.min.css'))
+            // DataTable
+            ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.css'))
+            // Datepicker
+            ->appendStylesheet($this->basePath('vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css'))
+            // Font Awesome
+            ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'))
+            // Ionicons
+            ->appendStylesheet($this->basePath('vendor/Ionicons/css/ionicons.min.css'))
+            // Theme style
+            ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/AdminLTE.min.css'))
+            // AdminLTE Skins
+            ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/skins/skin-blue.min.css'))
+            ->appendStylesheet($this->basePath('css/app.css'));
+        ?>
+
+    </head>
+    <body class="skin-blue fixed" style="background: white;">
+
+        <!-- Wrapper -->
+        <div class="wrapper">
+            <!-- Right side column. Contains the content of the page -->
+            <div class="content-wrapper" style="height: 100% !important;">
+                <!-- Main content -->
+                <section class="content-header">
+                    <?php
+                    echo $this->navigation('navigation')
+                        ->breadcrumbs()
+                        ->setMinDepth(0)
+                        ->setPartial('header/template');
+                    ?>
+                </section>
+                <?php echo $this->content; ?>
+            </div><!-- /.right-side -->
+        </div>
+    </body>
+    <script data-main="/js/config" src="/vendor/requirejs/require.js" ></script>
+    <script>
+        require(['config'], function () {
+
+            // for file inputs
+            $(document).on('change', '.btn-file :file', function () {
+                var input = $(this),
+                        numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                input.trigger('fileselect', [numFiles, label]);
+            });
+
+            $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
+                $(this).siblings('.btn-file-name').text(label);
+            });
+
+            // change user active role
+            $(function () {
+
+
+
+//                $('.role').on('click', function () {
+//                    var role = $(this);
+//                    var jsonRole = JSON.stringify({
+//                        'role': role.text().toLowerCase()
+//                    });
+//                    $.ajax({
+//                        url: '/authorization/role/changeActiveUserRole',
+//                        type: 'POST',
+//                        dataType: 'json',
+//                        async: true,
+//                        data: jsonRole,
+//                        success: function (msg) {
+//
+//                            // change role in menu
+//                            if (msg.success) {
+//                                var newActiveRole = role.text();
+//                                role.text($('.active-role').text());
+//                                $('.active-role').text(newActiveRole);
+//                            }
+//
+//                            console.log(msg);
+//                        },
+//                        error: function (msg) {
+//                            console.log(msg);
+//                        }
+//                    });
+//                });
+
+                require(['app/models/Main'], function (Main) {
+
+                    var config = {
+                        toolbarElement: '.system-toolbar',
+                        toolbarItem: 'li',
+                        toolbarSelectedItem: '.cats-selected-row',
+                        toolbarContainer: '.control-sidebar',
+                        toolbarContainerOpen: 'control-sidebar-open'
+                    };
+
+                    if (typeof appConfig !== 'undefined') {
+                        require([appConfig.getScriptSrc()], function (pageScript) {
+                            Main.setPageConfig(pageScript);
+                            pageScript.init();
+                        });
+                    }
+
+                    // deprecated
+                    if (typeof standardConfig !== 'undefined') {
+                        standardConfig.init();
+                    }
+
+                    Main.setConfig(config);
+                    Main.init();
+                });
+
+            });
+        });
+    </script>
+</div>
+</html>

@@ -41,6 +41,7 @@ return array(
     'view_manager' => array(
         'template_map' => array(
             'application/layout' => __DIR__ . '/../view/layout/application-layout.phtml',
+            'application-clean/layout' => __DIR__ . '/../view/layout/application-clean-layout.phtml',
             'menu/template' => __DIR__ . '/../view/templates/menu.phtml',
             'header/template' => __DIR__ . '/../view/templates/header.phtml',
             'toolbar/template' => __DIR__ . '/../view/templates/toolbar.phtml',

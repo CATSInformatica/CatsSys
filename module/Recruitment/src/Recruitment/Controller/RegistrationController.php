@@ -116,6 +116,8 @@ class RegistrationController extends AbstractActionController
      */
     public function registrationFormAction()
     {
+        $this->layout('application-clean/layout');
+
         $type = (int) $this->params('id', Recruitment::STUDENT_RECRUITMENT_TYPE);
 
         try {
