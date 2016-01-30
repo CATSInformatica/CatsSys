@@ -45,7 +45,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                     'rows' => 5,
                 ),
                 'options' => array(
-                    'label' => 'Escolaridade (onde estudou, quando, cursos, etc.)*',
+                    'label' => 'Fez algum curso (técnico, linguas, etc) ? Qual?*',
                 ),
             ))
             ->add(array(
