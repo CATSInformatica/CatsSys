@@ -88,6 +88,33 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                 return {
                     timestamp: $('input[name=timestamp]').val()
                 };
+            },
+            getCallbackOf: function (action) {
+
+                var obj = {
+                };
+
+                switch (action) {
+                    case 'fn-interview-convocation':
+                    case 'fn-interview-waitlist':
+                    case 'fn-interview-approved':
+                    case 'fn-interview-disapproved':
+                    case 'fn-interview-volunteer':
+                    case 'fn-testclass-convocation':
+                    case 'fn-testclass-waitlist':
+                    case 'fn-canceled-registration':
+                        obj.exec = function (params) {
+                            $(".cats-selected-row").find("td:last")
+                                    .text(params.status +
+                                            "\n" + params.timestamp);
+                        };
+                        break;
+                    default:
+                        obj.exec = function (params) {
+                        };
+                }
+
+                return obj;
             }
         };
     }());

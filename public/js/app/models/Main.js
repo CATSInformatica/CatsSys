@@ -45,6 +45,16 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                         type: 'POST',
                         success: function (data) {
                             bootbox.alert(data.message);
+
+                            /**
+                             * callback on page config
+                             */
+
+                            if (typeof pageConfig.getCallbackOf(toolbarItem.attr('id')) !== 'undefined') {
+                                pageConfig.getCallbackOf(toolbarItem.attr('id')).exec(data.callback);
+                            }
+
+
                         },
                         error: function (jqXHR, textStatus, errorThrown) {
                             bootbox.alert(textStatus);
@@ -126,6 +136,10 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                             /**
                              * callback on page config
                              */
+
+                            if (typeof pageConfig.getCallbackOf(toolbarItem.attr('id')) !== 'undefined') {
+                                pageConfig.getCallbackOf(toolbarItem.attr('id')).exec(data.callback);
+                            }
 
                         },
                         error: function (jqXHR, textStatus, errorThrown) {

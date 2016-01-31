@@ -238,7 +238,13 @@ class RegistrationController extends AbstractActionController
                     $sid = $data['registrationStatus'];
 
                     $em = $this->getEntityManager();
-                    $regs = $em->getRepository('Recruitment\Entity\Registration')->findByStatusType($rid, $sid);
+                    if (RecruitmentStatus::statusTypeExists($sid)) {
+                        $regs = $em->getRepository('Recruitment\Entity\Registration')->findByStatusType($rid, $sid);
+                    } else {
+                        $regs = $em->getRepository('Recruitment\Entity\Registration')->findBy(array(
+                            'recruitment' => $rid,
+                        ));
+                    }
 
                     foreach ($regs as $r) {
                         $status = $r->getCurrentRegistrationStatus();
@@ -401,7 +407,7 @@ class RegistrationController extends AbstractActionController
 
                     $dt = new \DateTime($data['timestamp']);
                 } else {
-                    $dt = null;
+                    $dt = new \DateTime('now');
                 }
 
                 $registration = $em->getReference('Recruitment\Entity\Registration', $rid);
@@ -414,8 +420,15 @@ class RegistrationController extends AbstractActionController
                 $em->persist($registration);
                 $em->flush();
 
+
+
+
                 return new JsonModel(array(
                     'message' => 'Situação do candidato alterada para ' . RecruitmentStatus::statusTypeToString($sid),
+                    'callback' => array(
+                        'timestamp' => $dt->format('d/m/Y H:i:s'),
+                        'status' => RecruitmentStatus::statusTypeToString($sid),
+                    ),
                 ));
             } catch (Exception $ex) {
 

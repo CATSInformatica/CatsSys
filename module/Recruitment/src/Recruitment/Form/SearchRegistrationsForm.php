@@ -73,6 +73,7 @@ class SearchRegistrationsForm extends Form implements InputFilterProviderInterfa
                         => RecruitmentStatus::STATUSTYPEDESC_CALLEDFOR_PREINTERVIEW,
                         RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE
                         => RecruitmentStatus::STATUSTYPEDESC_PREINTERVIEW_COMPLETE,
+                        -1 => 'TODOS',
                     ),
                 ),
             ))

@@ -310,7 +310,7 @@ return array(
                                 // const STATUSTYPE_CALLEDFOR_INTERVIEW = 1;
                                 'url' => '/recruitment/registration/updateStatus/$id/1',
                                 'title' => 'Convocar (entrevista)',
-                                'id' => 'fn-convocation-interview',
+                                'id' => 'fn-interview-convocation',
                                 'description' => 'Convocar o candidato para a entrevista na data escolhida',
                                 'class' => 'fa fa-users bg-green',
                                 'fntype' => 'ajaxPostSelectedClick',
@@ -319,6 +319,7 @@ return array(
                                 // const STATUSTYPE_INTERVIEW_WAITINGLIST = 4;
                                 'url' => '/recruitment/registration/updateStatus/$id/4',
                                 'title' => 'Lista de Espera (entrevista)',
+                                'id' => 'fn-interview-waitlist',
                                 'description' => '',
                                 'class' => 'fa fa-file-text-o bg-blue',
                                 'fntype' => 'selectedAjaxClick',
@@ -327,6 +328,7 @@ return array(
                                 // const STATUSTYPE_INTERVIEW_APPROVED = 5;
                                 'url' => '/recruitment/registration/updateStatus/$id/5',
                                 'title' => 'Aprovar',
+                                'id' => 'fn-interview-approved',
                                 'description' => 'Aprovar candidato',
                                 'class' => 'fa fa-check bg-green',
                                 'fntype' => 'selectedAjaxClick',
@@ -335,6 +337,7 @@ return array(
                                 // const STATUSTYPE_INTERVIEW_DISAPPROVED = 6;
                                 'url' => '/recruitment/registration/updateStatus/$id/6',
                                 'title' => 'Reprovar',
+                                'id' => 'fn-interview-disapproved',
                                 'description' => 'Reprovar Candidato',
                                 'class' => 'fa fa-close bg-red',
                                 'fntype' => 'selectedAjaxClick',
@@ -343,6 +346,7 @@ return array(
                                 // const STATUSTYPE_VOLUNTEER = 7;
                                 'url' => '/recruitment/registration/updateStatus/$id/7',
                                 'title' => 'Voluntário',
+                                'id' => 'fn-interview-volunteer',
                                 'description' => 'Altera a situação do candidato para voluntário regular',
                                 'class' => 'fa fa-user bg-green',
                                 'fntype' => 'selectedAjaxClick',
@@ -351,7 +355,7 @@ return array(
                                 // const STATUSTYPE_CALLEDFOR_TESTCLASS = 8;
                                 'url' => '/recruitment/registration/updateStatus/$id/8',
                                 'title' => 'Convocar (aula teste)',
-                                'id' => 'fn-convocation-testclas',
+                                'id' => 'fn-testclass-convocation',
                                 'description' => 'Convoca o candidato para aula teste',
                                 'class' => 'fa fa-graduation-cap bg-green',
                                 'fntype' => 'ajaxPostSelectedClick',
@@ -360,6 +364,7 @@ return array(
                                 // const STATUSTYPE_TESTCLASS_WAITINGLIST = 10;
                                 'url' => '/recruitment/registration/updateStatus/$id/10',
                                 'title' => 'Lista de Espera (aula teste)',
+                                'id' => 'fn-testclass-waitlist',
                                 'description' => '',
                                 'class' => 'fa fa-file-text-o bg-blue',
                                 'fntype' => 'selectedAjaxClick',
@@ -368,6 +373,7 @@ return array(
                                 // const STATUSTYPE_CANCELED_REGISTRATION = 2;
                                 'url' => '/recruitment/registration/updateStatus/$id/2',
                                 'title' => 'Cancelar Inscrição',
+                                'id' => 'fn-canceled-registration',
                                 'description' => 'Invalida a inscrição do candidato',
                                 'class' => 'fa fa-trash bg-red',
                                 'fntype' => 'selectedAjaxClick',
@@ -394,6 +400,7 @@ return array(
                         'resource' => 'Recruitment\Controller\Registration',
                         'privilege' => 'registrationForm',
                         'icon' => 'fa fa-user-plus',
+                        'target' => '_blank',
                     ),
                     array(
                         'label' => 'Student pre-interview I',

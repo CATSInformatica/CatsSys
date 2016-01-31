@@ -1,1 +1,25 @@
-<?php echo $this->content;
+<?php echo $this->doctype(); ?>
+
+<html lang="pt_BR">
+    <head>
+        <meta charset="utf-8">
+        <?php echo $this->headTitle()->prepend('CatsSys'); ?>
+        <?php
+        echo $this->headMeta()
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+        ?>
+
+        <!-- Le styles -->
+        <?php
+        echo $this->headLink(array(
+            'rel' => 'shortcut icon',
+            'type' => 'image/vnd.microsoft.icon',
+            'href' => $this->basePath() . '/img/favicon.ico'));
+        ?>
+    </head>
+    <body class="skin-blue fixed" style="background: white;">
+        <?php echo $this->content; ?>
+    </body>
+</html>
+
