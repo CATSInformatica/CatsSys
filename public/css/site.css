@@ -18,6 +18,9 @@ p {
 q {
     font-size: 14px;
 }
+hr {
+    margin: 10px;
+}
 
 #logo {
     padding: 35px;
@@ -44,7 +47,9 @@ q {
 #nav-menu {
     background-color: #455A64;
 }
+
 #navbar-content ul li a {
+    font-size: 15px;  
     border: none;
     padding: 20px;
     color: #B3BBC0;
