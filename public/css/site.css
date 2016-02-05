@@ -1,0 +1,141 @@
+html, body {
+    background-color: #F5F5F5;
+    font-family: 'Roboto', 'Helvetica', sans-serif;
+    color: #616161;
+    font-size: 1em;
+}
+html, body {
+    height: 100%;
+    border: none;   
+}
+.wrapper {
+    min-height: 100%;
+}
+
+h1 {
+    margin: 30px 0;
+    font-weight: 400;
+    letter-spacing: 0.8px;
+}
+p {
+    font-size: 16px;
+    letter-spacing: 0.5px;
+    line-height: 24px;
+}
+#cats {
+    padding: 0;
+}
+#logo {
+    padding: 35px 45px;
+    background-color: #607D8B;
+}
+#content-wrapper, #navbar-content {
+    padding: 0;
+}
+.tab-content {
+    background-color: #F5F5F5;    
+}
+
+#logo > div {
+    margin: 0;
+}
+.nav-tabs>li>a {
+    border: none;
+}
+.nav-tabs>li>a:hover,
+.nav-tabs>li>a:active,
+.nav-tabs>li>a:visited,
+.nav-tabs>li>a:focus {
+    text-transform: none;
+    background-color: inherit;
+    border-color: inherit; 
+}
+#nav-menu {
+    background-color: #455A64;
+    margin: 0;
+    padding: 0;
+    border: none;
+    border-radius: 0px;
+    min-height: 0;
+}
+#navbar-content ul {
+    border: none;
+}
+#navbar-content ul li a {
+    padding: 20px;
+    color: #B3BBC0;
+}
+#psa-box {
+    margin-bottom: 10px;
+}
+#psa-box, #psv-box {
+    padding: 0;
+}
+#psa-box > div.box-title {
+    background-color: #8BC34A;  
+}
+#psv-box > div.box-title {
+    background-color: #2196F3;
+}
+.box-title {
+    padding-top: 10px;
+    color: white;
+}
+.box-content {
+    background-color: white;
+    color: #616161;
+    padding: 10px 20px;
+}
+.box-content a {
+    color: #27BCDA;
+}
+.box-link {
+    text-align: center;
+}
+.heavy-text {
+    padding: 40px 40px 20px;   
+}
+
+.row {
+    padding: 30px 0;
+}
+
+.direction {
+    display: inline-block;
+    text-transform: uppercase;
+    text-align: center;
+    width: 280px;
+    height: auto;
+    color: #fff;
+    float: left;
+    background-color: #3E50B4; 
+    margin: 15px;
+    padding: 10px 5px;
+}
+#executive {
+    display: block;
+    background-color: #FE5621;
+    float: none;
+    margin: 20px auto;
+}
+.department {
+    text-transform: none;
+    list-style: none;
+}
+
+.bg-white {
+    background-color: white;
+}
+.nice-shadow {
+    box-shadow: 0 2px 2px 0 rgba(0,0,0,.14),0 3px 1px -2px rgba(0,0,0,.2),0 1px 5px 0 rgba(0,0,0,.12);    
+}
+#support > div > div > img {
+    width: 70%;
+}
+#speaking-logo {
+    padding-top: 15%;
+}   
+#footer {
+    color: #9e9e9e; 
+    background-color: #424242; 
+}

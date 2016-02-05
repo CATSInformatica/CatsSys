@@ -1,6 +1,6 @@
 <?php echo $this->doctype(); ?>
 
-<html lang="en">
+<html lang="pt_BR">
     <head>
         <meta charset="utf-8">
         <?php echo $this->headTitle('CatsSys'); ?>
@@ -18,52 +18,79 @@
                     'rel' => 'shortcut icon',
                     'type' => 'image/vnd.microsoft.icon',
                     'href' => $this->basePath() . '/img/favicon.ico'))
+                // Roboto
+                ->appendStylesheet('http://fonts.googleapis.com/css?family=Roboto:300,400,500,700')
                 // Bootstrap
                 ->appendStylesheet($this->basePath('vendor/AdminLTE/bootstrap/css/bootstrap.min.css'))
+                ->appendStylesheet($this->basePath('css/site.css'))
                 // Custom Icons
                 ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'));
         ?>
     </head>
     <body>
-        <nav class="navbar navbar-inverse navbar-top">
-            <div class='container'>
-                <div class="navbar-header">
-                    <button type="button" class="navbar-toggle collapsed" data-toggle="collapse" data-target="#navbar" aria-expanded="false" aria-controls="navbar">
-                        <span class="sr-only">Toggle navigation</span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                        <span class="icon-bar"></span>
-                    </button>
-                    <a class="navbar-brand" href="<?php echo $this->url('home'); ?>">CatsSys</a>
+        <div class="wrapper">
+            <header>
+                <div class="container-fluid" id="logo">
+                    <img class="center-block" src="img/logo_branco.png"/>
                 </div>
+            </header>
+            <nav class="navbar" id="nav-menu">
+                <div class="container-fluid" id="content-wrapper">
+                    <div class="tabs" id="navbar-content">
+                        <ul class="nav nav-tabs tab-links">
+                            <li class="active"><a href="#cats">CATS</a></li>
+                            <li><a href="#history">Nossa História</a></li>
+                            <li><a href="#faq">Dúvidas Frequentes</a></li>
+                            <li><a href="#contact">Contato</a></li>
+                        </ul>
+                        <?php echo $this->content; ?>
+                    </div>
+                </div>
+            </nav>
+            <?php
+            echo $this->inlineScript()
+                    // Bootstrap 3.3.5
+                    ->prependFile($this->basePath('vendor/AdminLTE/bootstrap/js/bootstrap.min.js'))
+                    // jQuery 2.1.4
+                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
+            ?>
+            <script>
+                jQuery(document).ready(function () {
+                    jQuery('.tabs .tab-links a').on('click', function (e) {
+                        var currentAttrValue = jQuery(this).attr('href');
 
-                <div id="navbar" class="collapse navbar-collapse">
-                    <ul class="nav navbar-nav">
-                        <li class="active"><a href="#">Home</a></li>
-                        <li><a href='<?php echo $this->url('authentication/login'); ?>'>Login</a></li>
-                    </ul>
-                </div><!--/.nav-collapse -->
-            </div>
-        </nav>
+                        // Show/Hide Tabs
+                        jQuery('.tabs ' + currentAttrValue).show().siblings().hide();
 
-        <div class="container">
-            <?php echo $this->content; ?>
+                        // Change/remove current tab to active
+                        jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
+
+                        e.preventDefault();
+                    });
+                });
+            </script>
+            <footer class="col-md-12" id="footer">
+                <section class="col-md-8 col-md-offset-2 col-xs-12" id="contact">
+                    <div>
+                        <h1>Contato</h1>
+                        Av. BPS, 1303 – Sala I.1.2.47 – CEP 37500-903 – Pinheirinho – Itajubá – MG
+                        <br>
+                        (35) 8871-2364
+                        <br>
+                        catsrpp@gmail.com 
+                    </div>
+                </section>
+                <section class="col-md-12" id="contact">
+                    <hr>
+                    <div class="text-center">
+                        <p>CATS, mais que uma oportunidade, uma família!</p>
+                    </div>
+                    <div class="text-center">
+                        <p>Copyright © <?php echo date("Y"); ?> CATS. Todos os direitos reservados.</p>
+                    </div>
+                </section>
+
+            </footer>
         </div>
-        <footer class='footer navbar-fixed-bottom'>
-            <div class='container'>
-                <p>
-                    &copy <?php echo date('Y') ?> CATS.
-                    <br>Todos os direitos reservados.
-                    <br> Site construído pelo grupo de informática do CATS.
-                </p>
-            </div>
-        </footer>
-        <?php
-        echo $this->inlineScript()
-                // Bootstrap 3.3.5
-                ->prependFile($this->basePath('vendor/AdminLTE/bootstrap/js/bootstrap.min.js'))
-                // jQuery 2.1.4
-                ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
-        ?>
     </body>
 </html>
