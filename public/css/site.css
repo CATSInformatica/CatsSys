@@ -17,11 +17,20 @@ h1 {
     font-weight: 400;
     letter-spacing: 0.8px;
 }
+h3 {
+    font-size: 20px;
+    font-weight: 400;
+    letter-spacing: 0.8px;
+}
 p {
     font-size: 16px;
     letter-spacing: 0.5px;
     line-height: 24px;
 }
+q {
+    font-weight: 300;
+}
+
 #cats {
     padding: 0;
 }
@@ -35,6 +44,14 @@ p {
 .tab-content {
     background-color: #F5F5F5;    
 }
+.tab {
+    display:none;
+}
+
+.tab.active {
+    display:block;
+}
+
 
 #logo > div {
     margin: 0;
@@ -134,7 +151,21 @@ p {
 }
 #speaking-logo {
     padding-top: 15%;
-}   
+}
+
+.form-control {
+    font-family: monospace;
+    font-size: 16px
+}
+.control-label {
+    font-weight: 200;
+    font-size: 25px;
+}
+
+textarea.form-control {
+    height: 250px;
+}
+
 #footer {
     color: #9e9e9e; 
     background-color: #424242; 
