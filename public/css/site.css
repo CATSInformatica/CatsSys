@@ -44,13 +44,6 @@ q {
 .tab-content {
     background-color: #F5F5F5;    
 }
-.tab {
-    display:none;
-}
-
-.tab.active {
-    display:block;
-}
 
 
 #logo > div {
