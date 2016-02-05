@@ -103,11 +103,11 @@ return array(
             'options' => array(
                 'name' => 'system',
                 'use_cookies' => true,
-                'cookie_lifetime' => 0,
+                'cookie_lifetime' => 3600,
                 'cookie_httponly' => true,
                 'cookie_secure' => false,
-                'remember_me_seconds' => 3600, // remember me for 24 hours
-                'gc_maxlifetime' => 10,
+                'remember_me_seconds' => 3600, // remember me for 1 hour
+                'gc_maxlifetime' => 3600,
             )
         ),
         'storage' => 'Zend\Session\Storage\SessionArrayStorage',
