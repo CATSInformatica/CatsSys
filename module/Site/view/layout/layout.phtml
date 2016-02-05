@@ -37,11 +37,11 @@
             <nav class="navbar" id="nav-menu">
                 <div class="container-fluid" id="content-wrapper">
                     <div class="tabs" id="navbar-content">
-                        <ul class="nav nav-tabs tab-links">
-                            <li class="active"><a href="#cats">CATS</a></li>
-                            <li><a href="#history">Nossa História</a></li>
-                            <li><a href="#faq">Dúvidas Frequentes</a></li>
-                            <li><a href="#contact">Contato</a></li>
+                        <ul class="nav nav-tabs" id="tab-menu">
+                            <li class="active"><a href="#cats" data-toggle="tab">CATS</a></li>
+                            <li><a href="#history" data-toggle="tab">Nossa História</a></li>
+                            <li><a href="#faq" data-toggle="tab">Dúvidas Frequentes</a></li>
+                            <li><a href="#contact" data-toggle="tab">Contato</a></li>
                         </ul>
                         <?php echo $this->content; ?>
                     </div>
@@ -55,19 +55,14 @@
                     ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
             ?>
             <script>
-                jQuery(document).ready(function () {
-                    jQuery('.tabs .tab-links a').on('click', function (e) {
-                        var currentAttrValue = jQuery(this).attr('href');
-
-                        // Show/Hide Tabs
-                        jQuery('.tabs ' + currentAttrValue).show().siblings().hide();
-
-                        // Change/remove current tab to active
-                        jQuery(this).parent('li').addClass('active').siblings().removeClass('active');
-
-                        e.preventDefault();
-                    });
-                });
+                $('#tab-menu a').click(function (e) {
+                    e.preventDefault();                    
+                    $(this).tab('show');
+                })
+                $('#myTab a[href="#cats"]').tab('show');
+                $('#myTab a[href="#faq"]').tab('show');
+                $('#myTab a[href="#contact"]').tab('show');
+                $('#myTab a[href="#history"]').tab('show');
             </script>
             <footer class="col-md-12" id="footer">
                 <section class="col-md-8 col-md-offset-2 col-xs-12" id="contact">
