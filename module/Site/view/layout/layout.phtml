@@ -8,23 +8,23 @@
 
         <?php
         echo $this->headMeta()
-                ->appendName('viewport', 'width=device-width, initial-scale=1.0')
-                ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
 
         <!-- Le styles -->
         <?php
         echo $this->headLink(array(
-                    'rel' => 'shortcut icon',
-                    'type' => 'image/vnd.microsoft.icon',
-                    'href' => $this->basePath() . '/img/favicon.ico'))
-                // Roboto
-                ->appendStylesheet('http://fonts.googleapis.com/css?family=Roboto:300,400,500,700')
-                // Bootstrap
-                ->appendStylesheet($this->basePath('vendor/bootswatch-dist/css/bootstrap.min.css'))
-                ->appendStylesheet($this->basePath('css/site.css'))
-                // Custom Icons
-                ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'));
+                'rel' => 'shortcut icon',
+                'type' => 'image/vnd.microsoft.icon',
+                'href' => $this->basePath() . '/img/favicon.ico'))
+            // Roboto
+            ->appendStylesheet('http://fonts.googleapis.com/css?family=Roboto:300,400,500,700')
+            // Bootstrap
+            ->appendStylesheet($this->basePath('vendor/bootswatch-dist/css/bootstrap.min.css'))
+            ->appendStylesheet($this->basePath('css/site.css'))
+            // Custom Icons
+            ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'));
         ?>
     </head>
     <body>
@@ -49,10 +49,10 @@
             </nav>
             <?php
             echo $this->inlineScript()
-                    // Bootstrap 3.3.5
-                    ->prependFile($this->basePath('vendor/bootswatch-dist/js/bootstrap.min.js'))
-                    // jQuery 2.1.4
-                    ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
+                // Bootstrap 3.3.5
+                ->prependFile($this->basePath('vendor/bootswatch-dist/js/bootstrap.min.js'))
+                // jQuery 2.1.4
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
             ?>
             <script>
                 jQuery(document).ready(function () {
@@ -69,26 +69,28 @@
                     });
                 });
             </script>
-            <footer class="col-md-12" id="footer">
-                <section class="col-md-8 col-md-offset-2 col-xs-12" id="contact">
-                    <div>
-                        <h1>Contato</h1>
-                        Av. BPS, 1303 – Sala I.1.2.47 – CEP 37500-903 – Pinheirinho – Itajubá – MG
-                        <br>
-                        (35) 8871-2364
-                        <br>
-                        catsrpp@gmail.com 
-                    </div>
-                </section>
-                <section class="col-md-12" id="contact">
-                    <hr>
-                    <div class="text-center">
-                        <p>CATS, mais que uma oportunidade, uma família!</p>
-                    </div>
-                    <div class="text-center">
-                        <p>Copyright © <?php echo date("Y"); ?> CATS. Todos os direitos reservados.</p>
-                    </div>
-                </section>
+            <footer id="footer">
+                <div class="container">
+                    <section class="col-md-4 col-xs-12">
+                        <h4>Contato</h4>
+                        <p> Av. BPS, 1303 – Sala I.1.2.47 – CEP 37500-903 <br> Pinheirinho – Itajubá – MG
+                            <br>Fone: (35) 8871-2364. Email: catsrpp@gmail.com </p>
+                </div>
+                <hr>
+                <div class="container">
+                    </section>
+                    <section class="col-md-6 text-center">
+                        <p>CATS, mais que uma oportunidade, uma família! © <?php echo date("Y"); ?> CATS. TODOS OS DIREITOS RESERVADOS.</p>
+                    </section>
+                    <section class="col-md-6 text-center">
+                        <ul class="list-inline">
+                            <li><a href="#"><i class="fa fa-facebook"></i></a></li>
+                            <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+                            <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
+                            <li><a href="#"><i class="fa fa-twitter"></i></a></li>
+                        </ul>
+                    </section>
+                </div>
             </footer>
         </div>
     </body>
