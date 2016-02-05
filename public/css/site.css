@@ -1,12 +1,8 @@
 html, body {
-    background-color: #F5F5F5;
-    font-family: 'Roboto', 'Helvetica', sans-serif;
     color: #616161;
-    font-size: 1em;
 }
 html, body {
     height: 100%;
-    border: none;   
 }
 .wrapper {
     min-height: 100%;
@@ -14,64 +10,42 @@ html, body {
 
 h1 {
     margin: 30px 0;
-    font-weight: 400;
-    letter-spacing: 0.8px;
-}
-h3 {
-    font-size: 20px;
-    font-weight: 400;
     letter-spacing: 0.8px;
 }
 p {
     font-size: 16px;
-    letter-spacing: 0.5px;
-    line-height: 24px;
 }
 q {
-    font-weight: 300;
+    font-size: 14px;
 }
 
-#cats {
-    padding: 0;
-}
 #logo {
-    padding: 35px 45px;
+    padding: 35px;
     background-color: #607D8B;
 }
-#content-wrapper, #navbar-content {
+#content-wrapper {
     padding: 0;
 }
 .tab-content {
     background-color: #F5F5F5;    
 }
 
-
-#logo > div {
-    margin: 0;
-}
-.nav-tabs>li>a {
-    border: none;
-}
+.nav-tabs>li>a,
 .nav-tabs>li>a:hover,
 .nav-tabs>li>a:active,
 .nav-tabs>li>a:visited,
 .nav-tabs>li>a:focus {
+    border: none;
     text-transform: none;
-    background-color: inherit;
-    border-color: inherit; 
+    background-color: #455A64;
+    padding: 35px 0;
+    margin: 0;
 }
 #nav-menu {
     background-color: #455A64;
-    margin: 0;
-    padding: 0;
-    border: none;
-    border-radius: 0px;
-    min-height: 0;
-}
-#navbar-content ul {
-    border: none;
 }
 #navbar-content ul li a {
+    border: none;
     padding: 20px;
     color: #B3BBC0;
 }
@@ -93,11 +67,7 @@ q {
 }
 .box-content {
     background-color: white;
-    color: #616161;
     padding: 10px 20px;
-}
-.box-content a {
-    color: #27BCDA;
 }
 .box-link {
     text-align: center;
@@ -146,17 +116,18 @@ q {
     padding-top: 15%;
 }
 
-.form-control {
-    font-family: monospace;
-    font-size: 16px
-}
 .control-label {
-    font-weight: 200;
-    font-size: 25px;
+    font-size: 16px;
 }
 
 textarea.form-control {
-    height: 250px;
+    height: 200px;
+}
+.nav-tabs>li {
+    margin: 0;
+}
+.nav-tabs>li.active>a {
+    background-color: #ffffff;
 }
 
 #footer {
