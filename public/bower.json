@@ -18,6 +18,7 @@
     "eonasdan-bootstrap-datetimepicker": "~4.17.37",
     "requirejs": "~2.1.22",
     "jquery.maskedinput": "~1.4.1",
-    "bootswatch-dist": "yeti"
+    "bootswatch-dist": "yeti",
+    "smooth-scroll": "https://github.com/cferdinandi/smooth-scroll.git#~8.1.0"
   }
 }

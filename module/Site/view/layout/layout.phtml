@@ -29,55 +29,30 @@
     </head>
     <body>
         <div class="wrapper">
-            <header>
-                <div class="container-fluid" id="logo">
-                    <img class="center-block" src="img/logo_branco.png"/>
-                </div>
+            <header class="catssys-header">
             </header>
-            <nav class="navbar" id="nav-menu">
-                <div class="container-fluid" id="content-wrapper">
-                    <div class="tabs" id="navbar-content">
-                        <ul class="nav nav-tabs" id="tab-menu">
-                            <li class="active"><a href="#cats" data-toggle="tab">CATS</a></li>
-                            <li><a href="#history" data-toggle="tab">Nossa História</a></li>
-                            <li><a href="#faq" data-toggle="tab">Dúvidas Frequentes</a></li>
-                            <li><a href="#contact" data-toggle="tab">Contato</a></li>
-                        </ul>
-                        <?php echo $this->content; ?>
-                    </div>
-                </div>
-            </nav>
-            <?php
-            echo $this->inlineScript()
-                // Bootstrap 3.3.5
-                ->prependFile($this->basePath('vendor/bootswatch-dist/js/bootstrap.min.js'))
-                // jQuery 2.1.4
-                ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
-            ?>
-            <script>
-                $('#tab-menu a').click(function (e) {
-                    e.preventDefault();                    
-                    $(this).tab('show');
-                })
-                $('#myTab a[href="#cats"]').tab('show');
-                $('#myTab a[href="#faq"]').tab('show');
-                $('#myTab a[href="#contact"]').tab('show');
-                $('#myTab a[href="#history"]').tab('show');
-            </script>
-            <footer id="footer">
+            <main>
+                <?php echo $this->content; ?>
+            </main>
+            <footer>
                 <div class="container">
-                    <section class="col-md-4 col-xs-12">
+                    <section class="col-md-6 text-center">
+                        <img src="/img/logo_branco.png" alt="CATS logo">
+                        <p>CATS, mais que uma oportunidade, uma família!</p>
+                    </section>
+                    <section class="col-md-6">
                         <h4>Contato</h4>
                         <p> Av. BPS, 1303 – Sala I.1.2.47 – CEP 37500-903 <br> Pinheirinho – Itajubá – MG
                             <br>Fone: (35) 8871-2364. Email: catsrpp@gmail.com </p>
+                    </section>
                 </div>
                 <hr>
                 <div class="container">
                     </section>
-                    <section class="col-md-6 text-center">
-                        <p>CATS, mais que uma oportunidade, uma família! © <?php echo date("Y"); ?> CATS. TODOS OS DIREITOS RESERVADOS.</p>
+                    <section class="pull-left text-center">
+                        <p>© 2003-<?php echo date("Y"); ?> CATS. TODOS OS DIREITOS RESERVADOS.</p>
                     </section>
-                    <section class="col-md-6 text-center">
+                    <section class="pull-right text-center">
                         <ul class="list-inline">
                             <li><a href="#"><i class="fa fa-facebook"></i></a></li>
                             <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
@@ -88,5 +63,20 @@
                 </div>
             </footer>
         </div>
+        <?php
+        echo $this->inlineScript()
+            // SmoothScroll Js
+            ->prependFile($this->basePath('vendor/smooth-scroll/dist/js/smooth-scroll.min.js'))
+            // Bootstrap 3.3.5
+            ->prependFile($this->basePath('vendor/bootswatch-dist/js/bootstrap.min.js'))
+            // jQuery 2.1.4
+            ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
+        ?>
+        <script>
+            $(function () {
+                $('.wrapper').fadeIn('slow');
+                smoothScroll.init();
+            });
+        </script>
     </body>
 </html>
