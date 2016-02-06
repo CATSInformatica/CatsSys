@@ -14,21 +14,16 @@ html, body {
 
 h1 {
     margin: 30px 0;
-    font-weight: 400;
-    letter-spacing: 0.8px;
-}
-h3 {
-    font-size: 20px;
-    font-weight: 400;
     letter-spacing: 0.8px;
 }
 p {
     font-size: 16px;
-    letter-spacing: 0.5px;
-    line-height: 24px;
 }
 q {
-    font-weight: 300;
+    font-size: 14px;
+}
+hr {
+    margin: 10px;
 }
 
 .catssys-header {
@@ -48,11 +43,7 @@ q {
 }
 .box-content {
     background-color: white;
-    color: #616161;
     padding: 10px 20px;
-}
-.box-content a {
-    color: #27BCDA;
 }
 .box-link {
     text-align: center;
@@ -97,17 +88,18 @@ q {
     padding-top: 15%;
 }
 
-.form-control {
-    font-family: monospace;
-    font-size: 16px
-}
 .control-label {
-    font-weight: 200;
-    font-size: 25px;
+    font-size: 16px;
 }
 
 textarea.form-control {
-    height: 250px;
+    height: 200px;
+}
+.nav-tabs>li {
+    margin: 0;
+}
+.nav-tabs>li.active>a {
+    background-color: #ffffff;
 }
 
 
