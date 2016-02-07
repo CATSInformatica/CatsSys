@@ -27,9 +27,40 @@
             ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'));
         ?>
     </head>
-    <body>
+    <body data-spy="scroll" data-target=".navbar" data-offset="5">
         <div class="wrapper">
-            <header class="catssys-header">
+            <header class="catssys-header" id="home">
+                <nav class="navbar navbar-default navbar-fixed-top" role="navigation">
+                    <div class="container-fluid">
+                        <!-- Brand and toggle get grouped for better mobile display -->
+                        <div class="navbar-header">
+                            <a class="navbar-brand" href="/">
+                                <img src="/img/logo_branco.png" title="Curso Assistencial Theodomiro Santiago" alt="Curso Assistencial Theodomiro Santiago" height="23">
+                            </a>
+                            <button type="button" class="navbar-toggle" data-toggle="collapse" data-target="#navbar-collapse-main">
+                                <span class="sr-only">Toggle navigation</span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                                <span class="icon-bar"></span>
+                            </button>
+                        </div>
+                        
+                        <p class="navbar-text hidden-sm hidden-xs"><b>Curso Assistencial Theodomiro Santiago</b></p>
+
+                        <div class="collapse navbar-collapse" id="navbar-collapse-main">
+                            <ul class="nav navbar-nav navbar-right">
+                                <li><a data-scroll href="#home">Início</a></li>
+                                <li><a data-scroll href="#about">Sobre</a></li>
+                                <li><a data-scroll href="#admin-structure">Estrutura Admin.</a></li>
+                                <li><a data-scroll href="#tests">Vestibulinhos</a></li>
+                                <li><a data-scroll href="#partners">Parceiros</a></li>
+                                <li><a data-scroll href="#contact">Contato</a></li>
+                                <li class="divider"></li>
+                                <li><a href="/authentication/login">Login</a></li>
+                            </ul>
+                        </div><!-- /.navbar-collapse -->
+                    </div><!-- /.container-fluid -->
+                </nav>
             </header>
             <main>
                 <?php echo $this->content; ?>
@@ -68,7 +99,7 @@
             // SmoothScroll Js
             ->prependFile($this->basePath('vendor/smooth-scroll/dist/js/smooth-scroll.min.js'))
             // Bootstrap 3.3.5
-            ->prependFile($this->basePath('vendor/bootswatch-dist/js/bootstrap.min.js'))
+            ->prependFile($this->basePath('vendor/bootstrap/dist/js/bootstrap.min.js'))
             // jQuery 2.1.4
             ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
         ?>

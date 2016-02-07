@@ -30,6 +30,7 @@ class ContactForm extends Form
                     ),
                     'options' => array(
                         'label' => 'Nome',
+                        'add-on-prepend' => '<i class="fa fa-user"></i>'
                     ),
                 ))
                 ->add(array(
@@ -39,6 +40,7 @@ class ContactForm extends Form
                     ),
                     'options' => array(
                         'label' => 'Email',
+                        'add-on-prepend' => '<i class="fa fa-envelope-o"></i>'
                     ),
                 ))
                 ->add(array(
@@ -48,21 +50,24 @@ class ContactForm extends Form
                     ),
                     'options' => array(
                         'label' => 'Assunto',
+                        'add-on-prepend' => '<span class="glyphicon glyphicon-tag"></span>'
                     ),
                 ))
                 ->add(array(
                     'name' => 'message',
                     'attributes' => array(
                         'type' => 'textarea',
+                        'rows' => 6,
                     ),
                     'options' => array(
                         'label' => 'Mensagem',
+                        'add-on-prepend' => '<i class="fa fa-text-width"></i>',
                     ),
                 ))
                 ->add(array(
                     'name' => 'Submit',
+                    'type' => 'button',
                     'attributes' => array(
-                        'type' => 'submit',
                         'class' => 'btn btn-primary btn-block',
                         'value' => 'Enviar',
                     ),
