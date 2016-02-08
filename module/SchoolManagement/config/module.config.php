@@ -8,7 +8,8 @@ return array(
             'SchoolManagement\Controller\Enrollment' => Controller\EnrollmentController::class,
             'SchoolManagement\Controller\StudentClass' => Controller\StudentClassController::class,
             'SchoolManagement\Controller\SchoolWarning' => Controller\SchoolWarningController::class,
-        )
+            'SchoolManagement\Controller\SchoolAttendance' => Controller\SchoolAttendanceController::class,
+        ),
     ),
     'router' => array(
         'routes' => array(
@@ -62,6 +63,19 @@ return array(
                             'defaults' => array(
                                 'controller' => 'SchoolManagement\Controller\SchoolWarning',
                                 'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'school-attendance' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/school-attendance[/:action]',
+                            'constraints' => array(
+                                'controller' => 'SchoolManagement\Controller\SchoolAttendance',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'SchoolManagement\Controller\SchoolAttendance',
                             ),
                         ),
                     ),
@@ -214,6 +228,21 @@ return array(
                         'route' => 'school-management/school-warning',
                         'action' => 'give',
                         'icon' => 'fa fa-exclamation-triangle'
+                    ),
+                ),
+            ),
+            array(
+                'label' => 'Attendance',
+                'uri' => '#',
+                'icon' => 'fa fa-check',
+                'order' => 11,
+                'resource' => 'SchoolManagement\Controller\SchoolAttendance',
+                'pages' => array(
+                    array(
+                        'label' => 'Generate list',
+                        'route' => 'school-management/school-attendance',
+                        'action' => 'generateList',
+                        'icon' => 'fa fa-list-alt',
                     ),
                 ),
             ),

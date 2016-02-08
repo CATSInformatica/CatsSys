@@ -58,16 +58,8 @@ class RegistrationForm extends Form implements InputFilterProviderInterface
                 ),
             ))
             ->add(array(
-                'name' => 'registrationCaptcha',
-                'type' => 'Zend\Form\Element\Captcha',
-                'options' => array(
-                    'label' => 'Insira o código da imagem*',
-                    'captcha' => new CaptchaImage(),
-                ),
-                'attributes' => array(
-                    'id' => 'captcha_input',
-                    'class' => 'text-center',
-                )
+                'type' => 'Zend\Form\Element\Csrf',
+                'name' => 'registrationCsrf',
             ))
             ->add(array(
                 'name' => 'submit',
@@ -85,7 +77,7 @@ class RegistrationForm extends Form implements InputFilterProviderInterface
             'registrationConsent' => array(
                 'required' => true,
             ),
-            'registrationCaptcha' => array(
+            'registrationCsrf' => array(
                 'required' => true,
             ),
         );

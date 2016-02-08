@@ -1,0 +1,51 @@
+<section class="content">
+    <div class="row">
+        <div class="col-md-6 col-md-offset-3 col-xs-12">
+            <p><?php echo $message ?></p>
+            <?php if ($form !== null): ?>
+                <?php $form->prepare(); ?>
+                <?php echo $this->form()->openTag($form); ?>
+                <div class="col-md-12 col-xs-12">
+                    <?php echo $this->formRow($form->get('schoolClasses')); ?>
+                </div>
+
+                <div class="col-md-12">
+                    <div class="form-group">
+                        <label>Inserir/Remover datas</label>
+                        <div class="btn-group btn-block" role="toolbar" aria-label="attendance date buttons">
+                            <?php echo $this->formElement($form->get('addAttendanceDate')); ?>
+                            <?php echo $this->formElement($form->get('removeAttendanceDate')); ?>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="col-md-12 col-xs-12">
+                    <?php echo $this->formCollection($form->get('attendanceDate')); ?>
+                </div>
+
+                <div class="col-md-12 col-xs-12">
+                    <?php echo $this->formRow($form->get('attendanceType')); ?>
+                </div>
+
+                <div class="col-md-12">
+                    <?php echo $this->formRow($form->get('submit')); ?>
+                </div>
+                <?php echo $this->form()->closeTag(); ?>
+
+            <?php endif; ?>
+        </div>
+</section>
+
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/attendance/generate';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

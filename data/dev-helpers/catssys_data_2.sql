@@ -19,7 +19,9 @@ INSERT INTO `resource` VALUES
 (17,'SchoolManagement\\Controller\\StudentClass'),
 (18,'Site\\Controller\\Index'),
 (19,'UMS\\Controller\\Index'),
-(20,'Recruitment\\Controller\\Address');
+(20,'Recruitment\\Controller\\Address'),
+(21,'SchoolManagement\\Controller\\SchoolAttendance')
+;
 UNLOCK TABLES;
 
 LOCK TABLES `role` WRITE;
@@ -104,4 +106,12 @@ INSERT INTO `recruitment_status` VALUES
 (12, 11),
 (13, 12),
 (14, 13);
+UNLOCK TABLES;
+
+LOCK TABLES `attendance_type` WRITE;
+INSERT INTO `attendance_type` VALUES
+(1, 'FREQUÊNCIA INÍCIO DO DIA'),
+(2, 'FREQUÊNCIA FINAL DO DIA'),
+(3, 'ABONO INÍCIO DO DIA'),
+(4, 'ABONO FINAL DO DIA');
 UNLOCK TABLES;
