@@ -2,7 +2,9 @@
 
 namespace SchoolManagement\Form;
 
+use DateTime;
 use Doctrine\Common\Persistence\ObjectManager;
+use SchoolManagement\Form\Fieldset\AttendanceDateFieldset;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
 
@@ -18,6 +20,8 @@ class SchoolAttendanceForm extends Form implements InputFilterProviderInterface
     {
         parent::__construct($name, $options);
 
+        $this->setAttribute('action', '/school-management/school-attendance/downloadList');
+
         $this
             ->add(array(
                 'name' => 'schoolClasses',
@@ -30,7 +34,7 @@ class SchoolAttendanceForm extends Form implements InputFilterProviderInterface
                     'find_method' => array(
                         'name' => 'findByEndDateGratherThan',
                         'params' => array(
-                            'endDate' => new \DateTime('now'),
+                            'endDate' => new DateTime('now'),
                         ),
                     ),
                 ),
@@ -47,18 +51,12 @@ class SchoolAttendanceForm extends Form implements InputFilterProviderInterface
             ))
             ->add(array(
                 'type' => 'Zend\Form\Element\Collection',
-                'name' => 'attendanceDate',
+                'name' => 'dates',
                 'options' => array(
-                    'label' => 'Data(s)',
                     'count' => 1,
                     'should_create_template' => true,
                     'allow_add' => true,
-                    'target_element' => array(
-                        'type' => 'text',
-                        'options' => array(
-                            'add-on-prepend' => '<i class="glyphicon glyphicon-calendar"></i>',
-                        ),
-                    ),
+                    'target_element' => new AttendanceDateFieldset(),
                 ),
             ))
             ->add(array(
@@ -102,9 +100,6 @@ class SchoolAttendanceForm extends Form implements InputFilterProviderInterface
             'schoolClasses' => array(
                 'required' => true,
             ),
-//            'attendanceDate' => array(
-//                'required' => true,
-//            ),
             'attendanceType' => array(
                 'required' => true,
             )

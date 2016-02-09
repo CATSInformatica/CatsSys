@@ -21,7 +21,7 @@ use Recruitment\Entity\Registration;
  *      uniqueConstraints={@ORM\UniqueConstraint(name="class_registration_idx", 
  *          columns={"class_id", "registration_id"})}
  * )
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="SchoolManagement\Entity\Repository\Enrollment")
  */
 class Enrollment
 {
@@ -67,10 +67,18 @@ class Enrollment
      */
     private $warnings;
 
+    /**
+     *
+     * @var Attendance
+     * @ORM\OneToMany(targetEntity="Attendance", mappedBy="enrollment", fetch="EXTRA_LAZY")
+     */
+    private $attendances;
+
     public function __construct()
     {
         $this->enrollmentBeginDate = new \DateTime('now');
         $this->warnings = new ArrayCollection();
+        $this->attendances = new ArrayCollection();
     }
 
     /**
@@ -168,9 +176,8 @@ class Enrollment
         $this->enrollmentEndDate = $enrollmentEndDate;
         return $this;
     }
-    
+
     /**
-     * 
      * @param Collection
      * @return SchoolManagement\Entity\Enrollment
      */
@@ -178,6 +185,15 @@ class Enrollment
     {
         $this->$warnings = $warnings;
         return $this;
+    }
+
+    /**
+     * 
+     * @return Collection
+     */
+    public function getAttendances()
+    {
+        return $this->attendances;
     }
 
 }

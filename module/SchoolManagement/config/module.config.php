@@ -91,6 +91,7 @@ return array(
             __DIR__ . '/../view/',
         ),
         'template_map' => array(
+            'download-csv/template' => __DIR__ . '/../view/templates/download-csv.phtml',
         ),
         'display_exceptions' => true,
     ),
@@ -243,6 +244,14 @@ return array(
                         'route' => 'school-management/school-attendance',
                         'action' => 'generateList',
                         'icon' => 'fa fa-list-alt',
+                        'pages' => array(
+                            array(
+                                'label' => 'Download list',
+                                'route' => 'school-management/school-attendance',
+                                'action' => 'downloadList',
+                                'icon' => 'fa fa-download',
+                            ),
+                        ),
                     ),
                 ),
             ),

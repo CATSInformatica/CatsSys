@@ -1,0 +1,9 @@
+<?php
+
+if (count($results) > 0) {
+    $fh = fopen('php://output', 'w');
+    foreach ($results as $result) {
+        fputcsv($fh, $result);
+    }
+    fclose($fh);
+}
