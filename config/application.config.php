@@ -18,12 +18,12 @@ $modules = array(
     'DoctrineORMModule',
     // Database helper Module
     'Database',
-    //First Application Module
-    'Site',
     //Authentication Module
     'Authentication',
     //Authorizarion Module
     'Authorization',
+    //Site Module
+    'Site',
     //User Management Space Module
     'UMS',
     // Recruitment Module
@@ -32,6 +32,8 @@ $modules = array(
     'SchoolManagement',
     // Documents
     'Documents',
+    // AdministrativeStructure
+    'AdministrativeStructure',
 );
 
 if ($env === 'development') {

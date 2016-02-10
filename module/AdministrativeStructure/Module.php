@@ -1,7 +1,12 @@
 <?php
 
-namespace Site;
+namespace AdministrativeStructure;
 
+/**
+ * Description of Module
+ *
+ * @author Márcio Dias <marciojr91@gmail.com>
+ */
 class Module
 {
 

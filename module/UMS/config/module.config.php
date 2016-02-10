@@ -58,10 +58,24 @@ return array(
             'navigation' => 'UMS\Factory\NavigationViewFactory',
         ),
     ),
-    // menu with navigation
     'service_manager' => array(
+        'abstract_factories' => array(
+            'Zend\Cache\Service\StorageCacheAbstractServiceFactory',
+            'Zend\Log\LoggerAbstractServiceFactory',
+        ),
         'factories' => array(
+            'translator' => 'Zend\I18n\Translator\TranslatorServiceFactory',
             'navigation' => 'Zend\Navigation\Service\DefaultNavigationFactory',
+        ),
+    ),
+    'translator' => array(
+        'locale' => 'pt_BR',
+        'translation_file_patterns' => array(
+            array(
+                'type' => 'gettext',
+                'base_dir' => __DIR__ . '/../language',
+                'pattern' => '%s.mo',
+            ),
         ),
     ),
     'navigation' => array(

@@ -34,7 +34,6 @@ return array(
                         'options' => array(
                             'route' => '/login[/:action]',
                             'constraints' => array(
-                                'controller' => 'Authentication\Controller\Login',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                             ),
                             'defaults' => array(

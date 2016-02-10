@@ -18,7 +18,7 @@ return array(
                 'options' => array(
                     'route' => '/school-management',
                 ),
-                'may_terminate' => true,
+                'may_terminate' => false,
                 'child_routes' => array(
                     'enrollment' => array(
                         'type' => 'Segment',
