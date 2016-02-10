@@ -54,8 +54,34 @@ return array(
                         'label' => 'Show Departments',
                         'route' => 'administrative-structure/department',
                         'action' => 'index',
+                        'resource' => 'AdministrativeStructure\Controller\Department',
+                        'privilege' => 'index',
                         'icon' => 'fa fa-folder-open',
                     ),
+                    array(
+                        'label' => 'Add a Department',
+                        'route' => 'administrative-structure/department',
+                        'action' => 'add',
+                        'resource' => 'AdministrativeStructure\Controller\Department',
+                        'privilege' => 'add',
+                        'icon' => 'fa fa-folder-open',
+                    ),
+                ),
+            ),
+        ),
+    ),
+    'doctrine' => array(
+        'driver' => array(
+            'orm_default' => array(
+                'drivers' => array(
+                    'AdministrativeStructure\Entity' => 'administrative-structure_driver',
+                ),
+            ),
+            'administrative-structure_driver' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => array(
+                    __DIR__ . '/../src/AdministrativeStructure/Entity',
                 ),
             ),
         ),

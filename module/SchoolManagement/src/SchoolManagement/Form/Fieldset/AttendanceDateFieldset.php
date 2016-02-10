@@ -17,6 +17,8 @@ class AttendanceDateFieldset extends Fieldset implements InputFilterProviderInte
     {
         parent::__construct($name, $options);
 
+        $this->setAttribute('class', 'col-md-4 col-xs-6');
+
         $this->add(array(
             'name' => 'attendanceDate',
             'type' => 'text',
@@ -54,4 +56,5 @@ class AttendanceDateFieldset extends Fieldset implements InputFilterProviderInte
             ),
         );
     }
+
 }

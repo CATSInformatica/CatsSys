@@ -14,7 +14,7 @@ use InvalidArgumentException;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Form\Fieldset\StudentRegistrationFieldset;
 use Recruitment\Form\Fieldset\VolunteerRegistrationFieldset;
-use Recruitment\Model\CaptchaImage;
+//use Recruitment\Model\CaptchaImage;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
 
