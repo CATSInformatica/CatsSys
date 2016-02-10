@@ -35,6 +35,13 @@ class Department
     /**
      *
      * @var string
+     * @ORM\Column(name="department_icon", type="string", length=50, nullable=true)
+     */
+    private $departmentIcon;
+
+    /**
+     *
+     * @var string
      * @ORM\Column(name="department_description", type="string", length=500, nullable=false)
      */
     private $departmentDescription;
@@ -67,6 +74,7 @@ class Department
     {
         $this->children = new ArrayCollection();
         $this->isActive = false;
+        $this->departmentIcon = 'glyphicon glyphicon-sunglasses';
     }
 
     /**
@@ -131,6 +139,26 @@ class Department
     public function setDepartmentName($departmentName)
     {
         $this->departmentName = $departmentName;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getDepartmentIcon()
+    {
+        return $this->departmentIcon;
+    }
+
+    /**
+     * 
+     * @param string $departmentIcon
+     * @return Department
+     */
+    public function setDepartmentIcon($departmentIcon)
+    {
+        $this->departmentIcon = $departmentIcon;
         return $this;
     }
 

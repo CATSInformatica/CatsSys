@@ -184,6 +184,11 @@ footer hr {
     height: 100px;
 }
 
+.catssys-admin-structure:hover > i.fa {
+    background: #008080;
+    color: white;
+}
+
 .catssys-test i.fa {
     border: 4px solid white;
     font-size: 25px;
@@ -191,11 +196,6 @@ footer hr {
     width: 60px;
     height: 60px;
     padding: 15px 10px;
-}
-
-.catssys-admin-structure:hover > i.fa {
-    background: #008080;
-    color: white;
 }
 
 .catssys-test:hover i.fa {

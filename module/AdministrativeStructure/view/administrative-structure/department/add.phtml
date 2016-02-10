@@ -5,9 +5,56 @@
             <p><?php echo $message ?></p>
             <?php if ($form !== null): ?>
 
-                <?php echo $this->form($form); ?>
+                <?php
+                $form->prepare();
+                $department = $form->get('department');
+                echo $this->form()->openTag($form);
+                ?>
+
+                <div class="col-md-6 col-xs-12">
+                    <?php echo $this->formRow($department->get('departmentIcon')); ?>
+                    <p>
+                        <small>Obs: Os tipos de ícones aceitos podem ser encontrados em:
+                            <ul>
+                                <li><a href="http://getbootstrap.com/components/">Bootstrap Icons</a></li>
+                                <li><a href="https://fortawesome.github.io/Font-Awesome/icons/">Font-Awesome Icons</a></li>
+                            </ul>
+                        </small>
+                    </p>
+                </div>
+                <div class="col-md-6 col-xs-12">
+                    <?php echo $this->formRow($department->get('departmentName')); ?>
+                </div>
+
+                <div class="col-md-12 col-xs-12">
+                    <?php echo $this->formRow($department->get('parent')); ?>
+                </div>
+
+                <div class="col-md-12 col-xs-12">
+                    <?php echo $this->formRow($department->get('departmentDescription')); ?>
+                </div>
+
+                <div class="col-md-12 col-xs-12">
+                    <?php echo $this->formRow($form->get('submit')); ?>
+                </div>
+
+                <?php echo $this->form()->closeTag(); ?>
 
             <?php endif; ?>
         </div>
     </div>
 </section>
+
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/administrative-structure/department/departments';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

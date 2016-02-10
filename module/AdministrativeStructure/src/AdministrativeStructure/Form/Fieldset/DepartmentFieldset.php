@@ -28,10 +28,21 @@ class DepartmentFieldset extends Fieldset implements InputFilterProviderInterfac
                 'name' => 'departmentName',
                 'type' => 'text',
                 'attributes' => array(
-                    'placeholder' => 'Ex: Diretoria de Patrimônio ou Departamento de Provas',
+                    'placeholder' => 'Ex: Recursos Humanos',
                 ),
                 'options' => array(
                     'label' => 'Nome do departamento',
+                ),
+            ))
+            ->add(array(
+                'name' => 'departmentIcon',
+                'type' => 'text',
+                'attributes' => array(
+                    'placeholder' => 'Ex: glyphicon glyphicon-picture',
+                ),
+                'options' => array(
+                    'label' => 'Ícone',
+                    'add-on-append' => '<i class="glyphicon glyphicon-sunglasses"></i>',
                 ),
             ))
             ->add(array(
@@ -42,6 +53,21 @@ class DepartmentFieldset extends Fieldset implements InputFilterProviderInterfac
                     'object_manager' => $obj,
                     'target_class' => 'AdministrativeStructure\Entity\Department',
                     'property' => 'departmentName',
+                    'option_attributes' => array(
+                        'data-icon' => function (Department $entity) {
+                            return $entity->getDepartmentIcon();
+                        }
+                    ),
+                ),
+            ))
+            ->add(array(
+                'name' => 'departmentDescription',
+                'type' => 'textarea',
+                'attributes' => array(
+                    'rows' => 6,
+                ),
+                'options' => array(
+                    'label' => 'Descrição',
                 ),
             ))
             ->add(array(
@@ -72,6 +98,7 @@ class DepartmentFieldset extends Fieldset implements InputFilterProviderInterfac
                 'filters' => array(
                     array('name' => 'StringTrim'),
                     array('name' => 'StripTags'),
+                    array('name' => 'StringToUpper'),
                 ),
                 'validators' => array(
                     array(
@@ -82,6 +109,9 @@ class DepartmentFieldset extends Fieldset implements InputFilterProviderInterfac
                         ),
                     ),
                 ),
+            ),
+            'departmentIcon' => array(
+                'required' => true,
             ),
             'departmentDescription' => array(
                 'required' => true,

@@ -64,7 +64,7 @@ class Module
         //Authorization with database (check module.config.php)
         $acl = $sm->get('acl');
 
-        // everyone is guest untill it gets logged in        
+        // everyone is guest until it gets logged in
         $role = AclDb::DEFAULT_ROLE;
 
         if ($UserContainer->id) {

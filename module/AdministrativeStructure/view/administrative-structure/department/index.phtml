@@ -1,5 +1,27 @@
-<section class="content">
-    <p><?php echo $message; ?></p>
-    
-    
+<section class="content" id="admin-structure">
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <i class="fa fa-sitemap"></i>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="container">
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
 </section>
+
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/administrative-structure/department/departments';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

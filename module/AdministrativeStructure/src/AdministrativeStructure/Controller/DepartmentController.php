@@ -6,8 +6,11 @@ use AdministrativeStructure\Entity\Department;
 use AdministrativeStructure\Form\DepartmentForm;
 use Database\Service\EntityManagerService;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Exception;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\Session\Container;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -46,6 +49,8 @@ class DepartmentController extends AbstractActionController
 
                     $em->persist($department);
                     $em->flush();
+
+                    return $this->redirect()->toRoute('administrative-structure/department');
                 }
             }
 
@@ -66,6 +71,45 @@ class DepartmentController extends AbstractActionController
             'message' => $message,
             'form' => null,
         ]);
+    }
+
+    public function getDepartmentsAction()
+    {
+
+        $results = [];
+
+        try {
+            $UserContainer = new Container('User');
+            $em = $this->getEntityManager();
+
+            if (empty($UserContainer->id)) {
+                $departments = $em->getRepository('AdministrativeStructure\Entity\Department')->findBy(array(
+                    'isActive' => true,
+                    'parent' => null,
+                ));
+            } else {
+                $departments = $em->getRepository('AdministrativeStructure\Entity\Department')->findBy(array(
+                    'parent' => null
+                ));
+            }
+
+
+            if (count($departments) > 0) {
+                $hydrator = new DoctrineHydrator($em);
+                foreach ($departments as $dep) {
+                    $results[] = $hydrator->extract($dep);
+                }
+            }
+            return new JsonModel([
+                'message' => null,
+                'results' => $results,
+            ]);
+        } catch (Exception $ex) {
+            return new JsonModel([
+                'message' => $ex->getMessage(),
+                'results' => [],
+            ]);
+        }
     }
 
     public function editAction()
