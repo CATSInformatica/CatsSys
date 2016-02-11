@@ -47,17 +47,20 @@ class DepartmentFieldset extends Fieldset implements InputFilterProviderInterfac
             ))
             ->add(array(
                 'name' => 'parent',
-                'type' => 'DoctrineModule\Form\Element\ObjectRadio',
+                'type' => 'DoctrineModule\Form\Element\ObjectSelect',
                 'options' => array(
                     'label' => 'Departamento superior',
                     'object_manager' => $obj,
                     'target_class' => 'AdministrativeStructure\Entity\Department',
                     'property' => 'departmentName',
+                    'display_empty_item' => true,
+                    'empty_item_label' => 'Nenhum',
                     'option_attributes' => array(
                         'data-icon' => function (Department $entity) {
                             return $entity->getDepartmentIcon();
                         }
                     ),
+                    'add-on-prepend' => '<i class="fa fa-sticky-note-o"></i>',
                 ),
             ))
             ->add(array(

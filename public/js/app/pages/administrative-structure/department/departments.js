@@ -30,17 +30,19 @@ define(['jquery'], function () {
         };
 
         addIconsToParents = function () {
-            var departmentParents = $("input[name*=parent]");
-            var icon = "";
+            $("select[name*=parent]").on('change', function () {
+                var iconClass = 'fa fa-sticky-note-o';
+                if ($(this).val() !== "") {
+                    iconClass = $(this).find('option:selected').data('icon');
+                }
 
-            if (departmentParents.length > 0) {
-                departmentParents.each(function () {
-                    icon = $(this).data('icon');
-                    $(this)
-                            .after(" ")
-                            .after($("<i class='" + icon + "'></i>").fadeIn());
-                });
-            }
+                $(this)
+                        .prev('span')
+                        .find('i')
+                        .removeClass()
+                        .addClass(iconClass);
+
+            });
         };
 
         getAdministrativeHierarchy = function () {
