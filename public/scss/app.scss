@@ -57,21 +57,21 @@ and open the template in the editor.
 .catssys-admin-structure {
     text-align: center;
     box-sizing: border-box;
-    padding: 10px 5px;
+    padding: 5px 5px;
     border-top: 4px solid transparent;
 
     > a {
         color: inherit;
-        height: 250px;
+        height: 220px;
     };
 
     i {
         border: 4px solid #008080;
-        padding: 27px 25px;
-        font-size: 40px;
-        margin-bottom: 10px;
-        width: 100px;
-        height: 100px;
+        padding: 18px 7px;
+        font-size: 25px;
+        margin-bottom: 5px;
+        width: 70px;
+        height: 70px;
         border-radius: 50%;
         transition: all 0.5s;
     };

@@ -4,6 +4,7 @@ namespace AdministrativeStructure\Entity;
 
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -122,6 +123,19 @@ class Department
     public function getChildren()
     {
         return $this->children;
+    }
+
+    /**
+     * @return Collection
+     */
+    public function getActiveChildren()
+    {
+        $criteria = Criteria::create()
+            ->where(Criteria::expr()->eq("isActive", true));
+
+        $result = $this->children->matching($criteria);
+
+        return $result;
     }
 
     /**

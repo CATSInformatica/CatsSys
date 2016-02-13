@@ -86,8 +86,13 @@ class DepartmentController extends AbstractActionController
                 }
                 $departments = $em->getRepository('AdministrativeStructure\Entity\Department')->findBy($restrictedBy);
             } else {
-                $departments = $em->getReference('AdministrativeStructure\Entity\Department', $departmentId)
-                        ->getChildren()->toArray();
+                if (empty($UserContainer->id)) {
+                    $departments = $em->getReference('AdministrativeStructure\Entity\Department', $departmentId)
+                            ->getActiveChildren()->toArray();
+                } else {
+                    $departments = $em->getReference('AdministrativeStructure\Entity\Department', $departmentId)
+                            ->getChildren()->toArray();
+                }
             }
 
 

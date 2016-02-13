@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-define(function () {
+define(['app/pages/administrative-structure/department/departments'], function (departments) {
 
     var Site = (function () {
 
@@ -34,6 +34,7 @@ define(function () {
         return {
             init: function () {
                 pastExamsAjax();
+                departments.init();
             }
         };
     }());
