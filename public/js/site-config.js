@@ -24,8 +24,11 @@ define(['smoothscroll', 'jquery', 'bootstrap'], function (smoothScroll) {
     $(function () {
         // needed to use bootstrap data-spy
         $(window).trigger('load');
-
         $('.wrapper').fadeIn('slow');
         smoothScroll.init();
+
+        require(['app/pages/site/site'], function (SiteModule) {
+            SiteModule.init();
+        });
     });
 });

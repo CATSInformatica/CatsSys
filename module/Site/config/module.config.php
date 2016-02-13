@@ -3,6 +3,11 @@
 namespace Site;
 
 return array(
+    'controllers' => array(
+        'invokables' => array(
+            'Site\Controller\Index' => Controller\IndexController::class,
+        ),
+    ),
     'router' => array(
         'routes' => array(
             'home' => array(
@@ -20,12 +25,12 @@ return array(
             // module. Simply drop new controllers in, and you can access them
             // using the path /site/:controller/:action
             'site' => array(
-                'type' => 'Literal',
+                'type' => 'Segment',
                 'options' => array(
-                    'route' => '/site',
+                    'route' => '/site[/:action]',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Site\Controller',
-                        'controller' => 'Index',
+                        'controller' => 'Site\Controller\Index',
                         'action' => 'index',
                     ),
                 ),
@@ -47,12 +52,10 @@ return array(
             ),
         ),
     ),
-    'controllers' => array(
-        'invokables' => array(
-            'Site\Controller\Index' => Controller\IndexController::class
-        ),
-    ),
     'view_manager' => array(
+        'strategies' => array(
+            'ViewJsonStrategy'
+        ),
         'display_not_found_reason' => true,
         'display_exceptions' => true,
         'doctype' => 'HTML5',
