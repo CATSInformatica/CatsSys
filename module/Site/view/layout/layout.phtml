@@ -112,6 +112,30 @@
         ?>
         <script>
             $(function () {
+                
+                //  Carrega os vestibulinhos passados automaticamente por AJAX   
+                var pastExams = ''; // HTML que será inserido sob #past-exams
+                var i = 0;
+                $.ajax({
+                    type: "POST",
+                    url: "/site/get-past-exams",
+                    success: function (data) {    
+                        for (i = 0; i < data.psa['source'].length; ++i) {
+                            pastExams += '<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 catssys-test">'
+                                    + '<a href="' + data.psa_dir + '/' + data.psa['source'][i] + '" target="_blank">'
+                                    + '<i class="fa fa-file-text-o"></i><h4>' + data.psa['number'][i]
+                                    + 'º' + ' PSA ' + data.psa['year'][i];
+                            if (data.psa['part'][i] != '') {
+                                pastExams += ' pt. ' + data.psa['part'][i];
+                            }
+                            pastExams += '</h4></a></div>';
+                        }
+                        document.getElementById("past-exams").innerHTML = pastExams;  
+
+                    }
+                });
+                
+                
                 $('.wrapper').fadeIn('slow');
                 smoothScroll.init();
             });

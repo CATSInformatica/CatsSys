@@ -61,38 +61,18 @@
 
 </section>
 
-<?php if ($psa !== null) : ?>
-    <section class="catssys-section catssys-bg-teal" id="tests">
-        <div class="container">
-            <h2 class="text-center">VESTIBULINHOS</h2>
-            <hr>
-            <br>
-            <p>Para auxiliar no estudo para o vestibulinho, estas são algumas das provas de vestibulinhos passados</p>
-            <br>
-            <div class="row">
-                <?php foreach ($psa['source'] as $i => $src) { ?>
-                    <div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 catssys-test">
-                        <a href="<?php echo $psa_dir . '/' . $src; ?>" target="_blank">
-                            <i class="fa fa-file-text-o"></i>
-                            <h4>
-                                <?php
-                                echo $psa['number'][$i];
-                                echo 'º';
-                                echo ' PSA ';
-                                echo $psa['year'][$i];
-                                if ($psa['part'][$i] !== '') {
-                                    echo ' pt. ';
-                                    echo $psa['part'][$i];
-                                }
-                                ?>
-                            </h4>
-                        </a>
-                    </div>
-                <?php } ?>
-            </div>
+<section class="catssys-section catssys-bg-teal" id="tests">
+    <div class="container">
+        <h2 class="text-center">VESTIBULINHOS</h2>
+        <hr>
+        <br>
+        <p>Para auxiliar no estudo para o vestibulinho, estas são algumas das provas de vestibulinhos passados</p>
+        <br>
+        <div class="row" id="past-exams">
+            <!-- Aqui vão os vestibulinhos passados, que serão carregados automaticamente, por AJAX -->
         </div>
-    </section>
-<?php endif; ?>
+    </div>
+</section>
 
 
 <section class="catssys-section catssys-partners" id="partners">
