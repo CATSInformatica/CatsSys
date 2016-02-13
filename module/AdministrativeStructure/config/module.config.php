@@ -46,18 +46,45 @@ return array(
     'navigation' => array(
         'default' => array(
             array(
-                'label' => 'Administrative Structure',
+                'label' => 'Administrative structure',
                 'uri' => '#',
                 'icon' => 'fa fa-university',
                 'order' => 13,
                 'pages' => array(
                     array(
-                        'label' => 'Show Departments',
+                        'label' => 'Show departments',
                         'route' => 'administrative-structure/department',
                         'action' => 'index',
                         'resource' => 'AdministrativeStructure\Controller\Department',
                         'privilege' => 'index',
                         'icon' => 'fa fa-folder-open',
+                        'pages' => array(
+                            array(
+                                'label' => 'Edit a department',
+                                'route' => 'administrative-structure/department',
+                                'action' => 'edit',
+                                'resource' => 'AdministrativeStructure\Controller\Department',
+                                'privilege' => 'edit',
+                                'icon' => 'fa fa-folder-open',
+                            ),
+                        ),
+                        'toolbar' => array(
+                            array(
+                                'url' => '/administrative-structure/department/edit/$id',
+                                'title' => 'Editar departamento',
+                                'description' => 'Permite alterar as informações do departamento escolhido',
+                                'class' => 'fa fa-university  bg-blue',
+                                'fntype' => 'selectedHttpClick',
+                            ),
+                            array(
+                                'url' => '/administrative-structure/department/delete/$id',
+                                'id' => 'department-delete',
+                                'title' => 'Remover departamento',
+                                'description' => 'Remove o departamento escolhido se ele não possuir departamentos filhos',
+                                'class' => 'fa fa-university  bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
+                        ),
                     ),
                     array(
                         'label' => 'Add a Department',

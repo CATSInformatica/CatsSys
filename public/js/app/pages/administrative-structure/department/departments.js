@@ -69,7 +69,8 @@ define(['jquery'], function () {
                                 "data-id='" + results[i].departmentId + "' " +
                                 "id='department-identity-" + results[i].departmentId + "' " +
                                 "class='col-lg-3 col-md-4 col-sm-6 col-xs-12 " +
-                                "catssys-admin-structure" +
+                                "catssys-admin-structure " +
+                                (typeof adminStructure.data('catssys-toolbar') !== 'undefined' ? "cats-row" : "") +
                                 (results[i].isActive === false ? " catssys-admin-structure-disabled" : "") + "'>" +
                                 "<a href='#department-" + results[i].departmentId + "' data-toggle='tab'>" +
                                 "<i class='" + results[i].departmentIcon + "'></i>" +
@@ -80,11 +81,6 @@ define(['jquery'], function () {
                     }
                     if (results.length > 0) {
                         if (params.length !== 0) {
-
-                            console.log(adminStructure
-                                    .find('#department-identity-' + params[0]).closest('ul')
-                                    .next('.tab-content').length);
-
                             adminStructure
                                     .find('#department-identity-' + params[0]).closest('ul')
                                     .next('.tab-content')
@@ -123,7 +119,7 @@ define(['jquery'], function () {
                     if ($("#department-" + parentDepartmentId).length === 0) {
                         getAdministrativeHierarchy(parentDepartmentId);
                     } else {
-                        if($("#department-" + parentDepartmentId).hasClass('active')) {
+                        if ($("#department-" + parentDepartmentId).hasClass('active')) {
                             $("#department-" + parentDepartmentId).removeClass('active').slideUp();
                         } else {
                             $("#department-" + parentDepartmentId).addClass('active').slideDown();
@@ -140,6 +136,17 @@ define(['jquery'], function () {
                 addIconsToParents();
                 getAdministrativeHierarchy();
                 applyAdministrativeEffects();
+            },
+            getCallbackOf: function (element) {
+
+                return {
+                    exec: function (data) {
+                        console.log(adminStructure.find("#department-identity-" + data.departmentId));
+                        adminStructure.find("#department-identity-" + data.departmentId).remove();
+                        adminStructure.find("#department-" + data.departmentId).remove();
+                    }
+                };
+
             }
         };
     }());

@@ -198,17 +198,28 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
     };
 
     initToggle = function () {
-        $('table').on('click', '.cats-row', function () {
-            $(this).siblings('tr')
-                    .removeClass('cats-selected-row')
-                    .find('td')
-                    .removeClass('cats-selected-bg');
+        $('section').on('click', '.cats-row', function () {
+            var selectedElement = $(this);
 
-            $(this).toggleClass('cats-selected-row');
+            if (selectedElement.is('tr')) {
+                selectedElement.siblings('tr')
+                        .removeClass('cats-selected-row')
+                        .find('td')
+                        .removeClass('cats-selected-bg');
+                selectedElement.find('td').toggleClass('cats-selected-bg');
+            } else {
+                selectedElement
+                        .toggleClass('cats-selected-bg')
+                        .closest('.container')
+                        .find('.cats-row')
+                        .not(this)
+                        .removeClass('cats-selected-row')
+                        .removeClass('cats-selected-bg');
+            }
 
-            $(this).find('td').toggleClass('cats-selected-bg');
+            selectedElement.toggleClass('cats-selected-row');
 
-            if ($(this).hasClass('cats-selected-row')) {
+            if (selectedElement.hasClass('cats-selected-row')) {
                 openToolbar();
             } else {
                 closeToolbar();

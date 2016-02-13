@@ -5,6 +5,7 @@ namespace AdministrativeStructure\Controller;
 use AdministrativeStructure\Entity\Department;
 use AdministrativeStructure\Form\DepartmentForm;
 use Database\Service\EntityManagerService;
+use Doctrine\DBAL\Exception\ConstraintViolationException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Exception;
@@ -32,7 +33,6 @@ class DepartmentController extends AbstractActionController
     {
         $request = $this->getRequest();
 
-        $message = null;
         try {
 
             $em = $this->getEntityManager();
@@ -53,12 +53,6 @@ class DepartmentController extends AbstractActionController
                     return $this->redirect()->toRoute('administrative-structure/department');
                 }
             }
-
-
-            return new ViewModel([
-                'form' => $form,
-                'message' => null,
-            ]);
         } catch (Exception $ex) {
             if ($ex instanceof UniqueConstraintViolationException) {
                 $message = 'Não é possivel cadastrar mais de um departamento com o mesmo nome: ' . $ex->getMessage();
@@ -67,15 +61,17 @@ class DepartmentController extends AbstractActionController
             }
         }
 
-        return new ViewModel([
-            'message' => $message,
-            'form' => null,
+        $view = new ViewModel([
+            'form' => isset($form) ? $form : null,
+            'message' => isset($message) ? : null,
         ]);
+
+        $view->setTemplate('administrative-structure/department/department-form.phtml');
+        return $view;
     }
 
     public function getDepartmentsAction()
     {
-
         $results = [];
         $departmentId = $this->params('id', false);
 
@@ -91,7 +87,7 @@ class DepartmentController extends AbstractActionController
                 $departments = $em->getRepository('AdministrativeStructure\Entity\Department')->findBy($restrictedBy);
             } else {
                 $departments = $em->getReference('AdministrativeStructure\Entity\Department', $departmentId)
-                    ->getChildren()->toArray();
+                        ->getChildren()->toArray();
             }
 
 
@@ -115,14 +111,103 @@ class DepartmentController extends AbstractActionController
         }
     }
 
+    /**
+     * Edita um departamento
+     * @return ViewModel
+     */
     public function editAction()
     {
-        
+        $id = $this->params('id', false);
+
+        if (!$id) {
+            return $this->redirect()->toRoute('administrative-structure/department');
+        }
+
+        $request = $this->getRequest();
+        try {
+
+            $em = $this->getEntityManager();
+            $form = new DepartmentForm($em);
+
+            $department = $em->find('AdministrativeStructure\Entity\Department', $id);
+            $form->bind($department);
+
+            // remove te previous parent
+            $department->setParent();
+
+            if ($request->isPost()) {
+
+                $form->setData($request->getPost());
+
+                if ($form->isValid()) {
+
+                    $em->merge($department);
+                    $em->flush();
+
+                    return $this->redirect()->toRoute('administrative-structure/department');
+                }
+            }
+        } catch (Exception $ex) {
+            if ($ex instanceof UniqueConstraintViolationException) {
+                $message = 'Não é possivel cadastrar mais de um departamento com o mesmo nome: ' . $ex->getMessage();
+            } else {
+                $message = 'Erro inesperado: ' . $ex->getMessage();
+            }
+        }
+
+        $view = new ViewModel([
+            'form' => isset($form) ? $form : null,
+            'message' => isset($message) ? : null,
+        ]);
+
+        $view->setTemplate('administrative-structure/department/department-form.phtml');
+        return $view;
     }
 
+    /**
+     * 
+     * Remove um departamento ($id) que não possua nenhum departamento filho associado
+     * 
+     * @return JsonModel
+     */
     public function deleteAction()
     {
-        
+        $id = $this->params('id', false);
+
+        if ($id) {
+
+            try {
+
+                $em = $this->getEntityManager();
+                $department = $em->getReference('AdministrativeStructure\Entity\Department', $id);
+
+                $em->remove($department);
+                $em->flush();
+
+                return new JsonModel([
+                    'response' => true,
+                    'message' => 'Departmento removido com sucesso',
+                    'callback' => [
+                        'departmentId' => $id,
+                    ],
+                ]);
+            } catch (Exception $ex) {
+
+                if ($ex instanceof ConstraintViolationException) {
+
+                    $message = 'Este departamento possui departamentos filhos. '
+                        . 'Se realmente deseja remove-lo, por favor,'
+                        . ' realoque os departamentos filhos para outro(s) departamento(s)';
+                } else {
+                    $message = 'Erro inesperado: ' . $ex->getMessage();
+                }
+
+                return new JsonModel([
+                    'response' => false,
+                    'message' => $message,
+                ]);
+            }
+        }
     }
 
 }

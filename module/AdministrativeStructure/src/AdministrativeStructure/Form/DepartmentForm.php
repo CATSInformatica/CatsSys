@@ -26,7 +26,7 @@ class DepartmentForm extends Form
                 'name' => 'submit',
                 'type' => 'submit',
                 'attributes' => array(
-                    'value' => 'Criar',
+                    'value' => 'Salvar',
                     'class' => 'btn-primary btn-block',
                 ),
             ))

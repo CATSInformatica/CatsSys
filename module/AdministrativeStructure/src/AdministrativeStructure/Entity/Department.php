@@ -57,9 +57,11 @@ class Department
     private $parent;
 
     /**
-     *
+     * 
+     * OneToMany Bidirectional
+     * 
      * @var Collection
-     * @ORM\OneToMany(targetEntity="Department", mappedBy="parent", fetch="EAGER")
+     * @ORM\OneToMany(targetEntity="Department", mappedBy="parent")
      */
     private $children;
 
@@ -178,7 +180,7 @@ class Department
      * @param Department $parent
      * @return Department
      */
-    public function setParent(Department $parent)
+    public function setParent(Department $parent = null)
     {
         if ($parent !== null) {
             $parent->addChildren(new ArrayCollection([$parent]));
