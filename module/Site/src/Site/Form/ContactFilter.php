@@ -17,7 +17,7 @@ use Zend\InputFilter\InputFilter;
  */
 class ContactFilter extends InputFilter
 {
-    
+
     public function __construct()
     {
         $this->add(array(
@@ -89,7 +89,11 @@ class ContactFilter extends InputFilter
                             )
                         )
                     )
+                ))
+                ->add(array(
+                    'name' => 'contactCsrf',
+                    'required' => true,
         ));
     }
-    
+
 }
