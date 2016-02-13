@@ -55,8 +55,15 @@ and open the template in the editor.
 
 .catssys-admin-structure {
     text-align: center;
-    height: 300px;
-    cursor: pointer;
+    box-sizing: border-box;
+    padding: 10px 5px;
+    border-top: 4px solid transparent;
+
+    > a {
+        color: inherit;
+        height: 300px;
+    };
+
     i {
         border: 4px solid #008080;
         padding: 27px 25px;
@@ -67,7 +74,8 @@ and open the template in the editor.
         border-radius: 50%;
         transition: all 0.5s;
     };
-    &:hover > i {
+
+    &:hover i {
         background: #008080;
         color: white;
     };

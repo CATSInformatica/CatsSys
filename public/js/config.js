@@ -12,6 +12,7 @@ requirejs.config({
         bootstrap: 'AdminLTE/bootstrap/js/bootstrap.min',
         jmaskedinput: 'jquery.maskedinput/dist/jquery.maskedinput.min',
         slimscroll: 'AdminLTE/plugins/slimScroll/jquery.slimscroll.min',
+        pace: 'AdminLTE/plugins/pace/pace.min',
         adminlte: 'AdminLTE/dist/js/app.min',
         bootbox: 'bootbox.js/bootbox',
         jquerydatatable: 'AdminLTE/plugins/datatables/jquery.dataTables.min',

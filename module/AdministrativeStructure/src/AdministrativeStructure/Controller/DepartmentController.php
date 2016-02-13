@@ -77,27 +77,30 @@ class DepartmentController extends AbstractActionController
     {
 
         $results = [];
+        $departmentId = $this->params('id', false);
 
         try {
             $UserContainer = new Container('User');
             $em = $this->getEntityManager();
 
-            if (empty($UserContainer->id)) {
-                $departments = $em->getRepository('AdministrativeStructure\Entity\Department')->findBy(array(
-                    'isActive' => true,
-                    'parent' => null,
-                ));
+            if ($departmentId === false) {
+                $restrictedBy['parent'] = null;
+                if (empty($UserContainer->id)) {
+                    $restrictedBy['isActive'] = true;
+                }
+                $departments = $em->getRepository('AdministrativeStructure\Entity\Department')->findBy($restrictedBy);
             } else {
-                $departments = $em->getRepository('AdministrativeStructure\Entity\Department')->findBy(array(
-                    'parent' => null
-                ));
+                $departments = $em->getReference('AdministrativeStructure\Entity\Department', $departmentId)
+                    ->getChildren()->toArray();
             }
 
 
             if (count($departments) > 0) {
                 $hydrator = new DoctrineHydrator($em);
                 foreach ($departments as $dep) {
-                    $results[] = $hydrator->extract($dep);
+                    $extractedArray = $hydrator->extract($dep);
+                    $extractedArray['numberOfChildren'] = $dep->getNumberOfChildren();
+                    $results[] = $extractedArray;
                 }
             }
             return new JsonModel([

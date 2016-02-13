@@ -30,6 +30,8 @@
             ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/AdminLTE.min.css'))
             // AdminLTE Skins
             ->appendStylesheet($this->basePath('vendor/AdminLTE/dist/css/skins/skin-blue.min.css'))
+            // Pace for ajax loading
+            ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/pace/pace.min.css'))
             ->appendStylesheet($this->basePath('css/app.css'));
         ?>
 
@@ -222,7 +224,11 @@
 //                    });
 //                });
 
-                require(['app/models/Main'], function (Main) {
+                require(['app/models/Main', 'pace'], function (Main) {
+
+                    $(document).ajaxStart(function () {
+                        Pace.restart();
+                    });
 
                     var config = {
                         toolbarElement: '.system-toolbar',

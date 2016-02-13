@@ -239,4 +239,12 @@ class Department
         return $this;
     }
 
+    /**
+     * @return integer
+     */
+    public function getNumberOfChildren()
+    {
+        return $this->children->count();
+    }
+
 }

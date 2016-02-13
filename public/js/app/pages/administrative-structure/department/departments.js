@@ -8,6 +8,8 @@
 define(['jquery'], function () {
     var departments = (function () {
 
+        adminStructure = $('#admin-structure');
+
         initIconPreview = function () {
             var departmentIcon = $("input[name*=departmentIcon]");
 
@@ -47,40 +49,88 @@ define(['jquery'], function () {
 
         getAdministrativeHierarchy = function () {
 
-            var adminStructure = $('#admin-structure');
-
-            if (adminStructure.length > 0) {
-                $.ajax({
-                    url: '/administrative-structure/department/getDepartments',
-                    success: function (data) {
-
-                        var departments = $("<div class='row' style='display: none;'>");
-                        var results = data.results;
-                        for (var i = 0; i < results.length; i++) {
-                            departments.append(
-                                    "<div data-active='" + results[i].isActive + "' " +
-                                    "class='col-lg-3 col-md-4 col-sm-6 col-xs-12 " +
-                                    "catssys-admin-structure" +
-                                    (results[i].isActive === false ? " catssys-admin-structure-disabled" : "") + "'>" +
-                                    "<i class='" + results[i].departmentIcon + "'></i>" +
-                                    "<h4><strong>" + results[i].departmentName + "</strong></h4>" +
-                                    "<p class='text-justify'>" + results[i].departmentDescription + "</p>" +
-                                    (results[i].isActive === false ? "<p><b>Inativa</b></p>" : "") +
-                                    "</div>");
-                        }
-
-                        adminStructure.find(".container")
-                                .append(departments);
-
-                        departments.fadeIn();
-
-                    },
-                    error: function (data) {
-                        console.log(data);
-                    }
-                });
+            if (adminStructure.length === 0) {
+                return;
             }
 
+            var params = arguments;
+
+            $.ajax({
+                url: '/administrative-structure/department/getDepartments' + (params.length === 1 ? '/' + params[0] : ''),
+                success: function (data) {
+
+                    var departments = $("<ul id='department-" + (params.length !== 0 ? params[0] : "root") + "' class='nav active' data-isChild='" +
+                            (params.length !== 0) + "' style='display: none;'>");
+                    var results = data.results;
+                    for (var i = 0; i < results.length; i++) {
+                        departments.append(
+                                "<li data-active='" + results[i].isActive + "' " +
+                                "data-children='" + results[i].numberOfChildren + "' " +
+                                "data-id='" + results[i].departmentId + "' " +
+                                "id='department-identity-" + results[i].departmentId + "' " +
+                                "class='col-lg-3 col-md-4 col-sm-6 col-xs-12 " +
+                                "catssys-admin-structure" +
+                                (results[i].isActive === false ? " catssys-admin-structure-disabled" : "") + "'>" +
+                                "<a href='#department-" + results[i].departmentId + "' data-toggle='tab'>" +
+                                "<i class='" + results[i].departmentIcon + "'></i>" +
+                                "<h4><strong>" + results[i].departmentName + "</strong></h4>" +
+                                "<p class='text-justify'>" + results[i].departmentDescription + "</p>" +
+                                (results[i].isActive === false ? "<p><b>Inativa</b></p>" : "") +
+                                "</a></li>");
+                    }
+                    if (results.length > 0) {
+                        if (params.length !== 0) {
+
+                            console.log(adminStructure
+                                    .find('#department-identity-' + params[0]).closest('ul')
+                                    .next('.tab-content').length);
+
+                            adminStructure
+                                    .find('#department-identity-' + params[0]).closest('ul')
+                                    .next('.tab-content')
+                                    .append(departments)
+                                    .append("<div class='tab-content'></div>");
+                            departments.fadeIn();
+                        } else {
+                            adminStructure.find(".container")
+                                    .append(departments)
+                                    .append("<div class='tab-content'></div>");
+                            departments.fadeIn();
+                        }
+
+                    }
+                },
+                error: function (data) {
+                    console.log(data);
+                }
+            });
+
+        };
+
+        applyAdministrativeEffects = function () {
+            adminStructure.on("click", ".catssys-admin-structure", function () {
+
+                var parentDepartmentId = $(this).data('id');
+                $(this)
+                        .closest('ul')
+                        .next('.tab-content')
+                        .find('ul')
+                        .not("#department-" + parentDepartmentId)
+                        .removeClass('active')
+                        .slideUp('slow');
+
+                if ($(this).data('children') > 0) {
+                    if ($("#department-" + parentDepartmentId).length === 0) {
+                        getAdministrativeHierarchy(parentDepartmentId);
+                    } else {
+                        if($("#department-" + parentDepartmentId).hasClass('active')) {
+                            $("#department-" + parentDepartmentId).removeClass('active').slideUp();
+                        } else {
+                            $("#department-" + parentDepartmentId).addClass('active').slideDown();
+                        }
+                    }
+                }
+            });
         };
 
 
@@ -89,6 +139,7 @@ define(['jquery'], function () {
                 initIconPreview();
                 addIconsToParents();
                 getAdministrativeHierarchy();
+                applyAdministrativeEffects();
             }
         };
     }());
