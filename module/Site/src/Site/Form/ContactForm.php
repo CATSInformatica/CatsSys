@@ -10,7 +10,6 @@ namespace Site\Form;
 
 use Zend\Form\Form;
 
-
 /**
  * Description of ContactForm
  *
@@ -18,11 +17,12 @@ use Zend\Form\Form;
  */
 class ContactForm extends Form
 {
-    
-    public function __construct($name = null) {
-        
+
+    public function __construct($name = null)
+    {
+
         parent::__construct($name);
-        
+
         $this->add(array(
                     'name' => 'name',
                     'attributes' => array(
@@ -65,6 +65,10 @@ class ContactForm extends Form
                     ),
                 ))
                 ->add(array(
+                    'name' => 'contactCsrf',
+                    'type' => 'Zend\Form\Element\Csrf',
+                ))
+                ->add(array(
                     'name' => 'Submit',
                     'type' => 'button',
                     'attributes' => array(
@@ -73,4 +77,5 @@ class ContactForm extends Form
                     ),
         ));
     }
+
 }

@@ -8,23 +8,23 @@
 
         <?php
         echo $this->headMeta()
-            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
-            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+                ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+                ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
 
         <!-- Le styles -->
         <?php
         echo $this->headLink(array(
-                'rel' => 'shortcut icon',
-                'type' => 'image/vnd.microsoft.icon',
-                'href' => $this->basePath() . '/img/favicon.ico'))
-            // Roboto
-            ->appendStylesheet('http://fonts.googleapis.com/css?family=Roboto:300,400,500,700')
-            // Bootstrap
-            ->appendStylesheet($this->basePath('vendor/bootswatch-dist/css/bootstrap.min.css'))
-            ->appendStylesheet($this->basePath('css/site.css'))
-            // Custom Icons
-            ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'));
+                    'rel' => 'shortcut icon',
+                    'type' => 'image/vnd.microsoft.icon',
+                    'href' => $this->basePath() . '/img/favicon.ico'))
+                // Roboto
+                ->appendStylesheet('http://fonts.googleapis.com/css?family=Roboto:300,400,500,700')
+                // Bootstrap
+                ->appendStylesheet($this->basePath('vendor/bootswatch-dist/css/bootstrap.min.css'))
+                ->appendStylesheet($this->basePath('css/site.css'))
+                // Custom Icons
+                ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'));
         ?>
     </head>
     <body data-spy="scroll" data-target=".navbar" data-offset="5">
@@ -44,7 +44,7 @@
                                 <span class="icon-bar"></span>
                             </button>
                         </div>
-                        
+
                         <p class="navbar-text hidden-sm hidden-xs"><b>Curso Assistencial Theodomiro Santiago</b></p>
 
                         <div class="collapse navbar-collapse" id="navbar-collapse-main">
@@ -67,41 +67,48 @@
             </main>
             <footer>
                 <div class="container">
-                    <section class="col-md-6 text-center">
-                        <img src="/img/logo_branco.png" alt="CATS logo">
-                        <p>CATS, mais que uma oportunidade, uma família!</p>
-                    </section>
-                    <section class="col-md-6">
+                    <section class="col-md-4 col-sm-6  text-center">
                         <h4>Contato</h4>
                         <p> Av. BPS, 1303 – Sala I.1.2.47 – CEP 37500-903 <br> Pinheirinho – Itajubá – MG
                             <br>Fone: (35) 8871-2364. Email: catsrpp@gmail.com </p>
                     </section>
-                </div>
-                <hr>
-                <div class="container">
+                    <section class="col-md-4 col-sm-6 text-center">
+                        <img src="/img/logo_branco.png" alt="CATS logo">
+                        <p>CATS, mais que uma oportunidade, uma família!</p>
                     </section>
-                    <section class="pull-left text-center">
-                        <p>© 2003-<?php echo date("Y"); ?> CATS. TODOS OS DIREITOS RESERVADOS.</p>
+                    <section class="col-md-4 hidden-sm hidden-xs text-center">
+                        <h4>Redes Sociais</h4>
+                        <a href="#"><p>Facebook</p></a>
+                        <a href="#"><p>Google+</p></a>
+                        <a href="#"><p>Twitter</p></a>
                     </section>
-                    <section class="pull-right text-center">
+                    <section class="col-sm-12 visible-sm visible-xs text-center">
                         <ul class="list-inline">
                             <li><a href="#"><i class="fa fa-facebook"></i></a></li>
-                            <li><a href="#"><i class="fa fa-dribbble"></i></a></li>
+
                             <li><a href="#"><i class="fa fa-google-plus"></i></a></li>
                             <li><a href="#"><i class="fa fa-twitter"></i></a></li>
                         </ul>
                     </section>
                 </div>
+                <br>
+                <hr>
+                <div class="container">
+                    <section class="text-center">
+                        <p>© 2003-2016 CATS. TODOS OS DIREITOS RESERVADOS.</p>
+                    </section>
+
+                </div>
             </footer>
         </div>
         <?php
         echo $this->inlineScript()
-            // SmoothScroll Js
-            ->prependFile($this->basePath('vendor/smooth-scroll/dist/js/smooth-scroll.min.js'))
-            // Bootstrap 3.3.5
-            ->prependFile($this->basePath('vendor/bootstrap/dist/js/bootstrap.min.js'))
-            // jQuery 2.1.4
-            ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
+                // SmoothScroll Js
+                ->prependFile($this->basePath('vendor/smooth-scroll/dist/js/smooth-scroll.min.js'))
+                // Bootstrap 3.3.5
+                ->prependFile($this->basePath('vendor/bootstrap/dist/js/bootstrap.min.js'))
+                // jQuery 2.1.4
+                ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
         ?>
         <script>
             $(function () {
