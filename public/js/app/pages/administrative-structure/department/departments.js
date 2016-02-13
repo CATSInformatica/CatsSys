@@ -9,6 +9,7 @@ define(['jquery'], function () {
     var departments = (function () {
 
         adminStructure = $('#admin-structure');
+        departmentObjArray = [];
 
         initIconPreview = function () {
             var departmentIcon = $("input[name*=departmentIcon]");
@@ -59,11 +60,27 @@ define(['jquery'], function () {
                 url: '/administrative-structure/department/getDepartments' + (params.length === 1 ? '/' + params[0] : ''),
                 success: function (data) {
 
-                    var departments = $("<ul id='department-" + (params.length !== 0 ? params[0] : "root") + "' class='nav active' data-isChild='" +
-                            (params.length !== 0) + "' style='display: none;'>");
+                    var departments = $("<div id='department-" + (params.length !== 0 ? params[0] : "root") + "' style='display: none;'>");
+
+                    if (params.length !== 0) {
+                        departments.append("<br><h3>" +
+                                "<i class='" + departmentObjArray[params[0]].departmentIcon + "'></i> " +
+                                departmentObjArray[params[0]].departmentName + "</h3><hr>" +
+                                "<p class='text-justify'>" + departmentObjArray[params[0]].departmentDescription + "</p><br>");
+                    }
+
+                    departments.append("<ul class='nav'></ul>");
                     var results = data.results;
+
                     for (var i = 0; i < results.length; i++) {
-                        departments.append(
+
+                        departmentObjArray[results[i].departmentId] = {
+                            departmentName: results[i].departmentName,
+                            departmentIcon: results[i].departmentIcon,
+                            departmentDescription: results[i].departmentDescription
+                        };
+
+                        departments.find(".nav").append(
                                 "<li data-active='" + results[i].isActive + "' " +
                                 "data-children='" + results[i].numberOfChildren + "' " +
                                 "data-id='" + results[i].departmentId + "' " +
@@ -75,26 +92,28 @@ define(['jquery'], function () {
                                 "<a href='#department-" + results[i].departmentId + "' data-toggle='tab'>" +
                                 "<i class='" + results[i].departmentIcon + "'></i>" +
                                 "<h4><strong>" + results[i].departmentName + "</strong></h4>" +
-                                "<p class='text-justify'>" + results[i].departmentDescription + "</p>" +
-                                (results[i].isActive === false ? "<p><b>Inativa</b></p>" : "") +
-                                "</a></li>");
+                                "<p class='text-justify'>" +
+                                (results[i].departmentDescription.length < 140 ?
+                                        results[i].departmentDescription : results[i].departmentDescription.substring(0, 136) + "...") +
+                                "</p></a></li>");
                     }
-                    if (results.length > 0) {
-                        if (params.length !== 0) {
-                            adminStructure
-                                    .find('#department-identity-' + params[0]).closest('ul')
-                                    .next('.tab-content')
-                                    .append(departments)
-                                    .append("<div class='tab-content'></div>");
-                            departments.fadeIn();
-                        } else {
-                            adminStructure.find(".container")
-                                    .append(departments)
-                                    .append("<div class='tab-content'></div>");
-                            departments.fadeIn();
-                        }
 
+                    departments.append("<div class='tab-content'></div>");
+
+                    if (params.length !== 0) {
+                        adminStructure
+                                .find('#department-identity-' + params[0])
+                                .closest('.nav')
+                                .siblings('.tab-content')
+                                .first()
+                                .append(departments);
+                    } else {
+                        adminStructure.find(".container")
+                                .append(departments);
                     }
+
+                    departments.fadeIn();
+
                 },
                 error: function (data) {
                     console.log(data);
@@ -107,25 +126,21 @@ define(['jquery'], function () {
             adminStructure.on("click", ".catssys-admin-structure", function () {
 
                 var parentDepartmentId = $(this).data('id');
-                $(this)
-                        .closest('ul')
-                        .next('.tab-content')
-                        .find('ul')
-                        .not("#department-" + parentDepartmentId)
-                        .removeClass('active')
-                        .slideUp('slow');
 
-                if ($(this).data('children') > 0) {
-                    if ($("#department-" + parentDepartmentId).length === 0) {
-                        getAdministrativeHierarchy(parentDepartmentId);
-                    } else {
-                        if ($("#department-" + parentDepartmentId).hasClass('active')) {
-                            $("#department-" + parentDepartmentId).removeClass('active').slideUp();
-                        } else {
-                            $("#department-" + parentDepartmentId).addClass('active').slideDown();
-                        }
-                    }
+                $(this)
+                        .closest(".nav")
+                        .siblings(".tab-content")
+                        .first()
+                        .find("div[id^='department-']")
+                        .not("#department-" + parentDepartmentId)
+                        .slideUp(100);
+
+                if ($("#department-" + parentDepartmentId).length === 0) {
+                    getAdministrativeHierarchy(parentDepartmentId);
+                } else {
+                    $("#department-" + parentDepartmentId).slideToggle(100);
                 }
+
             });
         };
 
