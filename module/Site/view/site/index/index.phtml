@@ -77,31 +77,46 @@
             <!--</div>-->
             </section>
 
-            <section class="catssys-section" id="contact">
-                <div class="container">
-                    <h2 class="text-center">Entre em Contato Conosco</h2>
-                    <hr>
-                    <?php if ($this->contact_form !== null): ?>
-                        <div class="row"> 
-                            <div class="col-md-6 col-xs-12">
-                                <?php echo $this->formRow($contact_form->get('name')); ?>
-                            </div>
-                            <div class="col-md-6 col-xs-12">
-                                <?php echo $this->formRow($contact_form->get('email')); ?>
-                            </div>
-                            <div class="col-md-12">
-                                <?php echo $this->formRow($contact_form->get('subject')); ?>
-                            </div>
-                            <div class="col-md-12">
-                                <?php echo $this->formRow($contact_form->get('message')); ?>
-                            </div>
-                            <div class="col-md-12">
-                                <?php echo $this->formRow($contact_form->get('contactCsrf')); ?>
-                            </div>
-                            <div class="col-md-12">
-                                <?php echo $this->formRow($contact_form->get('Submit')); ?>
-                            </div>
-                        </div>
-                    <?php endif; ?>
+<section class="catssys-section" id="contact">
+    <div class="container">
+        <h2 class="text-center">Entre em Contato Conosco</h2>
+        <hr>
+        <?php if ($this->contact_form !== null): ?>
+            <div class="col-md-8 col-xs-12"> 
+                <div class="col-md-6 col-xs-12">
+                    <?php echo $this->formRow($contact_form->get('name')); ?>
                 </div>
-            </section>
+                <div class="col-md-6 col-xs-12">
+                    <?php echo $this->formRow($contact_form->get('email')); ?>
+                </div>
+                <div class="col-md-12">
+                    <?php echo $this->formRow($contact_form->get('subject')); ?>
+                </div>
+                <div class="col-md-12">
+                    <?php echo $this->formRow($contact_form->get('message')); ?>
+                </div>
+                <div class="col-md-12">
+                    <?php echo $this->formRow($contact_form->get('contactCsrf')); ?>
+                </div>
+                <div class="col-md-12">
+                    <?php echo $this->formRow($contact_form->get('Submit')); ?>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12 text-left">
+                <div class="container-fluid text-justify">
+                    <h4>Endereço</h4>
+                    <p> Av. BPS, 1303 – Sala I.1.2.47 – CEP 37500-903 – Pinheirinho – Itajubá – MG </p>
+                    <h4>Telefone</h4>
+                    <p>(35) 8871-2364</p> 
+                    <h4>Email</h4>
+                    <p>catsrpp@gmail.com </p>
+                </div>
+                <div class="container-fluid text-left">
+                    <a class="btn btn-social-icon btn-md btn-facebook" onclick="_gaq.push(['_trackEvent', 'btn-social-icon', 'click', 'btn-md']);"><i class="fa fa-facebook"></i></a>
+                    <a class="btn btn-social-icon btn-md btn-google" onclick="_gaq.push(['_trackEvent', 'btn-social-icon', 'click', 'btn-md']);"><i class="fa fa-google"></i></a>
+                    <a class="btn btn-social-icon btn-md btn-twitter" onclick="_gaq.push(['_trackEvent', 'btn-social-icon', 'click', 'btn-md']);"><i class="fa fa-twitter"></i></a>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+</section>

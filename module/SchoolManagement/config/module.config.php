@@ -9,6 +9,7 @@ return array(
             'SchoolManagement\Controller\StudentClass' => Controller\StudentClassController::class,
             'SchoolManagement\Controller\SchoolWarning' => Controller\SchoolWarningController::class,
             'SchoolManagement\Controller\SchoolAttendance' => Controller\SchoolAttendanceController::class,
+            'SchoolManagement\Controller\StudyResources' => Controller\StudyResourcesController::class,
         ),
     ),
     'router' => array(
@@ -76,6 +77,19 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'SchoolManagement\Controller\SchoolAttendance',
+                            ),
+                        ),
+                    ),
+                    'study-resources' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/study-resources[/:action]',
+                            'constraints' => array(
+                                'controller' => 'SchoolManagement\Controller\StudyResources',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'SchoolManagement\Controller\StudyResources',
                             ),
                         ),
                     ),
