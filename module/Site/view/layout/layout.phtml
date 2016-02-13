@@ -8,23 +8,23 @@
 
         <?php
         echo $this->headMeta()
-                ->appendName('viewport', 'width=device-width, initial-scale=1.0')
-                ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+            ->appendName('viewport', 'width=device-width, initial-scale=1.0')
+            ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
         ?>
 
         <!-- Le styles -->
         <?php
         echo $this->headLink(array(
-                    'rel' => 'shortcut icon',
-                    'type' => 'image/vnd.microsoft.icon',
-                    'href' => $this->basePath() . '/img/favicon.ico'))
-                // Roboto
-                ->appendStylesheet('http://fonts.googleapis.com/css?family=Roboto:300,400,500,700')
-                // Bootstrap
-                ->appendStylesheet($this->basePath('vendor/bootswatch-dist/css/bootstrap.min.css'))
-                ->appendStylesheet($this->basePath('css/site.css'))
-                // Custom Icons
-                ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'));
+                'rel' => 'shortcut icon',
+                'type' => 'image/vnd.microsoft.icon',
+                'href' => $this->basePath() . '/img/favicon.ico'))
+            // Roboto
+            ->appendStylesheet('http://fonts.googleapis.com/css?family=Roboto:300,400,500,700')
+            // Bootstrap
+            ->appendStylesheet($this->basePath('vendor/bootswatch-dist/css/bootstrap.min.css'))
+            ->appendStylesheet($this->basePath('css/site.css'))
+            // Custom Icons
+            ->appendStylesheet($this->basePath('vendor/font-awesome/css/font-awesome.min.css'));
         ?>
     </head>
     <body data-spy="scroll" data-target=".navbar" data-offset="5">
@@ -101,20 +101,11 @@
                 </div>
             </footer>
         </div>
-        <?php
-        echo $this->inlineScript()
-                // SmoothScroll Js
-                ->prependFile($this->basePath('vendor/smooth-scroll/dist/js/smooth-scroll.min.js'))
-                // Bootstrap 3.3.5
-                ->prependFile($this->basePath('vendor/bootstrap/dist/js/bootstrap.min.js'))
-                // jQuery 2.1.4
-                ->prependFile($this->basePath('vendor/AdminLTE/plugins/jQuery/jQuery-2.1.4.min.js'));
-        ?>
+
+        <script data-main="/js/site-config" src="/vendor/requirejs/require.js"></script>
+
         <script>
-            $(function () {
-                $('.wrapper').fadeIn('slow');
-                smoothScroll.init();
-            });
+            require(['site-config']);
         </script>
     </body>
 </html>
