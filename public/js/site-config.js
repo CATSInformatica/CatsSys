@@ -36,19 +36,21 @@ define(['smoothscroll', 'jquery', 'bootstrap'], function (smoothScroll) {
 
         require(['app/pages/site/site'], function (SiteModule) {
 
-            SiteModule.init();
-
             /**
              * Arranjar uma solução decente algum dia
              * Hack para o smoothscroll
              */
             var numberOfAjaxCallsAtLoad = 1;
             $(document).ajaxStop(function () {
+                console.log(numberOfAjaxCallsAtLoad);
                 numberOfAjaxCallsAtLoad--;
                 if (numberOfAjaxCallsAtLoad === 0) {
                     smoothScroll.init();
                 }
             });
+
+            // inicializar módulo do site
+            SiteModule.init();
         });
     });
 });
