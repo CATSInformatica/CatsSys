@@ -24,7 +24,15 @@ define(['smoothscroll', 'jquery', 'bootstrap'], function (smoothScroll) {
     $(function () {
 
         $('.wrapper').fadeIn('slow');
-        $("[data-spy='scroll']").scrollspy();
+        $("body").scrollspy();
+
+        /**
+         * Salva a sessão que o usuário passou, 
+         * caso ele recarregue o site a última sessão visitada será exibida
+         */
+        $("body").on('activate.bs.scrollspy', function (e) {
+            history.replaceState({}, "", $("a[href^='#']", e.target).attr("href"));
+        });
 
         require(['app/pages/site/site'], function (SiteModule) {
 
