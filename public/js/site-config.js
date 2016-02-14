@@ -22,14 +22,25 @@ requirejs.config({
 
 define(['smoothscroll', 'jquery', 'bootstrap'], function (smoothScroll) {
     $(function () {
-        // needed to use bootstrap data-spy
-        $(window).trigger('load');
+
         $('.wrapper').fadeIn('slow');
-        smoothScroll.init();
+        $("[data-spy='scroll']").scrollspy();
 
         require(['app/pages/site/site'], function (SiteModule) {
+
             SiteModule.init();
+
+            /**
+             * Arranjar uma solução decente algum dia
+             * Hack para o smoothscroll
+             */
+            var numberOfAjaxCallsAtLoad = 1;
+            $(document).ajaxStop(function () {
+                numberOfAjaxCallsAtLoad--;
+                if (numberOfAjaxCallsAtLoad === 0) {
+                    smoothScroll.init();
+                }
+            });
         });
-        
     });
 });

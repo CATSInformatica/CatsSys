@@ -16,7 +16,6 @@ define(['app/pages/administrative-structure/department/departments'], function (
                 type: "POST",
                 url: "/school-management/study-resources/get-past-exams",
                 success: function (data) {
-                    console.log('worked!');
                     for (i = 0; i < data.psa['source'].length; ++i) {
                         pastExams += '<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 catssys-test">'
                                 + '<a href="' + data.psa_dir + '/' + data.psa['source'][i] + '" target="_blank">'
