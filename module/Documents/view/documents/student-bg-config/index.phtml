@@ -32,24 +32,16 @@
     <?php endif; ?>
 </section>
 
+
 <script>
-
-    var standardConfig = (function () {
-
-        initDataTable = function () {
-
-            $('#config-table').DataTable({
-                dom: 'lftip',
-                paging: false
-            });
-        };
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/documents/student-bg-config/index';
 
         return {
-            init: function () {
-                initDataTable();
+            getScriptSrc: function () {
+                return scriptSrc;
             }
         };
 
-    }());
-
+    })();
 </script>

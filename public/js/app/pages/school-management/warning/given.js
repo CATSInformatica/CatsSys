@@ -4,20 +4,12 @@
  * and open the template in the editor.
  */
 
-
 define(['jquery', 'datatable'], function () {
     var index = (function () {
-        // your module code goes here
-        // var config = null;
-
-        /**
-         * 
-         * private functions
-         */
 
         initDataTable = function () {
 
-            var recruitmentTable = $('#recruitment-table').DataTable({
+            var configTable = $('#warning-table').DataTable({
                 dom: 'lftip',
                 paging: false
             });
@@ -29,7 +21,7 @@ define(['jquery', 'datatable'], function () {
             }
         };
 
-    }());
-
+    }());    
+    
     return index;
 });

@@ -22,35 +22,18 @@
             </tbody>
         </table>
     </div>
-</div>
+    
 </section>
 
-
 <script>
-
-    var standardConfig = (function () {
-        // your module code goes here
-        // var config = null;
-
-        /**
-         * 
-         * private functions
-         */
-
-        initDataTable = function () {
-
-            $('#warning-table').DataTable({
-                dom: 'lftip',
-                paging: false
-            });
-        };
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/warning/index';
 
         return {
-            init: function () {
-                initDataTable();
+            getScriptSrc: function () {
+                return scriptSrc;
             }
         };
 
-    }());
-
+    })();
 </script>

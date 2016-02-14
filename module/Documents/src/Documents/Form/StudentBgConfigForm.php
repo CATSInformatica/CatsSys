@@ -29,6 +29,7 @@ class StudentBgConfigForm extends Form {
                     ),
                     'options' => array(
                         'label' => 'Frase',
+                        'add-on-prepend' => '<i class="fa fa-quote-left"></i>',
                     ),
                 ))
                 ->add(array(

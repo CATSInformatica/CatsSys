@@ -24,10 +24,10 @@ class StudentIdCardForm extends StudentsBoardForm
                 
         $this->add(array(
                 'name' => 'expiry_date',
-                'type' => 'text',
                 'attributes' => array(
-                    'class' => 'form-control datepicker text-center',
-                    'value' => ('22/04/1500'), 
+                    'type' => 'text',
+                    'class' => 'datepicker text-center',
+                    'placeholder' => 'Ex: 22/04/1500', 
                 ),
                 'options' => array(
                     'label' => 'Data de expiração',

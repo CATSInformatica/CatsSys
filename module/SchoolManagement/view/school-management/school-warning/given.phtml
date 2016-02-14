@@ -32,27 +32,17 @@
             </tbody>
         </table>
     </div>
-</div>
 </section>
 
 <script>
-
-    var standardConfig = (function () {
-
-        initDataTable = function () {
-
-            $('#warning-table').DataTable({
-                dom: 'lftip',
-                paging: false
-            });
-        };
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/warning/given';
 
         return {
-            init: function () {
-                initDataTable();
+            getScriptSrc: function () {
+                return scriptSrc;
             }
         };
 
-    }());
-
+    })();
 </script>

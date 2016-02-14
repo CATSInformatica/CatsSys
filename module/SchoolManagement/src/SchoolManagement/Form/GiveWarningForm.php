@@ -23,63 +23,65 @@ class GiveWarningForm extends Form
         parent::__construct($name);
 
         $this->add(array(
-                'name' => 'person_id',
-                'type' => 'Zend\Form\Element\Select',
-                'options' => array(
-                    'label' => 'Aluno',
-                    'value_options' => $options['names'],
-                ),
-                'attributes' => array(
-                    'type' => 'select',
-                ),
-            ))
-            ->add(array(
-                'name' => 'class_id',
-                'type' => 'Zend\Form\Element\Select',
-                'options' => array(
-                    'label' => 'Turma',
-                    'value_options' => $options['class_names'],
-                ),
-                'attributes' => array(
-                    'type' => 'select',
-                )
-            ))
-            ->add(array(
-                'name' => 'warning_date',
-                'type' => 'text',
-                'options' => array(
-                    'label' => 'Data da Advertência',
-                ),
-                'attributes' => array(
-                    'class' => 'form-control datepicker text-center',
-                    'value' => ('22/04/1500'), 
-                )
-            ))
-            ->add(array(
-                'name' => 'warning_id',
-                'type' => 'Zend\Form\Element\Select',
-                'options' => array(
-                    'label' => 'Tipo de Advertência',
-                    'value_options' => $options['warning_names'],
-                ),
-                'attributes' => array(
-                    'type' => 'select',
-                )
-            ))
-            ->add(array(
-                'name' => 'warning_comment',
-                'type' => 'textarea',
-                'options' => array(
-                    'label' => 'Comentário',
-                ),
-            ))
-            ->add(array(
-                'name' => 'Submit',
-                'attributes' => array(
-                    'type' => 'submit',
-                    'class' => 'btn btn-primary btn-block',
-                    'value' => 'Go',
-                )
+                    'name' => 'person_id',
+                    'type' => 'Zend\Form\Element\Select',
+                    'options' => array(
+                        'label' => 'Aluno',
+                        'value_options' => $options['names'],
+                    ),
+                    'attributes' => array(
+                        'type' => 'select',
+                    ),
+                ))
+                ->add(array(
+                    'name' => 'class_id',
+                    'type' => 'Zend\Form\Element\Select',
+                    'options' => array(
+                        'label' => 'Turma',
+                        'value_options' => $options['class_names'],
+                    ),
+                    'attributes' => array(
+                        'type' => 'select',
+                    )
+                ))
+                ->add(array(
+                    'name' => 'warning_date',
+                    'options' => array(
+                        'label' => 'Data da Advertência',
+                        'add-on-prepend' => '<i class="glyphicon glyphicon-calendar"></i>',
+                    ),
+                    'attributes' => array(
+                        'type' => 'text',
+                        'class' => 'datepicker text-center',
+                        'placeholder' => 'Ex: 22/04/1500',
+                    )
+                ))
+                ->add(array(
+                    'name' => 'warning_id',
+                    'type' => 'Zend\Form\Element\Select',
+                    'options' => array(
+                        'label' => 'Tipo de Advertência',
+                        'value_options' => $options['warning_names'],
+                    ),
+                    'attributes' => array(
+                        'type' => 'select',
+                    )
+                ))
+                ->add(array(
+                    'name' => 'warning_comment',
+                    'type' => 'textarea',
+                    'options' => array(
+                        'label' => 'Comentário',
+                        'add-on-prepend' => '<i class="fa fa-paragraph"></i>',
+                    ),
+                ))
+                ->add(array(
+                    'name' => 'Submit',
+                    'attributes' => array(
+                        'type' => 'submit',
+                        'class' => 'btn btn-primary btn-block',
+                        'value' => 'Go',
+                    )
         ));
     }
 

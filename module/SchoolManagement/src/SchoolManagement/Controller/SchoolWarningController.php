@@ -178,6 +178,9 @@ class SchoolWarningController extends AbstractActionController
     {
         $request = $this->getRequest();        
         $message = null;
+        $sNames = null;
+        $wTypeNames = null;
+        $classNames = null;
         
         try {
             $em = $this->getEntityManager();
