@@ -30,5 +30,6 @@ define(['smoothscroll', 'jquery', 'bootstrap'], function (smoothScroll) {
         require(['app/pages/site/site'], function (SiteModule) {
             SiteModule.init();
         });
+        
     });
 });
