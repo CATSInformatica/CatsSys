@@ -17,8 +17,14 @@ return array(
     ),
     'versions' => array(
         '2.0.0.alpha1' => array(
-            'date' => '2016-02-05 00:00:00',
-            'recruitment' => 'Criação do processo seletivo de voluntários e alunos',
+            'timestamp' => '2016-02-05 00:00:00',
+            'major' => null,
+            'minor' => array(
+                'recruitment' => 'Criação do processo seletivo de voluntários e alunos',
+            ),
+            'patch' => array(
+                'micellaneous' => 'Correções diversas',
+            ),
         ),
     ),
 );

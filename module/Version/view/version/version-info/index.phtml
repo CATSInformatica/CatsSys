@@ -6,8 +6,66 @@
         <?php print_r($version->getAuthors()); ?>
     </pre>
 
-    <pre>
-        <?php print_r($version->getVersionDescriptions()); ?>
-    </pre>
+
+
+    <div class="box box-solid">
+        <div class="box-header with-border">
+            <h3 class="box-title">Descrição</h3>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="box-group" id="accordion">
+
+                <?php foreach ($version->getVersionDescriptions() as $idx => $descriptions): ?>
+
+                    <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
+                    <div class="panel box box-primary">
+                        <div class="box-header with-border">
+                            <h4 class="box-title">
+                                <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne" aria-expanded="false" class="collapsed">
+                                    <?php echo $idx; ?>
+                                </a>
+                                <span class="pull-right"> 
+                                    <?php
+                                    \DateTime::createFromFormat('Y-m-d H:i:s', $descriptions['timestamp'])->format('d/m/Y \à\s H:i:s');
+                                    ?> 
+                                </span>
+                            </h4>
+                        </div>
+                        <div id="collapseOne" class="panel-collapse collapse" aria-expanded="false" style="height: 0px;">
+                            <div class="box-body">
+
+                                <?php if ($descriptions['major'] !== null): ?>
+                                <h4>MAJOR</h4>
+                                    <pre>
+                                        <?php print_r($descriptions['major']); ?>
+                                    </pre>
+                                <?php endif; ?>
+
+                                <?php if ($descriptions['minor'] !== null): ?>
+                                <h4>MINOR</h4>
+                                    <pre>
+                                        <?php print_r($descriptions['minor']); ?>
+                                    </pre>
+                                <?php endif; ?>
+
+                                <?php if ($descriptions['patch'] !== null): ?>
+                                <h4>PATH</h4>
+                                    <pre>
+                                        <?php print_r($descriptions['patch']); ?>
+                                    </pre>
+                                <?php endif; ?>
+                            </div>
+                        </div>
+                    </div>
+
+                <?php endforeach; ?>
+
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+
+
 
 </section>
