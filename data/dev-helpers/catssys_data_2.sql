@@ -22,7 +22,8 @@ INSERT INTO `resource` VALUES
 (20,'Recruitment\\Controller\\Address'),
 (21,'SchoolManagement\\Controller\\SchoolAttendance'),
 (22,'AdministrativeStructure\\Controller\\Department'),
-(23,'SchoolManagement\\Controller\\StudyResources')
+(23,'SchoolManagement\\Controller\\StudyResources'),
+(24,'Version\\Controller\\VersionInfo')
 ;
 UNLOCK TABLES;
 

@@ -37,5 +37,6 @@ return array(
         'SchoolManagement' => 'application/layout',
         'Documents' => 'application/layout',
         'AdministrativeStructure' => 'application/layout',
+        'Version' => 'application/layout',
     )
 );

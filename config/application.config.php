@@ -34,6 +34,8 @@ $modules = array(
     'Documents',
     // AdministrativeStructure
     'AdministrativeStructure',
+    // Version
+    'Version',
 );
 
 if ($env === 'development') {
