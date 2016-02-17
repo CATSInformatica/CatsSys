@@ -1,0 +1,11 @@
+
+    Exportar planilha - OK
+    Importar planilha - NOK
+        Re-exibir a planilha dentro do sistema de forma bonita (cores e etc, talvez em abas bootstap tab-panel ou accordion)
+    
+    Inserir Abono     - NOK
+        Inserir abonos através da escolha dos alunos e na sequência associar as datas
+    Editar Abono      - NOK
+        Exibir os meses, em seguida, listar as datas que houveram abonos e, por fim, listar os alunos que receberam abonos nas datas
+    Excluir Abono     - NOK
+        Idêntico ao editar

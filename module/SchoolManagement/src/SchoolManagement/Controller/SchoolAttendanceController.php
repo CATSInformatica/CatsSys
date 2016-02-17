@@ -4,6 +4,7 @@ namespace SchoolManagement\Controller;
 
 use Database\Service\EntityManagerService;
 use Exception;
+use SchoolManagement\Entity\AttendanceType;
 use SchoolManagement\Form\SchoolAttendanceForm;
 use SchoolManagement\Model\AttendanceList;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -26,7 +27,12 @@ class SchoolAttendanceController extends AbstractActionController
     {
         try {
             $em = $this->getEntityManager();
-            $form = new SchoolAttendanceForm($em);
+            $form = new SchoolAttendanceForm($em,
+                [
+                AttendanceType::TYPE_ATTENDANCE_BEGIN,
+                AttendanceType::TYPE_ATTENDANCE_END
+                ]
+            );
 
             return new ViewModel(array(
                 'form' => $form,

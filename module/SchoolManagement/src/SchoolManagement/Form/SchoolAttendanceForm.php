@@ -16,11 +16,31 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class SchoolAttendanceForm extends Form implements InputFilterProviderInterface
 {
 
-    public function __construct(ObjectManager $obj, $name = null, $options = array())
+    public function __construct(ObjectManager $obj, $attendanceTypeOptions = null, $name = null, $options = array())
     {
         parent::__construct($name, $options);
 
         $this->setAttribute('action', '/school-management/school-attendance/downloadList');
+
+        $attendanceTypeElement = array(
+            'name' => 'attendanceType',
+            'type' => 'DoctrineModule\Form\Element\ObjectMultiCheckbox',
+            'options' => array(
+                'label' => 'Tipos',
+                'object_manager' => $obj,
+                'target_class' => 'SchoolManagement\Entity\AttendanceType',
+                'property' => 'attendanceType',
+            ),
+        );
+
+        if ($attendanceTypeOptions !== null) {
+            $attendanceTypeElement['options']['find_method'] = array(
+                'name' => 'findByAttendanceTypeIds',
+                'params' => array(
+                    'ids' => $attendanceTypeOptions,
+                ),
+            );
+        }
 
         $this
             ->add(array(
@@ -39,16 +59,7 @@ class SchoolAttendanceForm extends Form implements InputFilterProviderInterface
                     ),
                 ),
             ))
-            ->add(array(
-                'name' => 'attendanceType',
-                'type' => 'DoctrineModule\Form\Element\ObjectMultiCheckbox',
-                'options' => array(
-                    'label' => 'Tipos',
-                    'object_manager' => $obj,
-                    'target_class' => 'SchoolManagement\Entity\AttendanceType',
-                    'property' => 'attendanceType',
-                ),
-            ))
+            ->add($attendanceTypeElement)
             ->add(array(
                 'type' => 'Zend\Form\Element\Collection',
                 'name' => 'dates',

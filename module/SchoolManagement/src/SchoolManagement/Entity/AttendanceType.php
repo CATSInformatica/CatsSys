@@ -9,7 +9,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  * @ORM\Table(name="attendance_type")
- * @ORM\Entity(readOnly=true)
+ * @ORM\Entity(readOnly=true, repositoryClass="SchoolManagement\Entity\Repository\AttendanceType")
  */
 class AttendanceType
 {
