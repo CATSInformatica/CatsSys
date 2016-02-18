@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-define(['dropzone', 'bootbox', 'moment', 'masks', 'datetimepicker', 'jquery'], function (Dropzone, bootbox, moment, masks) {
+define(['dropzone', 'bootbox', 'moment', 'masks', 'app/models/Service', 'datetimepicker', 'jquery'], function (Dropzone, bootbox, moment, masks, service) {
     var student = (function () {
         // your module code goes here
         // var config = null;
@@ -60,13 +60,18 @@ define(['dropzone', 'bootbox', 'moment', 'masks', 'datetimepicker', 'jquery'], f
             });
         };
 
-
+        initServices = function () {
+            service.bindZipService({
+                dataHolder: $('input[name*=addressPostalCode]')
+            });
+        };
 
         return {
             init: function () {
                 initImageUpload();
                 initDatepickers();
                 initMasks();
+                initServices();
             },
             getDataOf: function (identity) {
                 return {
