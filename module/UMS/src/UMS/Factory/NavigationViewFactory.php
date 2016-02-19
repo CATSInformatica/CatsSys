@@ -22,12 +22,13 @@ class NavigationViewFactory implements FactoryInterface
 
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
+        
         $session = new Container('User');
         $role = $session->activeRole;
         $acl = $serviceLocator->getServiceLocator()->get('acl');
         $navigation = $serviceLocator->get('Zend\View\Helper\Navigation');
         $navigation->setAcl($acl)->setRole($role);
-
+        
         return $navigation;
     }
 

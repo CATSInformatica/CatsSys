@@ -25,9 +25,9 @@ class AttendanceList
 
     public function setConfig($config)
     {
-        $this->config['SchoolClass'] = $config['schoolClasses'];
+        $this->config['SchoolClassName'] = $config['className'];
+        $this->config['SchoolClassId'] = $config['schoolClasses'];
         $this->config['AttendanceTypes'] = $config['attendanceType'];
-        $this->config['AttendanceCounter'] = count($config['attendanceType']);
 
         foreach ($config['dates'] as $value) {
             $dt = new DateTime($value['attendanceDate']);
@@ -44,9 +44,8 @@ class AttendanceList
 
     protected function generateCsv()
     {
-        $this->csv[] = array('SchoolClass', $this->config['SchoolClass']);
-        $this->csv[] = array_merge(['AttendanceTypes'], $this->config['AttendanceTypes']);
-        $this->csv[] = array('AttendanceNumber', $this->config['AttendanceCounter']);
+        $this->csv[] = array('SchoolClassId', $this->config['SchoolClassId'], $this->config['SchoolClassName']);
+        $this->csv[] = array_merge(['AttendanceTypeIds'], $this->config['AttendanceTypes']);
         $this->csv[] = array_merge(['Dates'], $this->config['Dates']);
         $this->csv[] = array("", "");
         $this->csv[] = array("", "");

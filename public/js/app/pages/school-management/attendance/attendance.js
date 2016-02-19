@@ -11,9 +11,14 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
 
         var templateDate = moment();
 
+        var add = $("#addAttendanceDate");
+        var rm = $("#removeAttendanceDate");
+        var attImportInput = $("#attendanceListInput");
+        var lists;
+
         initDateCopy = function () {
-            $('#addAttendanceDate').click(addAttendanceDate);
-            $('#removeAttendanceDate').click(removeAttendanceDate);
+            add.click(addAttendanceDate);
+            rm.click(removeAttendanceDate);
         };
 
         addAttendanceDate = function () {
@@ -63,13 +68,69 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                     });
         };
 
-        return {
-            init: function () {
-                initDateCopy();
-                initMasks();
-                applyDatepickers();
+        bindImportEvent = function (bootbox) {
+
+            attImportInput.change(function (e) {
+
+                var files = e.target.files; // FileList object
+                var file = files[0];
+
+                var reader = new FileReader();
+                reader.readAsText(file);
+
+                reader.onload = function (event) {
+                    lists = $.csv.toArrays(event.target.result);
+                    showLists();
+                };
+
+                reader.onerror = function () {
+                    bootbox.alert("Não foi possível abrir o arquivo <b>" + file.name + "<br>");
+                };
+            });
+        };
+
+        showLists = function () {
+
+
+            // config
+
+            $("#schoolClass")
+                    .data("id", lists[0][1])
+                    .next().find("em").text(lists[0][2]);
+
+            $("#attendanceTypes")
+                    .data("id", JSON.stringify(lists[1].slice(1)))
+                    .next().find("em").text(lists[1].slice(1).join(", "));
+            $("#attendanceDates")
+                    .data("id", JSON.stringify(lists[2].slice(1)))
+                    .next().find("em").text(lists[2].slice(1).join(", "));
+
+            // lists
+
+            for (var i = 6; i < lists.length; i++) {
+                console.log(lists[i]);
             }
         };
+
+        return {
+            init: function () {
+
+                if (add.length > 0 && rm.length > 0) {
+                    initDateCopy();
+                    initMasks();
+                    applyDatepickers();
+                }
+
+                if (attImportInput.length > 0) {
+                    require(['bootbox', 'jquerycsv'], function (bootbox) {
+                        bindImportEvent(bootbox);
+                    });
+
+                }
+
+            }
+        };
+
     }());
 
     return generate;

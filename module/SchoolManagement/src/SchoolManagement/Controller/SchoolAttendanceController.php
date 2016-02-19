@@ -47,6 +47,19 @@ class SchoolAttendanceController extends AbstractActionController
     }
 
     /**
+     * Importa listas de presença criadas em
+     * @see SchoolAttendanceController::generateListAction()
+     * 
+     * @return ViewModel
+     */
+    public function importListAction()
+    {
+
+        return new ViewModel([
+        ]);
+    }
+
+    /**
      * Gera a lista de frequência de acordo com os valores inseridos no formulário em 
      * @see SchoolAttendanceController::generateListAction()
      * 
@@ -72,6 +85,10 @@ class SchoolAttendanceController extends AbstractActionController
                     ->findAllCurrentStudents(array(
                     'class' => $data['schoolClasses']
                 ));
+
+                $data['className'] = $em->find('SchoolManagement\Entity\StudentClass', $data['schoolClasses'])
+                    ->getClassName();
+
 
                 $attList = new AttendanceList($data, $enrollments);
                 $csv = $attList->getCsv();

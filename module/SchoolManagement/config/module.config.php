@@ -254,10 +254,10 @@ return array(
                 'resource' => 'SchoolManagement\Controller\SchoolAttendance',
                 'pages' => array(
                     array(
-                        'label' => 'Generate list',
+                        'label' => 'Generate lists',
                         'route' => 'school-management/school-attendance',
                         'action' => 'generateList',
-                        'icon' => 'fa fa-list-alt',
+                        'icon' => 'fa fa-download',
                         'pages' => array(
                             array(
                                 'label' => 'Download list',
@@ -266,6 +266,12 @@ return array(
                                 'icon' => 'fa fa-download',
                             ),
                         ),
+                    ),
+                    array(
+                        'label' => 'Upload lists',
+                        'route' => 'school-management/school-attendance',
+                        'action' => 'importList',
+                        'icon' => 'fa fa-upload',
                     ),
                 ),
             ),

@@ -9,6 +9,7 @@ requirejs.config({
     baseUrl: '/vendor',
     paths: {
         jquery: 'AdminLTE/plugins/jQuery/jQuery-2.1.4.min',
+        jquerycsv: 'jquery-csv/src/jquery.csv.min',
         bootstrap: 'AdminLTE/bootstrap/js/bootstrap.min',
         jmaskedinput: 'jquery.maskedinput/dist/jquery.maskedinput.min',
         slimscroll: 'AdminLTE/plugins/slimScroll/jquery.slimscroll.min',
@@ -40,6 +41,9 @@ requirejs.config({
             deps: ['bootstrap', 'jquery', 'slimscroll']
         },
         jmaskedinput: {
+            deps: ['jquery']
+        },
+        jquerycsv: {
             deps: ['jquery']
         }
     }
