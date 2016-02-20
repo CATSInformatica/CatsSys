@@ -95,6 +95,7 @@ return array(
                         'toolbar' => array(
                             array( 
                                 'url' => '/documents/student-bg-config/delete/$id',
+                                'id' => 'student-bg-config-delete',
                                 'title' => 'Remover',
                                 'description' => 'Remove uma configuração de fundo',
                                 'class' => 'fa fa-trash-o bg-red',
