@@ -100,6 +100,7 @@ return array(
                                 'description' => 'Remove uma configuração de fundo',
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
+                                'hideOnSuccess' => true,
                             )
                         ),
                     ),

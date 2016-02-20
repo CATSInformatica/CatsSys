@@ -127,6 +127,12 @@ class SchoolWarningController extends AbstractActionController
                 $em->remove($wType);
                 $em->flush();
                 $message = 'Advertência removida com sucesso.';
+                return new JsonModel(array(
+                    'message' => $message,
+                    'callback' => array(
+                        'warningId' => $id,
+                    ),
+                ));
             } catch (Exception $ex) {
 
                 if ($ex instanceof ConstraintViolationException) {
@@ -142,7 +148,7 @@ class SchoolWarningController extends AbstractActionController
         }
 
         return new JsonModel(array(
-            'message' => $message
+            'message' => $message,
         ));
     }
 
@@ -264,8 +270,7 @@ class SchoolWarningController extends AbstractActionController
                     $em->persist($warning);
                     $em->flush();
 
-                    $this->redirect()->toRoute('school-management/school-warning', 
-                            array('action' => 'given'));
+                    $this->redirect()->toRoute('school-management/school-warning', array('action' => 'given'));
                 } catch (Exception $ex) {
                     $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                             'Erro: ' . $ex->getMessage();
@@ -313,7 +318,6 @@ class SchoolWarningController extends AbstractActionController
                     'message' => $message,
                     'callback' => array(
                         'givenWarningId' => $id,
-                        'closeToolbar' => true,
                     ),
                 ));
             } catch (Exception $ex) {

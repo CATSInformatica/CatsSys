@@ -17,6 +17,9 @@ $activePage = $this->navigation($container)->findOneBy('active', 1);
             <?php echo empty($item['id']) ? ' ' : ' id="' . $item['id'] . '" '; ?>
                 data-fntype="<?php echo $item['fntype']; ?>" 
                 data-title="<?php echo $item['title']; ?>"
+                <?php if ($item['hideOnSuccess']): ?> 
+                    data-hideonsuccess="true"
+                <?php endif; ?>
                 >
                 <a
                     href="<?php echo $item['url']; ?>"

@@ -13,7 +13,7 @@
             </thead>
             <tbody>
                 <?php foreach ($this->warningTypes as $wt): ?>
-                    <tr class="cats-row" data-id="<?php echo $wt->getWarningTypeId(); ?>">
+                    <tr class="cats-row" data-id="<?php echo $wt->getWarningTypeId(); ?>" id="warning-<?php echo $wt->getWarningTypeId(); ?>">
                         <td class="text-center"> <?php echo $wt->getWarningTypeId(); ?></td>
                         <td class="text-center"> <?php echo $wt->getWarningTypeName(); ?></td>
                         <td class="text-center"> <?php echo $wt->getWarningTypeDescription(); ?></td>
