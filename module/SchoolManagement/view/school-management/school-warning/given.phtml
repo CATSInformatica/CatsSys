@@ -1,7 +1,6 @@
 <section class="content">
     
     <p><?php echo $message; ?></p>
-
     <div class="table-responsive col-xs-10 col-md-8 col-md-offset-2">
         <table id="warning-table" class="table table-condensed table-striped">
             <thead>
@@ -16,7 +15,7 @@
             </thead>
             <tbody>
                 <?php foreach ($this->warnings as $w): ?>
-                    <tr class="cats-row" data-id="<?php echo $w->getWarningId() ?>">
+                    <tr class="cats-row" data-id="<?php echo $w->getWarningId() ?>" id="given-warning-<?php echo $w->getWarningId(); ?>">
                         <td class="text-center"> <?php echo $w->getWarningId() ?></td>
                         <td class="text-center"> <?php echo $w->getEnrollment()
                                 ->getRegistration()->getPerson()->getPersonName(); ?></td>
@@ -35,14 +34,14 @@
 </section>
 
 <script>
+    
     appConfig = (function () {
         var scriptSrc = 'app/pages/school-management/warning/given';
-
         return {
             getScriptSrc: function () {
                 return scriptSrc;
             }
         };
-
     })();
+    
 </script>

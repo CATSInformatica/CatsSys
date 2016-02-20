@@ -232,6 +232,7 @@ return array(
                             array(
                                 'url' => '/school-management/school-warning/delete-given/$id',
                                 'title' => 'Remover',
+                                'id' => 'given-warning-delete',
                                 'description' => 'Permite remover uma advertência dada',
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',

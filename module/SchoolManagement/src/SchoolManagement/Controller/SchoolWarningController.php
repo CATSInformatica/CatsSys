@@ -145,7 +145,7 @@ class SchoolWarningController extends AbstractActionController
             'message' => $message
         ));
     }
-    
+
     /**
      * Exibe todas as advertências dadas
      * 
@@ -168,7 +168,7 @@ class SchoolWarningController extends AbstractActionController
             'warnings' => $warnings,
         ));
     }
-    
+
     /**
      * Dá uma advertência a um aluno
      * 
@@ -176,12 +176,12 @@ class SchoolWarningController extends AbstractActionController
      */
     public function giveAction()
     {
-        $request = $this->getRequest();        
+        $request = $this->getRequest();
         $message = null;
         $sNames = null;
         $wTypeNames = null;
         $classNames = null;
-        
+
         try {
             $em = $this->getEntityManager();
             $wTypes = $em->getRepository('SchoolManagement\Entity\WarningType')
@@ -191,47 +191,47 @@ class SchoolWarningController extends AbstractActionController
         } catch (\Exception $ex) {
             $message = $ex->getMessage();
         }
-        
+
         //  Obtém todas as turmas e seleciona seus nomes
         foreach ($classes as $class) {
             $classById[$class->getClassId()] = $class;
             $classNames[$class->getClassId()] = $class->getClassName();
-            
+
             //  Obtém todos os alunos e seleciona seus nomes
             $enrollments = $class->getEnrollments()->toArray();
             foreach ($enrollments as $enrollment) {
                 $personById[$enrollment->getRegistration()->getPerson()
-                        ->getPersonId()] = $enrollment->getRegistration()->getPerson();
+                                ->getPersonId()] = $enrollment->getRegistration()->getPerson();
                 $sNames[$enrollment->getEnrollmentId()] = $enrollment->getRegistration()
-                        ->getPerson()->getPersonName();
-            }             
+                                ->getPerson()->getPersonName();
+            }
         }
-        
+
         //  Obtém todos os tipos de advertência e seleciona seus nomes
         foreach ($wTypes as $wType) {
             $wTypeById[$wType->getWarningTypeId()] = $wType;
             $wTypeNames[$wType->getWarningTypeId()] = $wType->getWarningTypeName();
         }
-        
+
         $options = array(
             'names' => $sNames,
             'warning_names' => $wTypeNames,
             'class_names' => $classNames
-        );        
-        $form = new GiveWarningForm('Give a Warning Form', $options);    
-        
+        );
+        $form = new GiveWarningForm('Give a Warning Form', $options);
+
         if ($request->isPost()) {
             $form->setInputFilter(new GiveWarningFilter());
             $form->setData($request->getPost()->toArray());
-            
+
             if ($form->isValid()) {
                 $data = $form->getData();
-                
+
                 $enrollments = $classById[$data['class_id']]->getEnrollments()
                         ->toArray();
                 $pRegistrations = $personById[$data['person_id']]->getRegistrations();
                 $pEnrollment = null;
-                foreach ($enrollments as $enrollment) {           
+                foreach ($enrollments as $enrollment) {
                     foreach ($pRegistrations as $pr) {
                         if ($enrollment->getRegistration() === $pr) {
                             $pEnrollment = $enrollment;
@@ -249,7 +249,7 @@ class SchoolWarningController extends AbstractActionController
                         'form' => $form,
                     ));
                 }
-                        
+
                 try {
                     //  Adiciona uma referência na tabela Warning
                     $warning = new Warning();
@@ -257,10 +257,10 @@ class SchoolWarningController extends AbstractActionController
                             ->setWarningType($wTypeById[$data['warning_id']])
                             ->setWarningDate(new \DateTime($data['warning_date']))
                             ->setWarningComment($data['warning_comment']);
-                    
+
                     //  Adiciona uma referência no array $warnings da tabela Enrollment
                     $enrollment->setWarnings($enrollment->getWarnings()->add($warning));
-                    
+
                     $em->persist($warning);
                     $em->flush();
 
@@ -272,29 +272,29 @@ class SchoolWarningController extends AbstractActionController
                 }
             }
         }
-        
+
         return new ViewModel(array(
             'message' => $message,
             'form' => $form,
-        )); 
+        ));
     }
-    
+
     /**
      * Remove uma advertência dada cujo id é $id
      * 
      * @return JsonModel ($message)
      */
-    public function deleteGivenAction() 
+    public function deleteGivenAction()
     {
         $id = $this->params('sid', false);
-                
+
         if ($id) {
             try {
                 $em = $this->getEntityManager();
-                
+
                 //  Referencia da tabela Warning
                 $warning = $em->getReference('SchoolManagement\Entity\Warning', $id);
-                
+
                 //  Deleta a referencia do array $warnings da tabela Enrollment
                 $enrollmentWarnings = $warning->getEnrollment()->getWarnings()
                         ->toArray();
@@ -305,10 +305,17 @@ class SchoolWarningController extends AbstractActionController
                     }
                 }
                 $warning->getEnrollment()->setWarnings(new ArrayCollection($warnings));
-                    
+
                 $em->remove($warning);
                 $em->flush();
                 $message = 'Advertência removida com sucesso.';
+                return new JsonModel(array(
+                    'message' => $message,
+                    'callback' => array(
+                        'givenWarningId' => $id,
+                        'closeToolbar' => true,
+                    ),
+                ));
             } catch (Exception $ex) {
                 $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                         'Erro: ' . $ex->getMessage();
@@ -316,10 +323,10 @@ class SchoolWarningController extends AbstractActionController
         } else {
             $message = 'Nenhuma advertência selecionada.';
         }
-        
+
         return new JsonModel(array(
-            'message' => $message
-        ));        
+            'message' => $message,
+        ));
     }
 
 }
