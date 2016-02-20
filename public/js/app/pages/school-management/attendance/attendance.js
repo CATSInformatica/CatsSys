@@ -89,6 +89,7 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                     lists = $.csv.toArrays(event.target.result);
                     importReset();
                     createLists();
+                    setAttendanceActionListeners();
                 };
 
                 reader.onerror = function () {
@@ -140,6 +141,7 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
 
                 var sm = {
                     date: moment(dates[d], "DD/MM/YYYY").format("YYYY-MM-DD"),
+                    typeNames: attendanceTypesNames,
                     students: []
                 };
 
@@ -148,6 +150,7 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
 
                     var student = {
                         id: lists[i][0], //enrollmentId
+                        name: lists[i][1],
                         types: []
                     };
                     // foreach attendanceType
@@ -155,7 +158,7 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
 
                         student.types.push({
                             id: attendanceTypesIds[a],
-                            status: lists[i][2 + a + d * (attendanceTypesIds.length + 1)] === "P"
+                            status: lists[i][2 + a + d * (attendanceTypesIds.length + 1)].toUpperCase() === "P"
                         });
                     }
 
@@ -168,12 +171,11 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
         };
 
         showList = function (list, index) {
-
+            var i, j;
             var container = $("<div class='panel box box-success col-md-6 col-xs-12 cats-row' style='display:none;'>" +
                     "<div class='box-header with-border'>" +
                     "<h4 class='box-title'>" +
-                    "<a data-index=" + index +
-                    " data-toggle='collapse' data-parent='#" + attendanceLists.attr("id") + "' " +
+                    "<a data-toggle='collapse' data-parent='#" + attendanceLists.attr("id") + "' " +
                     "href='#collapse-" + index + "'>" +
                     "Lista de " + moment(list.date, "YYYY-MM-DD")
                     .format("DD/MM/YYYY") +
@@ -181,14 +183,73 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                     "</h4>" +
                     "</div>" +
                     "<div id='collapse-" + index + "' class='panel-collapse collapse'>" +
-                    "<div class='box-body'>" +
-                    "<h3> @TODO </h3>" +
+                    "<div class='box-body bg-white'>" +
                     "</div>" +
                     "</div>" +
                     "</div>");
 
+            var table = "<div class='col-md-8'><table data-id='" + index + "' class='table table-condensed table-bordered table-striped table-hover attendanceListTable'>" +
+                    "<thead><tr>";
+
+            table += "<th>Aluno</th>";
+            for (i = 0; i < list.typeNames.length; i++) {
+                table += "<th class='text-center'>" + list.typeNames[i] + "</th>";
+            }
+
+            table += "</tr></thead><tbody>";
+
+
+            for (i = 0; i < list.students.length; i++) {
+                table += "<tr data-id='" + i + "'>";
+                table += "<td>" + list.students[i].name + "</td>";
+                for (j = 0; j < list.students[i].types.length; j++) {
+                    table += "<td data-id='" + j + "'" +
+                            "class='text-center btn-" + (list.students[i].types[j].status ? "success" : "danger") + " attendanceStatus'>" +
+                            "<i class='fa " + (list.students[i].types[j].status ? "fa-check" : "fa-close") + "' ></i></td>";
+                }
+                table += "</tr>";
+            }
+
+            table += "</tbody></table></div>";
+            container.find(".box-body").append(table);
             attendanceLists.append(container);
             container.slideDown('fast');
+        };
+
+        setAttendanceActionListeners = function () {
+
+            // block cats-selected-row change on table
+            attendanceLists.off("click", ".attendanceListTable");
+            attendanceLists.on("click", ".attendanceListTable", function (e) {
+                e.stopPropagation();
+            });
+
+            attendanceLists.off("click", ".attendanceListTable td.attendanceStatus");
+            attendanceLists.on("click", ".attendanceListTable td.attendanceStatus", function (e) {
+                var type = $(this).data("id");
+                var student = $(this).closest("tr").data("id");
+                var list = $(this).closest("table").data("id");
+
+                var result = listModels[list].students[student].types[type].status = !listModels[list].students[student].types[type].status;
+
+                if (result) {
+                    $(this)
+                            .addClass("btn-success")
+                            .removeClass("btn-danger")
+                            .find("i")
+                            .addClass("fa-check")
+                            .removeClass("fa-close");
+                } else {
+                    $(this)
+                            .addClass("btn-danger")
+                            .removeClass("btn-success")
+                            .find("i")
+                            .addClass("fa-close")
+                            .removeClass("fa-check");
+                }
+
+            });
+
         };
 
         return {
@@ -205,7 +266,6 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                         bindImportEvent(bootbox);
                     });
                 }
-
             }
         };
 
