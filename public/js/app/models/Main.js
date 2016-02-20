@@ -209,6 +209,11 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                 selectedElement.find('td').toggleClass('cats-selected-bg');
             } else {
                 selectedElement
+                        .siblings(".cats-row")
+                        .removeClass('cats-selected-row')
+                        .removeClass('cats-selected-bg');
+
+                selectedElement
                         .toggleClass('cats-selected-bg')
                         .closest('.container')
                         .find('.cats-row')

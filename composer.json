@@ -14,7 +14,7 @@
     "require": {
         "php": ">=5.5",
         "zendframework/zendframework": "^2.5",
-	"zendframework/zend-view": "~2.5.0",
+        "zendframework/zend-view": "~2.5.3",
         "doctrine/doctrine-orm-module": "^0.9.1",
         "zendframework/zend-developer-tools": "^0.0.2",
         "evandotpro/edp-module-layouts": "^1.0",

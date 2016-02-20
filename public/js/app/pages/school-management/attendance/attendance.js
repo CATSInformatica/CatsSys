@@ -15,6 +15,9 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
         var rm = $("#removeAttendanceDate");
         var attImportInput = $("#attendanceListInput");
         var lists;
+        var attendanceLists = $("#attendanceLists");
+
+        var listModels = [];
 
         initDateCopy = function () {
             add.click(addAttendanceDate);
@@ -70,6 +73,10 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
 
         bindImportEvent = function (bootbox) {
 
+            attImportInput.click(function () {
+                $(this).val("");
+            });
+
             attImportInput.change(function (e) {
 
                 var files = e.target.files; // FileList object
@@ -80,7 +87,8 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
 
                 reader.onload = function (event) {
                     lists = $.csv.toArrays(event.target.result);
-                    showLists();
+                    importReset();
+                    createLists();
                 };
 
                 reader.onerror = function () {
@@ -89,27 +97,98 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
             });
         };
 
-        showLists = function () {
+        importReset = function () {
+            listModels = [];
+            attendanceLists.html("");
+        };
 
+        createLists = function () {
+
+            var index;
+
+            index = lists[1].indexOf("");
+            if (index > 0) {
+                lists[1] = lists[1].slice(0, index);
+            }
+            index = lists[2].indexOf("");
+            if (index > 0) {
+                lists[2] = lists[2].slice(0, index);
+            }
+            index = lists[3].indexOf("");
+            if (index > 0) {
+                lists[3] = lists[3].slice(0, index);
+            }
+
+            var attendanceTypesIds = lists[1].slice(1);
+            var attendanceTypesNames = lists[2].slice(1);
+            var dates = lists[3].slice(1);
 
             // config
-
             $("#schoolClass")
                     .data("id", lists[0][1])
                     .next().find("em").text(lists[0][2]);
 
             $("#attendanceTypes")
-                    .data("id", JSON.stringify(lists[1].slice(1)))
-                    .next().find("em").text(lists[1].slice(1).join(", "));
+                    .data("id", JSON.stringify(attendanceTypesIds))
+                    .next().find("em").text(attendanceTypesNames.join(", "));
             $("#attendanceDates")
-                    .data("id", JSON.stringify(lists[2].slice(1)))
-                    .next().find("em").text(lists[2].slice(1).join(", "));
+                    .data("id", JSON.stringify(dates))
+                    .next().find("em").text(dates.join(", "));
 
-            // lists
+            // foreach day
+            for (var d = 0; d < dates.length; d++) {
 
-            for (var i = 6; i < lists.length; i++) {
-                console.log(lists[i]);
+                var sm = {
+                    date: moment(dates[d], "DD/MM/YYYY").format("YYYY-MM-DD"),
+                    students: []
+                };
+
+                // foreach student
+                for (var i = 7; i < lists.length; i++) {
+
+                    var student = {
+                        id: lists[i][0], //enrollmentId
+                        types: []
+                    };
+                    // foreach attendanceType
+                    for (var a = 0; a < attendanceTypesIds.length; a++) {
+
+                        student.types.push({
+                            id: attendanceTypesIds[a],
+                            status: lists[i][2 + a + d * (attendanceTypesIds.length + 1)] === "P"
+                        });
+                    }
+
+                    sm.students.push(student);
+                }
+
+                listModels.push(sm);
+                showList(sm, d);
             }
+        };
+
+        showList = function (list, index) {
+
+            var container = $("<div class='panel box box-success col-md-6 col-xs-12 cats-row' style='display:none;'>" +
+                    "<div class='box-header with-border'>" +
+                    "<h4 class='box-title'>" +
+                    "<a data-index=" + index +
+                    " data-toggle='collapse' data-parent='#" + attendanceLists.attr("id") + "' " +
+                    "href='#collapse-" + index + "'>" +
+                    "Lista de " + moment(list.date, "YYYY-MM-DD")
+                    .format("DD/MM/YYYY") +
+                    "</a>" +
+                    "</h4>" +
+                    "</div>" +
+                    "<div id='collapse-" + index + "' class='panel-collapse collapse'>" +
+                    "<div class='box-body'>" +
+                    "<h3> @TODO </h3>" +
+                    "</div>" +
+                    "</div>" +
+                    "</div>");
+
+            attendanceLists.append(container);
+            container.slideDown('fast');
         };
 
         return {
@@ -125,7 +204,6 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                     require(['bootbox', 'jquerycsv'], function (bootbox) {
                         bindImportEvent(bootbox);
                     });
-
                 }
 
             }

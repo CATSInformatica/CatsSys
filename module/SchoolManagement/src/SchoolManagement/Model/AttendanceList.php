@@ -27,7 +27,10 @@ class AttendanceList
     {
         $this->config['SchoolClassName'] = $config['className'];
         $this->config['SchoolClassId'] = $config['schoolClasses'];
-        $this->config['AttendanceTypes'] = $config['attendanceType'];
+
+        foreach ($config['attendanceType'] as $attType) {
+            $this->config['AttendanceTypes'][$attType] = AttendanceType::getAttendanceTypeName($attType);
+        }
 
         foreach ($config['dates'] as $value) {
             $dt = new DateTime($value['attendanceDate']);
@@ -45,35 +48,25 @@ class AttendanceList
     protected function generateCsv()
     {
         $this->csv[] = array('SchoolClassId', $this->config['SchoolClassId'], $this->config['SchoolClassName']);
-        $this->csv[] = array_merge(['AttendanceTypeIds'], $this->config['AttendanceTypes']);
+
+        $attTypesIds = ['AttendanceTypesNames'];
+        $attTypesNames = ['AttendanceTypesNames'];
+        foreach ($this->config['AttendanceTypes'] as $idx => $attType) {
+            $attTypesIds[] = $idx;
+            $attTypesNames[] = $attType;
+        }
+
+        $this->csv[] = $attTypesIds;
+        $this->csv[] = $attTypesNames;
         $this->csv[] = array_merge(['Dates'], $this->config['Dates']);
         $this->csv[] = array("", "");
         $this->csv[] = array("", "");
-
 
         $dataHeader = array("ENROLLMENT_ID", "NAME");
 
         foreach ($this->config['Dates'] as $date) {
             foreach ($this->config['AttendanceTypes'] as $attType) {
-
-                $type = "";
-
-                switch ($attType) {
-                    case AttendanceType::TYPE_ATTENDANCE_BEGIN:
-                        $type = 'FREQ. INÍCIO';
-                        break;
-                    case AttendanceType::TYPE_ATTENDANCE_END:
-                        $type = 'FREQ. FIM';
-                        break;
-                    case AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_BEGIN:
-                        $type = 'ABONO INÍCIO';
-                        break;
-                    case AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_END:
-                        $type = 'ABONO FIM';
-                        break;
-                }
-
-                $dataHeader[] = $type . ' - ' . $date;
+                $dataHeader[] = $attType . ' - ' . $date;
             }
             $dataHeader[] = "--#######--";
         }

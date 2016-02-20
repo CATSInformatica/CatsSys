@@ -17,8 +17,14 @@ and open the template in the editor.
     text-decoration: underline; }
 
 .cats-selected-bg {
-  background-color: #d2d6de;
-  transition: all 0.5s; }
+  background-color: #5d9ede;
+  transition: all 0.5s;
+  color: white !important; }
+  .cats-selected-bg a {
+    color: white; }
+
+.cats-row {
+  cursor: pointer; }
 
 .table {
   cursor: pointer; }
