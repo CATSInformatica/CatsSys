@@ -53,6 +53,9 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                             if (typeof pageConfig.getCallbackOf(toolbarItem.attr('id')) !== 'undefined') {
                                 pageConfig.getCallbackOf(toolbarItem.attr('id')).exec(data.callback);
                             }
+                            if (toolbarItem.data("hideonsuccess") === true) {
+                                closeToolbar();
+                            }
 
 
                         },
@@ -139,6 +142,9 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
 
                             if (typeof pageConfig.getCallbackOf(toolbarItem.attr('id')) !== 'undefined') {
                                 pageConfig.getCallbackOf(toolbarItem.attr('id')).exec(data.callback);
+                            }
+                            if (toolbarItem.data("hideonsuccess") === true) {
+                                closeToolbar();
                             }
 
                         },

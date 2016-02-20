@@ -211,9 +211,11 @@ return array(
                             array(
                                 'url' => '/school-management/school-warning/delete/$id',
                                 'title' => 'Remover',
+                                'id' => 'warning-delete',
                                 'description' => 'Permite remover uma tipo de advertência.',
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
+                                'hideOnSuccess' => true,
                             ),
                         ),
                     ),
@@ -232,9 +234,11 @@ return array(
                             array(
                                 'url' => '/school-management/school-warning/delete-given/$id',
                                 'title' => 'Remover',
+                                'id' => 'given-warning-delete',
                                 'description' => 'Permite remover uma advertência dada',
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
+                                'hideOnSuccess' => true,
                             ),
                         ),
                     ),

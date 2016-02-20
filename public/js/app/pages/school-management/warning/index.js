@@ -7,9 +7,11 @@
 define(['jquery', 'datatable'], function () {
     var index = (function () {
 
+        var warningTable = $('#warning-table');
+    
         initDataTable = function () {
 
-            var warningTable = $('#warning-table').DataTable({
+            warningTable.DataTable({
                 dom: 'lftip',
                 paging: false
             });
@@ -18,6 +20,19 @@ define(['jquery', 'datatable'], function () {
         return {
             init: function () {
                 initDataTable();
+            },
+            getCallbackOf: function (element) {
+                
+                return {
+                    exec: function (data) {
+                        warningTable
+                                .DataTable()
+                                .row('#warning-' + data.warningId)
+                                .remove()
+                                .draw();
+                    }
+                };
+
             }
         };
 

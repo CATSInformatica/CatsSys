@@ -24,9 +24,9 @@ use Zend\View\Model\ViewModel;
  */
 class StudentBgConfigController extends AbstractActionController
 {
+
     use \Database\Service\EntityManagerService;
-    
-    
+
     /**
      * Exibe em uma tabela todas as configurações cadastradas
      * 
@@ -40,15 +40,14 @@ class StudentBgConfigController extends AbstractActionController
             $configs = $em->getRepository('Documents\Entity\StudentBgConfig')->findAll();
         } catch (\Exception $ex) {
             $message = $ex->getMessage();
-        }      
-        
+        }
+
         return new ViewModel([
             'configs' => $configs,
             'message' => $message,
-        ]); 
+        ]);
     }
-    
-    
+
     /**
      * Grava no banco dados uma configuração de fundo 
      * 
@@ -63,10 +62,10 @@ class StudentBgConfigController extends AbstractActionController
         if ($request->isPost()) {
 
             $post = array_merge_recursive(
-                $request->getPost()->toArray(),
-                $request->getFiles()->toArray()
+                    $request->getPost()->toArray(), 
+                    $request->getFiles()->toArray()
             );
-            
+
             $form->setData($post);
             $form->setInputFilter(new StudentBgConfigFilter());
 
@@ -75,11 +74,11 @@ class StudentBgConfigController extends AbstractActionController
 
                 try {
                     $em = $this->getEntityManager();
-                    
-                    $bgImgNewName = 'bg'.time().'.png';
+
+                    $bgImgNewName = 'bg' . time() . '.png';
                     move_uploaded_file($data['bg_img']['tmp_name'], './public/img/' . $bgImgNewName);
                     chmod('./public/img/' . $bgImgNewName, 0775);
-                    
+
                     $bgConfig = new StudentBgConfig();
                     $bgConfig->setStudentBgConfigPhrase($data['bg_phrase'])
                             ->setStudentBgConfigAuthor($data['bg_author'])
@@ -87,7 +86,8 @@ class StudentBgConfigController extends AbstractActionController
 
                     $em->persist($bgConfig);
                     $em->flush();
-                    
+                    $this->redirect()->toRoute('documents/student-bg-config', 
+                            array('action' => 'index'));
                 } catch (Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
                         $message = 'Esta configuração já existe.';
@@ -103,13 +103,13 @@ class StudentBgConfigController extends AbstractActionController
             'form' => $form,
         ));
     }
-    
+
     /**
      * Remove do banco de dados a configuração de fundo selecionada
      * 
      * @return JsonModel
      */
-    public function deleteAction() 
+    public function deleteAction()
     {
         $id = $this->params('id', false);
 
@@ -126,13 +126,18 @@ class StudentBgConfigController extends AbstractActionController
                 $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                         'Erro: ' . $ex->getMessage();
             }
+            return new JsonModel(array(
+                'message' => $message,
+                'callback' => array(
+                    'bgConfigId' => $id,
+                ),
+            ));
         } else {
             $message = 'Nenhuma configuração selecionda.';
+            return new JsonModel(array(
+                'message' => $message
+            ));
         }
-
-        return new JsonModel(array(
-            'message' => $message
-        ));        
     }
-    
+
 }

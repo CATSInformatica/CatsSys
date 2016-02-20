@@ -7,9 +7,11 @@
 define(['jquery', 'datatable'], function () {
     var index = (function () {
 
-        initDataTable = function () {
+        var configTable = $('#config-table')
 
-            var configTable = $('#config-table').DataTable({
+        initDataTable = function () {
+            
+            configTable.DataTable({
                 dom: 'lftip',
                 paging: false
             });
@@ -18,6 +20,19 @@ define(['jquery', 'datatable'], function () {
         return {
             init: function () {
                 initDataTable();
+            },
+            getCallbackOf: function (element) {
+                
+                return {
+                    exec: function (data) {
+                        configTable
+                                .DataTable()
+                                .row('#bg-config-' + data.bgConfigId)
+                                .remove()
+                                .draw();
+                    }
+                };
+
             }
         };
 
