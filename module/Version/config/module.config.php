@@ -59,6 +59,7 @@ return array(
                 'label' => 'Version',
                 'uri' => '#',
                 'icon' => 'fa fa-file-code-o',
+                'resource' => 'Version\Controller\VersionInfo',
                 'order' => 1000,
                 'pages' => array(
                     array(
