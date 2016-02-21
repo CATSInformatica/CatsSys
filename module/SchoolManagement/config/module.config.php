@@ -70,7 +70,7 @@ return array(
                     'school-attendance' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/school-attendance[/:action]',
+                            'route' => '/school-attendance/:action',
                             'constraints' => array(
                                 'controller' => 'SchoolManagement\Controller\SchoolAttendance',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
@@ -276,6 +276,16 @@ return array(
                         'route' => 'school-management/school-attendance',
                         'action' => 'importList',
                         'icon' => 'fa fa-upload',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/school-management/school-attendance/save',
+                                'title' => 'Enviar Lista',
+                                'id' => 'attendance-list-save',
+                                'description' => 'Salva ou atualiza a lista selecionada',
+                                'class' => 'fa fa-upload bg-green',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ),
+                        ),
                     ),
                 ),
             ),

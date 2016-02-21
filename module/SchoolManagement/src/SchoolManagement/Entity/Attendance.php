@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  *      @ORM\UniqueConstraint(name="attendance_unique_idx", 
  *          columns={"enrollment_id", "attendance_type_id", "attendance_date"})
  * })
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="SchoolManagement\Entity\Repository\Attendance")
  */
 class Attendance
 {

@@ -16,7 +16,7 @@ trait DbalService
      */
     protected $dbal;
 
-    protected function getEntityManager()
+    protected function getDbalConnection()
     {
         if (null == $this->dbal) {
             $this->dbal = $this->getServiceLocator()->get('doctrine.connection.orm_default');

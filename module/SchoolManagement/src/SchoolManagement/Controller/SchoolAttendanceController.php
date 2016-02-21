@@ -3,11 +3,13 @@
 namespace SchoolManagement\Controller;
 
 use Database\Service\EntityManagerService;
+use Database\Service\DbalService;
 use Exception;
 use SchoolManagement\Entity\AttendanceType;
 use SchoolManagement\Form\SchoolAttendanceForm;
 use SchoolManagement\Model\AttendanceList;
 use Zend\Mvc\Controller\AbstractActionController;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -18,7 +20,8 @@ use Zend\View\Model\ViewModel;
 class SchoolAttendanceController extends AbstractActionController
 {
 
-    use EntityManagerService;
+    use EntityManagerService,
+        DbalService;
 
     /**
      * Gera a lista de presença para uma turma em uma data selecionada
@@ -127,6 +130,41 @@ class SchoolAttendanceController extends AbstractActionController
                 'action' => 'generateList'
                 ]
         );
+    }
+
+    public function saveAction()
+    {
+
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+
+            $data = $request->getPost();
+            $date = new \DateTime($data['date']);
+            $em = $this->getEntityManager();
+            
+//            echo '<pre>';
+//            print_r($data);
+//            exit;
+
+            try {
+                $em->getRepository('SchoolManagement\Entity\Attendance')->insertNewList(
+                    $this->getDbalConnection(), $data['students'], $date
+                );
+
+                $message = 'Lista de ' . $date->format('d/m/Y') . ' enviada com sucesso.';
+            } catch (\Exception $ex) {
+                $message = "Erro inesperado: " . $ex->getMessage();
+            }
+
+            return new JsonModel([
+                'message' => $message,
+            ]);
+        }
+
+        return new JsonModel([
+            'message' => 'Esta url só pode ser acessada via post',
+        ]);
     }
 
 }

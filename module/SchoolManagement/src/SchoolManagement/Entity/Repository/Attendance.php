@@ -2,6 +2,7 @@
 
 namespace SchoolManagement\Entity\Repository;
 
+use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityRepository;
 
 /**
@@ -12,18 +13,44 @@ use Doctrine\ORM\EntityRepository;
 class Attendance extends EntityRepository
 {
 
-    public function findAttendanceOfCurrentStudentsByClass($classId, array $dates)
+    /**
+     * @param Connection $conn
+     * @param array $students
+     * @param \DateTime $date
+     */
+    public function insertNewList(Connection $conn, array $students, \DateTime $date)
     {
-//        $this->_em->createQuery('SELECT a.enrollmentId, a.attendanceType,  p.personFirstName, p.personLastName'
-//                . 'FROM SchoolManagement\Entity\Attendance a '
-//                . 'RIGHT JOIN a.enrollment e '
-//                . 'JOIN e.registration r '
-//                . 'JOIN r.person p '
-//                . 'WHERE e.class = :id AND e.enrollmentEndDate IS NULL '
-//                . 'ORDER BY a.enrollmentId ASC, a.'
-//            )
-//            ->setParameters($classId)
-//            ->getResult();
+        $conn->beginTransaction();
+
+        $conn->delete('attendance', [
+            'attendance_date' => $date
+            ], [
+            'date',
+        ]);
+
+        foreach ($students as $student) {
+
+            foreach ($student['types'] as $stype) {
+
+                if ($stype['status']) {
+                    $conn->insert('attendance',
+                        [
+                        'enrollment_id' => $student['id'],
+                        'attendance_type_id' => $stype['id'],
+                        'attendance_date' => $date,
+                        ],
+                        [
+                        \PDO::PARAM_INT,
+                        \PDO::PARAM_INT,
+                        'date'
+                        ]
+                    );
+                }
+                
+            }
+        }
+
+        $conn->commit();
     }
 
 }

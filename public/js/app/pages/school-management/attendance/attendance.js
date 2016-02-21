@@ -158,7 +158,7 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
 
                         student.types.push({
                             id: attendanceTypesIds[a],
-                            status: lists[i][2 + a + d * (attendanceTypesIds.length + 1)].toUpperCase() === "P"
+                            status: lists[i][2 + a + d * (attendanceTypesIds.length + 1)].toUpperCase() === "P" ? 1 : 0
                         });
                     }
 
@@ -230,7 +230,7 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                 var student = $(this).closest("tr").data("id");
                 var list = $(this).closest("table").data("id");
 
-                var result = listModels[list].students[student].types[type].status = !listModels[list].students[student].types[type].status;
+                var result = listModels[list].students[student].types[type].status ^= true;
 
                 if (result) {
                     $(this)
@@ -265,6 +265,16 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                     require(['bootbox', 'jquerycsv'], function (bootbox) {
                         bindImportEvent(bootbox);
                     });
+                }
+            },
+            getDataOf: function (selectedElementId) {
+
+                var index = $(".cats-selected-row").find(".attendanceListTable").data("id");
+
+                switch (selectedElementId) {
+                    case 'attendance-list-save':
+                        return listModels[index];
+                        break;
                 }
             }
         };

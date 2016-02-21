@@ -19,7 +19,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
             if (fnTypes.hasOwnProperty(fnType)) {
                 fnTypes[fnType].call(this, $(this));
             } else {
-                bootbox.alert('fnType: (' + fnType + ') não definida.');
+                bootbox.alert('fnType: [' + fnType + '] não existe.');
             }
         });
     };
@@ -29,7 +29,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
         if (selectedResult !== null) {
             window.open(selectedResult.url, selectedResult.target);
         } else {
-            bootbox.alert('Nenhuma item (ex: linha de uma tabela) foi escolhido.');
+            bootbox.alert('Nenhum elemento de seleção (ex: linha de uma tabela) foi escolhido.');
         }
     };
 
@@ -44,15 +44,23 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                         url: selectedResult.url,
                         type: 'POST',
                         success: function (data) {
+                            if (typeof data.message === "undefined") {
+                                return bootbox.alert("A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.");
+                            }
                             bootbox.alert(data.message);
 
                             /**
                              * callback on page config
                              */
 
-                            if (typeof pageConfig.getCallbackOf(toolbarItem.attr('id')) !== 'undefined') {
-                                pageConfig.getCallbackOf(toolbarItem.attr('id')).exec(data.callback);
+                            if (typeof data.callback !== "undefined") {
+                                if (typeof pageConfig.getCallbackOf !== "undefined") {
+                                    pageConfig.getCallbackOf(toolbarItem.attr('id')).exec(data.callback);
+                                } else {
+                                    bootbox.alert("O servidor retornou um parâmetro de callback mas a função getCallbackOf(selectedItemId) não foi encontrada.");
+                                }
                             }
+
                             if (toolbarItem.data("hideonsuccess") === true) {
                                 closeToolbar();
                             }
@@ -64,7 +72,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                         }
                     });
                 } else {
-                    bootbox.alert('Nenhuma item (ex: linha de uma tabela) foi escolhido.');
+                    bootbox.alert('Nenhum elemento de seleção (ex: linha de uma tabela) foi escolhido.');
                 }
             } else {
                 bootbox.alert('Ação abortada.');
@@ -82,6 +90,9 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                     url: itemInfo.url,
                     type: 'POST',
                     success: function (data) {
+                        if (typeof data.message === "undefined") {
+                            return bootbox.alert("A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.");
+                        }
                         bootbox.alert(data.message);
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
@@ -100,16 +111,44 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                 'esta ação? [' + toolbarItem.data('title') + ']', function (result) {
             if (result) {
                 var itemInfo = getItemInfo(toolbarItem);
+
+                if (typeof pageConfig.getDataOf === "undefined") {
+                    return bootbox.alert("Ações do tipo [ajaxPostClick] " +
+                            "exigem que a função getDataOf(selectedItemId)" +
+                            " seja implementada.\n\
+                                Esta função deve retornar um objeto, array, escalar que será enviado para o servidor.");
+                }
+
+                var dataToSend = pageConfig.getDataOf(toolbarItem.attr('id'));
+
+                if (typeof dataToSend !== "object") {
+                    return bootbox.alert("A função getDataOf deve retornar um objeto. <em><b>Undefined</b></em> encontrado.");
+                }
+
+
                 $.ajax({
                     url: itemInfo.url,
                     type: 'POST',
-                    data: pageConfig.getDataOf(toolbarItem.attr('id')),
+                    data: dataToSend(toolbarItem.attr('id')),
                     success: function (data) {
+
+                        if (typeof data.message === "undefined") {
+                            return bootbox.alert("A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.");
+                        }
+
                         bootbox.alert(data.message);
 
                         /**
                          * callback on page config
                          */
+
+                        if (typeof data.callback !== "undefined") {
+                            if (typeof pageConfig.getCallbackOf !== "undefined") {
+                                pageConfig.getCallbackOf(toolbarItem.attr('id')).exec(data.callback);
+                            } else {
+                                bootbox.alert("O servidor retornou um parâmetro de callback mas a função getCallbackOf(selectedItemId) não foi encontrada.");
+                            }
+                        }
 
                     },
                     error: function (jqXHR, textStatus, errorThrown) {
@@ -129,20 +168,42 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
             if (result) {
                 var selectedResult = getSelectedItemInfo(toolbarItem);
                 if (selectedResult !== null) {
+
+                    if (typeof pageConfig.getDataOf === "undefined") {
+                        return bootbox.alert("Ações do tipo [ajaxPostClick] " +
+                                "exigem que a função getDataOf(selectedItemId)" +
+                                " seja implementada.\n\
+                                Esta função deve retornar um objeto, array ou escalar que será enviado para o servidor.");
+                    }
+
+                    var dataToSend = pageConfig.getDataOf(toolbarItem.attr('id'));
+
+                    if (typeof dataToSend !== "object") {
+                        return bootbox.alert("A função getDataOf deve retornar um objeto. <em><b>Undefined</b></em> encontrado.");
+                    }
+
                     $.ajax({
                         url: selectedResult.url,
                         type: 'POST',
-                        data: pageConfig.getDataOf(toolbarItem.attr('id')),
+                        data: dataToSend,
                         success: function (data) {
+                            if (typeof data.message === "undefined") {
+                                return bootbox.alert("A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.");
+                            }
                             bootbox.alert(data.message);
 
                             /**
                              * callback on page config
                              */
 
-                            if (typeof pageConfig.getCallbackOf(toolbarItem.attr('id')) !== 'undefined') {
-                                pageConfig.getCallbackOf(toolbarItem.attr('id')).exec(data.callback);
+                            if (typeof data.callback !== "undefined") {
+                                if (typeof pageConfig.getCallbackOf !== "undefined") {
+                                    pageConfig.getCallbackOf(toolbarItem.attr('id')).exec(data.callback);
+                                } else {
+                                    bootbox.alert("O servidor retornou um parâmetro de callback mas a função getCallbackOf(selectedItemId) não foi encontrada.");
+                                }
                             }
+
                             if (toolbarItem.data("hideonsuccess") === true) {
                                 closeToolbar();
                             }
@@ -153,15 +214,13 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                         }
                     });
                 } else {
-                    bootbox.alert('Nenhuma item (ex: linha de uma tabela) foi escolhido.');
+                    bootbox.alert('Nenhum elemento de seleção (ex: linha de uma tabela) foi escolhido.');
                 }
             } else {
                 bootbox.alert('Ação abortada.');
             }
         });
     };
-
-
 
     fnTypes.httpClick = function (toolbarItem) {
         bootbox.confirm('Tem certeza que deseja executar ' +
