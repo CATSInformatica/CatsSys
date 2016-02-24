@@ -129,7 +129,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                 $.ajax({
                     url: itemInfo.url,
                     type: 'POST',
-                    data: dataToSend(toolbarItem.attr('id')),
+                    data: dataToSend,
                     success: function (data) {
 
                         if (typeof data.message === "undefined") {
