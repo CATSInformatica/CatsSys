@@ -45,9 +45,10 @@ class InterviewController extends AbstractActionController
                 $form = new PreInterviewForm($em,
                     array(
                     'person' => array(
-                        'relative' => $person->isPersonUnderage(),
-                        'address' => true,
-                        'social_media' => false,
+//                        'relative' => $person->isPersonUnderage(),
+                        'relative' => false,
+                        'address' => false,
+                        'social_media' => true,
                     ),
                     'pre_interview' => $registration->getPreInterview() !== null,
                 ));

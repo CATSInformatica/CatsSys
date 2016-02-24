@@ -167,14 +167,14 @@ return array(
                         'privilege' => 'index',
                         'icon' => 'fa fa-users',
                         'toolbar' => array(
-                            array(
-                                'url' => '/recruitment/interview/student/$id',
-                                'title' => 'Perfil do Candidato',
-                                'description' => 'Analizar Perfil do Candidato',
-                                'class' => 'fa fa-file-text-o bg-blue',
-                                'target' => '_blank',
-                                'fntype' => 'selectedHttpClick',
-                            ),
+//                            array(
+//                                'url' => '/recruitment/interview/student/$id',
+//                                'title' => 'Perfil do Candidato',
+//                                'description' => 'Analizar Perfil do Candidato',
+//                                'class' => 'fa fa-file-text-o bg-blue',
+//                                'target' => '_blank',
+//                                'fntype' => 'selectedHttpClick',
+//                            ),
                             array(
                                 'url' => '/school-management/enrollment/enroll/$id',
                                 'id' => 'fn-enroll',

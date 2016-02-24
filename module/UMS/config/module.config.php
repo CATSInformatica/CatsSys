@@ -51,11 +51,14 @@ return array(
         ),
     ),
     'view_helpers' => array(
+        'aliases' => array(
+            'navigation' => Zend\View\Helper\Navigation::class,
+        ),
         'invokables' => array(
             'userInfo' => 'UMS\View\Helper\UserInfo',
         ),
         'factories' => array(
-            'navigation' => 'UMS\Factory\NavigationViewFactory',
+            Zend\View\Helper\Navigation::class => 'UMS\Factory\NavigationViewFactory',
         ),
     ),
     'service_manager' => array(

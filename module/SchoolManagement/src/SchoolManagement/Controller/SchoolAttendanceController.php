@@ -2,10 +2,12 @@
 
 namespace SchoolManagement\Controller;
 
-use Database\Service\EntityManagerService;
 use Database\Service\DbalService;
+use Database\Service\EntityManagerService;
+use DateTime;
 use Exception;
 use SchoolManagement\Entity\AttendanceType;
+use SchoolManagement\Entity\Repository\Attendance;
 use SchoolManagement\Form\SchoolAttendanceForm;
 use SchoolManagement\Model\AttendanceList;
 use Zend\Mvc\Controller\AbstractActionController;
@@ -140,16 +142,12 @@ class SchoolAttendanceController extends AbstractActionController
         if ($request->isPost()) {
 
             $data = $request->getPost();
-            $date = new \DateTime($data['date']);
-            $em = $this->getEntityManager();
-            
-//            echo '<pre>';
-//            print_r($data);
-//            exit;
-
+            $date = new DateTime($data['date']);
+            $conn = $this->getDbalConnection();
             try {
-                $em->getRepository('SchoolManagement\Entity\Attendance')->insertNewList(
-                    $this->getDbalConnection(), $data['students'], $date
+                
+                Attendance::insertNewList(
+                    $conn, $data['students'], $date
                 );
 
                 $message = 'Lista de ' . $date->format('d/m/Y') . ' enviada com sucesso.';
