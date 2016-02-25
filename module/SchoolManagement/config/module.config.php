@@ -70,10 +70,11 @@ return array(
                     'school-attendance' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/school-attendance/:action',
+                            'route' => '/school-attendance/:action[/:id]',
                             'constraints' => array(
                                 'controller' => 'SchoolManagement\Controller\SchoolAttendance',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
                             ),
                             'defaults' => array(
                                 'controller' => 'SchoolManagement\Controller\SchoolAttendance',
@@ -150,12 +151,12 @@ return array(
                                 'fntype' => 'selectedAjaxClick',
                             ),
                             array(
-                                'url' => '/school-management/student-class/print-list/$id',
+                                'url' => '/school-management/school-attendance/printList/$id',
                                 'title' => 'Imprimir chamada',
                                 'description' => 'Permite imprimir a lista de chamada da turma selecionada',
                                 'class' => 'fa fa-file-text-o bg-white',
-                                'fntype' => 'selectedAjaxClick',
-                                'onSuccess' => true,
+                                'fntype' => 'selectedHttpClick',
+                                'target' => '_blank',
                             ),
                         ),
                     ),
