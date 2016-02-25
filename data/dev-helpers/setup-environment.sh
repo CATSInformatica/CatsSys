@@ -1,15 +1,11 @@
 echo 'Starting script.';
-
 echo 'Installing Required Packages: PHP, Composer Apache, MySql';
-
 sudo apt-get install php5 mysql-server php5-mysql php5-gd php-apc php5-apcu composer apache2 npm -y
-
 echo 'Installing bower'
 sudo npm install -g bower
 
 echo 'Creating symbolic link for nodejs /usr/bin/nodejs ~> /usr/bin/node'
 sudo ln -s /usr/bin/nodejs /usr/bin/node
-
 echo 'Creating virtual host configuration'
 sudo tee /etc/apache2/sites-available/cats-lab.conf << EOF
 <VirtualHost 127.1.1.100:80>
@@ -84,22 +80,18 @@ return array(
 EOF
 cp $HOME/vhosts/vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist $HOME/vhosts/cats-lab/config/autoload/zenddevelopertools.local.php
 
-echo 'Creating database CatsSys'
-mysql -u root -p -e 'drop database if exists catssys; create database catssys'
-
-echo 'Creating database schema'
-php $HOME/vhosts/cats-lab/public/index.php orm:validate-schema
-php $HOME/vhosts/cats-lab/public/index.php orm:schema-tool:create
-php $HOME/vhosts/cats-lab/public/index.php orm:generate-proxies
-
-echo 'Importing table contents'
-mysql -u root -p catssys <$HOME/vhosts/cats-lab/data/dev-helpers/catssys_data_1.sql
-mysql -u root -p catssys <$HOME/vhosts/cats-lab/data/dev-helpers/catssys_data_2.sql
-mysql -u root -p catssys <$HOME/vhosts/cats-lab/data/dev-helpers/catssys_data_3.sql
-
 echo 'Creating data directories'
 mkdir $HOME/vhosts/cats-lab/data/captcha
 mkdir $HOME/vhosts/cats-lab/data/session
+
+echo 'Enabling rewrite mode'
+sudo a2enmod rewrite
+
+echo 'Enabling cats-lab virtual host'
+sudo a2ensite cats-lab.conf
+
+echo 'Restarting Apache server'
+sudo service apache2 restart
 
 echo 'Setting permissions for data directories'
 sudo chmod 777 $HOME/vhosts/cats-lab/data/DoctrineORMModule/Proxy
@@ -111,14 +103,16 @@ sudo chmod 777 $HOME/vhosts/cats-lab/data/captcha
 sudo chmod 777 $HOME/vhosts/cats-lab/data/session
 sudo chmod 777 $HOME/vhosts/cats-lab/data/pre-interview
 
-echo 'Enabling rewrite mode'
-sudo a2enmod rewrite
+echo 'Creating database CatsSys. Please insert your mysql password: '
+mysql -u root -p -e 'drop database if exists catssys; create database catssys'
 
-echo 'Enabling cats-lab virtual host'
-sudo a2ensite cats-lab.conf
+echo 'Creating database schema'
+php $HOME/vhosts/cats-lab/public/index.php orm:validate-schema
+php $HOME/vhosts/cats-lab/public/index.php orm:schema-tool:create
+php $HOME/vhosts/cats-lab/public/index.php orm:generate-proxies
 
-echo 'Restarting Apache server'
-sudo service apache2 restart
+echo 'Importing table contents. Please Insert your mysql password'
+cat $HOME/vhosts/cats-lab/data/dev-helpers/*.sql | mysql -u root -p catssys
 
 echo 'Starting browser'
-firefox http://cats-lab.lan
+firefox http://cats-lab.lan &
