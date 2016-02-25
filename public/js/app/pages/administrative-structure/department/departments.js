@@ -156,12 +156,10 @@ define(['jquery'], function () {
 
                 return {
                     exec: function (data) {
-                        console.log(adminStructure.find("#department-identity-" + data.departmentId));
                         adminStructure.find("#department-identity-" + data.departmentId).remove();
                         adminStructure.find("#department-" + data.departmentId).remove();
                     }
                 };
-
             }
         };
     }());

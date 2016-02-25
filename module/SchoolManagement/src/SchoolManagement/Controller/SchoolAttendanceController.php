@@ -10,6 +10,7 @@ use SchoolManagement\Entity\AttendanceType;
 use SchoolManagement\Entity\Repository\Attendance;
 use SchoolManagement\Form\SchoolAttendanceForm;
 use SchoolManagement\Model\AttendanceList;
+use SchoolManagement\Model\PdfAttendanceList;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -19,8 +20,7 @@ use Zend\View\Model\ViewModel;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class SchoolAttendanceController extends AbstractActionController
-{
+class SchoolAttendanceController extends AbstractActionController {
 
     use EntityManagerService,
         DbalService;
@@ -28,15 +28,13 @@ class SchoolAttendanceController extends AbstractActionController
     /**
      * Gera a lista de presença para uma turma em uma data selecionada
      */
-    public function generateListAction()
-    {
+    public function generateListAction() {
         try {
             $em = $this->getEntityManager();
-            $form = new SchoolAttendanceForm($em,
-                [
+            $form = new SchoolAttendanceForm($em, [
                 AttendanceType::TYPE_ATTENDANCE_BEGIN,
                 AttendanceType::TYPE_ATTENDANCE_END
-                ]
+                    ]
             );
 
             return new ViewModel(array(
@@ -57,8 +55,7 @@ class SchoolAttendanceController extends AbstractActionController
      * 
      * @return ViewModel
      */
-    public function importListAction()
-    {
+    public function importListAction() {
 
         return new ViewModel([
         ]);
@@ -70,8 +67,7 @@ class SchoolAttendanceController extends AbstractActionController
      * 
      * @return ViewModel
      */
-    public function downloadListAction()
-    {
+    public function downloadListAction() {
         $request = $this->getRequest();
 
         if ($request->isPost()) {
@@ -87,12 +83,12 @@ class SchoolAttendanceController extends AbstractActionController
                  * get all enrollments
                  */
                 $enrollments = $em->getRepository('SchoolManagement\Entity\Enrollment')
-                    ->findAllCurrentStudents(array(
+                        ->findAllCurrentStudents(array(
                     'class' => $data['schoolClasses']
                 ));
 
                 $data['className'] = $em->find('SchoolManagement\Entity\StudentClass', $data['schoolClasses'])
-                    ->getClassName();
+                        ->getClassName();
 
 
                 $attList = new AttendanceList($data, $enrollments);
@@ -100,12 +96,12 @@ class SchoolAttendanceController extends AbstractActionController
 
                 $view = new ViewModel();
                 $view->setTemplate('download-csv/template')
-                    ->setVariable('results', $csv)
-                    ->setTerminal(true);
+                        ->setVariable('results', $csv)
+                        ->setTerminal(true);
 
                 $output = $this->getServiceLocator()
-                    ->get('viewrenderer')
-                    ->render($view);
+                        ->get('viewrenderer')
+                        ->render($view);
 
                 $response = $this->getResponse();
                 $headers = $response->getHeaders();
@@ -127,15 +123,13 @@ class SchoolAttendanceController extends AbstractActionController
             return $vm;
         }
 
-        return $this->redirect()->toRoute('school-management/school-attendance',
-                [
-                'action' => 'generateList'
-                ]
+        return $this->redirect()->toRoute('school-management/school-attendance', [
+                    'action' => 'generateList'
+                        ]
         );
     }
 
-    public function saveAction()
-    {
+    public function saveAction() {
 
         $request = $this->getRequest();
 
@@ -145,9 +139,9 @@ class SchoolAttendanceController extends AbstractActionController
             $date = new DateTime($data['date']);
             $conn = $this->getDbalConnection();
             try {
-                
+
                 Attendance::insertNewList(
-                    $conn, $data['students'], $date
+                        $conn, $data['students'], $date
                 );
 
                 $message = 'Lista de ' . $date->format('d/m/Y') . ' enviada com sucesso.';
@@ -162,6 +156,43 @@ class SchoolAttendanceController extends AbstractActionController
 
         return new JsonModel([
             'message' => 'Esta url só pode ser acessada via post',
+        ]);
+    }
+
+    /*
+     * gera a lista de chamada para a turma selecionada
+     * 
+     */
+    public function printListAction() {
+        $message = null;
+        $em = $this->getEntityManager();
+
+        $classId = $this->params('id', false);
+
+        if ($classId) {
+            try {
+                $class = $em->getRepository('SchoolManagement\Entity\StudentClass')
+                        ->findBy(array('StudenClassId' => $classId
+                ));
+                $enrollments = $class->getEnrollments();
+                foreach ($enrollments as $enr) {
+                    $registration = $enr->getRegistration();
+                    $person = $registration->getPerson();
+                    $name[] = $person->getPersonName();
+                }
+                
+                $pdf = new PdfAttendanceList($name);
+                $pdf->generateList();
+                
+            } catch (\Exception $e) {
+                $message = $e->getMessage();
+            }
+        } else {
+            $message = 'Nenhuma turma foi selecionada';
+        }
+
+        return new JsonModel([
+            'message' => $message,
         ]);
     }
 

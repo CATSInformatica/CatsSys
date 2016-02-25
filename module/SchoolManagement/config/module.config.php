@@ -149,6 +149,14 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                             ),
+                            array(
+                                'url' => '/school-management/student-class/print-list/$id',
+                                'title' => 'Imprimir chamada',
+                                'description' => 'Permite imprimir a lista de chamada da turma selecionada',
+                                'class' => 'fa fa-file-text-o bg-white',
+                                'fntype' => 'selectedAjaxClick',
+                                'onSuccess' => true,
+                            ),
                         ),
                     ),
                     array(
