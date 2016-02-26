@@ -10,6 +10,7 @@ return array(
             'SchoolManagement\Controller\SchoolWarning' => Controller\SchoolWarningController::class,
             'SchoolManagement\Controller\SchoolAttendance' => Controller\SchoolAttendanceController::class,
             'SchoolManagement\Controller\StudyResources' => Controller\StudyResourcesController::class,
+            'SchoolManagement\Controller\SchoolSubject' => Controller\SchoolSubjectController::class,
         ),
     ),
     'router' => array(
@@ -91,6 +92,21 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'SchoolManagement\Controller\StudyResources',
+                            ),
+                        ),
+                    ),
+                    'school-subject' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/school-subject[/:action[/:id]]',
+                            'constraints' => array(
+                                'controller' => 'SchoolManagement\Controller\SchoolSubject',
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'SchoolManagement\Controller\SchoolSubject',
+                                'action' => 'index',
                             ),
                         ),
                     ),
@@ -295,6 +311,45 @@ return array(
                                 'fntype' => 'ajaxPostSelectedClick',
                             ),
                         ),
+                    ),
+                ),
+            ),
+            array(
+                'label' => 'Subject',
+                'uri' => '#',
+                'icon' => 'fa fa-book',
+                'order' => 13,
+                'resource' => 'SchoolManagement\Controller\SchoolSubject',
+                'pages' => array(
+                    array(
+                        'label' => 'Show Subjects',
+                        'route' => 'school-management/school-subject',
+                        'icon' => 'fa fa-list-alt',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/school-management/school-subject/delete/$id',
+                                'title' => 'Remover',
+                                'id' => 'subject-delete',
+                                'description' => 'Permite remover a disciplina selecionada',
+                                'class' => 'fa fa-trash-o bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                                'hideOnSuccess' => true,
+                            ),
+                            array(
+                                'url' => '/school-management/school-subject/edit/$id',
+                                'title' => 'Editar',
+                                'id' => 'subject-edit',
+                                'description' => 'Permite editar a disciplina selecionada',
+                                'class' => 'fa fa-pencil-square-o bg-blue',
+                                'fntype' => 'selectedHttpClick',
+                            ),
+                        ),
+                    ),
+                    array(
+                        'label' => 'Create Subject',
+                        'route' => 'school-management/school-subject',
+                        'action' => 'create',
+                        'icon' => 'fa fa-list-alt',
                     ),
                 ),
             ),

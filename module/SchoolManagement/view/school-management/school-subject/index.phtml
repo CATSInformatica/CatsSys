@@ -1,0 +1,42 @@
+<section class="content">
+
+    <p><?php echo $message ?></p>
+    <div class="table-responsive col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
+        <table id="subject-table" class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Disciplina</th>
+                    <th class="text-center">Descrição</th>
+                    <th class="text-center">Professor</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if ($subjects): ?>
+                    <?php foreach ($this->subjects as $subject): ?>
+                        <tr class="cats-row" data-id="<?php echo $subject->getSubjectId(); ?>" id="subject-<?php echo $subject->getSubjectId(); ?>">
+                            <td class="text-center"> <?php echo $subject->getSubjectId(); ?></td>
+                            <td class="text-center"> <?php echo $subject->getSubjectName(); ?></td>
+                            <td class="text-center"> <?php echo $subject->getSubjectDescription(); ?></td>
+                            <td class="text-center"> <?php echo 'Nome Do Professor' ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/subject/index';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

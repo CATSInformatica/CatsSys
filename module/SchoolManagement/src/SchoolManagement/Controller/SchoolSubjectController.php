@@ -1,0 +1,166 @@
+<?php
+
+/*
+ * To change this license header, choose License Headers in Project Properties.
+ * To change this template file, choose Tools | Templates
+ * and open the template in the editor.
+ */
+
+namespace SchoolManagement\Controller;
+
+use Exception;
+use Zend\Mvc\Controller\AbstractActionController;
+use SchoolManagement\Entity\Subject;
+use SchoolManagement\Form\SubjectForm;
+use Zend\View\Model\JsonModel;
+use Zend\View\Model\ViewModel;
+
+/**
+ * Description of SchoolSubjectController
+ *
+ * @author Gabriel Pereira <rickardch@gmail.com>
+ */
+class SchoolSubjectController extends AbstractActionController
+{
+
+    use \Database\Service\EntityManagerService;
+
+    /**
+     * Exibe em uma tabela todas as disciplinas cadastradas
+     * 
+     * @return ViewModel
+     */
+    public function indexAction()
+    {
+        $message = null;
+        try {
+            $em = $this->getEntityManager();
+            $subjects = $em->getRepository('SchoolManagement\Entity\Subject')->findAll();
+        } catch (Exception $ex) {
+            $message = $ex->getMessage();
+        }
+
+        return new ViewModel([
+            'subjects' => $subjects,
+            'message' => $message,
+        ]);
+    }
+
+    /**
+     * Grava no banco dados uma disciplina
+     * 
+     * @return ViewModel
+     */
+    public function createAction()
+    {
+        $em = $this->getEntityManager();
+        $request = $this->getRequest();
+        $message = null;
+
+        $subject = new Subject();
+        $form = new SubjectForm($em);
+        $form->bind($subject);
+        if ($request->isPost()) {
+            $form->setData($request->getPost());
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+
+                try {
+                    $em->persist($subject);
+                    $em->flush();
+                    $this->redirect()->toRoute('school-management/school-subject', array('action' => 'index'));
+                } catch (Exception $ex) {
+                    if ($ex instanceof UniqueConstraintViolationException) {
+                        $message = 'Esta disciplina já existe.';
+                    } else {
+                        $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
+                                'Erro: ' . $ex->getMessage();
+                    }
+                }
+            }
+        }
+        return new ViewModel(array(
+            'message' => $message,
+            'form' => $form,
+        ));
+    }
+
+    /**
+     * Remove do banco de dados a disciplina selecionada
+     * 
+     * @return JsonModel
+     */
+    public function deleteAction()
+    {
+        $id = $this->params('id', false);
+
+        if ($id) {
+            try {
+                $em = $this->getEntityManager();
+
+                $subject = $em->getReference('SchoolManagement\Entity\Subject', $id);
+                $em->remove($subject);
+                $em->flush();
+                $message = 'Disciplina removida com sucesso.';
+            } catch (Exception $ex) {
+                $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
+                        'Erro: ' . $ex->getMessage();
+            }
+            return new JsonModel(array(
+                'message' => $message,
+                'callback' => array(
+                    'subjectId' => $id,
+                ),
+            ));
+        } else {
+            $message = 'Nenhuma disciplina foi selecionda.';
+            return new JsonModel(array(
+                'message' => $message
+            ));
+        }
+    }
+
+    /**
+     * Exibe um formulário de edição para a disciplina selecionada
+     * 
+     * @return ViewModel
+     */
+    public function editAction()
+    {
+        $em = $this->getEntityManager();
+        $request = $this->getRequest();
+        $message = null;
+        $id = $this->params('id', false);
+        if ($id) {
+            try {
+                $subject = $em->getReference('SchoolManagement\Entity\Subject', $id);
+
+                $form = new SubjectForm($em);
+                $form->get('submit')->setAttribute('value', 'Editar');
+                $form->bind($subject);
+                if ($request->isPost()) {
+                    $form->setData($request->getPost());
+                    if ($form->isValid()) {
+                        $em->merge($subject);
+                        $em->flush();
+                        $this->redirect()->toRoute('school-management/school-subject', array('action' => 'index'));
+                    }
+                }
+                return new ViewModel(array(
+                    'message' => $message,
+                    'form' => $form,
+                ));
+            } catch (Exception $ex) {
+                $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
+                        'Erro: ' . $ex->getMessage();
+            }
+        } else {
+            $message = 'Nenhuma disciplina foi selecionda.';
+        }
+        return new ViewModel(array(
+            'message' => $message,
+        ));
+    }
+
+}
