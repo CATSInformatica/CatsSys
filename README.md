@@ -1,4 +1,4 @@
-# CatsSys - Sistema administrativo para cursinhos assistênciais
+# CatsSys - Sistema administrativo para cursos assistenciais
 
 # Instruções de instalação
 
