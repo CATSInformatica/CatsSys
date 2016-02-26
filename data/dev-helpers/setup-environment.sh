@@ -45,7 +45,10 @@ sudo rm -rf $HOME/vhosts/cats-lab
 
 echo 'Starting git clone'
 mkdir $HOME/vhosts
-git clone https://github.com/marciodojr/catsSys.git $HOME/vhosts/cats-lab
+read -p "Please insert the link of your forked repository 
+(Example: https://github.com/marciodojr/CatsSys.git):
+" repository;
+git clone $repository $HOME/vhosts/cats-lab
 
 echo 'Starting Composer packages installation'
 cd $HOME/vhosts/cats-lab
