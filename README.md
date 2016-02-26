@@ -1,10 +1,10 @@
-# catsSys - Sistema administrativo do CATS
+# CatsSys - Sistema administrativo para cursinhos assistênciais
 
 # Instruções de instalação
 
-Obs: caso queira utilizar a configuração padrão para instalação, é possível utilizar o script [setup-environment.sh](https://raw.githubusercontent.com/marciodojr/catsSys/master/data/dev-helpers/setup-environment.sh) e pular diretamente para a [terceira parte](#step-three) deste arquivo.
+Obs: caso queira utilizar a configuração padrão para instalação, é possível utilizar o script [setup-environment.sh](https://raw.githubusercontent.com/CATSInformatica/CatsSys/master/data/dev-helpers/setup-environment.sh) e pular diretamente para a [terceira parte](#step-three) deste arquivo.
 
-**_Importante_**: Durante a execução do script (instalação do mysql), é fudamental que o usuário e senha utilizados sejam `root` e `root`.
+**_Importante_**: Durante a execução do script (instalação do mysql), é fudamental que o usuário seja `root`.
 
 ## Primeira Parte
 
@@ -12,7 +12,7 @@ Instalar php5, apache2, mysql
 Digite ou cole no terminal: 
 
 ```
-sudo apt-get install php5 mysql-server php5-mysql php5-gd composer apache2 -y
+sudo apt-get install php5 mysql-server php5-mysql php5-gd php-apc php5-apcu composer apache2 npm -y
 ```
 
 OBS: lembre-se do usuário e senha inseridos na instalação do mysql. Eles serão necessários para a manipulação dos bancos de dados.
@@ -79,7 +79,7 @@ digite ou cole no terminal: `sudo a2ensite cats-lab.conf`
 
 Reiniciar o apache: `sudo service apache2 restart`
 
-Testar se o virtual host para o cats foi criado com sucesso
+Testar se o virtual host foi criado com sucesso
 
 Em `~/vhosts/cats-lab/public` crie um arquivo chamado index.php
 e cole o seguinte conteúdo
@@ -93,13 +93,11 @@ No navegador digite http://cats-lab.lan, você deverá ver as configurações da
     
 ## Segunda parte
 
-Clonar o projeto do CATS. vá na pasta vhosts e delete a pasta cats-lab, em seguida abra o terminal e digite o comando
+Crie um *fork* do projeto e, em seguida, na pasta vhosts, delete a pasta cats-lab.,Abra o terminal e digite o comando
 
 ```
-    git clone https://github.com/marciodojr/catsSys.git
+    git clone <https://github.com/YOURNAME/REPOSITORY.git> cats-lab
 ```
-
-Renomeie a pasta clonada do github para cats-lab
 
 Instalar as bibliotecas externas
 
@@ -110,8 +108,7 @@ Entre na pasta cats-lab e abra o terminal e digite
 ```
 
 Todas os pacotes necessários para o projeto serão baixados para a pasta `./../vendor`
-Intencionalmente a pasta vendor está configurada para ficar fora do projeto do CATS para não misturar o código do projeto com códigos de terceiros e permitir
-compartilhamento entre novos projetos.
+Intencionalmente a pasta vendor está configurada para ficar fora do projeto para não misturar o código do projeto com códigos de terceiros.
 
 Além do composer (utilizado para o php), é utilizado um programa semelhante para js e css chamado [bower](http://bower.io/)
 
@@ -125,7 +122,7 @@ Instalação do bower:
 
 Após instalar o bower vá na pasta `cats-lab/public` e no terminal digite: `bower install`
 
-Todas as dependencias de css e js serão instaladas. O sistema do CATS utiliza:
+Todas as dependencias de css e js serão instaladas. O sistema utiliza:
 
 ```
     AdminLTE 2.x
@@ -150,7 +147,7 @@ return array(
            'orm_default' => array(
                'params' => array(
                    'user'     => 'root',
-                   'password' => 'root',
+                   'password' => '<YOUR PASSWORD>',
                    'dbname'   => 'catssys',
                ),
            ),
@@ -168,7 +165,7 @@ Dentro da pasta cats-lab abra o terminal e digite:
 
 Criar um banco de dados Mysql com o usuário, senha e banco iguais aos valores inseridos no arquivo local.php
 
-Toda manipulação de banco de dados feita pelo sistema do CATS será por meio de Mapeamento Objeto-Relacional desse modo é possível criar as tabelas do banco de dados a partir de certos objetos PHP
+Toda manipulação de banco de dados feita pelo sistema será por meio de Mapeamento Objeto-Relacional desse modo é possível criar as tabelas do banco de dados a partir de certos objetos PHP
 
 Gravar entidades no banco de dados a partir de objetos PHP
 
@@ -194,7 +191,9 @@ A medida que novos objetos que representam tabelas do banco de dados vão sendo 
 
 Importar os dados para banco de dados
 
-    mysql -u root -p catssys <catssys_data.sql
+```
+cat $HOME/vhosts/cats-lab/data/dev-helpers/*.sql | mysql -u root -p catssys
+```
 
 Obs: o arquivo catssys_data.sql está junto com esse arquivo de documentação.
 
@@ -205,17 +204,18 @@ Criar as pastas
     data/session
 ```
 
-Dar permissão de leitura e escrita nas pastas
+Dar permissão de leitura e escrita em algumas pastas do projeto
 
 ```
-    data/DoctrineORMModule/Proxy
-    data/cache
-    data/edital
-    data/fonts
-    data/profile
-    data/captcha
-    data/session
-```    
+sudo chmod 777 $HOME/vhosts/cats-lab/data/DoctrineORMModule/Proxy
+sudo chmod 777 $HOME/vhosts/cats-lab/data/cache
+sudo chmod 777 $HOME/vhosts/cats-lab/data/edital
+sudo chmod 777 $HOME/vhosts/cats-lab/data/fonts
+sudo chmod 777 $HOME/vhosts/cats-lab/data/profile
+sudo chmod 777 $HOME/vhosts/cats-lab/data/captcha
+sudo chmod 777 $HOME/vhosts/cats-lab/data/session
+sudo chmod 777 $HOME/vhosts/cats-lab/data/pre-interview
+```
 
 Se der tudo certo você estará dentro do sistema (ainda não tem muita coisa tudo do sistema antigo está sendo refeito e as novas funcionalidades ainda estão para serem criadas)
 
@@ -236,12 +236,9 @@ Sendo assim, é preciso importar um novo projeto no Netbeans. Para importar o pr
 
 ## Quarta Parte
 
-Va no navegador e digite http://cats-lab.lan/. Será exibida uma página que representa o site (só tem o necessário para acessar o sistema). Clique em login e insira as credenciais:
+Abra o navegador e digite http://cats-lab.lan/. Será exibida uma página que representa o site (só tem o necessário para acessar o sistema). Clique em login e insira as credenciais:
 
 ```
     username: fcadmin
     password: 177598230afbg#
 ```
-
-
-        

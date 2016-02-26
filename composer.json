@@ -1,13 +1,12 @@
 {
     "name": "CatsSys",
-    "description": "Sistema de Gerenciamento das Atividades do CATS",
-    "license": "CC0 1.0 Universal",
+    "description": "Sistema de gerenciamento das atividades de cursinhos",
+    "license": "GPLv3",
     "keywords": [
-        "CATS",
         "sistema",
-        "web"
+        "web",
+        "cursinho assistencial"
     ],
-    "homepage": "http://www.familiacats.com.br/",
     "config": {
         "vendor-dir": "../vendor"
     },

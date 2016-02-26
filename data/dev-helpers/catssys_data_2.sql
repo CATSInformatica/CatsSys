@@ -24,9 +24,7 @@ INSERT INTO `resource` VALUES
 (22,'AdministrativeStructure\\Controller\\Department'),
 (23,'SchoolManagement\\Controller\\StudyResources'),
 (24,'Version\\Controller\\VersionInfo'),
-(25,'SchoolManagement\\Controller\\SchoolSubject'),
-
-;
+(25,'SchoolManagement\\Controller\\SchoolSubject');
 UNLOCK TABLES;
 
 LOCK TABLES `role` WRITE;
