@@ -16,8 +16,8 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
         var attImportInput = $("#attendanceListInput");
         var lists;
         var attendanceLists = $("#attendanceLists");
-
         var listModels = [];
+        var allowanceMonth = $("#allowanceMonth");
 
         initDateCopy = function () {
             add.click(addAttendanceDate);
@@ -247,25 +247,71 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                             .addClass("fa-close")
                             .removeClass("fa-check");
                 }
+            });
+        };
 
+        initAllowanceDatepicker = function () {
+
+            allowanceMonth.datetimepicker({
+                format: 'MMMM',
+                inline: true,
+                viewMode: 'months',
+                locale: 'pt-br',
+                useCurrent: false,
+                defaultDate: moment("1", "D")
             });
 
+            allowanceMonth.on("dp.change", function (e) {
+                var startDate = e.date.format('YYYY-MM-DD');
+                var endDate = e.date.add(1, 'months').format('YYYY-MM-DD');
+                console.log({
+                    start: startDate,
+                    end: endDate
+                });
+
+                console.log({
+                    start: moment().format("YYYY-MM-01"),
+                    end: moment().add(1, 'months').format("YYYY-MM-01")
+                });
+            });
+        };
+        
+        searchAllowanceBetween = function(start, end) {
+            
+            /**
+             * send the dates with ajax
+             * the return must be organized by dates
+             * foreach date print the date in a friendly format and  print a hr
+             * print all the students in that date. Each student must be a cats-row
+             * create a button to refresh the data
+             * new month clicks must do nothing, maybe move the loaded content to the top
+             * @returns {undefined}
+             */
+            
         };
 
         return {
             init: function () {
 
+                // generateList
                 if (add.length > 0 && rm.length > 0) {
                     initDateCopy();
                     initMasks();
                     applyDatepickers();
                 }
 
+                // importList
                 if (attImportInput.length > 0) {
                     require(['bootbox', 'jquerycsv'], function (bootbox) {
                         bindImportEvent(bootbox);
                     });
                 }
+
+                // allowance
+                if (allowanceMonth.length > 0) {
+                    initAllowanceDatepicker();
+                }
+
             },
             getDataOf: function (selectedElementId) {
 

@@ -214,4 +214,17 @@ class SchoolAttendanceController extends AbstractActionController
         ]);
     }
 
+    /**
+     * Exibe os abonos de acordo com a seleção do mês
+     * @return ViewModel
+     */
+    public function allowanceAction()
+    {
+        
+        
+        
+
+        return new ViewModel();
+    }
+
 }
