@@ -44,21 +44,23 @@ class PdfAttendanceList {
         $pdf->Cell(0, 10, utf8_decode("LISTA DE PRESENÇA"), '1', 1, 'C');
         
         $pdf->SetFont(self::FONT, 'B', 11);
-        $pdf->Cell(30, 5, "Matricula", '1', 0, 'C');
-        $pdf->Cell(80, 5, "Nome", '1', 0);
-        $pdf->Cell(22.5, 5, "__/__", '1', 0, 'C');
-        $pdf->Cell(22.5, 5, "__/__", '1', 0, 'C');
-        $pdf->Cell(22.5, 5, "__/__", '1', 0, 'C');
-        $pdf->Cell(22.5, 5, "__/__", '1', 1, 'C');
+        $pdf->Cell(20, 5, "Matricula", '1', 0, 'C');
+        $pdf->Cell(70, 5, "Nome", '1', 0);
+        $pdf->Cell(22, 5, "__/__", '1', 0, 'C');
+        $pdf->Cell(22, 5, "__/__", '1', 0, 'C');
+        $pdf->Cell(22, 5, "__/__", '1', 0, 'C');
+        $pdf->Cell(22, 5, "__/__", '1', 0, 'C');
+        $pdf->Cell(22, 5, "__/__", '1', 1, 'C');
 
         $pdf->SetFont(self::FONT,'', 9);
         foreach ($this->students as $student) {
-            $pdf->Cell(30, 4, $student["id"], '1', 0, 'C');
-            $pdf->Cell(80, 4, utf8_decode($student["name"]), '1', 0);
-            $pdf->Cell(22.5, 4, "", '1', 0, 'C');
-            $pdf->Cell(22.5, 4, "", '1', 0, 'C');
-            $pdf->Cell(22.5, 4, "", '1', 0, 'C');
-            $pdf->Cell(22.5, 4, "", '1', 1, 'C');
+            $pdf->Cell(20, 4, $student["id"], '1', 0, 'C');
+            $pdf->Cell(70, 4, utf8_decode($student["name"]), '1', 0);
+            $pdf->Cell(22, 4, "", '1', 0, 'C');
+            $pdf->Cell(22, 4, "", '1', 0, 'C');
+            $pdf->Cell(22, 4, "", '1', 0, 'C');
+            $pdf->Cell(22, 4, "", '1', 0, 'C');
+            $pdf->Cell(22, 4, "", '1', 1, 'C');
         }
 
         return $pdf->Output('Chamada', 'I', true);
