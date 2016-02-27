@@ -175,6 +175,14 @@ return array(
                                 'target' => '_blank',
                             ),
                         ),
+                        'pages' => array(
+                            array(
+                                'label' => 'Print list',
+                                'route' => 'school-management/school-attendance',
+                                'action' => 'printList',
+                                'icon' => 'fa fa-file-text-o',
+                            ),
+                        ),
                     ),
                     array(
                         'label' => 'Create a class',

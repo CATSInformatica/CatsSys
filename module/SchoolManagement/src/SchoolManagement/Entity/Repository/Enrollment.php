@@ -2,8 +2,6 @@
 
 namespace SchoolManagement\Entity\Repository;
 
-namespace SchoolManagement\Entity\Repository;
-
 use Doctrine\ORM\EntityRepository;
 
 /**
