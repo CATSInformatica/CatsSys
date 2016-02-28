@@ -19,7 +19,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
         },
         ajaxPostSelectedClick: {
             selectionRequired: true,
-            allowMultiple: false,
+            allowMultiple: true,
             messageRequired: true
         },
         ajaxClick: {
