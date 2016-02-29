@@ -18,6 +18,7 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
         var attendanceLists = $("#attendanceLists");
         var listModels = [];
         var allowanceMonth = $("#allowanceMonth");
+        var allowanceStudentsByMonth = {};
 
         initDateCopy = function () {
             add.click(addAttendanceDate);
@@ -264,34 +265,113 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
             allowanceMonth.on("dp.change", function (e) {
                 var startDate = e.date.format('YYYY-MM-DD');
                 var endDate = e.date.add(1, 'months').format('YYYY-MM-DD');
-                console.log({
-                    start: startDate,
-                    end: endDate
-                });
 
-                console.log({
-                    start: moment().format("YYYY-MM-01"),
-                    end: moment().add(1, 'months').format("YYYY-MM-01")
-                });
+//                console.log({
+//                    start: moment().format("YYYY-MM-01"),
+//                    end: moment().add(1, 'months').format("YYYY-MM-01")
+//                });
+
+                searchAllowanceBetween(startDate, endDate);
             });
         };
-        
-        searchAllowanceBetween = function(start, end) {
-            
+
+        searchAllowanceBetween = function (start, end) {
+
             /**
              * send the dates with ajax
              * the return must be organized by dates
+             * date, type, personName
              * foreach date print the date in a friendly format and  print a hr
              * print all the students in that date. Each student must be a cats-row
              * create a button to refresh the data
              * new month clicks must do nothing, maybe move the loaded content to the top
              * @returns {undefined}
              */
-            
+
+            var attr = start.split('-')[1];
+            if (typeof allowanceStudentsByMonth[attr] === "undefined") {
+                allowanceStudentsByMonth[attr] = [];
+
+                $.ajax({
+                    url: "/school-management/school-attendance/getAllowance",
+                    type: "POST",
+                    data: {
+                        start: start,
+                        end: end
+                    },
+                    success: function (data) {
+                        var allowance = data.allowance;
+                        var content = {};
+                        for (var i = 0; i < allowance.length; i++) {
+
+                            var mdate = moment(allowance[i].date.date);
+
+                            if (typeof content[mdate.format("DDMMYYYY")] === "undefined") {
+                                content[mdate.format("DDMMYYYY")] = {
+                                    date: mdate,
+                                    students: []
+                                };
+                            }
+
+                            content[mdate.format("DDMMYYYY")].students.push({
+                                enrollmentId: allowance[i].enrollmentId,
+                                attendanceType: allowance[i].attendanceType,
+                                attendanceTypeId: allowance[i].attendanceTypeId,
+                                className: allowance[i].className,
+                                name: allowance[i].name,
+                                personId: allowance[i].personId
+                            });
+                        }
+
+                        showMonthAllowances(attr, content);
+                        allowanceStudentsByMonth[attr] = content;
+                    },
+                    error: function (textStatus) {
+                        console.log(textStatus);
+                    }
+                });
+            }
         };
+
+        showMonthAllowances = function (month, content) {
+
+            var monthTemplate = "<div class='box box-solid' style='display:none;' id='month-" + month + "'>" +
+                    "<div class='box-header with-border'>" +
+                    "<h3 class='box-title'>" + moment(month, "MM").format("MMMM") + "</h3>" +
+                    "</div>" +
+                    "<div class='box-body'>" +
+                    "<div class='box-group' id='accordion-" + month + "'>";
+
+            Object.keys(content).forEach(function (key, index) {
+                var md = content[key].date;
+                monthTemplate += "<div class='panel box box-primary'>" +
+                        "<div class='box-header with-border'>" +
+                        "<h4 class='box-title'>" +
+                        "<a data-toggle='collapse' data-parent='#accordion-" + month +
+                        "' href='#collapse-" + md.format("DDMMYYYY") +
+                        "' aria-expanded='false' class='collapsed'>" +
+                        md.format("LL") +
+                        "</a>" +
+                        "</h4>" +
+                        "</div>" +
+                        "<div id='collapse-" + md.format("DDMMYYYY") +
+                        "' class='panel-collapse collapse' aria-expanded='false' style='height: 0px;'>" +
+                        "<div class='box-body'>" +
+                        "@TODO: SO MUCH STUDENTS VERY WOOWWWWWWW" +
+                        "</div></div></div>";
+            });
+
+            monthTemplate += "</div></div></div>";
+            monthTemplate = $(monthTemplate);
+
+            $("#allowanceStudents").prepend(monthTemplate);
+            monthTemplate.slideDown("fast");
+        };
+
 
         return {
             init: function () {
+                moment.locale("pt-br");
 
                 // generateList
                 if (add.length > 0 && rm.length > 0) {

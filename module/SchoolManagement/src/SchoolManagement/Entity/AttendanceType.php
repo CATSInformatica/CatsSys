@@ -18,6 +18,7 @@ class AttendanceType
     const TYPE_ATTENDANCE_END = 2;
     const TYPE_ATTENDANCE_ALLOWANCE_BEGIN = 3;
     const TYPE_ATTENDANCE_ALLOWANCE_END = 4;
+    const TYPE_ATTENDANCE_ALLOWANCE_FULL = 5;
 
     /**
      *
