@@ -291,20 +291,6 @@ return array(
                 'resource' => 'SchoolManagement\Controller\SchoolAttendance',
                 'pages' => array(
                     array(
-                        'label' => 'Generate lists',
-                        'route' => 'school-management/school-attendance',
-                        'action' => 'generateList',
-                        'icon' => 'fa fa-download',
-                        'pages' => array(
-                            array(
-                                'label' => 'Download list',
-                                'route' => 'school-management/school-attendance',
-                                'action' => 'downloadList',
-                                'icon' => 'fa fa-download',
-                            ),
-                        ),
-                    ),
-                    array(
                         'label' => 'Upload lists',
                         'route' => 'school-management/school-attendance',
                         'action' => 'importList',
@@ -319,6 +305,26 @@ return array(
                                 'fntype' => 'ajaxPostSelectedClick',
                             ),
                         ),
+                    ),
+                    array(
+                        'label' => 'Generate lists',
+                        'route' => 'school-management/school-attendance',
+                        'action' => 'generateList',
+                        'icon' => 'fa fa-download',
+                        'pages' => array(
+                            array(
+                                'label' => 'Download list',
+                                'route' => 'school-management/school-attendance',
+                                'action' => 'downloadList',
+                                'icon' => 'fa fa-download',
+                            ),
+                        ),
+                    ),
+                    array(
+                        'label' => 'Allowance',
+                        'route' => 'school-management/school-attendance',
+                        'action' => 'allowance',
+                        'icon' => 'fa fa-thumbs-o-up',
                     ),
                 ),
             ),

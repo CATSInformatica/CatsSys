@@ -4,303 +4,372 @@
  * and open the template in the editor.
  */
 
-
 define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
 
-    var fnTypes = {};
+    var fnTypes = {
+        selectedHttpClick: {
+            selectionRequired: true,
+            allowMultiple: false,
+            messageRequired: false
+        },
+        selectedAjaxClick: {
+            selectionRequired: true,
+            allowMultiple: true,
+            messageRequired: true
+        },
+        ajaxPostSelectedClick: {
+            selectionRequired: true,
+            allowMultiple: true,
+            messageRequired: true
+        },
+        ajaxClick: {
+            selectionRequired: false,
+            allowMultiple: false,
+            messageRequired: true
+        },
+        ajaxPostClick: {
+            selectionRequired: false,
+            allowMultiple: false,
+            messageRequired: true
+        },
+        httpClick: {
+            selectionRequired: false,
+            allowMultiple: false,
+            messageRequired: false
+        }
+    };
     var config = {};
     var pageConfig = {};
+    var numberOfSelectedElements = 0;
 
+    var resultMessages = {
+        header: "<b>Executando operações</b>",
+        alert: null,
+        setAlert: function (alert) {
+            this.alert = alert;
+        },
+        addLine: function (text) {
+            this.notify("<p> * " + text + "<p>");
+        },
+        notify: function (text) {
+            this.alert.find(".bootbox-body").append(text);
+        },
+        clear: function () {
+            this.message = null;
+            this.alert = null;
+        },
+        getHeader: function () {
+            return this.header;
+        }
+    };
+
+    // execute only defined actions in fnTypes
     initClick = function () {
+
+        var selectedSuffixInfo = "";
+        var itemConfig;
+        var selectedItemUrl;
         $(config.toolbarElement).on('click', config.toolbarItem, function (e) {
-            // nenhuma ação é executada se não estiver especificada abaixo
             e.preventDefault();
-            var fnType = $(this).data('fntype');
-            if (fnTypes.hasOwnProperty(fnType)) {
-                fnTypes[fnType].call(this, $(this));
-            } else {
-                bootbox.alert('fnType: [' + fnType + '] não existe.');
-            }
-        });
-    };
+            itemConfig = getItemInfo($(this));
+            if (fnTypes.hasOwnProperty(itemConfig.fnType)) {
 
-    fnTypes.selectedHttpClick = function (toolbarItem) {
-        var selectedResult = getSelectedItemInfo(toolbarItem);
-        if (selectedResult !== null) {
-            window.open(selectedResult.url, selectedResult.target);
-        } else {
-            bootbox.alert('Nenhum elemento de seleção (ex: linha de uma tabela) foi escolhido.');
-        }
-    };
+                // ação exige que o usuário selecione algum elemento na interface
+                if (fnTypes[itemConfig.fnType].selectionRequired) {
 
-    fnTypes.selectedAjaxClick = function (toolbarItem) {
-
-        bootbox.confirm('Tem certeza que deseja executar ' +
-                'esta ação? [' + toolbarItem.data('title') + ']', function (result) {
-            if (result) {
-                var selectedResult = getSelectedItemInfo(toolbarItem);
-                if (selectedResult !== null) {
-                    $.ajax({
-                        url: selectedResult.url,
-                        type: 'POST',
-                        success: function (data) {
-                            if (typeof data.message === "undefined") {
-                                return bootbox.alert("A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.");
-                            }
-                            bootbox.alert(data.message);
-
-                            /**
-                             * callback on page config
-                             */
-
-                            if (typeof data.callback !== "undefined") {
-                                if (typeof pageConfig.getCallbackOf !== "undefined") {
-                                    pageConfig.getCallbackOf(toolbarItem.attr('id')).exec(data.callback);
-                                } else {
-                                    bootbox.alert("O servidor retornou um parâmetro de callback mas a função getCallbackOf(selectedItemId) não foi encontrada.");
-                                }
-                            }
-
-                            if (toolbarItem.data("hideonsuccess") === true) {
-                                closeToolbar();
-                            }
-
-
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            bootbox.alert(textStatus);
-                        }
-                    });
-                } else {
-                    bootbox.alert('Nenhum elemento de seleção (ex: linha de uma tabela) foi escolhido.');
-                }
-            } else {
-                bootbox.alert('Ação abortada.');
-            }
-        });
-    };
-
-    fnTypes.ajaxClick = function (toolbarItem) {
-        bootbox.confirm('Tem certeza que deseja executar ' +
-                'esta ação? [' + toolbarItem.data('title') + ']', function (result) {
-            if (result) {
-                var itemInfo = getItemInfo(toolbarItem);
-
-                $.ajax({
-                    url: itemInfo.url,
-                    type: 'POST',
-                    success: function (data) {
-                        if (typeof data.message === "undefined") {
-                            return bootbox.alert("A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.");
-                        }
-                        bootbox.alert(data.message);
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        bootbox.alert(textStatus);
+                    if (numberOfSelectedElements === 0) {
+                        return bootbox.alert("Nenhum elemento de seleção (ex: linha de uma tabela) foi escolhido.");
                     }
-                });
 
-            } else {
-                bootbox.alert('Ação abortada.');
-            }
-        });
-    };
+                    if (!fnTypes[itemConfig.fnType].allowMultiple && numberOfSelectedElements > 1) {
+                        return bootbox.alert("Esta ação não permite a seleção de múltiplos itens " +
+                                " (" + numberOfSelectedElements + " foram selecionados).\n\ Por favor, escolha apenas um.");
+                    }
 
-    fnTypes.ajaxPostClick = function (toolbarItem) {
-        bootbox.confirm('Tem certeza que deseja executar ' +
-                'esta ação? [' + toolbarItem.data('title') + ']', function (result) {
-            if (result) {
-                var itemInfo = getItemInfo(toolbarItem);
-
-                if (typeof pageConfig.getDataOf === "undefined") {
-                    return bootbox.alert("Ações do tipo [ajaxPostClick] " +
-                            "exigem que a função getDataOf(selectedItemId)" +
-                            " seja implementada.\n\
-                                Esta função deve retornar um objeto, array, escalar que será enviado para o servidor.");
+                    selectedSuffixInfo = numberOfSelectedElements + (numberOfSelectedElements > 1 ? " itens foram selecionados." : " item foi selecionado.");
                 }
 
-                var dataToSend = pageConfig.getDataOf(toolbarItem.attr('id'));
+                bootbox.confirm("Tem certeza que deseja executar " +
+                        "esta ação? [" + itemConfig.title + "]. " + selectedSuffixInfo, function (result) {
 
-                if (typeof dataToSend !== "object") {
-                    return bootbox.alert("A função getDataOf deve retornar um objeto. <em><b>Undefined</b></em> encontrado.");
-                }
+                            // o usuário desistiu de executar a ação
+                            if (!result) {
+                                return bootbox.alert('Ação abortada.');
+                            }
 
+                            var selected = $(document).find(".cats-selected-row");
+                            var deferreds = [];
 
-                $.ajax({
-                    url: itemInfo.url,
-                    type: 'POST',
-                    data: dataToSend,
-                    success: function (data) {
+                            // need message? show alert!
+                            if (fnTypes[itemConfig.fnType].messageRequired) {
+                                resultMessages.clear();
+                                resultMessages.setAlert(bootbox.alert(resultMessages.getHeader()));
+                            }
 
-                        if (typeof data.message === "undefined") {
-                            return bootbox.alert("A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.");
-                        }
-
-                        bootbox.alert(data.message);
-
-                        /**
-                         * callback on page config
-                         */
-
-                        if (typeof data.callback !== "undefined") {
-                            if (typeof pageConfig.getCallbackOf !== "undefined") {
-                                pageConfig.getCallbackOf(toolbarItem.attr('id')).exec(data.callback);
+                            if (fnTypes[itemConfig.fnType].selectionRequired) {
+                                selectedItemUrl = itemConfig.url;
+                                if (fnTypes[itemConfig.fnType].allowMultiple) {
+                                    selected.each(function (e) {
+                                        itemConfig.url = selectedItemUrl.replace('$id', $(this).data("id"));
+                                        deferreds.push(fnTypes[itemConfig.fnType].fn(itemConfig));
+                                    });
+                                } else {
+                                    itemConfig.url = selectedItemUrl.replace("$id", selected.data("id"));
+                                    deferreds.push(fnTypes[itemConfig.fnType].fn(itemConfig));
+                                }
                             } else {
-                                bootbox.alert("O servidor retornou um parâmetro de callback mas a função getCallbackOf(selectedItemId) não foi encontrada.");
+                                deferreds.push(fnTypes[itemConfig.fnType].fn(itemConfig));
                             }
-                        }
 
-                    },
-                    error: function (jqXHR, textStatus, errorThrown) {
-                        bootbox.alert(textStatus);
-                    }
-                });
+                            $.when.apply(null, deferreds).done(function () {
 
-            } else {
-                bootbox.alert('Ação abortada.');
-            }
-        });
-    };
-
-    fnTypes.ajaxPostSelectedClick = function (toolbarItem) {
-        bootbox.confirm('Tem certeza que deseja executar ' +
-                'esta ação? [' + toolbarItem.data('title') + ']', function (result) {
-            if (result) {
-                var selectedResult = getSelectedItemInfo(toolbarItem);
-                if (selectedResult !== null) {
-
-                    if (typeof pageConfig.getDataOf === "undefined") {
-                        return bootbox.alert("Ações do tipo [ajaxPostClick] " +
-                                "exigem que a função getDataOf(selectedItemId)" +
-                                " seja implementada.\n\
-                                Esta função deve retornar um objeto, array ou escalar que será enviado para o servidor.");
-                    }
-
-                    var dataToSend = pageConfig.getDataOf(toolbarItem.attr('id'));
-
-                    if (typeof dataToSend !== "object") {
-                        return bootbox.alert("A função getDataOf deve retornar um objeto. <em><b>Undefined</b></em> encontrado.");
-                    }
-
-                    $.ajax({
-                        url: selectedResult.url,
-                        type: 'POST',
-                        data: dataToSend,
-                        success: function (data) {
-                            if (typeof data.message === "undefined") {
-                                return bootbox.alert("A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.");
-                            }
-                            bootbox.alert(data.message);
-
-                            /**
-                             * callback on page config
-                             */
-
-                            if (typeof data.callback !== "undefined") {
-                                if (typeof pageConfig.getCallbackOf !== "undefined") {
-                                    pageConfig.getCallbackOf(toolbarItem.attr('id')).exec(data.callback);
-                                } else {
-                                    bootbox.alert("O servidor retornou um parâmetro de callback mas a função getCallbackOf(selectedItemId) não foi encontrada.");
+                                // need message? append complete!
+                                if (fnTypes[itemConfig.fnType].messageRequired) {
+                                    resultMessages.addLine("Concluído.");
                                 }
-                            }
 
-                            if (toolbarItem.data("hideonsuccess") === true) {
-                                closeToolbar();
-                            }
+                            });
+                        });
+            } else {
+                bootbox.alert('fnType: [' + itemConfig.fnType + '] não existe.');
+            }
+        });
+    };
+    // select an element for page reload or new tab or ...
+    fnTypes.selectedHttpClick.fn = function (itemConfig) {
+        return fnTypes.httpClick.fn(itemConfig);
+    };
+    // select an element and the page will send a post without data
+    fnTypes.selectedAjaxClick.fn = function (itemConfig) {
 
-                        },
-                        error: function (jqXHR, textStatus, errorThrown) {
-                            bootbox.alert(textStatus);
-                        }
-                    });
+        var message;
+        return $.ajax({
+            url: itemConfig.url,
+            type: "POST",
+            success: function (data) {
+                if (typeof data.message === "undefined") {
+                    message = "A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.";
                 } else {
-                    bootbox.alert('Nenhum elemento de seleção (ex: linha de uma tabela) foi escolhido.');
+                    message = data.message;
                 }
-            } else {
-                bootbox.alert('Ação abortada.');
+
+                /**
+                 * callback on page config
+                 */
+
+                if (typeof data.callback !== "undefined") {
+                    if (typeof pageConfig.getCallbackOf !== "undefined") {
+                        pageConfig.getCallbackOf(itemConfig.id).exec(data.callback);
+                    } else {
+                        message += "\n\O servidor retornou um parâmetro de callback mas a função getCallbackOf(selectedItemId) não foi encontrada.";
+                    }
+                }
+
+                if (itemConfig.hideOnSuccess === true) {
+                    closeToolbar();
+                }
+
+                resultMessages.addLine(message);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                resultMessages.addLine(textStatus);
             }
         });
     };
+    // send a post with previous selection and with particular data
+    fnTypes.ajaxPostSelectedClick.fn = function (itemConfig) {
 
-    fnTypes.httpClick = function (toolbarItem) {
-        bootbox.confirm('Tem certeza que deseja executar ' +
-                'esta ação? [' + toolbarItem.data('title') + ']', function (result) {
-            if (result) {
-                var selectedResult = getItemInfo(toolbarItem);
-                window.open(selectedResult.url, selectedResult.target);
-            } else {
-                bootbox.alert('Ação abortada.');
-            }
-        });
-    };
-
-    getSelectedItemInfo = function (toolbarItem) {
-        if ($(config.toolbarSelectedItem).length > 0) {
-            var item = toolbarItem.find('a');
-
-            var url = item.attr('href');
-            var target = item.attr('target');
-            url = url.replace('$id', $(config.toolbarSelectedItem).data('id'));
-
-            return {
-                url: url,
-                target: (typeof target !== 'undefined' ? target : '_self')
-            };
+        var defer = $.Deferred();
+        var message;
+        if (typeof pageConfig.getDataOf === "undefined") {
+            defer.then(null, function () {
+                resultMessages.addLine("Ações do tipo [" + itemConfig.fnType + "] " +
+                        "exigem que a função getDataOf(selectedItemId)" +
+                        " seja implementada.");
+            });
+            return defer;
         }
 
-        return null;
+        var dataToSend = pageConfig.getDataOf(itemConfig.id);
+        if (typeof dataToSend !== "object") {
+            defer.then(null, function () {
+                resultMessages.addLine("A função <em>getDataOf</em> deve retornar um objeto." +
+                        +" <em><b>Undefined</b></em> encontrado.");
+            });
+            return defer;
+        }
+
+        return $.ajax({
+            url: itemConfig.url,
+            type: 'POST',
+            data: dataToSend,
+            success: function (data) {
+                if (typeof data.message === "undefined") {
+                    message = "A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.";
+                } else {
+                    message = data.message;
+                }
+
+                /**
+                 * callback on page config
+                 */
+
+                if (typeof data.callback !== "undefined") {
+                    if (typeof pageConfig.getCallbackOf !== "undefined") {
+                        pageConfig.getCallbackOf(itemConfig.id).exec(data.callback);
+                    } else {
+                        message += "\n\O servidor retornou um parâmetro de callback mas a função getCallbackOf(selectedItemId) não foi encontrada.";
+                    }
+                }
+
+                if (itemConfig.hideOnSuccess === true) {
+                    closeToolbar();
+                }
+
+                resultMessages.addLine(message);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                resultMessages.addLine(textStatus);
+            }
+        });
     };
+    // click and a post will be sent without any previous selection and without data
+    fnTypes.ajaxClick.fn = function (itemConfig) {
 
+        var message;
+
+        return $.ajax({
+            url: itemConfig.url,
+            type: 'POST',
+            success: function (data) {
+                if (typeof data.message === "undefined") {
+                    message = "A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.";
+                } else {
+                    message = data.message;
+                }
+
+                resultMessages.addLine(message);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                resultMessages.addLine(textStatus);
+            }
+        });
+    };
+    // click and a post will be sent without any previous selection and with particular data
+    fnTypes.ajaxPostClick.fn = function (itemConfig) {
+
+        var defer = $.Deferred();
+        var message;
+        if (typeof pageConfig.getDataOf === "undefined") {
+            defer.then(null, function () {
+                resultMessages += "Ações do tipo [" + itemConfig.fnType + "] " +
+                        "exigem que a função getDataOf(selectedItemId)" +
+                        " seja implementada.";
+            });
+            return defer;
+        }
+
+        var dataToSend = pageConfig.getDataOf(itemConfig.id);
+        if (typeof dataToSend !== "object") {
+            defer.then(null, function () {
+                resultMessages += "\nA função <em>getDataOf</em> deve retornar um objeto." +
+                        +" <em><b>Undefined</b></em> encontrado.";
+            });
+            return defer;
+        }
+
+        return $.ajax({
+            url: itemConfig.url,
+            type: 'POST',
+            data: dataToSend,
+            success: function (data) {
+
+                if (typeof data.message === "undefined") {
+                    message = "A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.";
+                } else {
+                    message = data.message;
+                }
+
+                /**
+                 * callback on page config
+                 */
+
+                if (typeof data.callback !== "undefined") {
+                    if (typeof pageConfig.getCallbackOf !== "undefined") {
+                        pageConfig.getCallbackOf(itemConfig.id).exec(data.callback);
+                    } else {
+                        message += "\n\O servidor retornou um parâmetro de callback mas a função getCallbackOf(selectedItemId) não foi encontrada.";
+                    }
+                }
+
+                if (itemConfig.hideOnSuccess === true) {
+                    closeToolbar();
+                }
+
+                resultMessages.addLine(message);
+            },
+            error: function (jqXHR, textStatus, errorThrown) {
+                resultMessages.addLine(textStatus);
+            }
+        });
+    };
+    // reload the page or open a new tab without any previous selection
+    fnTypes.httpClick.fn = function (itemConfig) {
+        var def = $.Deferred();
+        window.open(itemConfig.url, itemConfig.target);
+        def.resolve();
+        return def;
+    };
     getItemInfo = function (toolbarItem) {
-        var item = toolbarItem.find('a');
-        var url = item.attr('href');
-        var target = item.attr('target');
 
+        var item = toolbarItem.find("a");
+        var url = item.attr("href");
+        var target = item.attr("target");
         return {
+            id: toolbarItem.attr("id"),
+            title: toolbarItem.data("title"),
+            fnType: toolbarItem.data("fntype"),
+            hideOnSuccess: toolbarItem.data("hideonsuccess"),
             url: url,
-            target: (typeof target !== 'undefined' ? target : '_self')
+            target: (typeof target !== "undefined" ? target : "_self")
         };
     };
-
     initToggle = function () {
-        $('section').on('click', '.cats-row', function () {
+        $(".content").on("click", ".cats-row", function () {
             var selectedElement = $(this);
-
             if (selectedElement.is('tr')) {
-                selectedElement.siblings('tr')
-                        .removeClass('cats-selected-row')
-                        .find('td')
-                        .removeClass('cats-selected-bg');
                 selectedElement.find('td').toggleClass('cats-selected-bg');
             } else {
                 selectedElement
-                        .siblings(".cats-row")
-                        .removeClass('cats-selected-row')
-                        .removeClass('cats-selected-bg');
-
-                selectedElement
-                        .toggleClass('cats-selected-bg')
-                        .closest('.container')
-                        .find('.cats-row')
-                        .not(this)
-                        .removeClass('cats-selected-row')
-                        .removeClass('cats-selected-bg');
+                        .toggleClass('cats-selected-bg');
             }
 
             selectedElement.toggleClass('cats-selected-row');
+            setNumberOfSelectedElements();
 
             if (selectedElement.hasClass('cats-selected-row')) {
                 openToolbar();
-            } else {
+            } else if (numberOfSelectedElements === 0) {
                 closeToolbar();
             }
         });
-    };
+        $(document).keyup(function (e) {
 
+            if (e.keyCode === 27) {
+                $(this)
+                        .find(".cats-selected-bg, .cats-selected-row")
+                        .removeClass("cats-selected-bg cats-selected-row");
+                closeToolbar();
+                setNumberOfSelectedElements();
+            }
+        });
+    };
+    setNumberOfSelectedElements = function () {
+        numberOfSelectedElements = $(document).find(".cats-selected-row").length;
+    };
     closeToolbar = function () {
         $(config.toolbarContainer).removeClass(config.toolbarContainerOpen);
     };
-
     openToolbar = function () {
 
         if (!$(config.toolbarContainer).hasClass(
@@ -309,7 +378,6 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                     config.toolbarContainerOpen);
         }
     };
-
     return {
         init: function () {
             if (config.toolbarElement === '' ||
@@ -339,5 +407,4 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
         closeToolbar: closeToolbar,
         openToolbar: openToolbar
     };
-
 });

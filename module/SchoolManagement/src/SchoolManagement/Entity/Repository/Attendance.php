@@ -7,6 +7,8 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityRepository;
 use Exception;
 use PDO;
+use Recruitment\Controller\RegistrationController;
+use SchoolManagement\Entity\AttendanceType;
 
 /**
  * Description of Attendance
@@ -60,6 +62,33 @@ class Attendance extends EntityRepository
             $conn->rollBack();
             throw $ex;
         }
+    }
+
+    public function findAllowance($params = [])
+    {
+
+        $qb = $this->_em->createQueryBuilder();
+
+        $qb->select("e.enrollmentId, CONCAT(CONCAT(p.personFirstName, ' '), p.personLastName) as name, p.personId, "
+                . "at.attendanceTypeId, at.attendanceType, a.date, c.className")
+            ->from('SchoolManagement\Entity\Attendance', 'a')
+            ->join('a.attendanceType', 'at')
+            ->join('a.enrollment', 'e')
+            ->join('e.class', 'c')
+            ->join('e.registration', 'r')
+            ->join('r.person', 'p')
+            ->where('a.attendanceType = :id')
+            ->andWhere('a.date >= :beginDate')
+            ->andWhere('a.date < :endDate')
+            ->setParameters(array(
+                'id' => AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_FULL,
+                'beginDate' => $params['beginDate'],
+                'endDate' => $params['endDate'],
+            ))
+            ->orderBy('a.date')
+            ->addOrderBy('p.personFirstName');
+
+        return $qb->getQuery()->getResult();
     }
 
 }

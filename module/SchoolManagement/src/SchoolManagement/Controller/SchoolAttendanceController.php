@@ -95,7 +95,6 @@ class SchoolAttendanceController extends AbstractActionController
                 $data['className'] = $em->find('SchoolManagement\Entity\StudentClass', $data['schoolClasses'])
                     ->getClassName();
 
-
                 $attList = new AttendanceList($data, $enrollments);
                 $csv = $attList->getCsv();
 
@@ -211,6 +210,49 @@ class SchoolAttendanceController extends AbstractActionController
         return new ViewModel([
             'message' => 'Nenhuma turma foi selecionada.',
             'pdf' => null,
+        ]);
+    }
+
+    /**
+     * Exibe os abonos de acordo com a seleção do mês
+     * @return ViewModel
+     */
+    public function allowanceAction()
+    {
+        return new ViewModel();
+    }
+
+    /**
+     * Exibe os abonos de acordo com a seleção do mês
+     * @return ViewModel
+     */
+    public function getAllowanceAction()
+    {
+        $request = $this->getRequest();
+        if ($request->isPost()) {
+            $data = $request->getPost();
+
+            try {
+                $em = $this->getEntityManager();
+
+                $allowances = $em->getRepository('SchoolManagement\Entity\Attendance')
+                    ->findAllowance(array(
+                    'beginDate' => new \DateTime($data['start']),
+                    'endDate' => new \DateTime($data['end']),
+                ));
+
+                return new JsonModel([
+                    'allowance' => $allowances,
+                ]);
+            } catch (\Exception $ex) {
+                return new JsonModel([
+                    'message' => $ex->getMessage(),
+                ]);
+            }
+        }
+
+        return new JsonModel([
+            'message' => 'Esta url só pode ser acessada via post',
         ]);
     }
 

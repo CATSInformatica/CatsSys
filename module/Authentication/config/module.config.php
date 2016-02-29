@@ -141,7 +141,7 @@ return array(
                         ),
                     ),
                     array(
-                        'label' => 'Create an user',
+                        'label' => 'Create a user',
                         'route' => 'authentication/user',
                         'action' => 'create',
                         'icon' => 'fa fa-user-plus'
