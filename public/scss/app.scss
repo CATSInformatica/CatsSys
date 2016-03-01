@@ -23,6 +23,7 @@ and open the template in the editor.
     }
 }
 
+
 .bg-white {
     background: white;
     color: #333;
@@ -32,8 +33,8 @@ and open the template in the editor.
     background-color: #5d9ede;
     transition: all 0.5s;
     color: white !important;
-    a {
-        color: white;
+    a, .users-list-name, p {
+        color: white !important;
     }
 }
 

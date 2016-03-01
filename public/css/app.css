@@ -24,8 +24,8 @@ and open the template in the editor.
   background-color: #5d9ede;
   transition: all 0.5s;
   color: white !important; }
-  .cats-selected-bg a {
-    color: white; }
+  .cats-selected-bg a, .cats-selected-bg .users-list-name, .cats-selected-bg p {
+    color: white !important; }
 
 .cats-row {
   cursor: pointer; }
