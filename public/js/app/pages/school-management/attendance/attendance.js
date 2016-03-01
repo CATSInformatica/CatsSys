@@ -19,6 +19,7 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
         var listModels = [];
         var allowanceMonth = $("#allowanceMonth");
         var allowanceStudentsByMonth = {};
+        var allowanceStudents = $("#allowanceStudents");
 
         initDateCopy = function () {
             add.click(addAttendanceDate);
@@ -301,19 +302,24 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                     },
                     success: function (data) {
                         var allowance = data.allowance;
-                        var content = {};
+                        var content = [];
+                        var lastDate = "";
+                        var lastIndx = -1;
                         for (var i = 0; i < allowance.length; i++) {
 
                             var mdate = moment(allowance[i].date.date);
 
-                            if (typeof content[mdate.format("DDMMYYYY")] === "undefined") {
-                                content[mdate.format("DDMMYYYY")] = {
+                            if (lastDate !== mdate.format("DDMMYYYY")) {
+                                lastDate = mdate.format("DDMMYYYY");
+                                lastIndx++;
+                                content.push({
                                     date: mdate,
                                     students: []
-                                };
+                                });
                             }
 
-                            content[mdate.format("DDMMYYYY")].students.push({
+                            content[lastIndx].students.push({
+                                attendanceId: allowance[i].enrollmentId,
                                 enrollmentId: allowance[i].enrollmentId,
                                 attendanceType: allowance[i].attendanceType,
                                 attendanceTypeId: allowance[i].attendanceTypeId,
@@ -330,6 +336,8 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                         console.log(textStatus);
                     }
                 });
+            } else {
+                moveMonthAllowancesUp(attr);
             }
         };
 
@@ -338,16 +346,24 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
             var monthTemplate = "<div class='box box-solid' style='display:none;' id='month-" + month + "'>" +
                     "<div class='box-header with-border'>" +
                     "<h3 class='box-title'>" + moment(month, "MM").format("MMMM") + "</h3>" +
+                    "<div class='box-tools pull-right'>" +
+                    "<button type='button' class='btn btn-box-tool' data-widget='collapse'>" +
+                    "<i class='fa fa-minus'></i>" +
+                    "</button>" +
+                    "</div>" +
                     "</div>" +
                     "<div class='box-body'>" +
                     "<div class='box-group' id='accordion-" + month + "'>";
 
-            Object.keys(content).forEach(function (key, index) {
-                var md = content[key].date;
+            var enrId;
+
+            for (var l = 0; l < content.length; l++) {
+                var md = content[l].date;
+                var stds = content[l].students;
                 monthTemplate += "<div class='panel box box-primary'>" +
                         "<div class='box-header with-border'>" +
                         "<h4 class='box-title'>" +
-                        "<a data-toggle='collapse' data-parent='#accordion-" + month +
+                        "<a data-toggle='collapse' data-parent='#accordion-" + l +
                         "' href='#collapse-" + md.format("DDMMYYYY") +
                         "' aria-expanded='false' class='collapsed'>" +
                         md.format("LL") +
@@ -356,18 +372,55 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                         "</div>" +
                         "<div id='collapse-" + md.format("DDMMYYYY") +
                         "' class='panel-collapse collapse' aria-expanded='false' style='height: 0px;'>" +
-                        "<div class='box-body'>" +
-                        "@TODO: SO MUCH STUDENTS VERY WOOWWWWWWW" +
-                        "</div></div></div>";
-            });
+                        "<div class='box-body'>";
+
+                monthTemplate += "<ul class='users-list clearfix'>";
+                for (var i = 0; i < stds.length; i++) {
+                    enrId = "" + stds[i].enrollmentId;
+
+                    monthTemplate += "<li class='cats-row' data-mindex='" + month +
+                            "' data-dindex='" + l + "' data-sindex='" + i + "'>" +
+                            "<img src='/recruitment/registration/photo/" + stds[i].personId + "' alt='" +
+                            stds[i].name + "' width='64'>" +
+                            "<p class='users-list-name'> " + ("0000" + enrId).substring(enrId.length) +
+                            " - " + stds[i].name + " <br>(" + stds[i].attendanceType + ") <br>" +
+                            stds[i].className +
+                            "</p>" +
+//                            "<span class='users-list-date'><b> " + stds[i].className + "</b></span>" +
+                            "</li>";
+                }
+                monthTemplate += "</ul></div></div></div>";
+            }
 
             monthTemplate += "</div></div></div>";
             monthTemplate = $(monthTemplate);
 
-            $("#allowanceStudents").prepend(monthTemplate);
+            allowanceStudents.prepend(monthTemplate);
             monthTemplate.slideDown("fast");
         };
 
+        moveMonthAllowancesUp = function (month) {
+            allowanceStudents
+                    .find("#month-" + month)
+                    .hide()
+                    .detach()
+                    .prependTo(allowanceStudents)
+                    .slideDown("fast");
+        };
+        
+        /**
+         * @TODO
+         * Criar botão de remoção de abonos.
+         * O botão deve levar em consideração os valores do item selecionado:
+         *  * data-mindex="i"
+         *  * data-dindex="j"
+         *  * data-sindex="k"
+         *   
+         *   Ex: allowanceStudentsByMonth[i][j][k] // abono do mês i, 
+         *   na j-ésima data referente ao k-ésimo aluno
+         *   allowanceStudentsByMonth[i][j][k].attendanceId 
+         *   // id da linha do abono no banco
+         */
 
         return {
             init: function () {
@@ -408,5 +461,4 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
     }());
 
     return generate;
-
 });
