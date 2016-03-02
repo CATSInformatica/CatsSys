@@ -319,7 +319,7 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                             }
 
                             content[lastIndx].students.push({
-                                attendanceId: allowance[i].enrollmentId,
+                                attendanceId: allowance[i].attendanceId,
                                 enrollmentId: allowance[i].enrollmentId,
                                 attendanceType: allowance[i].attendanceType,
                                 attendanceTypeId: allowance[i].attendanceTypeId,
@@ -378,8 +378,8 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                 for (var i = 0; i < stds.length; i++) {
                     enrId = "" + stds[i].enrollmentId;
 
-                    monthTemplate += "<li class='cats-row' data-mindex='" + month +
-                            "' data-dindex='" + l + "' data-sindex='" + i + "'>" +
+                    monthTemplate += "<li id='entity-" + stds[i].attendanceId + "' class='cats-row' data-mindex='" + month +
+                            "' data-dindex='" + l + "' data-sindex='" + i + "' data-id='" + stds[i].attendanceId + "'>" +
                             "<img src='/recruitment/registration/photo/" + stds[i].personId + "' alt='" +
                             stds[i].name + "' width='64'>" +
                             "<p class='users-list-name'> " + ("0000" + enrId).substring(enrId.length) +
@@ -407,20 +407,6 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                     .prependTo(allowanceStudents)
                     .slideDown("fast");
         };
-        
-        /**
-         * @TODO
-         * Criar botão de remoção de abonos.
-         * O botão deve levar em consideração os valores do item selecionado:
-         *  * data-mindex="i"
-         *  * data-dindex="j"
-         *  * data-sindex="k"
-         *   
-         *   Ex: allowanceStudentsByMonth[i][j][k] // abono do mês i, 
-         *   na j-ésima data referente ao k-ésimo aluno
-         *   allowanceStudentsByMonth[i][j][k].attendanceId 
-         *   // id da linha do abono no banco
-         */
 
         return {
             init: function () {
@@ -446,14 +432,28 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                 }
 
             },
-            getDataOf: function (selectedElementId) {
+            getDataOf: function (selectedItemId) {
 
-                var index = $(".cats-selected-row").find(".attendanceListTable").data("id");
-
-                switch (selectedElementId) {
+                switch (selectedItemId) {
                     case 'attendance-list-save':
+                        var index = $(".cats-selected-row").find(".attendanceListTable").data("id");
                         return listModels[index];
                         break;
+                }
+            },
+            getCallbackOf: function (selectedItemId) {
+
+                switch (selectedItemId) {
+                    case 'allowance-delete':
+                        return {
+                            exec: function (params) {
+                                allowanceStudents.find("#entity-" + params.id)
+                                        .slideUp("fast", function () {
+                                            $(this).remove();
+                                        });
+
+                            }
+                        };
                 }
             }
         };

@@ -49,7 +49,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
             this.alert = alert;
         },
         addLine: function (text) {
-            this.notify("<p> * " + text + "<p>");
+            this.notify("<p>" + text + "<p>");
         },
         notify: function (text) {
             this.alert.find(".bootbox-body").append(text);
@@ -121,13 +121,16 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                                 deferreds.push(fnTypes[itemConfig.fnType].fn(itemConfig));
                             }
 
-                            $.when.apply(null, deferreds).done(function () {
-
+                            $.when.apply(null, deferreds).then(function () {
                                 // need message? append complete!
                                 if (fnTypes[itemConfig.fnType].messageRequired) {
-                                    resultMessages.addLine("Concluído.");
+                                    resultMessages.addLine("<b>Resultado:</b><br>- Sucesso<br><br><b>Concluído</b>.");
                                 }
-
+                            }, function () {
+                                // need message? append complete!
+                                if (fnTypes[itemConfig.fnType].messageRequired) {
+                                    resultMessages.addLine("<b>Resultado:</b><br>- Uma ou mais ações retornaram erros.<br><br><b>Concluído</b>.");
+                                }
                             });
                         });
             } else {
@@ -148,9 +151,9 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
             type: "POST",
             success: function (data) {
                 if (typeof data.message === "undefined") {
-                    message = "A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.";
+                    message = "- A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.<br>";
                 } else {
-                    message = data.message;
+                    message = data.message + "<br>";
                 }
 
                 /**
@@ -161,7 +164,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                     if (typeof pageConfig.getCallbackOf !== "undefined") {
                         pageConfig.getCallbackOf(itemConfig.id).exec(data.callback);
                     } else {
-                        message += "\n\O servidor retornou um parâmetro de callback mas a função getCallbackOf(selectedItemId) não foi encontrada.";
+                        message += "- O servidor retornou um parâmetro de <em>callback</em>, mas a função <code>getCallbackOf(selectedItemId)</code> não foi encontrada.";
                     }
                 }
 
@@ -182,20 +185,26 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
         var defer = $.Deferred();
         var message;
         if (typeof pageConfig.getDataOf === "undefined") {
+
             defer.then(null, function () {
-                resultMessages.addLine("Ações do tipo [" + itemConfig.fnType + "] " +
-                        "exigem que a função getDataOf(selectedItemId)" +
+                resultMessages.addLine("- Ações do tipo <code>" + itemConfig.fnType + "</code> " +
+                        "exigem que a função <code>getDataOf(selectedItemId)</code>" +
                         " seja implementada.");
             });
+
+            defer.reject();
             return defer;
         }
 
         var dataToSend = pageConfig.getDataOf(itemConfig.id);
         if (typeof dataToSend !== "object") {
+
             defer.then(null, function () {
-                resultMessages.addLine("A função <em>getDataOf</em> deve retornar um objeto." +
-                        +" <em><b>Undefined</b></em> encontrado.");
+                resultMessages.addLine("- A função <code>getDataOf</code> deve retornar um objeto," +
+                        " <code>undefined</code> encontrado.");
             });
+
+            defer.reject();
             return defer;
         }
 
@@ -205,7 +214,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
             data: dataToSend,
             success: function (data) {
                 if (typeof data.message === "undefined") {
-                    message = "A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.";
+                    message = "- A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.<br>";
                 } else {
                     message = data.message;
                 }
@@ -218,7 +227,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                     if (typeof pageConfig.getCallbackOf !== "undefined") {
                         pageConfig.getCallbackOf(itemConfig.id).exec(data.callback);
                     } else {
-                        message += "\n\O servidor retornou um parâmetro de callback mas a função getCallbackOf(selectedItemId) não foi encontrada.";
+                        message += "- O servidor retornou um parâmetro de <em>callback</em>, mas a função <code>getCallbackOf(selectedItemId)</code> não foi encontrada.";
                     }
                 }
 
@@ -243,7 +252,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
             type: 'POST',
             success: function (data) {
                 if (typeof data.message === "undefined") {
-                    message = "A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.";
+                    message = "- A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.";
                 } else {
                     message = data.message;
                 }
@@ -261,20 +270,26 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
         var defer = $.Deferred();
         var message;
         if (typeof pageConfig.getDataOf === "undefined") {
+
             defer.then(null, function () {
-                resultMessages += "Ações do tipo [" + itemConfig.fnType + "] " +
-                        "exigem que a função getDataOf(selectedItemId)" +
-                        " seja implementada.";
+                resultMessages.addLine("- Ações do tipo <code>" + itemConfig.fnType + "</code> " +
+                        "exigem que a função <code>getDataOf(selectedItemId)</code>" +
+                        " seja implementada.");
             });
+
+            defer.reject();
             return defer;
         }
 
         var dataToSend = pageConfig.getDataOf(itemConfig.id);
         if (typeof dataToSend !== "object") {
+
             defer.then(null, function () {
-                resultMessages += "\nA função <em>getDataOf</em> deve retornar um objeto." +
-                        +" <em><b>Undefined</b></em> encontrado.";
+                resultMessages.addLine("- A função <code>getDataOf</code> deve retornar um objeto," +
+                        " <code>undefined</code> encontrado.");
             });
+
+            defer.reject();
             return defer;
         }
 
@@ -285,7 +300,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
             success: function (data) {
 
                 if (typeof data.message === "undefined") {
-                    message = "A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.";
+                    message = "- A requisição foi executada com sucesso, no entanto, nenhuma mensagem foi especificada pelo servidor.<br>";
                 } else {
                     message = data.message;
                 }
@@ -298,7 +313,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                     if (typeof pageConfig.getCallbackOf !== "undefined") {
                         pageConfig.getCallbackOf(itemConfig.id).exec(data.callback);
                     } else {
-                        message += "\n\O servidor retornou um parâmetro de callback mas a função getCallbackOf(selectedItemId) não foi encontrada.";
+                        message += "- O servidor retornou um parâmetro de <em>callback</em>, mas a função <code>getCallbackOf(selectedItemId)</code> não foi encontrada.";
                     }
                 }
 

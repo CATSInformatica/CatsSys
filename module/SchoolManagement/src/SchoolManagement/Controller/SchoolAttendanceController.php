@@ -256,4 +256,37 @@ class SchoolAttendanceController extends AbstractActionController
         ]);
     }
 
+    /**
+     * Remove o abono cujo valor de attendanceId é $id
+     * @return JsonModel
+     */
+    public function deleteAllowanceAction()
+    {
+
+        $id = $this->params('id', false);
+
+        if ($id) {
+            try {
+                $em = $this->getEntityManager();
+                $allowance = $em->getReference('SchoolManagement\Entity\Attendance', $id);
+                $em->remove($allowance);
+                $em->flush();
+                return new JsonModel([
+                    'message' => 'Abono removido com sucesso',
+                    'callback' => array(
+                        'id' => $id,
+                    ),
+                ]);
+            } catch (\Exception $ex) {
+                return new JsonModel([
+                    'message' => $ex->getMessage(),
+                ]);
+            }
+        }
+
+        return new JsonModel([
+            'message' => 'Nenhum abono foi selecionado.',
+        ]);
+    }
+
 }
