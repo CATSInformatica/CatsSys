@@ -7,7 +7,6 @@ use Doctrine\DBAL\Connection;
 use Doctrine\ORM\EntityRepository;
 use Exception;
 use PDO;
-use Recruitment\Controller\RegistrationController;
 use SchoolManagement\Entity\AttendanceType;
 
 /**
@@ -69,19 +68,21 @@ class Attendance extends EntityRepository
 
         $qb = $this->_em->createQueryBuilder();
 
-        $qb->select("e.enrollmentId, CONCAT(CONCAT(p.personFirstName, ' '), p.personLastName) as name, p.personId, "
-                . "at.attendanceTypeId, at.attendanceType, a.date, c.className")
+        $qb->select("a.attendanceId, e.enrollmentId, CONCAT(CONCAT(p.personFirstName, ' '), p.personLastName) as name,"
+                . " p.personId, at.attendanceTypeId, at.attendanceType, a.date, c.className")
             ->from('SchoolManagement\Entity\Attendance', 'a')
             ->join('a.attendanceType', 'at')
             ->join('a.enrollment', 'e')
             ->join('e.class', 'c')
             ->join('e.registration', 'r')
             ->join('r.person', 'p')
-            ->where('a.attendanceType = :id')
+            ->where('(a.attendanceType = :id1 OR a.attendanceType = :id2 OR  a.attendanceType = :id3 )')
             ->andWhere('a.date >= :beginDate')
             ->andWhere('a.date < :endDate')
             ->setParameters(array(
-                'id' => AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_FULL,
+                'id1' => AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_FULL,
+                'id2' => AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_BEGIN,
+                'id3' => AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_END,
                 'beginDate' => $params['beginDate'],
                 'endDate' => $params['endDate'],
             ))

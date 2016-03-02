@@ -24,8 +24,8 @@ and open the template in the editor.
   background-color: #5d9ede;
   transition: all 0.5s;
   color: white !important; }
-  .cats-selected-bg a {
-    color: white; }
+  .cats-selected-bg a, .cats-selected-bg .users-list-name {
+    color: white !important; }
 
 .cats-row {
   cursor: pointer; }
@@ -59,7 +59,7 @@ and open the template in the editor.
   box-sizing: border-box;
   padding: 5px 5px;
   border-top: 4px solid transparent; }
-  .catssys-admin-structure > a {
+  .catssys-admin-structure > div {
     color: inherit;
     height: 220px; }
   .catssys-admin-structure i {

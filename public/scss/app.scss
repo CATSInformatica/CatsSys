@@ -23,6 +23,7 @@ and open the template in the editor.
     }
 }
 
+
 .bg-white {
     background: white;
     color: #333;
@@ -32,9 +33,9 @@ and open the template in the editor.
     background-color: #5d9ede;
     transition: all 0.5s;
     color: white !important;
-    a {
-        color: white;
-    }
+    a, .users-list-name {
+        color: white !important;
+    };
 }
 
 .cats-row {
@@ -74,7 +75,7 @@ and open the template in the editor.
     padding: 5px 5px;
     border-top: 4px solid transparent;
 
-    > a {
+    > div {
         color: inherit;
         height: 220px;
     };

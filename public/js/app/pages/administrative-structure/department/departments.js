@@ -89,13 +89,13 @@ define(['jquery'], function () {
                                 "catssys-admin-structure " +
                                 (typeof adminStructure.data('catssys-toolbar') !== 'undefined' ? "cats-row" : "") +
                                 (results[i].isActive === false ? " catssys-admin-structure-disabled" : "") + "'>" +
-                                "<a href='#department-" + results[i].departmentId + "' data-toggle='tab'>" +
+                                "<div href='#department-" + results[i].departmentId + "' data-toggle='tab'>" +
                                 "<i class='" + results[i].departmentIcon + "'></i>" +
                                 "<h4><strong>" + results[i].departmentName + "</strong></h4>" +
                                 "<p class='text-justify'>" +
                                 (results[i].departmentDescription.length < 140 ?
                                         results[i].departmentDescription : results[i].departmentDescription.substring(0, 136) + "...") +
-                                "</p></a></li>");
+                                "</p></div></li>");
                     }
 
                     departments.append("<div class='tab-content'></div>");

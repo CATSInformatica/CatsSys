@@ -6,6 +6,7 @@
             <property name="sass.enabled" value="true"/>
             <property name="sass.mappings" value="/scss:/css"/>
         </module>
+        <module name="org-netbeans-modules-javascript2-requirejs"/>
         <module name="org-netbeans-modules-editor-indent">
             <node name="CodeStyle"/>
         </module>

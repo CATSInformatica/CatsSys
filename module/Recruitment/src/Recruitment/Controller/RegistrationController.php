@@ -179,7 +179,7 @@ class RegistrationController extends AbstractActionController
                     if ($type == Recruitment::STUDENT_RECRUITMENT_TYPE) {
                         $message = 'Inscrição para o processo seletivo de alunos efetuada com sucesso.';
                     } else {
-                        $message = 'Inscrição efetuada com sucesso. Um de nosso voluntários entrará em contato com você'
+                        $message = 'Inscrição efetuada com sucesso. Um de nossos voluntários entrará em contato com você'
                             . ' para agendar uma entrevista.';
                     }
 
@@ -494,8 +494,8 @@ class RegistrationController extends AbstractActionController
         $id = $this->params('id', false);
         $request = $this->getRequest();
         if ($id && $request->isPost()) {
-            $file = $request->getFiles()->profilePhoto;
             try {
+                $file = $request->getFiles()->profilePhoto;
 
                 $em = $this->getEntityManager();
                 $person = $em->find('Recruitment\Entity\Person', $id);
@@ -533,9 +533,9 @@ class RegistrationController extends AbstractActionController
 
                 $uploadAdapter->setDestination($targetDir);
 
-                if (!$uploadAdapter->receive($file['name'])) {
+                if (!$uploadAdapter->receive()) {
                     $messages = implode('\n', $uploadAdapter->getMessages());
-                    throw new RuntimeException($messages);
+                    throw new RuntimeException("Error: " . $messages);
                 }
 
                 $person->setPersonPhoto($targetName);
