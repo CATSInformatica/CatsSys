@@ -98,41 +98,41 @@ class Registration
 
     /**
      * @var string
-     * @ORM\Column(name="registration_occupation", type="string", length=200, nullable=true)
+     * @ORM\Column(name="registration_occupation", type="string", length=700, nullable=true)
      */
     private $occupation;
 
     /**
      * @var string
-     * @ORM\Column(name="registration_education", type="string", length=200, nullable=true)
+     * @ORM\Column(name="registration_education", type="string", length=700, nullable=true)
      */
     private $education;
 
     /**
      *
      * @var string
-     * @ORM\Column(name="registration_volunteer_work", type="string", length=200, nullable=true)
+     * @ORM\Column(name="registration_volunteer_work", type="string", length=700, nullable=true)
      */
     private $volunteerWork;
 
     /**
      *
      * @var string
-     * @ORM\Column(name="registration_howandwhen_knowus", type="string", length=200, nullable=true)
+     * @ORM\Column(name="registration_howandwhen_knowus", type="string", length=700, nullable=true)
      */
     private $howAndWhenKnowUs;
 
     /**
      *
      * @var string
-     * @ORM\Column(name="registration_whywork_withus", type="string", length=200, nullable=true)
+     * @ORM\Column(name="registration_whywork_withus", type="string", length=700, nullable=true)
      */
     private $whyWorkWithUs;
 
     /**
      *
      * @var string
-     * @ORM\Column(name="registration_volunteer_workwithus", type="string", length=200, nullable=true)
+     * @ORM\Column(name="registration_volunteer_workwithus", type="string", length=700, nullable=true)
      */
     private $volunteerWithUs;
 
