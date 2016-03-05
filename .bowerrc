@@ -1,5 +1,5 @@
 {
-  "directory": "./vendor/",
+  "directory": "./public/vendor/",
   "analytics": false,
   "timeout": 120000
 }

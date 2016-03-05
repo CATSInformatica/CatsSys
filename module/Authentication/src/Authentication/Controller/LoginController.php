@@ -18,7 +18,6 @@ namespace Authentication\Controller;
 
 use Authentication\Form\LoginFilter;
 use Authentication\Form\LoginForm;
-use Database\Service\EntityManagerService;
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Zend\Session\SessionManager;
@@ -31,29 +30,24 @@ use Zend\View\Model\ViewModel;
  */
 class LoginController extends AbstractActionController
 {
-
-    use EntityManagerService;
-
     /**
      * Faz a autenticação de usuários
      * @return ViewModel
      */
     public function loginAction()
     {
-        $userC =  new Container('User');
-        if($userC->id) {
+        $userC = new Container('User');
+        if ($userC->id) {
             return $this->redirect()->toRoute('ums');
         }
-        
+
         $this->layout('login/layout');
         $loginForm = new LoginForm();
         $message = null;
         $request = $this->getRequest();
 
         if ($request->isPost()) {
-            $loginForm->setInputFilter(new LoginFilter(
-                $this->getServiceLocator()
-            ));
+            $loginForm->setInputFilter(new LoginFilter());
             $loginForm->setData($request->getPost());
 
             if ($loginForm->isValid()) {
@@ -75,7 +69,7 @@ class LoginController extends AbstractActionController
     protected function userAuthentication($data)
     {
         $auth = $this->getServiceLocator()
-                ->get('Zend\Authentication\AuthenticationService');
+            ->get('Zend\Authentication\AuthenticationService');
         $adapter = $auth->getAdapter();
         $adapter->setIdentityValue($data['username']);
         $adapter->setCredentialValue($data['password']);
@@ -104,9 +98,9 @@ class LoginController extends AbstractActionController
 
             $userContainer->offsetSet('activeRole', $roleNames[0]);
             $userContainer->offsetSet('allRoles', $roleNames);
-            
+
             $sessionManager->writeClose();
-                
+
             return true;
         }
         return false;
@@ -115,7 +109,7 @@ class LoginController extends AbstractActionController
     public function logoutAction()
     {
         $auth = $this->getServiceLocator()
-                ->get('Zend\Authentication\AuthenticationService');
+            ->get('Zend\Authentication\AuthenticationService');
         if ($auth->hasIdentity()) {
             $auth->clearIdentity();
 

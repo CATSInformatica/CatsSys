@@ -12,10 +12,12 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Authorization\Controller\Index' => 'Authorization\Controller\IndexController',
-            'Authorization\Controller\Role' => 'Authorization\Controller\RoleController',
-            'Authorization\Controller\Resource' => 'Authorization\Controller\ResourceController',
-            'Authorization\Controller\Privilege' => 'Authorization\Controller\PrivilegeController',
-        )
+        ),
+        'factories' => array(
+            'Authorization\Controller\Privilege' => Factory\Controller\PrivilegeControllerFactory::class,
+            'Authorization\Controller\Role' => Factory\Controller\RoleControllerFactory::class,
+            'Authorization\Controller\Resource' => Factory\Controller\ResourceControllerFactory::class,
+        ),
     ),
     'router' => array(
         'routes' => array(
@@ -119,17 +121,17 @@ return array(
     ),
     'service_manager' => array(
         'factories' => array(
-            'acl' => 'Authorization\Factory\AclDbFactory'
+            'acl' => 'Authorization\Factory\Acl\AclDbFactory'
         ),
     ),
     'view_helpers' => array(
         'factories' => array(
-            'isAllowed' => 'Authorization\Factory\IsAllowedViewFactory',
+            'isAllowed' => 'Authorization\Factory\Acl\IsAllowedViewFactory',
         ),
     ),
     'controller_plugins' => array(
         'factories' => array(
-            'isAllowed' => 'Authorization\Factory\IsAllowedControllerFactory',
+            'isAllowed' => 'Authorization\Factory\Acl\IsAllowedControllerFactory',
         ),
     ),
     'navigation' => array(

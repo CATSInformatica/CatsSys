@@ -12,8 +12,10 @@ return array(
     'controllers' => array(
         'invokables' => array(
             'Authentication\Controller\Login' => 'Authentication\Controller\LoginController',
-            'Authentication\Controller\User' => 'Authentication\Controller\UserController',
-        )
+        ),
+        'factories' => array(
+            'Authentication\Controller\User' => 'Authentication\Factory\Controller\UserControllerFactory',
+        ),
     ),
     'router' => array(
         'routes' => array(

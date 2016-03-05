@@ -8,18 +8,18 @@
 
 namespace SchoolManagement\Controller;
 
-use Database\Service\EntityManagerService;
+use Database\Controller\AbstractEntityActionController;
+use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Exception\ConstraintViolationException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use SchoolManagement\Entity\Warning;
 use SchoolManagement\Entity\WarningType;
-use SchoolManagement\Form\StudentWarningForm;
-use SchoolManagement\Form\StudentWarningFilter;
-use SchoolManagement\Form\GiveWarningForm;
 use SchoolManagement\Form\GiveWarningFilter;
-use Zend\Mvc\Controller\AbstractActionController;
+use SchoolManagement\Form\GiveWarningForm;
+use SchoolManagement\Form\StudentWarningFilter;
+use SchoolManagement\Form\StudentWarningForm;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -28,10 +28,8 @@ use Zend\View\Model\ViewModel;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class SchoolWarningController extends AbstractActionController
+class SchoolWarningController extends AbstractEntityActionController
 {
-
-    use EntityManagerService;
 
     /**
      * Busca todos os tipos de advertência cadastrados
@@ -261,7 +259,7 @@ class SchoolWarningController extends AbstractActionController
                     $warning = new Warning();
                     $warning->setEnrollment($pEnrollment)
                             ->setWarningType($wTypeById[$data['warning_id']])
-                            ->setWarningDate(new \DateTime($data['warning_date']))
+                            ->setWarningDate(new DateTime($data['warning_date']))
                             ->setWarningComment($data['warning_comment']);
 
                     //  Adiciona uma referência no array $warnings da tabela Enrollment

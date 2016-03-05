@@ -5,7 +5,7 @@ namespace Database;
 return array(
     'service_manager' => array(
         'factories' => array(
-            'doctrine.cache.appApc' => 'Database\Factory\ApcCacheFactory',
+            'doctrine.cache.appApc' => 'Database\Factory\Cache\ApcCacheFactory',
         ),
         'abstract_factories' => array(
             'Zend\Cache\Service\StorageCacheAbstractServiceFactory',

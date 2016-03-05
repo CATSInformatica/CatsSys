@@ -8,12 +8,15 @@
 
 namespace Documents\Controller;
 
-use Documents\Form\StudentIdCardForm;
+use Database\Controller\AbstractEntityActionController;
+use DateTime;
 use Documents\Form\StudentIdCardFilter;
-use Documents\Form\StudentsBoardForm;
+use Documents\Form\StudentIdCardForm;
 use Documents\Form\StudentsBoardFilter;
+use Documents\Form\StudentsBoardForm;
 use Documents\Model\StudentIdCardPdf;
-use Zend\Mvc\Controller\AbstractActionController;
+use Exception as Exception2;
+use SebastianBergmann\RecursionContext\Exception;
 use Zend\View\Model\ViewModel;
 
 
@@ -22,10 +25,8 @@ use Zend\View\Model\ViewModel;
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class GeneratePdfController extends AbstractActionController
-{
-    
-    use \Database\Service\EntityManagerService;    
+class GeneratePdfController extends AbstractEntityActionController
+{ 
         
     /**
      * Busca as informações de todas as configurações de fundo e as retorna num array
@@ -37,7 +38,7 @@ class GeneratePdfController extends AbstractActionController
             $em = $this->getEntityManager();
             $configs = $em->getRepository('Documents\Entity\StudentBgConfig')
                     ->findAll();            
-        } catch (\Exception $ex) {
+        } catch (Exception2 $ex) {
             $message = $ex->getMessage();
         }
         
@@ -64,7 +65,7 @@ class GeneratePdfController extends AbstractActionController
             $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')
                     ->findAll();
             
-        } catch (\Exception $ex) {
+        } catch (Exception2 $ex) {
             $message = $ex->getMessage();
         }
         
@@ -162,14 +163,14 @@ class GeneratePdfController extends AbstractActionController
                     $config = array(
                         'phrase' => $bgConfigs[$data['config_id']]['phrase'],
                         'author' => $bgConfigs[$data['config_id']]['author'],
-                        'expiry' => new \DateTime($data['expiry_date']),
+                        'expiry' => new DateTime($data['expiry_date']),
                         'bg_img_url' => $bgConfigs[$data['config_id']]['img'],
                     );
                     
                     // Instancia um objeto da classe StudentIdPdf e gera as carteirinhas
                     $pdfHandler = new StudentIdCardPdf($config, $students);
                     $pdf = $pdfHandler->generatePdf();
-                } catch (\Exception $ex) {
+                } catch (Exception2 $ex) {
                     $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                     'Erro: ' . $ex->getMessage();
                 } 
@@ -271,7 +272,7 @@ class GeneratePdfController extends AbstractActionController
                     
                     // Gera PDF...
                     
-                } catch (\Exception $ex) {
+                } catch (Exception2 $ex) {
                     $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                     'Erro: ' . $ex->getMessage();
                 } 

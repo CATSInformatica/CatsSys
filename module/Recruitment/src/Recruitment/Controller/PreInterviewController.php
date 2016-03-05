@@ -8,27 +8,26 @@
 
 namespace Recruitment\Controller;
 
-use Database\Service\EntityManagerService;
+use Database\Controller\AbstractEntityActionController;
 use Exception;
+use Recruitment\Entity\RecruitmentStatus;
 use Recruitment\Form\CpfForm;
 use Recruitment\Form\PreInterviewForm;
 use Recruitment\Service\AddressService;
-use Recruitment\Service\RelativeService;
 use Recruitment\Service\RegistrationStatusService;
+use Recruitment\Service\RelativeService;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use Recruitment\Entity\RecruitmentStatus;
 
 /**
  * Description of PreInterviewController
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class PreInterviewController extends AbstractActionController
+class PreInterviewController extends AbstractEntityActionController
 {
 
     const PRE_INTERVIEW_DIR = './data/pre-interview/';
@@ -36,8 +35,7 @@ class PreInterviewController extends AbstractActionController
     const INCOME_FILE_SUFFIX = '_income.pdf';
     const EXPENDURE_FILE_SUFFIX = '_expendure.pdf';
 
-    use EntityManagerService,
-        RelativeService,
+    use RelativeService,
         AddressService,
         RegistrationStatusService;
 

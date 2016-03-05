@@ -8,11 +8,12 @@
 
 namespace Documents\Controller;
 
-use Exception;
+use Database\Controller\AbstractEntityActionController;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Documents\Entity\StudentBgConfig;
-use Documents\Form\StudentBgConfigForm;
 use Documents\Form\StudentBgConfigFilter;
-use Zend\Mvc\Controller\AbstractActionController;
+use Documents\Form\StudentBgConfigForm;
+use Exception;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -22,10 +23,8 @@ use Zend\View\Model\ViewModel;
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class StudentBgConfigController extends AbstractActionController
+class StudentBgConfigController extends AbstractEntityActionController
 {
-
-    use \Database\Service\EntityManagerService;
 
     /**
      * Exibe em uma tabela todas as configurações cadastradas
@@ -62,8 +61,7 @@ class StudentBgConfigController extends AbstractActionController
         if ($request->isPost()) {
 
             $post = array_merge_recursive(
-                    $request->getPost()->toArray(), 
-                    $request->getFiles()->toArray()
+                $request->getPost()->toArray(), $request->getFiles()->toArray()
             );
 
             $form->setData($post);
@@ -81,19 +79,18 @@ class StudentBgConfigController extends AbstractActionController
 
                     $bgConfig = new StudentBgConfig();
                     $bgConfig->setStudentBgConfigPhrase($data['bg_phrase'])
-                            ->setStudentBgConfigAuthor($data['bg_author'])
-                            ->setStudentBgConfigImg($bgImgNewName);
+                        ->setStudentBgConfigAuthor($data['bg_author'])
+                        ->setStudentBgConfigImg($bgImgNewName);
 
                     $em->persist($bgConfig);
                     $em->flush();
-                    $this->redirect()->toRoute('documents/student-bg-config', 
-                            array('action' => 'index'));
+                    $this->redirect()->toRoute('documents/student-bg-config', array('action' => 'index'));
                 } catch (Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
                         $message = 'Esta configuração já existe.';
                     } else {
                         $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
-                                'Erro: ' . $ex->getMessage();
+                            'Erro: ' . $ex->getMessage();
                     }
                 }
             }
@@ -124,7 +121,7 @@ class StudentBgConfigController extends AbstractActionController
                 $message = 'Configuração removida com sucesso.';
             } catch (Exception $ex) {
                 $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
-                        'Erro: ' . $ex->getMessage();
+                    'Erro: ' . $ex->getMessage();
             }
             return new JsonModel(array(
                 'message' => $message,

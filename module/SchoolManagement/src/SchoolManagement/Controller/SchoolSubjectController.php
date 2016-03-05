@@ -8,8 +8,9 @@
 
 namespace SchoolManagement\Controller;
 
+use Database\Controller\AbstractEntityActionController;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
-use Zend\Mvc\Controller\AbstractActionController;
 use SchoolManagement\Entity\Subject;
 use SchoolManagement\Form\SubjectForm;
 use Zend\View\Model\JsonModel;
@@ -20,10 +21,8 @@ use Zend\View\Model\ViewModel;
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class SchoolSubjectController extends AbstractActionController
+class SchoolSubjectController extends AbstractEntityActionController
 {
-
-    use \Database\Service\EntityManagerService;
 
     /**
      * Exibe em uma tabela todas as disciplinas cadastradas

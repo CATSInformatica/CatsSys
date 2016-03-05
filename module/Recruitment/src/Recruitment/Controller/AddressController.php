@@ -2,20 +2,18 @@
 
 namespace Recruitment\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\JsonModel;
+use Database\Controller\AbstractEntityActionController;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use Database\Service\EntityManagerService;
+use Exception;
+use Zend\View\Model\JsonModel;
 
 /**
  * Description of AddressController
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class AddressController extends AbstractActionController
+class AddressController extends AbstractEntityActionController
 {
-
-    use EntityManagerService;
 
     public function searchByZipcodeAction()
     {
@@ -52,7 +50,7 @@ class AddressController extends AbstractActionController
                 'response' => false,
                 'msg' => 'Requisição sem dados',
             ));
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
 
             return new JsonModel([
                 'response' => false,
