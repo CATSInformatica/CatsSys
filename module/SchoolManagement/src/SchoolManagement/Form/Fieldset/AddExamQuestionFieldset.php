@@ -1,68 +1,76 @@
 <?php
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
-
 namespace SchoolManagement\Form\Fieldset;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Fieldset;
-use SchoolManagement\Entity\Subject;
+use SchoolManagement\Entity\ExamQuestion;
 use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
- * Description of SubjectFieldset
+ * Description of AddExamQuestionFieldset
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class SubjectFieldset extends Fieldset implements InputFilterProviderInterface
+class AddExamQuestionFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
     public function __construct(ObjectManager $obj)
     {
-        parent::__construct('subject');
+        parent::__construct('exam-question');
 
         $this->setHydrator(new DoctrineHydrator($obj))
-            ->setObject(new Subject());
+            ->setObject(new ExamQuestion());
 
         $this
             ->add(array(
-                'name' => 'subjectName',
-                'type' => 'text',
-                'attributes' => array(
-                    'placeholder' => 'Ex: História do Brasil',
-                ),
-                'options' => array(
-                    'label' => 'Nome da disciplina',
-                ),
-                'attributes' => array(
-                    'id' => 'subject-name',
-                ),
-            ))
-            ->add(array(
-                'name' => 'subjectParent',
+                'name' => 'subjectId',
                 'type' => 'select',
                 'options' => array(
-                    'label' => 'Disciplina a qual pertence',
+                    'label' => 'Disciplina',
                     'value_options' => $this->getSubjects($obj),
                 ),
                 'attributes' => array(
-                    'id' => 'subject-parent',
+                    'id' => 'subject',
                 ),
             ))
             ->add(array(
-                'name' => 'subjectDescription',
+                'name' => 'examQuestionType',
+                'type' => 'select',
+                'options' => array(
+                    'label' => 'Tipo de questão',
+                    'value_options' => array(
+                        ExamQuestion::QUESTION_TYPE_CLOSED => ExamQuestion::QUESTION_TYPE_CLOSED_DESC,
+                        ExamQuestion::QUESTION_TYPE_OPEN => ExamQuestion::QUESTION_TYPE_OPEN_DESC,
+                    ),
+                ),
+                'attributes' => array(
+                    'id' => 'question-type',
+                ),
+            ))
+            ->add(array(
+                'name' => 'examQuestionEnunciation',
                 'type' => 'textarea',
                 'attributes' => array(
-                    'rows' => 4,
+                    'rows' => 5,
                 ),
                 'options' => array(
-                    'label' => 'Descrição da disciplina',
+                    'label' => 'Enunciado',
                 ),
+            ))
+            ->add(array(
+                'name' => 'answerOptions',
+                'type' => 'Zend\Form\Element\Collection',
+                'options' => array(
+                    'count' => 0,
+                    'should_create_template' => true,
+                    'template_placeholder' => '__placeholder__',
+                    'target_element' => new AddExamAnswerFieldset($obj),
+                ),
+                'attributes' => array(
+                    'id' => 'alternatives-fieldset',
+                )
             ))
         ;
     }
@@ -71,7 +79,6 @@ class SubjectFieldset extends Fieldset implements InputFilterProviderInterface
     {
         $subjects = $obj->getRepository('SchoolManagement\Entity\Subject')->findAll();
         $subjectNames = [];
-        $subjectNames[0] = '---';
         foreach ($subjects as $s) {
             $subjectNames[$s->getSubjectId()] = $s->getSubjectName();
         }
@@ -81,26 +88,13 @@ class SubjectFieldset extends Fieldset implements InputFilterProviderInterface
     public function getInputFilterSpecification()
     {
         return array(
-            'subjectName' => array(
-                'required' => true,
-                'filters' => array(
-                    array('name' => 'StripTags'),
-                    array('name' => 'StringToUpper'),
-                ),
-                'validators' => array(
-                    array(
-                        'name' => 'Zend\Validator\StringLength',
-                        'options' => array(
-                            'min' => 3,
-                            'max' => 80,
-                        )
-                    ),
-                ),
-            ),
-            'subjectParent' => array(
+            'subjectId' => array(
                 'required' => true,
             ),
-            'subjectDescription' => array(
+            'examQuestionType' => array(
+                'required' => true,
+            ),
+            'examQuestionEnunciation' => array(
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StringTrim'),
