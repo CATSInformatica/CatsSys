@@ -8,6 +8,7 @@
 
 namespace Recruitment\Controller;
 
+use Database\Controller\AbstractEntityActionController;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
@@ -16,7 +17,6 @@ use Recruitment\Form\RecruitmentFilter;
 use Recruitment\Form\RecruitmentForm;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -25,12 +25,10 @@ use Zend\View\Model\ViewModel;
  *
  * @author marcio
  */
-class RecruitmentController extends AbstractActionController
+class RecruitmentController extends AbstractEntityActionController
 {
 
     const EDITAL_DIR = './data/edital/';
-
-    use \Database\Service\EntityManagerService;
 
     public function indexAction()
     {

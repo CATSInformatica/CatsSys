@@ -11,8 +11,8 @@ namespace Authorization\Controller;
 use Authorization\Entity\Resource;
 use Authorization\Form\ResourceFilter;
 use Authorization\Form\ResourceForm;
+use Database\Controller\AbstractEntityActionController;
 use Exception;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -20,10 +20,8 @@ use Zend\View\Model\ViewModel;
  *
  * @author marcio
  */
-class ResourceController extends AbstractActionController
+class ResourceController extends AbstractEntityActionController
 {
-
-    use \Database\Service\EntityManagerService;
 
     public function indexAction()
     {

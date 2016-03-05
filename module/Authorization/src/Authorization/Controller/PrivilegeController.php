@@ -10,8 +10,8 @@ namespace Authorization\Controller;
 
 use Authorization\Entity\Privilege;
 use Authorization\Form\PrivilegeForm;
+use Database\Controller\AbstractEntityActionController;
 use Exception;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -19,10 +19,8 @@ use Zend\View\Model\ViewModel;
  *
  * @author marcio
  */
-class PrivilegeController extends AbstractActionController
+class PrivilegeController extends AbstractEntityActionController
 {
-
-    use \Database\Service\EntityManagerService;
 
     public function indexAction()
     {

@@ -21,12 +21,9 @@ trait EntityManagerService
     {
         if (null == $this->entityManager) {
             $this->entityManager = $this
-                    ->getServiceLocator()
-                    ->get('Doctrine\ORM\EntityManager');
+                ->getServiceLocator()
+                ->get('Doctrine\ORM\EntityManager');
         }
-        
-//        DbalConn
-//        $conn = $this->getServiceLocator()->get('doctrine.connection.orm_default');
 
         return $this->entityManager;
     }

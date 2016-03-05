@@ -6,7 +6,7 @@ use DateTime;
 use SchoolManagement\Entity\AttendanceType;
 
 /**
- * Description of Attendance
+ * Gera a lista de Presença em CSV
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
@@ -17,7 +17,14 @@ class AttendanceList
     protected $data = [];
     protected $csv;
 
-    public function __construct($config, $data = [])
+    /**
+     * Cria uma lista de presença a partir da turma, dias e tipos de presença escolhidos.
+     * 
+     * 
+     * @param array $config parâmetro de configuração da lista: nome da turma e tipos de presença
+     * @param array $data alunos e a situação de presença em cada dia definido em $config
+     */
+    public function __construct(array $config, array $data = [])
     {
         $this->setConfig($config);
         $this->setData($data);

@@ -6,26 +6,26 @@
  * and open the template in the editor.
  */
 
-namespace Authorization\Factory;
+namespace Authorization\Factory\Acl;
 
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
-use Authorization\View\Helper\IsAllowed as IsAllowedViewHelper;
+use Authorization\Controller\Plugin\IsAllowed as IsAllowedControllerPlugin;
 
 /**
- * Description of IsAllowedViewFactory
+ * Description of IsAllowedControllerFactory
  *
  * @author marcio
  */
-class IsAllowedViewFactory implements FactoryInterface
+class IsAllowedControllerFactory implements FactoryInterface
 {
 
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $auth = $serviceLocator->get('Zend\Authentication\AuthenticationService');
         $acl = $serviceLocator->get('acl');
-        $helper = new IsAllowedViewHelper($auth, $acl);
-        return $helper;
+        $plugin = new IsAllowedControllerPlugin($auth, $acl);
+        return $plugin;
     }
 
 //put your code here

@@ -17,7 +17,7 @@ use Zend\InputFilter\InputFilter;
  */
 class LoginFilter extends InputFilter
 {
-    public function __construct($sm)
+    public function __construct()
     {   
         $this->add(array(
             'name' => 'username', //usr_name
@@ -39,15 +39,6 @@ class LoginFilter extends InputFilter
                         'max' => 100,
                     ),
                 ),
-//                array(
-//                    'name' => 'DoctrineModule\Validator\ObjectExists',
-//                    'options' => array(
-//                        'object_repository' => 
-//                            $sm->get('Doctrine\ORM\EntityManager')
-//                                ->getRepository('Database\Entity\User'),
-//                        'fields' => 'usrName',
-//                    ),
-//                ),
             ),
         ))
         ->add(array(

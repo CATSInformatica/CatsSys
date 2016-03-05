@@ -4,12 +4,11 @@ namespace AdministrativeStructure\Controller;
 
 use AdministrativeStructure\Entity\Department;
 use AdministrativeStructure\Form\DepartmentForm;
-use Database\Service\EntityManagerService;
+use Database\Controller\AbstractEntityActionController;
 use Doctrine\DBAL\Exception\ConstraintViolationException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Exception;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -19,11 +18,9 @@ use Zend\View\Model\ViewModel;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class DepartmentController extends AbstractActionController
+class DepartmentController extends AbstractEntityActionController
 {
-
-    use EntityManagerService;
-
+    
     public function indexAction()
     {
         return new ViewModel([]);

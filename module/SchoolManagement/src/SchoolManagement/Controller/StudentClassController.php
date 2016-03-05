@@ -8,7 +8,7 @@
 
 namespace SchoolManagement\Controller;
 
-use Database\Service\EntityManagerService;
+use Database\Controller\AbstractEntityActionController;
 use DateTime;
 use Doctrine\DBAL\Exception\ConstraintViolationException;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -16,7 +16,6 @@ use Exception;
 use SchoolManagement\Entity\StudentClass;
 use SchoolManagement\Form\StudentClassFilter;
 use SchoolManagement\Form\StudentClassForm;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -25,10 +24,8 @@ use Zend\View\Model\ViewModel;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class StudentClassController extends AbstractActionController
+class StudentClassController extends AbstractEntityActionController
 {
-
-    use EntityManagerService;
 
     /**
      * Busca por todas as turmas cadastradas

@@ -11,13 +11,15 @@ namespace Recruitment;
 return array(
     'controllers' => array(
         'invokables' => array(
-            'Recruitment\Controller\Recruitment' => Controller\RecruitmentController::class,
-            'Recruitment\Controller\Registration' => Controller\RegistrationController::class,
             'Recruitment\Controller\Captcha' => Controller\CaptchaController::class,
-            'Recruitment\Controller\PreInterview' => Controller\PreInterviewController::class,
-            'Recruitment\Controller\Interview' => Controller\InterviewController::class,
-            'Recruitment\Controller\Address' => Controller\AddressController::class,
             'Recruitment\Controller\CsvViewer' => Controller\CsvViewerController::class,
+        ),
+        'factories' => array(
+            'Recruitment\Controller\Recruitment' => Factory\Controller\RecruitmentControllerFactory::class,
+            'Recruitment\Controller\Registration' => Factory\Controller\RegistrationControllerFactory::class,
+            'Recruitment\Controller\PreInterview' => Factory\Controller\PreInterviewControllerFactory::class,
+            'Recruitment\Controller\Interview' => Factory\Controller\InterviewControllerFactory::class,
+            'Recruitment\Controller\Address' => Factory\Controller\AddressControllerFactory::class,
         ),
     ),
     'router' => array(

@@ -4,9 +4,9 @@ namespace Documents;
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'Documents\Controller\StudentBgConfig' => Controller\StudentBgConfigController::class,
-            'Documents\Controller\GeneratePdf' => Controller\GeneratePdfController::class,
+        'factories' => array(
+            'Documents\Controller\StudentBgConfig' => Factory\Controller\StudentBgConfigControllerFactory::class,
+            'Documents\Controller\GeneratePdf' => Factory\Controller\GeneratePdfControllerFactory::class,
         ),
     ),
     'router' => array(
@@ -93,7 +93,7 @@ return array(
                         'privilege' => 'index',
                         'icon' => 'fa fa-files-o',
                         'toolbar' => array(
-                            array( 
+                            array(
                                 'url' => '/documents/student-bg-config/delete/$id',
                                 'id' => 'student-bg-config-delete',
                                 'title' => 'Remover',

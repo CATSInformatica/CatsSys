@@ -2,18 +2,16 @@
 
 namespace Authentication\Controller;
 
-use Database\Service\EntityManagerService;
-use Zend\Mvc\Controller\AbstractActionController;
-use Zend\View\Model\ViewModel;
 use Authentication\Entity\User;
-use Authentication\Form\UserForm;
 use Authentication\Form\UserFilter;
+use Authentication\Form\UserForm;
 use Authentication\Service\UserService;
+use Database\Controller\AbstractEntityActionController;
+use Exception;
+use Zend\View\Model\ViewModel;
 
-class UserController extends AbstractActionController
+class UserController extends AbstractEntityActionController
 {
-
-    use EntityManagerService;
 
     // R -retrieve 	CRUD
     public function indexAction()
@@ -74,7 +72,7 @@ class UserController extends AbstractActionController
         try {
 
             $user = $entityManager->getReference('Authentication\Entity\User', $id);
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             echo $ex->getMessage();
         }
 
@@ -131,15 +129,14 @@ class UserController extends AbstractActionController
             $user = $entityManager->getReference('Authentication\Entity\User', $id);
             $entityManager->remove($user);
             $entityManager->flush();
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             echo $ex->getMessage();
             $this->redirect()->toRoute('authentication/user', array(
                 'action' => 'index',
             ));
         }
 
-        return $this->redirect()->toRoute('authentication/user',
-                array(
+        return $this->redirect()->toRoute('authentication/user', array(
                 'action' => 'index',
         ));
     }

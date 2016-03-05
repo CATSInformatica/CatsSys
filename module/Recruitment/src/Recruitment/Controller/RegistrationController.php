@@ -8,6 +8,7 @@
 
 namespace Recruitment\Controller;
 
+use Database\Controller\AbstractEntityActionController;
 use Database\Service\EntityManagerService;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -25,7 +26,6 @@ use Recruitment\Service\RegistrationStatusService;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\Form\View\Helper\Captcha\Image;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -35,13 +35,12 @@ use Zend\View\Model\ViewModel;
  * Description of RegistrationController
  * @author marcio
  */
-class RegistrationController extends AbstractActionController
+class RegistrationController extends AbstractEntityActionController
 {
 
     const PROFILE_DIR = './data/profile/';
 
-    use EntityManagerService,
-        AddressService,
+    use AddressService,
         PersonService,
         RegistrationStatusService;
 

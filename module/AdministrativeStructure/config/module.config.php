@@ -4,8 +4,9 @@ namespace AdministrativeStructure;
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'AdministrativeStructure\Controller\Department' => Controller\DepartmentController::class,
+        'factories' => array(
+            'AdministrativeStructure\Controller\Department' => 
+            'AdministrativeStructure\Factory\Controller\DepartmentControllerFactory'
         ),
     ),
     'router' => array(

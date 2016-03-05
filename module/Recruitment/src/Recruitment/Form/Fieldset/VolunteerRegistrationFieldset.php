@@ -238,7 +238,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                         'name' => 'StringLength',
                         'options' => array(
                             'min' => 3,
-                            'max' => 200,
+                            'max' => 700,
                             'inclusive' => true,
                         ),
                     ),
@@ -255,7 +255,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                         'name' => 'StringLength',
                         'options' => array(
                             'min' => 0,
-                            'max' => 200,
+                            'max' => 700,
                             'inclusive' => true,
                         ),
                     ),
@@ -272,7 +272,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                         'name' => 'StringLength',
                         'options' => array(
                             'min' => 0,
-                            'max' => 200,
+                            'max' => 700,
                             'inclusive' => true,
                         ),
                     ),
@@ -289,7 +289,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                         'name' => 'StringLength',
                         'options' => array(
                             'min' => 3,
-                            'max' => 200,
+                            'max' => 700,
                             'inclusive' => true,
                         ),
                     ),
@@ -306,7 +306,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                         'name' => 'StringLength',
                         'options' => array(
                             'min' => 3,
-                            'max' => 200,
+                            'max' => 700,
                             'inclusive' => true,
                         ),
                     ),
@@ -323,7 +323,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                         'name' => 'StringLength',
                         'options' => array(
                             'min' => 3,
-                            'max' => 200,
+                            'max' => 700,
                             'inclusive' => true,
                         ),
                     ),

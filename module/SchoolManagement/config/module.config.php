@@ -4,13 +4,16 @@ namespace SchoolManagement;
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'SchoolManagement\Controller\Enrollment' => Controller\EnrollmentController::class,
-            'SchoolManagement\Controller\StudentClass' => Controller\StudentClassController::class,
-            'SchoolManagement\Controller\SchoolWarning' => Controller\SchoolWarningController::class,
-            'SchoolManagement\Controller\SchoolAttendance' => Controller\SchoolAttendanceController::class,
-            'SchoolManagement\Controller\StudyResources' => Controller\StudyResourcesController::class,
-            'SchoolManagement\Controller\SchoolSubject' => Controller\SchoolSubjectController::class,
+//        'invokables' => array(
+//        ),
+        'factories' => array(
+            'SchoolManagement\Controller\SchoolAttendance' =>
+            Factory\Controller\SchoolAttendanceControllerFactory::class,
+            'SchoolManagement\Controller\Enrollment' => Factory\Controller\EnrollmentControllerFactory::class,
+            'SchoolManagement\Controller\StudentClass' => Factory\Controller\StudentClassControllerFactory::class,
+            'SchoolManagement\Controller\SchoolWarning' => Factory\Controller\SchoolWarningControllerFactory::class,
+            'SchoolManagement\Controller\StudyResources' => Factory\Controller\StudyResourcesControllerFactory::class,
+            'SchoolManagement\Controller\SchoolSubject' => Factory\Controller\SchoolSubjectControllerFactory::class,
         ),
     ),
     'router' => array(
@@ -325,7 +328,7 @@ return array(
                         'route' => 'school-management/school-attendance',
                         'action' => 'allowance',
                         'icon' => 'fa fa-thumbs-o-up',
-                         'toolbar' => array(
+                        'toolbar' => array(
                             array(
                                 'url' => '/school-management/school-attendance/deleteAllowance/$id',
                                 'title' => 'Remover Abono',
