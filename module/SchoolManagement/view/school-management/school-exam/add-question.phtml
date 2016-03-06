@@ -5,12 +5,30 @@
     ?>
     <p><?php echo $this->message; ?></p>
     <div class="row">
+
+        <div class="container-fluid">
+            <p>Por favor, antes de inserir a questão, aguarde até que a fórmula abaixo seja exibida. 
+                Caso a fórmula não apareça dentro de alguns segundos, por favor, recarregue a página.</p>
+            <br>
+            <h3 id="testEquation" style="display:none;" class="text-center">
+                $$ e^{ix} = \cos{x} + i \sin{x}. $$
+            </h3>
+        </div>
+        <hr>
         <?php if ($form !== null): ?>
-            <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
-                <?php echo $this->form($form); ?>
+            <div class="container-fluid">
+                <div class="col-xs-12 col-md-6">
+                    <h3 class="text-center">Questão</h3>
+                    <?php echo $this->form($form); ?>
+                </div>
+                <div class="col-xs-12 col-md-6">
+                    <h3 class="text-center">Pré-visualização</h3>
+                    <div id="mathPreview" class="text-justify"></div>
+                    <div id="mathBuffer"></div>
+                </div>
             </div>
         <?php endif; ?>
-    </div>    
+    </div>
 </section>
 
 <script>

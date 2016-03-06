@@ -9,20 +9,21 @@ define(['jquery', 'datatable'], function () {
         //  Tipos de questão
         var CLOSED_QUESTION = "1";
         var OPEN_QUESTION = "2";
+        var preview = null;
 
         initPageItems = function () {
             // Botões Adiciona/Remove alternativa
             var btnGroup = ''
-            + '<div class="btn-group btn-group-justified" role="group" id="alternative-control-btns">'
-                + '<div class="btn-group" role="group">'
+                    + '<div class="btn-group btn-group-justified" role="group" id="alternative-control-btns">'
+                    + '<div class="btn-group" role="group">'
                     + '<button type="button" id="add-alternative-btn" class="btn btn-success" onclick="return addQuestionAlternativeBtn()">Adicionar Alternativa</button>'
-                + '</div>'
-                + '<div class="btn-group" role="group">'
+                    + '</div>'
+                    + '<div class="btn-group" role="group">'
                     + '<button type="button" id="remove-alternative-btn" class="btn btn-danger" onclick="return removeQuestionAlternativeBtn()" onclick="return addQuestionAlternativeBtn()">Remover Alternativa</button>'
-                + '</div>'
-            + '</div>';
+                    + '</div>'
+                    + '</div>';
             $('#alternatives-fieldset').after(btnGroup + '<br><br>');
-            
+
             // Impede que o usuário selecione o tipo de questão como aberta se 
             // houver ao menos um campo de alternativas
             $("#question-type").change(function () {
@@ -31,7 +32,7 @@ define(['jquery', 'datatable'], function () {
                         $("#question-type").val(CLOSED_QUESTION);
                     } else {
                         $("#alternative-control-btns").hide();
-                    }     
+                    }
                 } else {
                     $("#alternative-control-btns").show();
                 }
@@ -54,9 +55,49 @@ define(['jquery', 'datatable'], function () {
             }
         };
 
+        initPreview = function () {
+
+            var value = "";
+            $("#add-exam-question").on("keyup", "textarea", function () {
+                $("#add-exam-question").find("textarea").each(function (e) {
+                    if (e === 0) {
+                        value = "<h4>Questão <h4>";
+                        value += $(this).val();
+                        value += "<hr>";
+                        value += "<ol type='A' class='text-center'>";
+                    } else {
+                        value += "<li>" + $(this).val();
+                        +"</li>";
+                    }
+                });
+                if (value !== "") {
+                    value += "</ol>";
+                }
+
+                preview.setInputValue(value);
+                preview.Update();
+                value = "";
+            });
+        };
+
+
+        initMathJax = function () {
+            require(['mathjax'], function () {
+                setTimeout($("#testEquation").fadeIn("slow"), 1000);
+                require(['app/models/MathJaxPreview'], function (Preview) {
+                    preview = Preview;
+                    preview.Init();
+                    initPreview();
+                });
+            });
+        };
+
+
+
         return {
             init: function () {
                 initPageItems();
+                initMathJax();
             }
         };
 

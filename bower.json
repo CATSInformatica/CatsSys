@@ -21,6 +21,7 @@
     "bootswatch-dist": "yeti",
     "smooth-scroll": "https://github.com/cferdinandi/smooth-scroll.git#~8.1.0",
     "bootstrap-social": "~4.12.0",
-    "jquery-csv": "*"
+    "jquery-csv": "*",
+    "MathJax": "mathjax/MathJax#~2.6.1"
   }
 }
