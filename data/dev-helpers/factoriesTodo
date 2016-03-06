@@ -1,0 +1,14 @@
+
+
+Modules
+    > AdministrativeStructure [COMPLETE]
+    > Authentication
+        * LoginController (AuthenticationService)
+    > Authorization [COMPLETE]
+    > Database [COMPLETE]
+    > Documents [COMPLETE]
+    > Recruitment [COMPLETE]
+    > SchoolManagement [COMPLETE]
+    > Site [NO CHANGES]
+    > UMS [NO CHANGES]
+    > Version [NO CHANGES]

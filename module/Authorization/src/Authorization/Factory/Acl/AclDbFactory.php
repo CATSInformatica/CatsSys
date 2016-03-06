@@ -6,30 +6,23 @@
  * and open the template in the editor.
  */
 
-namespace Database\Factory;
+namespace Authorization\Factory\Acl;
 
-use Doctrine\Common\Cache\ApcCache;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Authorization\Acl\AclDb;
 
 /**
- * Description of ApcCache
+ * Description of AclDbFactory
  *
- * @author Márcio Dias <marciojr91@gmail.com>
+ * @author marcio
  */
-class ApcCacheFactory implements FactoryInterface
+class AclDbFactory implements FactoryInterface
 {
 
-    /**
-     * Doctrine ApcCache
-     * 
-     * @param ServiceLocatorInterface $serviceLocator
-     * @return ApcCache
-     */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        return new ApcCache();
+        return new AclDb($serviceLocator->get('Doctrine\ORM\EntityManager'));
     }
 
-//put your code here
 }

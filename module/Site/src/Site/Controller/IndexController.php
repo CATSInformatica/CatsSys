@@ -4,7 +4,6 @@ namespace Site\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Zend\View\Model\JsonModel;
 use Site\Form\ContactForm;
 use Site\Form\ContactFilter;
 

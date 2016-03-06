@@ -1,22 +1,33 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SchoolManagement\Controller;
 
-use Database\Service\EntityManagerService;
+use Database\Controller\AbstractEntityActionController;
 use Doctrine\DBAL\Exception\ConstraintViolationException;
 use Exception;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\RecruitmentStatus;
 use Recruitment\Form\SearchRegistrationsForm;
+use RuntimeException;
 use SchoolManagement\Entity\Enrollment;
 use SchoolManagement\Form\SearchEnrollmentForm;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -25,10 +36,8 @@ use Zend\View\Model\ViewModel;
  *
  * @author marcio
  */
-class EnrollmentController extends AbstractActionController
+class EnrollmentController extends AbstractEntityActionController
 {
-
-    use EntityManagerService;
 
     public function indexAction()
     {
@@ -73,7 +82,7 @@ class EnrollmentController extends AbstractActionController
                 $data = $request->getPost();
 
                 if (!is_numeric($data['studentClass'])) {
-                    throw new \RuntimeException('Turma não especificada');
+                    throw new RuntimeException('Turma não especificada');
                 }
 
                 $em = $this->getEntityManager();
@@ -125,7 +134,7 @@ class EnrollmentController extends AbstractActionController
                 $data = $request->getPost();
 
                 if (!is_numeric($data['studentClass'])) {
-                    throw new \RuntimeException('Turma não especificada');
+                    throw new RuntimeException('Turma não especificada');
                 }
 
                 $em = $this->getEntityManager();

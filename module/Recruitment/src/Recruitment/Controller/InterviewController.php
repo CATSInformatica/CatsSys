@@ -8,15 +8,15 @@
 
 namespace Recruitment\Controller;
 
-use Database\Service\EntityManagerService;
+use Database\Controller\AbstractEntityActionController;
 use Exception;
 use Recruitment\Entity\RecruitmentStatus;
 use Recruitment\Form\PreInterviewForm;
 use Recruitment\Form\VolunteerInterviewForm;
 use Recruitment\Service\AddressService;
-use Recruitment\Service\RelativeService;
 use Recruitment\Service\RegistrationStatusService;
-use Zend\Mvc\Controller\AbstractActionController;
+use Recruitment\Service\RelativeService;
+use RuntimeException;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -24,11 +24,10 @@ use Zend\View\Model\ViewModel;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class InterviewController extends AbstractActionController
+class InterviewController extends AbstractEntityActionController
 {
 
-    use EntityManagerService,
-        RelativeService,
+    use RelativeService,
         AddressService,
         RegistrationStatusService;
 
@@ -112,7 +111,7 @@ class InterviewController extends AbstractActionController
                             ->getNumericStatusType();
 
                     if ($currentStatusType == RecruitmentStatus::STATUSTYPE_REGISTERED) {
-                        throw new \RuntimeException('Este candidato ainda não foi convocado para entrevista '
+                        throw new RuntimeException('Este candidato ainda não foi convocado para entrevista '
                         . 'ou aula teste');
                     }
 

@@ -8,7 +8,7 @@
 
 namespace SchoolManagement\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use Database\Controller\AbstractEntityActionController;
 use Zend\View\Model\JsonModel;
 
 /**
@@ -16,7 +16,7 @@ use Zend\View\Model\JsonModel;
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class StudyResourcesController extends AbstractActionController
+class StudyResourcesController extends AbstractEntityActionController
 {
     
     /**

@@ -6,10 +6,9 @@ use Authorization\Entity\Role as EntityRole;
 use Authorization\Form\RoleFilter;
 use Authorization\Form\RoleForm;
 use Authorization\Form\UserRoleForm;
-use Database\Service\EntityManagerService;
+use Database\Controller\AbstractEntityActionController;
 use Exception;
 use Zend\Json\Json;
-use Zend\Mvc\Controller\AbstractActionController;
 use Zend\Session\Container;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -25,10 +24,8 @@ use Zend\View\Model\ViewModel;
  *
  * @author marcio
  */
-class RoleController extends AbstractActionController
+class RoleController extends AbstractEntityActionController
 {
-
-    use EntityManagerService;
 
     public function indexAction()
     {

@@ -4,14 +4,16 @@ namespace SchoolManagement;
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'SchoolManagement\Controller\Enrollment' => Controller\EnrollmentController::class,
-            'SchoolManagement\Controller\StudentClass' => Controller\StudentClassController::class,
-            'SchoolManagement\Controller\SchoolWarning' => Controller\SchoolWarningController::class,
-            'SchoolManagement\Controller\SchoolAttendance' => Controller\SchoolAttendanceController::class,
-            'SchoolManagement\Controller\StudyResources' => Controller\StudyResourcesController::class,
-            'SchoolManagement\Controller\SchoolSubject' => Controller\SchoolSubjectController::class,
-            'SchoolManagement\Controller\SchoolExam' => Controller\SchoolExamController::class,
+//        'invokables' => array(
+//        ),
+        'factories' => array(
+            'SchoolManagement\Controller\SchoolAttendance' =>
+            Factory\Controller\SchoolAttendanceControllerFactory::class,
+            'SchoolManagement\Controller\Enrollment' => Factory\Controller\EnrollmentControllerFactory::class,
+            'SchoolManagement\Controller\StudentClass' => Factory\Controller\StudentClassControllerFactory::class,
+            'SchoolManagement\Controller\SchoolWarning' => Factory\Controller\SchoolWarningControllerFactory::class,
+            'SchoolManagement\Controller\StudyResources' => Factory\Controller\StudyResourcesControllerFactory::class,
+            'SchoolManagement\Controller\SchoolSubject' => Factory\Controller\SchoolSubjectControllerFactory::class,
         ),
     ),
     'router' => array(
@@ -107,21 +109,6 @@ return array(
                             ),
                             'defaults' => array(
                                 'controller' => 'SchoolManagement\Controller\SchoolSubject',
-                                'action' => 'index',
-                            ),
-                        ),
-                    ),
-                    'school-exam' => array(
-                        'type' => 'Segment',
-                        'options' => array(
-                            'route' => '/school-exam[/:action[/:id]]',
-                            'constraints' => array(
-                                'controller' => 'SchoolManagement\Controller\SchoolExam',
-                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
-                                'controller' => 'SchoolManagement\Controller\SchoolExam',
                                 'action' => 'index',
                             ),
                         ),
@@ -364,7 +351,6 @@ return array(
                     array(
                         'label' => 'Show Subjects',
                         'route' => 'school-management/school-subject',
-                        'action' => 'index',
                         'icon' => 'fa fa-list-alt',
                         'toolbar' => array(
                             array(
@@ -385,80 +371,12 @@ return array(
                                 'fntype' => 'selectedHttpClick',
                             ),
                         ),
-                        'pages' => array(
-                            array(
-                                'label' => 'Edit Subject',
-                                'route' => 'school-management/school-subject',
-                                'action' => 'edit',
-                                'icon' => 'fa fa-list-alt',
-                            ),
-                        ),
                     ),
                     array(
                         'label' => 'Create Subject',
                         'route' => 'school-management/school-subject',
                         'action' => 'create',
                         'icon' => 'fa fa-list-alt',
-                    ),
-                ),
-            ),
-            array(
-                'label' => 'Exam',
-                'uri' => '#',
-                'icon' => 'fa fa-book',
-                'order' => 14,
-                'resource' => 'SchoolManagement\Controller\SchoolExam',
-                'pages' => array(
-                    array(
-                        'label' => 'Show Exams',
-                        'route' => 'school-management/school-exam',
-                        'action' => 'index',
-                        'icon' => 'fa fa-list-alt',
-                    ),
-                    array(
-                        'label' => 'Show Questions',
-                        'route' => 'school-management/school-exam',
-                        'action' => 'question',
-                        'icon' => 'fa fa-question-circle',
-                        'toolbar' => array(
-                            array(
-                                'url' => '/school-management/school-exam/edit-question/$id',
-                                'title' => 'Editar',
-                                'id' => 'question-edit',
-                                'description' => 'Permite editar a questão selecionada',
-                                'class' => 'fa fa-pencil-square-o bg-blue',
-                                'fntype' => 'selectedHttpClick',
-                            ),
-                            array(
-                                'url' => '/school-management/school-exam/delete-question/$id',
-                                'title' => 'Remover',
-                                'id' => 'question-delete',
-                                'description' => 'Permite remoção da questão selecionada',
-                                'class' => 'fa fa-trash-o bg-red',
-                                'fntype' => 'selectedAjaxClick',
-                                'hideOnSuccess' => true,
-                            ),
-                        ),
-                        'pages' => array(
-                            array(
-                                'label' => 'Get Questions',
-                                'route' => 'school-management/school-exam',
-                                'action' => 'get-questions',
-                                'icon' => 'fa fa-list-alt',
-                            ),
-                            array(
-                                'label' => 'Edit Question',
-                                'route' => 'school-management/school-exam',
-                                'action' => 'edit-question',
-                                'icon' => 'fa fa-list-alt',
-                            ),
-                        ),
-                    ),
-                    array(
-                        'label' => 'Add Question',
-                        'route' => 'school-management/school-exam',
-                        'action' => 'add-question',
-                        'icon' => 'fa fa-question-circle',
                     ),
                 ),
             ),
