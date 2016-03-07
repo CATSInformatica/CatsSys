@@ -43,16 +43,6 @@ class AddExamAnswerFieldset extends Fieldset implements InputFilterProviderInter
                     array('name' => 'StringTrim'),
                     array('name' => 'StripTags'),
                 ),
-                'validators' => array(
-                    array(
-                        'name' => 'StringLength',
-                        'options' => array(
-                            'min' => 3,
-                            'max' => 200,
-                            'inclusive' => true,
-                        ),
-                    ),
-                ),
             ),
         );
     }

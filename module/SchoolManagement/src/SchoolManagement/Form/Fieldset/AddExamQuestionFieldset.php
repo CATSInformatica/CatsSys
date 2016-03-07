@@ -100,16 +100,6 @@ class AddExamQuestionFieldset extends Fieldset implements InputFilterProviderInt
                     array('name' => 'StringTrim'),
                     array('name' => 'StripTags'),
                 ),
-                'validators' => array(
-                    array(
-                        'name' => 'StringLength',
-                        'options' => array(
-                            'min' => 3,
-                            'max' => 200,
-                            'inclusive' => true,
-                        ),
-                    ),
-                ),
             ),
         );
     }
