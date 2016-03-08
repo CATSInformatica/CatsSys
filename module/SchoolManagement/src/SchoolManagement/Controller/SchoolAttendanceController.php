@@ -21,9 +21,10 @@ namespace SchoolManagement\Controller;
 
 use Database\Controller\AbstractDbalAndEntityActionController;
 use DateTime;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use SchoolManagement\Entity\AttendanceType;
-use SchoolManagement\Entity\Repository\Attendance;
+use SchoolManagement\Entity\Repository\Attendance as AttendanceRepository;
 use SchoolManagement\Form\SchoolAttendanceForm;
 use SchoolManagement\Model\AttendanceList;
 use SchoolManagement\Model\PdfAttendanceList;
@@ -158,7 +159,7 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
             $conn = $this->getDbalConnection();
             try {
 
-                Attendance::insertNewList(
+                AttendanceRepository::insertNewList(
                     $conn, $data['students'], $date
                 );
 
@@ -298,6 +299,78 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
 
         return new JsonModel([
             'message' => 'Nenhum abono foi selecionado.',
+        ]);
+    }
+
+    public function addAllowanceAction()
+    {
+
+        try {
+
+            $em = $this->getEntityManager();
+
+            $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')
+                ->findByEndDateGratherThan(new \DateTime('now'));
+
+            $allowanceTypes = $em->getRepository('SchoolManagement\Entity\AttendanceType')
+                ->findByAttendanceTypeIds([
+                AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_BEGIN,
+                AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_END,
+                AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_FULL,
+            ]);
+
+            return new ViewModel([
+                'message' => null,
+                'classes' => $classes,
+                'allowanceTypes' => $allowanceTypes,
+            ]);
+        } catch (Exception $ex) {
+            return new ViewModel([
+                'message' => $ex->getMessage(),
+                'classes' => null,
+            ]);
+        }
+    }
+
+    /**
+     * @todo Criar os métodos setEnrollment, setDate e setAllowanceType
+     * @return JsonModel
+     */
+    public function saveAllowanceAction()
+    {
+        $this->layout('empty/layout');
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+
+            $message = "";
+
+            $data = $request->getPost();
+            $dbal = $this->getDbalConnection();
+
+            foreach ($data['allowances'] as $all) {
+                $date = new \DateTime($all['date']);
+                try {
+                    AttendanceRepository::insertNewAttendance($dbal, $all['enrollment'], $all['allowanceType'], $date);
+                    $message += "sucesso " . $all['allowanceType'] . "<br>";
+                } catch (\Exception $ex) {
+                    if ($ex instanceof UniqueConstraintViolationException) {
+                        $message .= "<br>Aluno " . $all['enrollment'] . " já possui o " .
+                            AttendanceType::getAttendanceTypeName($all['allowanceType'])
+                            . " na data " . $date->format('d/m/Y');
+                        continue;
+                    }
+                    $message = $ex->getMessage();
+                    break;
+                }
+            }
+            return new JsonModel([
+                'message' => $message,
+            ]);
+        }
+
+        return new JsonModel([
+            'message' => 'Esta url só pode ser acessada via post',
         ]);
     }
 

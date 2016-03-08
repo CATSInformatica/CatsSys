@@ -55,7 +55,7 @@ cd $HOME/vhosts/cats-lab
 COMPOSER_PROCESS_TIMEOUT=2000 composer install
 
 echo 'Starting bower assets installation'
-cd $HOME/vhosts/cats-lab/public/
+cd $HOME/vhosts/cats-lab
 bower install
 
 echo 'Creating local configuration'

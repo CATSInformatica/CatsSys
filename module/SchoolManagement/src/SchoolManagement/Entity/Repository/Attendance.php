@@ -63,6 +63,21 @@ class Attendance extends EntityRepository
         }
     }
 
+    public static function insertNewAttendance(Connection $conn, $enrollment, $attendanceType, \DateTime $date)
+    {
+        $conn->insert('attendance',
+            [
+            'enrollment_id' => $enrollment,
+            'attendance_type_id' => $attendanceType,
+            'attendance_date' => $date,
+            ], [
+            PDO::PARAM_INT,
+            PDO::PARAM_INT,
+            'date'
+            ]
+        );
+    }
+
     public function findAllowance($params = [])
     {
 
