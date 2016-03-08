@@ -53,4 +53,20 @@ class Attendance
      */
     protected $date;
 
+    public function setEnrollment(Enrollment $enroll)
+    {
+        $enroll->addAttendance($this);
+        $this->enrollment = $enroll;
+    }
+
+    public function setAttendanceType(AttendanceType $attType)
+    {
+        $this->attendanceType = $attType;
+    }
+
+    public function setDate(\DateTime $date)
+    {
+        $this->date = $date;
+    }
+
 }

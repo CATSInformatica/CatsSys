@@ -324,7 +324,23 @@ return array(
                         ),
                     ),
                     array(
-                        'label' => 'Allowance',
+                        'label' => 'Add allowance',
+                        'route' => 'school-management/school-attendance',
+                        'action' => 'addAllowance',
+                        'icon' => 'fa fa-thumbs-o-up',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/school-management/school-attendance/saveAllowance',
+                                'title' => 'Salvar Abono',
+                                'id' => 'allowance-save',
+                                'description' => 'Salva os abonos escolhidos',
+                                'class' => 'fa fa-hdd-o bg-green',
+                                'fntype' => 'ajaxPostClick',
+                            ),
+                        ),
+                    ),
+                    array(
+                        'label' => 'Edit allowance',
                         'route' => 'school-management/school-attendance',
                         'action' => 'allowance',
                         'icon' => 'fa fa-thumbs-o-up',

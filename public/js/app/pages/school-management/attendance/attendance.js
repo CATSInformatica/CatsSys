@@ -20,6 +20,9 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
         var allowanceMonth = $("#allowanceMonth");
         var allowanceStudentsByMonth = {};
         var allowanceStudents = $("#allowanceStudents");
+        var studentClass = $("#studentClass");
+        var chosenAllowanceList = $("#chosenAllowanceList");
+        var chosenDate = null;
 
         initDateCopy = function () {
             add.click(addAttendanceDate);
@@ -267,13 +270,13 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                 var startDate = e.date.format('YYYY-MM-DD');
                 var endDate = e.date.add(1, 'months').format('YYYY-MM-DD');
 
-//                console.log({
-//                    start: moment().format("YYYY-MM-01"),
-//                    end: moment().add(1, 'months').format("YYYY-MM-01")
-//                });
-
                 searchAllowanceBetween(startDate, endDate);
             });
+
+            var start = moment().format("YYYY-MM-01");
+            var end = moment().add(1, 'months').format("YYYY-MM-01");
+            
+            searchAllowanceBetween(start, end);
         };
 
         searchAllowanceBetween = function (start, end) {
@@ -408,6 +411,115 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                     .slideDown("fast");
         };
 
+        initElements = function () {
+
+            var template = "";
+
+            // Students
+            var stdClass = studentClass.val();
+            studentClass.change(function () {
+                getStudents(stdClass);
+            });
+            getStudents(stdClass);
+
+            // Calendar
+            $("#allowanceDate").datetimepicker({
+                format: 'DD/MM/YYYY',
+                inline: true,
+                viewMode: 'days',
+                locale: 'pt-br',
+                useCurrent: false
+            });
+
+            $("#allowanceDate").on("dp.change", function (e) {
+                chosenDate = e.date;
+            });
+
+            // button
+            $("#addAllowance").on("click", function () {
+//                if (!$(".control-sidebar").hasClass("control-sidebar-open")) {
+//                    $(".control-sidebar").addClass("control-sidebar-open");
+//                }
+                var selectedAllowance = $("input[name=attendanceType]:checked");
+                if (chosenDate !== null && selectedAllowance.length > 0) {
+
+
+                    template = "<div data-student='" + $("#students").val()
+                            + "' data-allowancetype='" + selectedAllowance.val()
+                            + "' data-date='" + chosenDate.format("YYYY-MM-DD")
+                            + "' class='chosenAllowanceItem alert alert-success alert-dismissible fade in' role='alert'>" +
+                            "<button type='button' class='close pull-left' data-dismiss='alert' aria-label='Close'>" +
+                            "<span aria-hidden='true'><i class='fa fa-close'></i></span>" +
+                            "</button>" +
+                            "<p class='text-center'><strong>" + chosenDate.format("dddd, LL") + "</strong><br>" +
+                            $("#students").find("option:selected").text() +
+                            "<br>(" + selectedAllowance.data("name") + ")" +
+                            "</p></div>";
+
+                    chosenAllowanceList.append(template);
+                }
+
+                /**
+                 * getDataOf must get all data-* of chosenAllowanceItem
+                 * @param {type} id
+                 * @returns {undefined}
+                 */
+
+            });
+        };
+
+        getStudents = function (id) {
+            $.ajax({
+                url: '/school-management/student-class/getStudents',
+                type: 'POST',
+                data: {
+                    id: id
+                },
+                success: function (data) {
+                    insertStudents(data.students);
+                },
+                error: function (textStatus) {
+                    console.log(textStatus);
+                }
+            });
+        };
+
+        insertStudents = function (students) {
+            $("#students").html("");
+            var enrId;
+            var template;
+            for (var i = 0; i < students.length; i++) {
+                enrId = "" + students[i].enrollmentId;
+
+                template = "<option value='" + students[i].enrollmentId + "'>" +
+                        ("0000" + enrId).substring(enrId.length) +
+                        " - " +
+                        students[i].personFirstName + " " +
+                        students[i].personLastName +
+                        "</option>";
+
+                $("#students").append(template);
+            }
+        };
+
+        getChosenAllowances = function () {
+
+            var data = {
+                allowances: []
+            };
+
+            chosenAllowanceList.find(".chosenAllowanceItem").each(function (e) {
+                console.log(e);
+                data.allowances.push({
+                    enrollment: $(this).data('student'),
+                    date: $(this).data('date'),
+                    allowanceType: $(this).data('allowancetype')
+                });
+            });
+
+            return data;
+        };
+
         return {
             init: function () {
                 moment.locale("pt-br");
@@ -426,11 +538,15 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                     });
                 }
 
-                // allowance
+                // edit allowance
                 if (allowanceMonth.length > 0) {
                     initAllowanceDatepicker();
                 }
 
+                // add allowance
+                if (studentClass.length > 0) {
+                    initElements();
+                }
             },
             getDataOf: function (selectedItemId) {
 
@@ -438,6 +554,9 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                     case 'attendance-list-save':
                         var index = $(".cats-selected-row").find(".attendanceListTable").data("id");
                         return listModels[index];
+                        break;
+                    case 'allowance-save':
+                        return getChosenAllowances();
                         break;
                 }
             },
@@ -451,7 +570,6 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                                         .slideUp("fast", function () {
                                             $(this).remove();
                                         });
-
                             }
                         };
                 }

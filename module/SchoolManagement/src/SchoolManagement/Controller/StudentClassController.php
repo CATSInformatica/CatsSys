@@ -35,14 +35,13 @@ class StudentClassController extends AbstractEntityActionController
     public function indexAction()
     {
 
-
         try {
             $em = $this->getEntityManager();
             $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')->findAll();
             $message = null;
         } catch (Exception $ex) {
             $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
-                    'Erro: ' . $ex->getMessage();
+                'Erro: ' . $ex->getMessage();
             $classes = null;
         }
 
@@ -77,8 +76,8 @@ class StudentClassController extends AbstractEntityActionController
                     $class = new StudentClass();
 
                     $class->setClassName($data['class_name'])
-                            ->setClassBeginDate(new DateTime($data['class_begin_date']))
-                            ->setClassEndDate(new DateTime($data['class_end_date']));
+                        ->setClassBeginDate(new DateTime($data['class_begin_date']))
+                        ->setClassEndDate(new DateTime($data['class_end_date']));
 
                     $em->persist($class);
                     $em->flush();
@@ -89,7 +88,7 @@ class StudentClassController extends AbstractEntityActionController
                         $message = 'já existe uma turma com este nome. Por favor utilize outro.';
                     } else {
                         $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
-                                'Erro: ' . $ex->getMessage();
+                            'Erro: ' . $ex->getMessage();
                     }
                 }
             }
@@ -126,18 +125,54 @@ class StudentClassController extends AbstractEntityActionController
                     $message = 'Turma removida com sucesso.';
                 } else {
                     $message = 'Não é possivel remover esta turma. ' .
-                            'A data de início das aulas é menor que a data atual.';
+                        'A data de início das aulas é menor que a data atual.';
                 }
             } catch (Exception $ex) {
                 if ($ex instanceof ConstraintViolationException) {
                     $message = 'Não é possível remover turmas que possuam alunos associados.';
                 } else {
                     $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
-                            'Erro: ' . $ex->getMessage();
+                        'Erro: ' . $ex->getMessage();
                 }
             }
         } else {
             $message = 'Nenhuma turma selecionda.';
+        }
+
+        return new JsonModel(array(
+            'message' => $message
+        ));
+    }
+
+    /**
+     * Busca por todos os alunos da turma $id
+     */
+    public function getStudentsAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+
+            $data = $request->getPost();
+            if (is_numeric($data['id'])) {
+                try {
+                    $em = $this->getEntityManager();
+
+                    $students = $em->getRepository('SchoolManagement\Entity\Enrollment')->findAllCurrentStudents(array(
+                        'class' => $data['id'],
+                    ));
+
+                    return new JsonModel([
+                        'students' => $students,
+                    ]);
+                } catch (\Exception $ex) {
+                    $message = $ex->getMessage();
+                }
+            } else {
+                $message = 'Nenhuma turma selecionada';
+            }
+        } else {
+            $message = 'Esta url só pode ser acessada via post';
         }
 
         return new JsonModel(array(

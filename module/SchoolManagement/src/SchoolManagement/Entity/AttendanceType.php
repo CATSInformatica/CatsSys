@@ -57,19 +57,22 @@ class AttendanceType
     public static function getAttendanceTypeName($attType)
     {
         switch ($attType) {
-            case AttendanceType::TYPE_ATTENDANCE_BEGIN:
+            case self::TYPE_ATTENDANCE_BEGIN:
                 $type = 'FREQ. INÍCIO';
                 break;
-            case AttendanceType::TYPE_ATTENDANCE_END:
+            case self::TYPE_ATTENDANCE_END:
                 $type = 'FREQ. FIM';
                 break;
-            case AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_BEGIN:
+            case self::TYPE_ATTENDANCE_ALLOWANCE_BEGIN:
                 $type = 'ABONO INÍCIO';
                 break;
-            case AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_END:
+            case self::TYPE_ATTENDANCE_ALLOWANCE_END:
                 $type = 'ABONO FIM';
                 break;
-            default: 
+            case self::TYPE_ATTENDANCE_ALLOWANCE_FULL:
+                $type = 'ABONO INTEGRAL';
+                break;
+            default:
                 throw new \InvalidArgumentException('Tipo de frequência inválido');
         }
 
