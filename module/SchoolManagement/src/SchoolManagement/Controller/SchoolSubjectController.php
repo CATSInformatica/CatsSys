@@ -39,10 +39,10 @@ class SchoolSubjectController extends AbstractEntityActionController
             $message = $ex->getMessage();
         }
 
-        return new ViewModel([
+        return new ViewModel(array(
             'subjects' => $subjects,
             'message' => $message,
-        ]);
+        ));
     }
 
     /**
@@ -63,19 +63,19 @@ class SchoolSubjectController extends AbstractEntityActionController
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $data = $form->getData();
-
+                $data = $form->getData(\Zend\Form\FormInterface::VALUES_AS_ARRAY)['subject'];
+                $parent = null;
+                if ($data['subjectParent'] > 0) {
+                    $parent = $em->find('SchoolManagement\Entity\Subject', $data['subjectParent']);
+                }
                 try {
+                    $subject->setParent($parent);
                     $em->persist($subject);
                     $em->flush();
                     $this->redirect()->toRoute('school-management/school-subject', array('action' => 'index'));
                 } catch (Exception $ex) {
-                    if ($ex instanceof UniqueConstraintViolationException) {
-                        $message = 'Esta disciplina já existe.';
-                    } else {
-                        $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
-                                'Erro: ' . $ex->getMessage();
-                    }
+                    $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
+                        'Erro: ' . $ex->getMessage();
                 }
             }
         }
@@ -97,27 +97,31 @@ class SchoolSubjectController extends AbstractEntityActionController
         if ($id) {
             try {
                 $em = $this->getEntityManager();
-
                 $subject = $em->getReference('SchoolManagement\Entity\Subject', $id);
+                if ($subject->hasChildren()) {
+                    return new JsonModel(array(
+                        'message' => 'Não é possível remover uma disciplina que contém outras',
+                    ));
+                }
                 $em->remove($subject);
                 $em->flush();
                 $message = 'Disciplina removida com sucesso.';
+                return new JsonModel(array(
+                    'message' => $message,
+                    'callback' => array(
+                        'subjectId' => $id,
+                    ),
+                ));
             } catch (Exception $ex) {
                 $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
-                        'Erro: ' . $ex->getMessage();
+                    'Erro: ' . $ex->getMessage();
             }
-            return new JsonModel(array(
-                'message' => $message,
-                'callback' => array(
-                    'subjectId' => $id,
-                ),
-            ));
         } else {
             $message = 'Nenhuma disciplina foi selecionda.';
-            return new JsonModel(array(
-                'message' => $message
-            ));
         }
+        return new JsonModel(array(
+            'message' => $message
+        ));
     }
 
     /**
@@ -141,6 +145,18 @@ class SchoolSubjectController extends AbstractEntityActionController
                 if ($request->isPost()) {
                     $form->setData($request->getPost());
                     if ($form->isValid()) {
+                        $data = $form->getData(\Zend\Form\FormInterface::VALUES_AS_ARRAY)['subject'];
+                        //  o pai é, inicialmente, válido e diferente do filho
+                        if ($data['subjectParent'] > 0 && $data['subjectParent'] !== $subject->getSubjectId() &&
+                            //  o pai é nulo ou diferente do anterior
+                            ($subject->getParent() === null || $data['subjectParent'] !== $subject->getParent()->getSubjectId())) {
+                            $subject->getParent()->removeChild($subject);
+                            $subject->setParent($em->getReference('SchoolManagement\Entity\Subject',
+                                    $data['subjectParent']));
+                        } else if ($data['subjectParent'] <= 0) {
+                            $subject->getParent()->removeChild($subject);
+                            $subject->setParent(null);
+                        }
                         $em->merge($subject);
                         $em->flush();
                         $this->redirect()->toRoute('school-management/school-subject', array('action' => 'index'));
@@ -149,16 +165,18 @@ class SchoolSubjectController extends AbstractEntityActionController
                 return new ViewModel(array(
                     'message' => $message,
                     'form' => $form,
+                    'subject' => $subject,
                 ));
             } catch (Exception $ex) {
                 $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
-                        'Erro: ' . $ex->getMessage();
+                    'Erro: ' . $ex->getMessage();
             }
         } else {
             $message = 'Nenhuma disciplina foi selecionda.';
         }
         return new ViewModel(array(
             'message' => $message,
+            'form' => null,
         ));
     }
 

@@ -21,6 +21,7 @@ requirejs.config({
         datetimepicker: 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min',
         moment: 'moment/min/moment-with-locales.min',
         dropzone: 'dropzone/dist/min/dropzone-amd-module.min',
+        mathjax: "MathJax/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
         masks: '/js/app/masks/masks',
         app: '/js/app'
     },
@@ -45,6 +46,21 @@ requirejs.config({
         },
         jquerycsv: {
             deps: ['jquery']
+        },
+        mathjax: {
+            exports: "MathJax",
+            init: function () {
+                MathJax.Hub.Config({
+                    tex2jax: {
+                        inlineMath: [
+                            ['$', '$'],
+                            ['\\(', '\\)']
+                        ]
+                    }
+                });
+                MathJax.Hub.Startup.onload();
+                return MathJax;
+            }
         }
     }
 });

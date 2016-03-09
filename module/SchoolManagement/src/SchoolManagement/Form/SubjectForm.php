@@ -21,12 +21,12 @@ use Zend\Form\Form;
 class SubjectForm extends Form
 {
     
-    public function __construct(ObjectManager $obj, $options = null)
+    public function __construct(ObjectManager $obj)
     {
         parent::__construct('subject');
         
         $this->setHydrator(new DoctrineHydrator($obj));
-        $subjectFieldset = new SubjectFieldset($obj, $options);
+        $subjectFieldset = new SubjectFieldset($obj);
         $subjectFieldset->setUseAsBaseFieldset(true);
         $this->add($subjectFieldset);
 

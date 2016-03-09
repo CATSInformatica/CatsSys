@@ -1,32 +1,37 @@
 <section class="content">
     <?php 
-        $this->headTitle()->append('Editar disciplina')
+        $this->headTitle()->append('Editar questão')
             ->setSeparator(' - ');
     ?>
     <p><?php echo $this->message; ?></p>
-    <div id="data" 
-         class="row"
-         data-parent-id=
-             "<?php 
-             if ($subject->getParent() !== null) {
-                echo $subject->getParent()->getSubjectId();                
-             } else {
-                 echo 0;
-             }
-             ?>"
-         data-id="<?php echo $subject->getSubjectId();?>">
+    <div class="row" id="data" 
+         data-subject-id=
+            "<?php if ($sId !== null) {
+                echo $sId;
+            } else {
+                echo 0;
+            }
+            ?>" 
+        data-answer-id=
+            "<?php if ($aId !== null) {
+                echo $aId;
+            } else {
+                echo 0;
+            }
+            ?>">
         <?php if ($form !== null): ?>
             <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
                 <?php echo $this->form($form); ?>
             </div>
         <?php endif; ?>
     </div>
+
 </section>
 
 <script>
 
     appConfig = (function () {
-        var scriptSrc = 'app/pages/school-management/subject/edit';
+        var scriptSrc = 'app/pages/school-management/exam/edit-question';
         return {
             getScriptSrc: function () {
                 return scriptSrc;

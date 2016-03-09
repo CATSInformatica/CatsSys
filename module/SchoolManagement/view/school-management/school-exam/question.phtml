@@ -1,0 +1,49 @@
+<section class="content">
+    <?php
+    $this->headTitle()->append('Banco de Questões')
+        ->setSeparator(' - ');
+    ?>
+    <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <div class="col-xs-12 col-md-8 col-md-offset-2">
+            <?php echo $this->form()->openTag($form); ?>
+            <div class="col-xs-12 col-md-6">
+                <?php echo $this->formRow($form->get('subject')); ?>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <?php echo $this->formRow($form->get('questionType')); ?>
+            </div>
+            <div class="col-xs-12 col-md-12">
+                <?php echo $this->formRow($form->get('submit')); ?>
+            </div>
+            <?php echo $this->form()->closeTag(); ?>
+        </div>
+    </div>
+    <br>
+    <div class="row">
+        <div class="table-responsive col-xs-10 col-xs-offset-1">
+            <table class="table table-condensed table-bordered" id="question-table">
+                <thead>
+                <th>Id</th>
+                <th>Questão</th>
+                <th>Respostas</th>
+                </thead>
+                <tbody>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/exam/question';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>
