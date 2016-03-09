@@ -27,29 +27,55 @@ class SubjectFieldset extends Fieldset implements InputFilterProviderInterface
         parent::__construct('subject');
 
         $this->setHydrator(new DoctrineHydrator($obj))
-                ->setObject(new Subject());
+            ->setObject(new Subject());
 
-        $this->add(array(
-            'name' => 'subjectName',
-            'type' => 'text',
-            'attributes' => array(
-                'placeholder' => 'Ex: História do Brasil',
-            ),
-            'options' => array(
-                'label' => 'Nome da disciplina',
-            ),
-        ));
+        $this
+            ->add(array(
+                'name' => 'subjectName',
+                'type' => 'text',
+                'attributes' => array(
+                    'placeholder' => 'Ex: História do Brasil',
+                ),
+                'options' => array(
+                    'label' => 'Nome da disciplina',
+                ),
+                'attributes' => array(
+                    'id' => 'subject-name',
+                ),
+            ))
+            ->add(array(
+                'name' => 'subjectParent',
+                'type' => 'select',
+                'options' => array(
+                    'label' => 'Disciplina a qual pertence',
+                    'value_options' => $this->getSubjects($obj),
+                ),
+                'attributes' => array(
+                    'id' => 'subject-parent',
+                ),
+            ))
+            ->add(array(
+                'name' => 'subjectDescription',
+                'type' => 'textarea',
+                'attributes' => array(
+                    'rows' => 4,
+                ),
+                'options' => array(
+                    'label' => 'Descrição da disciplina',
+                ),
+            ))
+        ;
+    }
 
-        $this->add(array(
-            'name' => 'subjectDescription',
-            'type' => 'textarea',
-            'attributes' => array(
-                'rows' => 4,
-            ),
-            'options' => array(
-                'label' => 'Descrição da disciplina',
-            ),
-        ));
+    protected function getSubjects($obj)
+    {
+        $subjects = $obj->getRepository('SchoolManagement\Entity\Subject')->findAll();
+        $subjectNames = [];
+        $subjectNames[0] = '---';
+        foreach ($subjects as $s) {
+            $subjectNames[$s->getSubjectId()] = $s->getSubjectName();
+        }
+        return $subjectNames;
     }
 
     public function getInputFilterSpecification()
@@ -70,6 +96,9 @@ class SubjectFieldset extends Fieldset implements InputFilterProviderInterface
                         )
                     ),
                 ),
+            ),
+            'subjectParent' => array(
+                'required' => true,
             ),
             'subjectDescription' => array(
                 'required' => true,
