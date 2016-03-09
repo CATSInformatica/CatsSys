@@ -24,10 +24,22 @@ class ExamAnswer
     
     /**
      *
+     * @var boolean 
+     * @ORM\Column(name="is_correct", type="boolean", nullable=false)
+     */
+    private $isCorrect;
+    
+    /**
+     *
      * @var string 
      * @ORM\Column(name="exam_answer_description", type="string", nullable=false)
      */
-    private $examAnswerDescription;
+    private $examAnswerDescription;    
+
+    function __construct()
+    {
+        $this->isCorrect = false;
+    }
     
     /**
      * 
@@ -46,7 +58,27 @@ class ExamAnswer
     {
         return $this->examAnswerDescription;
     }
+    
+    /**
+     * 
+     * @return boolean
+     */
+    function getIsCorrect()
+    {
+        return $this->isCorrect;
+    }
 
+    /**
+     * 
+     * @param boolean $isCorrect
+     * @return ExamAnswer
+     */
+    function setIsCorrect($isCorrect)
+    {
+        $this->isCorrect = $isCorrect;
+        return $this;
+    }
+    
     /**
      * 
      * @param string $examAnswerDescription
@@ -57,6 +89,5 @@ class ExamAnswer
         $this->examAnswerDescription = $examAnswerDescription;
         return $this;
     }
-
 
 }

@@ -58,6 +58,21 @@ class AddExamQuestionFieldset extends Fieldset implements InputFilterProviderInt
                 'options' => array(
                     'label' => 'Enunciado',
                 ),
+                'attributes' => array(
+                    'id' => 'question-enunciation',
+                ),
+            ))
+            ->add(array(
+                'type' => 'Zend\Form\Element\Radio',
+                'name' => 'correctAnswer',
+                'options' => array(
+                    'label' => 'Alternativa Correta',
+                    'value_options' => array(
+                        '0' => 'Nenhum',
+                        /* Inseridos dinamicamente */
+                    ),
+                    'disable_inarray_validator' => true,
+                ),
             ))
             ->add(array(
                 'name' => 'answerOptions',
@@ -100,6 +115,9 @@ class AddExamQuestionFieldset extends Fieldset implements InputFilterProviderInt
                     array('name' => 'StringTrim'),
                     array('name' => 'StripTags'),
                 ),
+            ),
+            'correctAnswer' => array(
+                'required' => false,
             ),
         );
     }

@@ -28,7 +28,7 @@ class AddExamQuestionForm extends Form
         $this
             ->add(array(
                 'name' => 'submit',
-                'type' => 'submit',
+                'type' => 'button',
                 'attributes' => array(
                     'class' => 'btn btn-primary btn-block',
                     'id' => 'add-question-btn',
