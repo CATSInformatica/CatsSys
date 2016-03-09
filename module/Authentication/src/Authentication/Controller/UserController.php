@@ -8,6 +8,7 @@ use Authentication\Form\UserForm;
 use Authentication\Service\UserService;
 use Database\Controller\AbstractEntityActionController;
 use Exception;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 class UserController extends AbstractEntityActionController
@@ -110,35 +111,31 @@ class UserController extends AbstractEntityActionController
         }
         return new ViewModel(array('form' => $form, 'id' => $id));
     }
-
-//
-//    // D -Delete
+    
+    // D -Delete
     public function deleteAction()
     {
-        $id = $this->params()->fromRoute('id');
+        $id = $this->params('id', false);
         if (!$id) {
-            return $this->redirect()->toRoute('authentication/user',
-                    array(
-                    'action' => 'index',
-            ));
+            return new JsonModel([
+                'message' => 'Nenhum usuário selecionado',
+            ]);
         }
 
-        $entityManager = $this->getEntityManager();
-
         try {
+            $entityManager = $this->getEntityManager();
             $user = $entityManager->getReference('Authentication\Entity\User', $id);
             $entityManager->remove($user);
             $entityManager->flush();
-        } catch (Exception $ex) {
-            echo $ex->getMessage();
-            $this->redirect()->toRoute('authentication/user', array(
-                'action' => 'index',
-            ));
-        }
 
-        return $this->redirect()->toRoute('authentication/user', array(
-                'action' => 'index',
-        ));
+            return new JsonModel([
+                'message' => 'Usuário removido com sucesso',
+            ]);
+        } catch (\Exception $ex) {
+            return new JsonModel([
+                'message' => $ex->getMessage(),
+            ]);
+        }
     }
 
 }

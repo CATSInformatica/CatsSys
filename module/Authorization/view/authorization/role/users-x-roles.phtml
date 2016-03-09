@@ -1,0 +1,50 @@
+<section class="content">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="table-responsive">
+                <table id="userxrolesTable" class="table table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>User</th>
+                            <th>Roles</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($users as $user): ?>
+                            <tr class="cats-row" data-id="<?php echo $user->getUserId(); ?>">
+                                <td><?php echo $user->getUserId(); ?></td>
+                                <td><?php echo $user->getUserName(); ?></td>
+                                <td>
+                                    <ul class="list-group">
+                                        <?php
+                                        foreach ($user->getRole() as $role):
+                                            ?>
+                                            <li class="list-group-item list-group-item-info">
+                                                <i class="fa fa-file-o"></i> <?php echo $role->getRoleName(); ?>
+                                            </li>
+                                        <?php endforeach; ?>
+                                    </ul>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/authorization/role/role';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+</script>

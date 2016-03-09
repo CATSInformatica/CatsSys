@@ -147,7 +147,24 @@ return array(
                         'label' => 'Show roles',
                         'route' => 'authorization/role',
                         'action' => 'index',
-                        'icon' => 'fa fa-files-o'
+                        'icon' => 'fa fa-files-o',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/authorization/role/delete/$id',
+                                'title' => 'Remover',
+                                'description' => 'Remove um papel selecionado',
+                                'class' => 'fa fa-trash-o bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
+//                            array(
+//                                'url' => '/authorization/role/delete/$id',
+//                                'title' => 'Editar',
+//                                'description' => 'Editar um papel selecionado',
+//                                'class' => 'fa fa-edit bg-blue',
+//                                'fntype' => 'selectedHttpClick',
+//                                'target' => '_blank',
+//                            ),
+                        ),
                     ),
                     array(
                         'label' => 'Create a role',
@@ -156,10 +173,22 @@ return array(
                         'icon' => 'fa fa-file-o'
                     ),
                     array(
-                        'label' => 'Add role to an user',
+                        'label' => 'Add role to a user',
                         'route' => 'authorization/role',
                         'action' => 'add-role-to-user',
                         'icon' => 'fa fa-file-o'
+                    ),
+                    array(
+                        'label' => 'Remove user roles',
+                        'route' => 'authorization/role',
+                        'action' => 'remove-user-role',
+                        'icon' => 'fa fa-close'
+                    ),
+                    array(
+                        'label' => 'Users x roles',
+                        'route' => 'authorization/role',
+                        'action' => 'users-x-roles',
+                        'icon' => 'fa fa-users',
                     ),
                 )
             ),
