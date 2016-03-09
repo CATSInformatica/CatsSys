@@ -1,52 +1,67 @@
 <section class="content">
-    <?php if (!empty($this->error)): ?>
-        <?php echo $this->error; ?>
-    <?php else: ?>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <?php if (!empty($this->error)): ?>
+                <?php echo $this->error; ?>
+            <?php else: ?>
 
-        <div class="table-responsive">
-            <table class="table table-condensed">
-                <thead>
-                    <tr>
-                        <th class="text-center">#</th>
-                        <th class="text-center">Name</th>
-                        <th class="text-center">Parents</th>
-                        <th class="text-center">Children</th>
-                        <th></th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($this->roles as $role): ?>
-                        <tr>
-                            <td class="text-center"><?php echo $this->escapeHtml($role->getRoleId()); ?></td>
-                            <td class="text-center"><?php echo $this->escapeHtml($role->getRoleName()); ?></td>
-                            <td class="text-center">
-                                <div class="btn-toolbar" role="toolbar" aria-label="...">
-                                    <?php foreach ($role->getParents()->toArray() as
-                                            $parentRole): ?>
-                                        <button type="button" class="btn btn-info"><?php echo $this->escapeHtml($parentRole->getRoleName()); ?></button>
-        <?php endforeach; ?>
-                                </div>
-                            </td>
-                            <td class="text-center">
-                                <div class="btn-toolbar" role="toolbar" aria-label="...">
-                                    <?php foreach ($role->getChildren()->toArray() as
-                                            $childRole): ?>
-                                        <button type="button" class="btn btn-info"><?php echo $this->escapeHtml($childRole->getRoleName()); ?></button>
-        <?php endforeach; ?>
-                                </div>
-                            </td>
-                            <td class="text-center"><a class="btn btn-danger"  href='<?php echo $this->url('authorization/role',
-            array('controller' => 'role', 'action' => 'edit', 'id' => $role->getRoleId())); ?>'>Edit</a></td>
-                            <td class="text-center"><a class="btn btn-danger" href='<?php echo $this->url('authorization/role',
-                    array('action' => 'delete', 'id' => $role->getRoleId())); ?>'>Delete</a></td>
-                        </tr>
-        <?php endforeach; ?>
-                </tbody>
-            </table>
+                <div class="table-responsive">
+                    <table id="roleTable" class="table table-condensed table-striped">
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">Name</th>
+                                <th class="text-center">Parents</th>
+                                <th class="text-center">Children</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($this->roles as $role): ?>
+                            <tr class="cats-row" data-id="<?php echo $role->getRoleId(); ?>">
+                                    <td class="text-center"><?php echo $role->getRoleId(); ?></td>
+                                    <td class="text-center"><?php echo $role->getRoleName(); ?></td>
+                                    <td class="text-center">
+                                        <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                            <?php
+                                            foreach ($role->getParents()->toArray() as $parentRole):
+                                                ?>
+                                                <button type="button" class="btn btn-success">
+                                                    <?php echo $parentRole->getRoleName(); ?>
+                                                </button>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </td>
+                                    <td class="text-center">
+                                        <div class="btn-toolbar" role="toolbar" aria-label="...">
+                                            <?php
+                                            foreach ($role->getChildren()->toArray() as $childRole):
+                                                ?>
+                                                <button type="button" class="btn btn-success">
+                                                    <?php echo $childRole->getRoleName(); ?>
+                                                </button>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
-<?php endif; ?>
+    </div>
 </section>
 
 
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/authorization/role/role';
 
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+</script>

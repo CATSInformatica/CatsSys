@@ -131,6 +131,7 @@ class Role
      */
     public function removeUser(User $user)
     {
+        $user->removeRole($this);
         $this->user->removeElement($user);
     }
 
