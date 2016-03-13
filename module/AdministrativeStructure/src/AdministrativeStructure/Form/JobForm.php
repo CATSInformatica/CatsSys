@@ -22,6 +22,7 @@ namespace AdministrativeStructure\Form;
 use AdministrativeStructure\Form\Fieldset\JobFieldset;
 use Doctrine\Common\Persistence\ObjectManager;
 use Zend\Form\Form;
+use Zend\Form\FormInterface;
 use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
@@ -29,7 +30,7 @@ use Zend\InputFilter\InputFilterProviderInterface;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class JobForm extends Form implements InputFilterProviderInterface
+class JobForm extends Form implements InputFilterProviderInterface, FormInterface
 {
 
     public function __construct(ObjectManager $obj, $name = null, $options = array())
@@ -73,6 +74,18 @@ class JobForm extends Form implements InputFilterProviderInterface
                 'required' => false,
             ]
         ];
+    }
+
+    public function bind($object, $flags = FormInterface::VALUES_NORMALIZED)
+    {
+        $ids = $object->getRoleIds();
+//        echo '???';
+//        print_r($ids);
+//        exit;
+        
+        parent::bind($object, $flags)
+            ->get('roles')
+            ->setValue($ids);
     }
 
 }

@@ -54,14 +54,14 @@ class Role
      *
      * @var Collection
      * 
-     * @ORM\ManyToMany(targetEntity="Role", mappedBy="parents", orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity="Role", mappedBy="parents")
      */
     private $children;
 
     /**
      * @var Collection
      *
-     * @ORM\ManyToMany(targetEntity="Role", inversedBy="children", orphanRemoval=true)
+     * @ORM\ManyToMany(targetEntity="Role", inversedBy="children")
      * @ORM\JoinTable(name="role_parent",
      *   joinColumns={
      *     @ORM\JoinColumn(name="role_id", referencedColumnName="role_id", nullable=false)
@@ -158,6 +158,7 @@ class Role
     {
         foreach ($parents as $parent) {
             if (!$this->hasParent($parent)) {
+                $parent->addChildren(new ArrayCollection([$this]));
                 $this->parents->add($parent);
             }
         }
@@ -173,22 +174,10 @@ class Role
     public function removeParents(Collection $parents)
     {
         foreach ($parents as $parent) {
+            $parent->removeChildren(new ArrayCollection([$this]));
             $this->parents->removeElement($parent);
         }
         return $this;
-    }
-
-    /**
-     * Remove todos os papéis que cujos nomes não são numéricos
-     * Papéis com nomes numéricos são definidos por usuários comuns da aplicação
-     */
-    public function removeNonNumericalParentRoles()
-    {
-        foreach ($this->parents as $parent) {
-            if (!is_numeric($parent->getRoleName())) {
-                $this->parents->removeElement($parent);
-            }
-        }
     }
 
     public function hasParent(Role $role)

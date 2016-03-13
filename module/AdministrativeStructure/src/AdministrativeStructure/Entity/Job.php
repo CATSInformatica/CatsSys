@@ -127,16 +127,13 @@ class Job
     /**
      * Cria um papel para o cargo.
      * Cria uma instância de Authorization\Entity\Role com o nome time(). Cada cargo deve possuir um papel. Todos os 
-     * papéis criados a partir de cargos são definidas por time(). Se $role já está definido então remove os papéis
-     * de base (não numéricos).
+     * papéis criados a partir de cargos são definidas por time().
      */
     protected function initRole()
     {
         if (!isset($this->role)) {
             $this->role = new Role();
             $this->role->setRoleName(time());
-        } else {
-            $this->role->removeNonNumericalParentRoles();
         }
     }
 
@@ -259,7 +256,7 @@ class Job
     {
         $this->initRole();
 
-        if (isset($this->parent)) {
+        if (isset($this->parent) && $parent->getJobId() !== $this->parent->getJobId()) {
             $this->parentBuffer = $this->parent;
             $this->parentBuffer->removeChildren(new ArrayCollection([$this]));
         }
@@ -342,19 +339,74 @@ class Job
      * Apesar de não intuitivo este método define quem serão os ancestrais de $role.
      *
      * Durante a criação de um novo cargo um novo papel é criado e armazenado em $role. Este método insere todas os
-     * papéis dos quais o papel criado será herdeiro (herdará previlégios). A herança é composta de papéis básicos e 
-     * papéis definidos por outros cargos.
+     * papéis dos quais o papel criado será herdeiro (herdará previlégios).
+     * 
+     * @param Collection $roles
+     * @return Self
+     */
+    public function setParentRoles(Collection $roles)
+    {
+        $this->initRole();
+        $this->role->addParents($roles);
+        return $this;
+    }
+
+    /**
+     * Apesar de não intuitivo este método define quem serão os ancestrais de $role.
+     *
+     * Durante a edição de um novo cargo este método insere todas os papéis dos quais o papel correspondente ao cargo
+     * será herdeiro (herdará previlégios). Se o papel já possui herança com um dos papéis do vetor ele é ignorado.
      * 
      * @param Collection $roles
      * @return Self
      */
     public function addParentRoles(Collection $roles)
     {
-        $this->initRole();
+        $currentRoles = $this->role->getParents();
+        $remove = new ArrayCollection();
+        $add = new ArrayCollection();
 
-        $this->role->addParents($roles);
+        foreach ($roles as $r) {
+            if (!$currentRoles->contains($r)) {
+                $add->add($r);
+            }
+        }
+
+        foreach ($currentRoles as $r) {
+            if (!$roles->contains($r)) {
+                $remove->add($r);
+            }
+        }
+
+        $this->role->removeParents($remove);
+        $this->role->addParents($add);
 
         return $this;
+    }
+
+    /**
+     * Retorna o cargo superior anterior
+     * @return type
+     * @return Job
+     */
+    public function getParentBuffer()
+    {
+        return $this->parentBuffer;
+    }
+
+    public function getRoleIds()
+    {
+        if (isset($this->role)) {
+            $rids = [];
+            $parentRoles = $this->role->getParents()->toArray();
+            foreach ($parentRoles as $r) {
+                if (!is_numeric($r->getRoleName())) {
+                    $rids[] = $r->getRoleId();
+                }
+            }
+        }
+
+        return $rids;
     }
 
 }

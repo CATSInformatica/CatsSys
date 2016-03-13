@@ -65,7 +65,7 @@ class JobController extends AbstractEntityActionController
                         $roles->add($em->getReference('Authorization\Entity\Role', $roleIdx));
                     }
                 }
-                $job->addParentRoles($roles);
+                $job->setParentRoles($roles);
                 $em->persist($job);
                 $em->flush();
             }
@@ -73,6 +73,56 @@ class JobController extends AbstractEntityActionController
 
         return new ViewModel([
             'form' => $form,
+        ]);
+    }
+
+    public function editAction()
+    {
+        $id = $this->params('id', false);
+
+        if ($id) {
+            $request = $this->getRequest();
+            $em = $this->getEntityManager();
+
+            $job = $em->find('AdministrativeStructure\Entity\Job', $id);
+            $form = new JobForm($em);
+            $form->bind($job);
+
+            if ($request->isPost()) {
+                $data = $request->getPost();
+                $form->setData($data);
+                if ($form->isValid()) {
+                    $roles = new ArrayCollection();
+                    if (isset($data['roles'])) {
+                        foreach ($data['roles'] as $roleIdx) {
+                            $roles->add($em->getReference('Authorization\Entity\Role', $roleIdx));
+                        }
+                    }
+
+                    $job->addParentRoles($roles);
+                    $parent = $job->getParentBuffer();
+
+                    if ($parent !== null) {
+                        $em->persist($parent);
+                    }
+
+                    $em->persist($job);
+                    $em->flush();
+
+                    return $this->redirect()->toRoute('administrative-structure/job', ['action' => 'index']);
+                }
+            }
+
+            return new ViewModel([
+                'message' => null,
+                'form' => $form,
+            ]);
+        }
+
+
+        return new ViewModel([
+            'message' => 'Nenhum cargo selecionado',
+            'form' => null,
         ]);
     }
 

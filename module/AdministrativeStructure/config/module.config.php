@@ -131,12 +131,24 @@ return [
                                 'class' => 'fa fa-trash  bg-red',
                                 'fntype' => 'selectedAjaxClick',
                             ],
+                            [
+                                'url' => '/administrative-structure/job/edit/$id',
+                                'title' => 'Editar cargo',
+                                'description' => 'Permite editar o cargo escolhido',
+                                'class' => 'fa fa-edit bg-blue',
+                                'fntype' => 'selectedHttpClick',
+                            ],
                         ],
-//                        'pages' => [
-//                            [
-//                                
-//                            ]
-//                        ]
+                        'pages' => [
+                            [
+                                'label' => 'Show jobs',
+                                'route' => 'administrative-structure/job',
+                                'action' => 'edit',
+                                'resource' => 'AdministrativeStructure\Controller\Job',
+                                'privilege' => 'edit',
+                                'icon' => 'fa fa-usb',
+                            ]
+                        ]
                     ],
                     [
                         'label' => 'Create a job',

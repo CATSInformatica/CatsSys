@@ -7,9 +7,10 @@
                         <tr>
                             <th class="text-center">#</th>
                             <th class="text-center">Departamento</th>
-                            <th class="text-center">Cargo Superior</th>
                             <th class="text-center">Cargo</th>
+                            <th class="text-center">Cargo Superior</th>
                             <th class="text-center">Cargos Subordinados</th>
+                            <th class="text-center">Descrição </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -29,13 +30,16 @@
                                     <?php echo $job->getJobName(); ?>
                                 </td>
                                 <td>
-                                    <ul>
+                                    <ol type="i">
                                         <?php
                                         foreach ($job->getChildren()->toArray() as $job):
                                             ?>
                                             <li> <?php echo $job->getJobName(); ?></li>
                                         <?php endforeach; ?>
-                                    </ul>
+                                    </ol>
+                                </td>
+                                <td class="text-center">
+                                    <?php echo $job->getJobDescription(); ?>
                                 </td>
                             </tr>
                         <?php endforeach; ?>
