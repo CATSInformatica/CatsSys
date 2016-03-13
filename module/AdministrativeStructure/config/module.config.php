@@ -2,13 +2,13 @@
 
 namespace AdministrativeStructure;
 
-return array(
-    'controllers' => array(
-        'factories' => array(
-            'AdministrativeStructure\Controller\Department' => 
-            'AdministrativeStructure\Factory\Controller\DepartmentControllerFactory'
-        ),
-    ),
+return [
+    'controllers' => [
+        'factories' => [
+            'AdministrativeStructure\Controller\Department' => Factory\Controller\DepartmentControllerFactory::class,
+            'AdministrativeStructure\Controller\Job' => Factory\Controller\JobControllerFactory::class,
+        ],
+    ],
     'router' => array(
         'routes' => array(
             'administrative-structure' => array(
@@ -32,6 +32,19 @@ return array(
                             ),
                         ),
                     ),
+                    'job' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/job[/:action[/:id]]',
+                            'contraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'AdministrativeStructure\Controller\Job',
+                            ),
+                        ),
+                    ),
                 ),
             ),
         ),
@@ -44,75 +57,113 @@ return array(
         ),
         'display_exceptions' => true,
     ),
-    'navigation' => array(
-        'default' => array(
-            array(
+    'navigation' => [
+        'default' => [
+            [
                 'label' => 'Administrative structure',
                 'uri' => '#',
                 'icon' => 'fa fa-university',
                 'order' => 13,
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show departments',
                         'route' => 'administrative-structure/department',
                         'action' => 'index',
                         'resource' => 'AdministrativeStructure\Controller\Department',
                         'privilege' => 'index',
                         'icon' => 'fa fa-folder-open',
-                        'pages' => array(
-                            array(
-                                'label' => 'Edit a department',
+                        'pages' => [
+                            ['label' => 'Edit a department',
                                 'route' => 'administrative-structure/department',
                                 'action' => 'edit',
                                 'resource' => 'AdministrativeStructure\Controller\Department',
                                 'privilege' => 'edit',
                                 'icon' => 'fa fa-folder-open',
-                            ),
-                        ),
-                        'toolbar' => array(
-                            array(
+                            ],
+                        ],
+                        'toolbar' => [
+                            [
                                 'url' => '/administrative-structure/department/edit/$id',
                                 'title' => 'Editar departamento',
                                 'description' => 'Permite alterar as informações do departamento escolhido',
                                 'class' => 'fa fa-university  bg-blue',
                                 'fntype' => 'selectedHttpClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/administrative-structure/department/delete/$id',
                                 'id' => 'department-delete',
                                 'title' => 'Remover departamento',
                                 'description' => 'Remove o departamento escolhido se ele não possuir departamentos filhos',
                                 'class' => 'fa fa-university  bg-red',
                                 'fntype' => 'selectedAjaxClick',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Add a Department',
                         'route' => 'administrative-structure/department',
                         'action' => 'add',
                         'resource' => 'AdministrativeStructure\Controller\Department',
                         'privilege' => 'add',
                         'icon' => 'fa fa-folder-open',
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'doctrine' => array(
-        'driver' => array(
-            'orm_default' => array(
-                'drivers' => array(
+                    ],
+                ],
+            ],
+            [
+                'label' => 'Job',
+                'uri' => '#',
+                'icon' => 'fa fa-usb',
+                'resource' => 'AdministrativeStructure\Controller\Job',
+                'order' => 14,
+                'pages' => [
+                    [
+                        'label' => 'Show jobs',
+                        'route' => 'administrative-structure/job',
+                        'action' => 'index',
+                        'resource' => 'AdministrativeStructure\Controller\Job',
+                        'privilege' => 'index',
+                        'icon' => 'fa fa-users',
+                        'toolbar' => [
+                            [
+                                'url' => '/administrative-structure/job/delete/$id',
+                                'title' => 'Remover cargo',
+                                'description' => 'Permite remover os cargos escolhidos',
+                                'class' => 'fa fa-trash  bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            ],
+                        ],
+//                        'pages' => [
+//                            [
+//                                
+//                            ]
+//                        ]
+                    ],
+                    [
+                        'label' => 'Create a job',
+                        'route' => 'administrative-structure/job',
+                        'action' => 'create',
+                        'resource' => 'AdministrativeStructure\Controller\Job',
+                        'privilege' => 'create',
+                        'icon' => 'fa fa-user',
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'doctrine' => [
+        'driver' => [
+            'orm_default' => [
+                'drivers' => [
                     'AdministrativeStructure\Entity' => 'administrative-structure_driver',
-                ),
-            ),
-            'administrative-structure_driver' => array(
+                ],
+            ],
+            'administrative-structure_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(
+                'paths' => [
                     __DIR__ . '/../src/AdministrativeStructure/Entity',
-                ),
-            ),
-        ),
-    ),
-);
+                ],
+            ],
+        ],
+    ],
+];

@@ -7,6 +7,7 @@ use Authorization\Form\RoleFilter;
 use Authorization\Form\RoleForm;
 use Authorization\Form\UserRoleForm;
 use Database\Controller\AbstractEntityActionController;
+use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
 use Zend\Json\Json;
 use Zend\Session\Container;
@@ -75,11 +76,12 @@ class RoleController extends AbstractEntityActionController
                 $role = new EntityRole();
                 $role->setRoleName($data['role_name']);
 
+                $parents = new ArrayCollection();
                 foreach ($data['role_parent'] as $parentRoleId) {
-                    $role->addParent(
-                        $entityManager->getReference('Authorization\Entity\Role', $parentRoleId)
-                    );
+                    $parents->add($entityManager->getReference('Authorization\Entity\Role', $parentRoleId));
                 }
+
+                $role->addParents($parents);
 
                 try {
                     $entityManager->persist($role);
