@@ -11,10 +11,13 @@ use Doctrine\ORM\Mapping as ORM;
  * Role
  *
  * @ORM\Table(name="role")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="Authorization\Entity\Repository\Role")
  */
 class Role
 {
+
+    const ADMIN_ROLE = 'admin';
+    const GUEST_ROLE = 'guest';
 
     /**
      * @var integer
@@ -50,6 +53,7 @@ class Role
     /**
      *
      * @var Collection
+     * 
      * @ORM\ManyToMany(targetEntity="Role", mappedBy="parents")
      */
     private $children;
@@ -148,34 +152,37 @@ class Role
     /**
      * 
      * @param Collection $parents
-     */
-    public function setParents(Collection $parents)
-    {
-        $this->parents = $parents;
-    }
-
-    /**
-     * Add parent
-     *
-     * @param Role $parent
-     *
      * @return Role
      */
-    public function addParent(Role $parent)
+    public function addParents(Collection $parents)
     {
-        $this->parents[] = $parent;
+        foreach ($parents as $parent) {
+            if (!$this->hasParent($parent)) {
+                $parent->addChildren(new ArrayCollection([$this]));
+                $this->parents->add($parent);
+            }
+        }
 
         return $this;
     }
 
     /**
-     * Remove parent
-     *
-     * @param Role $parent
+     * 
+     * @param Collection $parents
+     * @return Role
      */
-    public function removeParent(Role $parent)
+    public function removeParents(Collection $parents)
     {
-        $this->parents->removeElement($parent);
+        foreach ($parents as $parent) {
+            $parent->removeChildren(new ArrayCollection([$this]));
+            $this->parents->removeElement($parent);
+        }
+        return $this;
+    }
+
+    public function hasParent(Role $role)
+    {
+        return $this->parents->contains($role);
     }
 
     /**
@@ -190,7 +197,7 @@ class Role
 
     /**
      * Get child roles
-     * @return type
+     * @return Collection
      */
     function getChildren()
     {
@@ -198,36 +205,46 @@ class Role
     }
 
     /**
-     * Set child roles
-     * @param Collection $children
-     */
-    function setChildren(Collection $children)
-    {
-        $this->children = $children;
-    }
-
-    /**
-     * Add child role
+     * Add children roles
      *
-     * @param Role $child
+     * @param Collection
      *
      * @return Role
      */
-    public function addChild(Role $child)
+    public function addChildren(Collection $children)
     {
-        $this->children[] = $child;
-
+        foreach ($children as $child) {
+            if (!$this->hasChild($child)) {
+                $this->children->add($child);
+            }
+        }
         return $this;
     }
 
     /**
-     * Remove child role
+     * Remove children roles
      *
-     * @param Role $child
+     * @param Collection
      */
-    public function removeChild(Role $child)
+    public function removeChildren(Collection $children)
     {
-        $this->children->removeElement($child);
+        foreach ($children as $child) {
+            if (!$this->hasChild($child)) {
+                $this->children->removeElement($child);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Check if child $child exists
+     * 
+     * @param Role $child
+     * @return bool
+     */
+    public function hasChild(Role $child)
+    {
+        return $this->children->contains($child);
     }
 
 }

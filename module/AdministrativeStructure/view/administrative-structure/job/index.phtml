@@ -1,0 +1,51 @@
+<section class="content">
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="table-responsive">
+                <table id="jobTable" class="table table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th class="text-center">Departamento</th>
+                            <th class="text-center">Cargo</th>
+                            <th class="text-center">Cargo Superior</th>
+                            <th class="text-center">Cargos Subordinados</th>
+                            <th class="text-center">Descrição </th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($jobs as $job): ?>
+                            <tr class="cats-row" data-id="<?php echo $job->getJobId(); ?>">
+                                <td class="text-center">
+                                    <?php echo $job->getJobId(); ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php echo $job->getDepartment()->getDepartmentName(); ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php $parentJob = $job->getParent(); ?>
+                                    <?php echo $parentJob !== null ? $parentJob->getJobName() : 'NENHUM'; ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php echo $job->getJobName(); ?>
+                                </td>
+                                <td>
+                                    <ol type="i">
+                                        <?php
+                                        foreach ($job->getChildren()->toArray() as $job):
+                                            ?>
+                                            <li> <?php echo $job->getJobName(); ?></li>
+                                        <?php endforeach; ?>
+                                    </ol>
+                                </td>
+                                <td class="text-center">
+                                    <?php echo $job->getJobDescription(); ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</section>

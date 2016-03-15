@@ -22,8 +22,7 @@ class IndexController extends AbstractActionController
     use EntityManagerService; // doctrine entity manager
 
     public function indexAction()
-    {
-        
+    {        
         $message = 'Welcome to UMS.';
         
         return new ViewModel(array(

@@ -1,4 +1,8 @@
 <?php
+if (empty($this->pages)) {
+    return;
+}
+
 $lastPageIndex = count($this->pages) - 1;
 $lastPage = null;
 ?>
@@ -9,36 +13,36 @@ $lastPage = null;
             $this->navigation()->getTranslatorTextDomain()));
     ?>
     <small>
-        <?php
-        if (null !== $this->pages[$lastPageIndex]->get('subtitle')) {
+    <?php
+    if (null !== $this->pages[$lastPageIndex]->get('subtitle')) {
 
-            echo $this->escapeHtml($this->translate($this->pages[$lastPageIndex]->get('subtitle'),
-                    $this->navigation()->getTranslatorTextDomain()));
-        }
-        ?>
+        echo $this->escapeHtml($this->translate($this->pages[$lastPageIndex]->get('subtitle'),
+                $this->navigation()->getTranslatorTextDomain()));
+    }
+    ?>
     </small>
 </h1>
 
 <ol class="breadcrumb">
-        <?php foreach ($this->pages as $key => $page): ?>
+<?php foreach ($this->pages as $key => $page): ?>
         <li>
-            <?php
-            // if this isn't the last page, add a link and the separator
-            if ($key < $lastPageIndex):
-                ?>
+        <?php
+        // if this isn't the last page, add a link and the separator
+        if ($key < $lastPageIndex):
+            ?>
                 <a href="<?php echo $page->getHref(); ?>">
                     <i class="<?php echo $page->get('icon'); ?>"></i>
         <?php echo $page->getLabel(); ?>
                 </a>
                 <!-- output the name -->
-            <?php else: ?>
+    <?php else: ?>
                 <i class="<?php echo $page->get('icon'); ?>"></i>
                 <?php
                 echo $this->escapeHtml($this->translate($page->getLabel(),
                         $this->navigation()->getTranslatorTextDomain()));
                 ?>
-        <?php endif; ?>
+            <?php endif; ?>
         </li>
-<?php endforeach; ?>
+        <?php endforeach; ?>
 </ol>
 

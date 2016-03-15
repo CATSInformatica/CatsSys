@@ -352,7 +352,11 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
                 $date = new \DateTime($all['date']);
                 try {
                     AttendanceRepository::insertNewAttendance($dbal, $all['enrollment'], $all['allowanceType'], $date);
-                    $message += "sucesso " . $all['allowanceType'] . "<br>";
+                    
+                    $message .= "<br>Aluno " . $all['enrollment'] . " recebeu o " .
+                            AttendanceType::getAttendanceTypeName($all['allowanceType'])
+                            . " na data " . $date->format('d/m/Y');
+                    
                 } catch (\Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
                         $message .= "<br>Aluno " . $all['enrollment'] . " já possui o " .
@@ -364,6 +368,7 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
                     break;
                 }
             }
+            
             return new JsonModel([
                 'message' => $message,
             ]);

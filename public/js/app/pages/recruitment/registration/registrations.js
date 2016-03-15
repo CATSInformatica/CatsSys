@@ -18,7 +18,7 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
         initDatepickers = function () {
             $("input[name=timestamp]").closest(".input-group").datetimepicker({
                 format: 'DD/MM/YYYY HH:mm',
-                minDate: moment(),
+                minDate: moment().subtract(6, 'months'),
                 useCurrent: false,
                 maxDate: moment().add(1, 'years'),
                 locale: 'pt-br',
@@ -28,7 +28,7 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
         initDataTable = function () {
 
             var recruitmentTable = $('#recruitment-table').DataTable({
-                iDisplayLength: 10,
+                iDisplayLength: 100,
                 dom: 'lftip',
 //                paging: false,
                 ajax: {

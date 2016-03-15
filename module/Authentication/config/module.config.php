@@ -10,11 +10,9 @@ namespace Authentication;
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'Authentication\Controller\Login' => 'Authentication\Controller\LoginController',
-        ),
         'factories' => array(
-            'Authentication\Controller\User' => 'Authentication\Factory\Controller\UserControllerFactory',
+            'Authentication\Controller\Login' => Factory\Controller\LoginControllerFactory::class,
+            'Authentication\Controller\User' => Factory\Controller\UserControllerFactory::class,
         ),
     ),
     'router' => array(

@@ -73,6 +73,14 @@ class Department
      */
     private $isActive;
 
+    /**
+     * Cargos associados ao departamento.
+     * 
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="Job", mappedBy="department")
+     */
+    private $jobs;
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
