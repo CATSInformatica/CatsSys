@@ -89,50 +89,50 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
                     selectedSuffixInfo = numberOfSelectedElements + (numberOfSelectedElements > 1 ? " itens foram selecionados." : " item foi selecionado.");
                 }
 
-                bootbox.confirm("Tem certeza que deseja executar " +
-                        "esta ação? [" + itemConfig.title + "]. " + selectedSuffixInfo, function (result) {
+//                bootbox.confirm("Tem certeza que deseja executar " +
+//                        "esta ação? [" + itemConfig.title + "]. " + selectedSuffixInfo, function (result) {
 
-                            // o usuário desistiu de executar a ação
-                            if (!result) {
-                                return bootbox.alert('Ação abortada.');
-                            }
+                // o usuário desistiu de executar a ação
+//                            if (!result) {
+//                                return bootbox.alert('Ação abortada.');
+//                            }
 
-                            var selected = $(document).find(".cats-selected-row");
-                            var deferreds = [];
+                var selected = $(document).find(".cats-selected-row");
+                var deferreds = [];
 
-                            // need message? show alert!
-                            if (fnTypes[itemConfig.fnType].messageRequired) {
-                                resultMessages.clear();
-                                resultMessages.setAlert(bootbox.alert(resultMessages.getHeader()));
-                            }
+                // need message? show alert!
+                if (fnTypes[itemConfig.fnType].messageRequired) {
+                    resultMessages.clear();
+                    resultMessages.setAlert(bootbox.alert(resultMessages.getHeader()));
+                }
 
-                            if (fnTypes[itemConfig.fnType].selectionRequired) {
-                                selectedItemUrl = itemConfig.url;
-                                if (fnTypes[itemConfig.fnType].allowMultiple) {
-                                    selected.each(function (e) {
-                                        itemConfig.url = selectedItemUrl.replace('$id', $(this).data("id"));
-                                        deferreds.push(fnTypes[itemConfig.fnType].fn(itemConfig));
-                                    });
-                                } else {
-                                    itemConfig.url = selectedItemUrl.replace("$id", selected.data("id"));
-                                    deferreds.push(fnTypes[itemConfig.fnType].fn(itemConfig));
-                                }
-                            } else {
-                                deferreds.push(fnTypes[itemConfig.fnType].fn(itemConfig));
-                            }
-
-                            $.when.apply(null, deferreds).then(function () {
-                                // need message? append complete!
-                                if (fnTypes[itemConfig.fnType].messageRequired) {
-                                    resultMessages.addLine("<b>Resultado:</b><br>- Sucesso<br><br><b>Concluído</b>.");
-                                }
-                            }, function () {
-                                // need message? append complete!
-                                if (fnTypes[itemConfig.fnType].messageRequired) {
-                                    resultMessages.addLine("<b>Resultado:</b><br>- Uma ou mais ações retornaram erros.<br><br><b>Concluído</b>.");
-                                }
-                            });
+                if (fnTypes[itemConfig.fnType].selectionRequired) {
+                    selectedItemUrl = itemConfig.url;
+                    if (fnTypes[itemConfig.fnType].allowMultiple) {
+                        selected.each(function (e) {
+                            itemConfig.url = selectedItemUrl.replace('$id', $(this).data("id"));
+                            deferreds.push(fnTypes[itemConfig.fnType].fn(itemConfig));
                         });
+                    } else {
+                        itemConfig.url = selectedItemUrl.replace("$id", selected.data("id"));
+                        deferreds.push(fnTypes[itemConfig.fnType].fn(itemConfig));
+                    }
+                } else {
+                    deferreds.push(fnTypes[itemConfig.fnType].fn(itemConfig));
+                }
+
+                $.when.apply(null, deferreds).then(function () {
+                    // need message? append complete!
+                    if (fnTypes[itemConfig.fnType].messageRequired) {
+                        resultMessages.addLine("<b>Resultado:</b><br>- Sucesso<br><br><b>Concluído</b>.");
+                    }
+                }, function () {
+                    // need message? append complete!
+                    if (fnTypes[itemConfig.fnType].messageRequired) {
+                        resultMessages.addLine("<b>Resultado:</b><br>- Uma ou mais ações retornaram erros.<br><br><b>Concluído</b>.");
+                    }
+                });
+//                        });
             } else {
                 bootbox.alert('fnType: [' + itemConfig.fnType + '] não existe.');
             }

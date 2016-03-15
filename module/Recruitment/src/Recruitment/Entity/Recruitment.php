@@ -197,6 +197,7 @@ class Recruitment
      */
     public function setRecruitmentEndDate(\DateTime $recruitmentEndDate)
     {
+        $recruitmentEndDate->setTime(23, 59, 59);
         $this->recruitmentEndDate = $recruitmentEndDate;
         return $this;
     }
@@ -220,8 +221,9 @@ class Recruitment
      */
     public function setRecruitmentType($recruitmentType)
     {
-        if (!in_array($recruitmentType, array(self::STUDENT_RECRUITMENT_TYPE,
-                    self::VOLUNTEER_RECRUITMENT_TYPE))) {
+        if (!in_array($recruitmentType,
+                array(self::STUDENT_RECRUITMENT_TYPE,
+                self::VOLUNTEER_RECRUITMENT_TYPE))) {
             throw new \InvalidArgumentException("Invalid recruitment type");
         }
 

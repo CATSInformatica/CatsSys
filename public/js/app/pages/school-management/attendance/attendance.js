@@ -437,9 +437,6 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
 
             // button
             $("#addAllowance").on("click", function () {
-//                if (!$(".control-sidebar").hasClass("control-sidebar-open")) {
-//                    $(".control-sidebar").addClass("control-sidebar-open");
-//                }
                 var selectedAllowance = $("input[name=attendanceType]:checked");
                 if (chosenDate !== null && selectedAllowance.length > 0) {
 
@@ -508,8 +505,7 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                 allowances: []
             };
 
-            chosenAllowanceList.find(".chosenAllowanceItem").each(function (e) {
-                console.log(e);
+            chosenAllowanceList.find(".chosenAllowanceItem").each(function () {
                 data.allowances.push({
                     enrollment: $(this).data('student'),
                     date: $(this).data('date'),
@@ -552,7 +548,9 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
 
                 switch (selectedItemId) {
                     case 'attendance-list-save':
-                        var index = $(".cats-selected-row").find(".attendanceListTable").data("id");
+                        var index = $(".cats-selected-row")
+                                .find(".attendanceListTable")
+                                .data("id");
                         return listModels[index];
                         break;
                     case 'allowance-save':
