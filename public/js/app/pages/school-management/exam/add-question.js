@@ -4,9 +4,8 @@
  * and open the template in the editor.
  */
 
-define(['jquery', 'datatable'], function () {
+define(['jquery', 'datatable', 'trumbowyg', 'trumbowygpt', 'trumbowygcolors', 'trumbowygupload'], function () {
     var addQuestion = (function () {
-        
         //  Tipos de questão
         var CLOSED_QUESTION = "1";
         var OPEN_QUESTION = "2";
@@ -14,26 +13,12 @@ define(['jquery', 'datatable'], function () {
 
         /*
          * 
-         *  Inicializa os botões e campos que controlam a inserção dinâmica de respostas 
-         *  para perguntas do tipo CLOSED_QUESTION
+         *  Enumera as alternativas e adiciona os radio buttons para seleção da alternativa correta
          */
         initFieldControlBtns = function () {
-            // Botões Adiciona/Remove Alternativa
-            var btnGroup = ''
-                    + '<div class="btn-group btn-group-justified" role="group" id="alternative-control-btns">'
-                    + '<div class="btn-group" role="group">'
-                    + '<button type="button" id="add-alternative-btn" class="btn btn-success" onclick="return addAlternative()">Adicionar Alternativa</button>'
-                    + '</div>'
-                    + '<div class="btn-group" role="group">'
-                    + '<button type="button" id="remove-alternative-btn" class="btn btn-danger" onclick="return removeAlternative()" onclick="return addQuestionAlternativeBtn()">Remover Alternativa</button>'
-                    + '</div>'
-                    + '</div>';
-            $('#alternatives-fieldset').after(btnGroup + '<br><br>');
-
             // Inicializa o campo onde ficarão os radio buttons para selecionar a alternativa correta
-            var correctAnswerField = $('#add-exam-question > fieldset > div.form-group').last();
-            correctAnswerField.find('div').attr('id', 'correct-answer');
-            $('#correct-answer div').first().remove();
+            var correctAnswerField = $('#alternative-control-btns').
+                    before('<div class="form-group"><label for="correct-answer">Alternativa Correta</label><div id="correct-answer"></div></div><br>');
             $('#correct-answer').append('<div class="radio-inline"><label class="control-label">'
                     + '<input type="radio" name="exam-question[correctAnswer]" id="none-radio" value="-1" disabled> Nenhum </label></div>');
 
@@ -47,7 +32,7 @@ define(['jquery', 'datatable'], function () {
                         + '<input type="radio" name="exam-question[correctAnswer]" value="' + i + '" id="alternative-' + i + '">' + (i + 1) + '</label></div>';
                 $('#correct-answer').append(radioBtn);
             });
-
+            
             // Se a questão for aberta, esconde os botões de controle
             if ($("#question-type").val() === OPEN_QUESTION) {
                 $("#alternative-control-btns").hide();
@@ -57,8 +42,10 @@ define(['jquery', 'datatable'], function () {
 
         /*
          * 
-         *  Configura o comportamento do formulário em relação ao campo de seleção 
-         *  "Tipo de questão", mostrando diferentes elementos baseados no tipo de questão selecionada
+         *  Configura o comportamento do formulário 
+         *      *   Em relação ao campo de seleção "Tipo de questão", mostrando 
+         *          diferentes elementos baseados no tipo de questão selecionada
+         *      *   Em relação aos botões de controle Adicionar/Remover Alternativa
          */
         setFormBehavior = function () {
             // Impede que o usuário selecione o tipo de questão como aberta se 
@@ -67,6 +54,8 @@ define(['jquery', 'datatable'], function () {
                 if ($("#question-type").val() === OPEN_QUESTION) {
                     //  Se já existem campos para as alternativas, não se pode selecionar
                     //  o tipo de questão como aberta
+                    //  **TODO: Permitir essa opção mostrando um modal perguntando se 
+                    //          se o usuário tem certeza.
                     if ($('#alternatives-fieldset > fieldset').length > 0) {
                         $("#question-type").val(CLOSED_QUESTION);
                     } else {
@@ -78,14 +67,46 @@ define(['jquery', 'datatable'], function () {
                     $('#correct-answer').parent().show();
                 }
             });
+            
+            /*
+             * 
+             *  Adiciona uma alternativa para a questão (textarea e radio button) 
+             */
+            $('#add-alternative-btn').click(function () {
+                if ($("#question-type").val() === CLOSED_QUESTION) {
+                    // Adiciona um campo para inserir a alternativa
+                    var currentCount = $('#alternatives-fieldset > fieldset').length;
+                    var template = $('#alternatives-fieldset span').data('template');
+                    template = template.replace(/__placeholder__/g, currentCount);
+                    template = template.replace("Alternativa 1", "Alternativa " + (currentCount + 1));
+                    $('#alternatives-fieldset').append(template);
+
+                    // Adiciona um radio button para selecionar esta alternativa como a correta
+                    var radioBtn = ''
+                            + '<div class="radio-inline"><label class="control-label">'
+                            + '<input type="radio" name="exam-question[correctAnswer]" id="correct-answer" value="' + currentCount + '">' + (currentCount + 1) + '</label></div>';
+                    $('#correct-answer').append(radioBtn);
+
+                    setTrumbowyg($('#alternatives-fieldset > fieldset').last().find('textarea'));
+                }
+            });
+            
+            /*
+             * 
+             *  Remove a última alternativa da questão (textarea e radio button) 
+             */
+            $('#remove-alternative-btn').click(function () {
+                if ($("#question-type").val() === CLOSED_QUESTION && $('#alternatives-fieldset > fieldset').length > 0) {
+                    $('#correct-answer div').last().remove();
+                    $('#alternatives-fieldset fieldset').last().remove();
+                }
+            });
         };
 
         /*
          * 
          *  Validação parcial do formulário
-         *  -   Verifica se uma resposta correta foi escolhida e;
-         *  -   Verifica se há mais de uma alternativa para a questão
-         *  Se uma das verificações falhar, o formulário não será enviado
+         *      *   Verifica se uma resposta correta foi escolhida
          */
         partialValidation = function () {
             $('#add-question-btn').click(function () {
@@ -97,63 +118,24 @@ define(['jquery', 'datatable'], function () {
                             $('ul#no-selection-err').remove();
                         });
                     }
-                } else if ($("#question-type").val() === CLOSED_QUESTION && $('#alternatives-fieldset > fieldset').length < 2) {
-                    if ($('ul#no-alternative-err').length === 0) {
-                        $('#alternatives-fieldset').append('<ul id="no-alternative-err" class="help-block text-red"><li>Uma questão fechada deve ter ao menos duas alternativas</li></ul>');
-                        $('ul#no-alternative-err').delay(5000).fadeOut(400, function () {
-                            $('#ul#no-alternative-err').remove();
-                        });
-                    }
                 } else {
                     $('#add-question-btn').attr('type', 'submit');
                 }
             });
         };
 
-        /*
-         * 
-         *  Adiciona uma alternativa para a questão (textarea e radio button) 
-         */
-        addAlternative = function () {
-            if ($("#question-type").val() === CLOSED_QUESTION) {
-                // Adiciona um campo para inserir a alternativa
-                var currentCount = $('#alternatives-fieldset > fieldset').length;
-                var template = $('#alternatives-fieldset span').data('template');
-                template = template.replace(/__placeholder__/g, currentCount);
-                template = template.replace("Alternativa 1", "Alternativa " + (currentCount + 1));
-                $('#alternatives-fieldset').append(template);
-
-                // Adiciona um radio button para selecionar esta alternativa como a correta
-                var radioBtn = ''
-                        + '<div class="radio-inline"><label class="control-label">'
-                        + '<input type="radio" name="exam-question[correctAnswer]" id="correct-answer" value="' + currentCount + '">' + (currentCount + 1) + '</label></div>';
-                $('#correct-answer').append(radioBtn);
-            }
-        };
-
-        /*
-         * 
-         *  Remove a última alternativa da questão
-         */
-        removeAlternative = function () {
-            if ($("#question-type").val() === CLOSED_QUESTION && $('#alternatives-fieldset > fieldset').length > 0) {
-                $('#correct-answer div').last().remove();
-                $('#alternatives-fieldset fieldset').last().remove();
-            }
-        };
-
         initPreview = function () {
 
             var value = "";
-            $("#add-exam-question").on("keyup", "textarea", function () {
-                $("#add-exam-question").find("textarea").each(function (e) {
+            $("#add-exam-question").on("keyup", ".trumbowyg-editor", function () {
+                $("#add-exam-question").find(".trumbowyg-editor").each(function (e) {
                     if (e === 0) {
                         value = "<h4>Questão <h4>";
-                        value += $(this).val();
+                        value += $(this).html();
                         value += "<hr>";
                         value += "<ol type='A' class='text-center'>";
                     } else {
-                        value += "<li>" + $(this).val();
+                        value += "<li>" + $(this).html();
                         +"</li>";
                     }
                 });
@@ -177,17 +159,57 @@ define(['jquery', 'datatable'], function () {
                 });
             });
         };
+        
+        /*
+         *  elem === null
+         *      Transforma todo textarea da página em um Trumbowyg (editor wysiwyg HTML)
+         *      com as configurações definidas abaixo
+         *  elem === string (id, class...)
+         *      Transforma os elementos encontrados em um Trumbowyg
+         *      Exemplo: '.edit-textarea' Transforma todos os elementos da classe 
+         *                                .edit-textarea em um Trumbowyg
+         *      
+         *  Configuração Trumbowyg:
+         *  -   Trumbowyg padrão
+         *  -   Plugin Colors - Permite editar a cor do texto
+         *  -   Plugin Upload - Permite fazer upload de imagens
+         *  -   Localização em português
+         *      
+         * @param mixed elem
+         */
+        setTrumbowyg = function (elem) {
+            if (elem === null) { // ALL
+                elem = 'textarea';
+            }
+            $(elem).trumbowyg({
+                lang: 'pt',
+                btnsDef: {
+                    image: {
+                        dropdown: ['insertImage', 'upload'],
+                        ico: 'insertImage'
+                    }
+                },
+                btns: ['viewHTML',
+                    '|', 'formatting',
+                    '|', 'btnGrp-design',
+                    '|', 'image',
+                    '|', 'btnGrp-justify',
+                    '|', 'btnGrp-lists',
+                    '|', 'horizontalRule',
+                    '|', 'foreColor',
+                    '|', 'backColor']
+            });
+        };
 
         return {
             init: function () {
                 initFieldControlBtns();
+                setTrumbowyg(null);
                 setFormBehavior();
                 initMathJax();
                 partialValidation();
             }
         };
-
     }());
-
     return addQuestion;
 });

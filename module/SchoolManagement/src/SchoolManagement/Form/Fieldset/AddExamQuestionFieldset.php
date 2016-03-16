@@ -53,13 +53,11 @@ class AddExamQuestionFieldset extends Fieldset implements InputFilterProviderInt
                 'name' => 'examQuestionEnunciation',
                 'type' => 'textarea',
                 'attributes' => array(
-                    'rows' => 5,
+                    'rows' => 10,
+                    'id' => 'question-enunciation',
                 ),
                 'options' => array(
                     'label' => 'Enunciado',
-                ),
-                'attributes' => array(
-                    'id' => 'question-enunciation',
                 ),
             ))
             ->add(array(

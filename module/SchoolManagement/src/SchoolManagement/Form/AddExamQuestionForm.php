@@ -27,6 +27,28 @@ class AddExamQuestionForm extends Form
 
         $this
             ->add(array(
+                'name' => 'addAlternative',
+                'type' => 'button',
+                'attributes' => array(
+                    'class' => 'btn-success',
+                    'id' => 'add-alternative-btn',
+                ),
+                'options' => array(
+                    'label' => 'Adicionar Alternativa',
+                ),
+            ))
+            ->add(array(
+                'name' => 'removeAlternative',
+                'type' => 'button',
+                'attributes' => array(
+                    'class' => 'btn-danger',
+                    'id' => 'remove-alternative-btn',
+                ),
+                'options' => array(
+                    'label' => 'Remover Alternativa',
+                ),
+            ))
+            ->add(array(
                 'name' => 'submit',
                 'type' => 'button',
                 'attributes' => array(
