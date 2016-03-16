@@ -23,7 +23,12 @@ requirejs.config({
         dropzone: 'dropzone/dist/min/dropzone-amd-module.min',
         mathjax: "MathJax/MathJax.js?config=TeX-AMS_HTML&amp;delayStartupUntil=configured",
         masks: '/js/app/masks/masks',
-        app: '/js/app'
+        app: '/js/app',
+        trumbowyg: 'trumbowyg/dist/trumbowyg.min',
+        trumbowygpt: 'trumbowyg/dist/langs/pt.min',
+        trumbowygcolors: 'trumbowyg/dist/plugins/colors/trumbowyg.colors.min',
+        trumbowygupload: 'trumbowyg/dist/plugins/upload/trumbowyg.upload.min',
+        chart: 'AdminLTE/plugins/chartjs/Chart.min'
     },
     shim: {
         bootstrap: {
