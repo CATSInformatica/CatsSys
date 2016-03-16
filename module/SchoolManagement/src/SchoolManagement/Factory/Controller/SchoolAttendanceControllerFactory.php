@@ -34,8 +34,9 @@ class SchoolAttendanceControllerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
 
-        $controller = new SchoolAttendanceController();
+
         $sl = $serviceLocator->getServiceLocator();
+        $controller = new SchoolAttendanceController($sl->get('ViewRenderer'));
         $em = $sl->get('Doctrine\ORM\EntityManager');
         $conn = $sl->get('doctrine.connection.orm_default');
 

@@ -30,6 +30,7 @@ use SchoolManagement\Model\AttendanceList;
 use SchoolManagement\Model\PdfAttendanceList;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Zend\View\Renderer\PhpRenderer as ViewRenderer;
 
 /**
  * Controller para gestão da frenquência de alunos.
@@ -38,6 +39,13 @@ use Zend\View\Model\ViewModel;
  */
 class SchoolAttendanceController extends AbstractDbalAndEntityActionController
 {
+
+    protected $viewRenderer;
+
+    public function __construct(ViewRenderer $viewRenderer)
+    {
+        $this->viewRenderer = $viewRenderer;
+    }
 
     /**
      * Gera a lista de presença para uma turma em uma data selecionada
@@ -116,8 +124,8 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
                     ->setVariable('results', $csv)
                     ->setTerminal(true);
 
-                $output = $this->getServiceLocator()
-                    ->get('viewrenderer')
+                $output = $this
+                    ->viewRenderer
                     ->render($view);
 
                 $response = $this->getResponse();
@@ -352,11 +360,10 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
                 $date = new \DateTime($all['date']);
                 try {
                     AttendanceRepository::insertNewAttendance($dbal, $all['enrollment'], $all['allowanceType'], $date);
-                    
+
                     $message .= "<br>Aluno " . $all['enrollment'] . " recebeu o " .
-                            AttendanceType::getAttendanceTypeName($all['allowanceType'])
-                            . " na data " . $date->format('d/m/Y');
-                    
+                        AttendanceType::getAttendanceTypeName($all['allowanceType'])
+                        . " na data " . $date->format('d/m/Y');
                 } catch (\Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
                         $message .= "<br>Aluno " . $all['enrollment'] . " já possui o " .
@@ -368,7 +375,7 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
                     break;
                 }
             }
-            
+
             return new JsonModel([
                 'message' => $message,
             ]);

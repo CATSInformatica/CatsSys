@@ -396,8 +396,8 @@ class Job
 
     public function getRoleIds()
     {
+        $rids = [];
         if (isset($this->role)) {
-            $rids = [];
             $parentRoles = $this->role->getParents()->toArray();
             foreach ($parentRoles as $r) {
                 if (!is_numeric($r->getRoleName())) {
@@ -405,7 +405,6 @@ class Job
                 }
             }
         }
-
         return $rids;
     }
 

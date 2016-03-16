@@ -193,7 +193,7 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                     "</div>" +
                     "</div>");
 
-            var table = "<div class='col-md-8'><table data-id='" + index + "' class='table table-condensed table-bordered table-striped table-hover attendanceListTable'>" +
+            var table = "<div class='col-md-8'><table data-id='" + index + "' class='table table-bordered attendanceListTable'>" +
                     "<thead><tr>";
 
             table += "<th>Aluno</th>";
@@ -275,7 +275,7 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
 
             var start = moment().format("YYYY-MM-01");
             var end = moment().add(1, 'months').format("YYYY-MM-01");
-            
+
             searchAllowanceBetween(start, end);
         };
 

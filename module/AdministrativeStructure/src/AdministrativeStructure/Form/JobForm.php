@@ -79,10 +79,6 @@ class JobForm extends Form implements InputFilterProviderInterface, FormInterfac
     public function bind($object, $flags = FormInterface::VALUES_NORMALIZED)
     {
         $ids = $object->getRoleIds();
-//        echo '???';
-//        print_r($ids);
-//        exit;
-        
         parent::bind($object, $flags)
             ->get('roles')
             ->setValue($ids);
