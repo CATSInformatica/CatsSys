@@ -23,10 +23,16 @@ and open the template in the editor.
     }
 }
 
-
 .bg-white {
     background: white;
     color: #333;
+}
+
+.attendanceListTable tr {
+    
+    &:hover td {
+        @extend .cats-selected-bg;
+    }
 }
 
 .cats-selected-bg {
