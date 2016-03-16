@@ -17,33 +17,28 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SchoolManagement\Factory\Controller;
+namespace Authentication\Factory\Controller;
 
-use SchoolManagement\Controller\SchoolAttendanceController;
+use Authentication\Controller\LoginController;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Instancia o controller SchoolAttendanceController e injeta o EntityManager e  DbalConnection
+ * Description of LoginControllerFactory
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class SchoolAttendanceControllerFactory implements FactoryInterface
+class LoginControllerFactory implements FactoryInterface
 {
 
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-
-
-        $sl = $serviceLocator->getServiceLocator();
-        $controller = new SchoolAttendanceController($sl->get('ViewRenderer'));
-        $em = $sl->get('Doctrine\ORM\EntityManager');
-        $conn = $sl->get('doctrine.connection.orm_default');
-
-        $controller->setEntityManager($em);
-        $controller->setDbalConnection($conn);
+        $sm = $serviceLocator->getServiceLocator();
+        $authService = $sm->get('Zend\Authentication\AuthenticationService');
+        $controller = new LoginController($authService);
 
         return $controller;
     }
 
+//put your code here
 }

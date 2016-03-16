@@ -7,6 +7,7 @@ use Authorization\Form\RoleFilter;
 use Authorization\Form\RoleForm;
 use Authorization\Form\UserRoleForm;
 use Database\Controller\AbstractEntityActionController;
+use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
 use Zend\Json\Json;
 use Zend\Session\Container;
@@ -75,11 +76,12 @@ class RoleController extends AbstractEntityActionController
                 $role = new EntityRole();
                 $role->setRoleName($data['role_name']);
 
+                $parents = new ArrayCollection();
                 foreach ($data['role_parent'] as $parentRoleId) {
-                    $role->addParent(
-                        $entityManager->getReference('Authorization\Entity\Role', $parentRoleId)
-                    );
+                    $parents->add($entityManager->getReference('Authorization\Entity\Role', $parentRoleId));
                 }
+
+                $role->addParents($parents);
 
                 try {
                     $entityManager->persist($role);
@@ -104,27 +106,27 @@ class RoleController extends AbstractEntityActionController
 
     public function deleteAction()
     {
-        $roleId = $this->params()->fromRoute('id');
+        $roleId = $this->params('id', false);
 
-        if ($roleId) {
-            $em = $this->getEntityManager();
-            try {
-                $role = $em->getReference('Authorization\Entity\Role', array('roleId' => $roleId));
-                $em->remove($role);
-                $em->flush();
-                return new ViewModel(array(
-                    'message' => 'Role deleted successfully',
-                ));
-            } catch (Exception $ex) {
-                return new ViewModel(array(
-                    'message' => $ex->getCode() . ': ' . $ex->getMessage(),
-                ));
-            }
+        if (!$roleId) {
+            return new JsonModel([
+                'message' => 'Nenhum papel escolhido',
+            ]);
         }
 
-        return new ViewModel(array(
-            'message' => 'Param id can\'t be empty',
-        ));
+        try {
+            $em = $this->getEntityManager();
+            $role = $em->getReference('Authorization\Entity\Role', $roleId);
+            $em->remove($role);
+            $em->flush();
+            return new JsonModel([
+                'message' => 'Papel removido com sucesso',
+            ]);
+        } catch (\Exception $ex) {
+            return new JsonModel([
+                'message' => $ex->getMessage(),
+            ]);
+        }
     }
 
     public function changeActiveUserRoleAction()
@@ -188,10 +190,11 @@ class RoleController extends AbstractEntityActionController
                 $em->persist($role);
                 $em->flush();
 
-                return $this->redirect()->toRoute('authentication/user',
-                        array(
-                        'action' => 'index'
-                ));
+                return $this->redirect()->toRoute('authorization/role',
+                        [
+                        'action' => 'users-x-roles',
+                        ]
+                );
             } catch (Exception $ex) {
                 return new ViewModel(array(
                     'message' => $ex->getCode() . ': ' . $ex->getMessage(),
@@ -201,6 +204,66 @@ class RoleController extends AbstractEntityActionController
 
         return new ViewModel([
             'form' => $form
+        ]);
+    }
+
+    public function removeUserRoleAction()
+    {
+        $request = $this->getRequest();
+        $em = $this->getEntityManager();
+
+        $roles = $em->getRepository('Authorization\Entity\Role')->findAll();
+        $users = $em->getRepository('Authentication\Entity\User')->findAll();
+
+        $options = [];
+        foreach ($roles as $role) {
+            $options['roles'][$role->getRoleId()] = $role->getRoleName();
+        }
+
+        foreach ($users as $user) {
+            $options['users'][$user->getUserId()] = $user->getUserName();
+        }
+
+        $form = new UserRoleForm('user-role', $options);
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
+
+            try {
+                $user = $em->getReference('Authentication\Entity\User', $data['user_id']);
+                $role = $em->getReference('Authorization\Entity\Role', $data['role_id']);
+
+                $role->removeUser($user);
+                $em->merge($user);
+                $em->flush();
+
+                return $this->redirect()->toRoute('authorization/role',
+                        [
+                        'action' => 'users-x-roles',
+                        ]
+                );
+            } catch (\Exception $ex) {
+                return new ViewModel(array(
+                    'message' => $ex->getMessage(),
+                ));
+            }
+        }
+
+        return new ViewModel([
+            'form' => $form
+        ]);
+    }
+
+    public function usersXRolesAction()
+    {
+
+        $entityManager = $this->getEntityManager();
+        $users = $entityManager->getRepository('Authentication\Entity\User')->findBy([
+            'userActive' => true,
+        ]);
+
+        return new ViewModel([
+            'users' => $users
         ]);
     }
 

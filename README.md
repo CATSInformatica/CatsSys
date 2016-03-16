@@ -120,7 +120,7 @@ Instalação do bower:
     sudo ln -s /usr/bin/nodejs /usr/bin/node
 ```
 
-Após instalar o bower vá na pasta `cats-lab/public` e no terminal digite: `bower install`
+Após instalar o bower vá na pasta `cats-lab` e no terminal digite: `bower install`
 
 Todas as dependencias de css e js serão instaladas. O sistema utiliza:
 

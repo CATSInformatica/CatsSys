@@ -1,0 +1,87 @@
+<section class="content">
+    <div class="row">
+        <p>
+            <?php
+            if ($message !== null):
+                echo $message;
+            endif;
+            ?>
+        </p>
+
+        <div class="col-md-8 col-md-offset-2 col-xs-12">
+            <?php if ($classes !== null): ?>
+                <div class="form-group">
+                    <div class="col-md-6 col-xs-12">
+                        <br>
+                        <label>Turma</label>
+                        <select id="studentClass" class="form-control">
+                            <?php foreach ($classes as $cl): ?>
+                                <option value="<?php echo $cl->getClassId(); ?>">  <?php echo $cl->getClassName(); ?>
+                                </option>
+                            <?php endforeach; ?>
+                        </select>
+                    </div>
+
+                    <div class="col-md-6 col-xs-12">
+                        <br>
+                        <label>Aluno</label>
+                        <select id="students" class="form-control">
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12 col-xs-12">
+                        <br>
+                        <label>Tipo de Abono</label>
+                        <br>
+                        <?php foreach ($allowanceTypes as $att): ?>
+                            <label class="radio-inline">
+                                <input type="radio" name="attendanceType" 
+                                       data-name="<?php echo $att->getAttendanceType(); ?>"
+                                       value="<?php echo $att->getAttendanceTypeId(); ?>">
+                                       <?php echo $att->getAttendanceType(); ?>
+                            </label>
+                        <?php endforeach; ?>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <div class="col-md-12 col-xs-12">
+                        <br>
+                        <label>Data</label>
+                        <div id="allowanceDate">
+                        </div>
+                        <br>
+                        <br>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <button id="addAllowance" type="button" class="btn btn-primary btn-block">
+                        Adicionar Abono
+                    </button>
+                </div>
+
+                <div class="container-fluid">
+                    <h3 class="text-center">Abonos</h3>
+                    <div id="chosenAllowanceList">
+                    </div>
+                </div>
+
+
+            <?php endif; ?>
+        </div>
+    </div>
+</section>
+
+
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/attendance/attendance';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+</script>

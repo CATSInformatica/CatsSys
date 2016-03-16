@@ -10,11 +10,9 @@ namespace Authentication;
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'Authentication\Controller\Login' => 'Authentication\Controller\LoginController',
-        ),
         'factories' => array(
-            'Authentication\Controller\User' => 'Authentication\Factory\Controller\UserControllerFactory',
+            'Authentication\Controller\Login' => Factory\Controller\LoginControllerFactory::class,
+            'Authentication\Controller\User' => Factory\Controller\UserControllerFactory::class,
         ),
     ),
     'router' => array(
@@ -133,6 +131,23 @@ return array(
                         'route' => 'authentication/user',
                         'action' => 'index',
                         'icon' => 'fa fa-users',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/authentication/user/delete/$id',
+                                'title' => 'Remover',
+                                'description' => 'Remove um usuário selecionado',
+                                'class' => 'fa fa-trash-o bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
+                            array(
+                                'url' => '/authentication/user/edit/$id',
+                                'title' => 'Editar',
+                                'description' => 'Editar o usuário selecionado',
+                                'class' => 'fa fa-edit bg-blue',
+                                'fntype' => 'selectedHttpClick',
+                                'target' => '_blank',
+                            ),
+                        ),
                         'pages' => array(
                             array(
                                 'label' => 'Edit user',

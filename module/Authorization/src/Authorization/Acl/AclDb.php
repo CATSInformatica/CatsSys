@@ -13,9 +13,10 @@ namespace Authorization\Acl;
  *
  * @author marcio
  */
-use Zend\Permissions\Acl\Acl as ZendAcl,
-    Zend\Permissions\Acl\Role\GenericRole,
-    Zend\Permissions\Acl\Resource\GenericResource as Resource;
+use Zend\Permissions\Acl\Acl as ZendAcl;
+use Zend\Permissions\Acl\Role\GenericRole;
+use Zend\Permissions\Acl\Resource\GenericResource as Resource;
+use Authorization\Entity\Role;
 
 class AclDb extends ZendAcl
 {
@@ -23,8 +24,8 @@ class AclDb extends ZendAcl
     /**
      * Default Role
      */
-    const DEFAULT_ROLE = 'guest';
-    const ADMIN_ROLE = 'admin';
+    const DEFAULT_ROLE = Role::GUEST_ROLE;
+    const ADMIN_ROLE = Role::ADMIN_ROLE;
 
     /**
      * Constructor

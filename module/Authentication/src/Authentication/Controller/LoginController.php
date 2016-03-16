@@ -30,14 +30,21 @@ use Zend\View\Model\ViewModel;
  */
 class LoginController extends AbstractActionController
 {
+
+    protected $authService;
+
+    public function __construct($authService)
+    {
+        $this->authService = $authService;
+    }
+
     /**
      * Faz a autenticação de usuários
      * @return ViewModel
      */
     public function loginAction()
     {
-        $userC = new Container('User');
-        if ($userC->id) {
+        if ($this->authService->hasIdentity()) {
             return $this->redirect()->toRoute('ums');
         }
 
@@ -68,8 +75,7 @@ class LoginController extends AbstractActionController
 
     protected function userAuthentication($data)
     {
-        $auth = $this->getServiceLocator()
-            ->get('Zend\Authentication\AuthenticationService');
+        $auth = $this->authService;
         $adapter = $auth->getAdapter();
         $adapter->setIdentityValue($data['username']);
         $adapter->setCredentialValue($data['password']);
@@ -108,8 +114,8 @@ class LoginController extends AbstractActionController
 
     public function logoutAction()
     {
-        $auth = $this->getServiceLocator()
-            ->get('Zend\Authentication\AuthenticationService');
+        $auth = $this->authService;
+
         if ($auth->hasIdentity()) {
             $auth->clearIdentity();
 

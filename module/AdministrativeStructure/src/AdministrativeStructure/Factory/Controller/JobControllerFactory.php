@@ -17,33 +17,26 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace SchoolManagement\Factory\Controller;
+namespace AdministrativeStructure\Factory\Controller;
 
-use SchoolManagement\Controller\SchoolAttendanceController;
+use AdministrativeStructure\Controller\JobController;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Instancia o controller SchoolAttendanceController e injeta o EntityManager e  DbalConnection
+ * Cria uma instância de JobController e injeta o EntityManager
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class SchoolAttendanceControllerFactory implements FactoryInterface
+class JobControllerFactory implements FactoryInterface
 {
 
     public function createService(ServiceLocatorInterface $serviceLocator)
-    {
-
-
-        $sl = $serviceLocator->getServiceLocator();
-        $controller = new SchoolAttendanceController($sl->get('ViewRenderer'));
-        $em = $sl->get('Doctrine\ORM\EntityManager');
-        $conn = $sl->get('doctrine.connection.orm_default');
-
-        $controller->setEntityManager($em);
-        $controller->setDbalConnection($conn);
-
+    {        
+        $sm = $serviceLocator->getServiceLocator();
+        $controller = new JobController();
+        $controller->setEntityManager($sm->get('Doctrine\ORM\EntityManager'));        
         return $controller;
     }
-
+    
 }

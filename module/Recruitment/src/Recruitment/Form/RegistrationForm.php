@@ -60,6 +60,9 @@ class RegistrationForm extends Form implements InputFilterProviderInterface
             ->add(array(
                 'type' => 'Zend\Form\Element\Csrf',
                 'name' => 'registrationCsrf',
+                'csrf_options' => array(
+                    'timeout' => 1200,
+                ),
             ))
             ->add(array(
                 'name' => 'submit',

@@ -69,7 +69,7 @@ class Enrollment
 
     /**
      *
-     * @var Attendance
+     * @var Collection
      * @ORM\OneToMany(targetEntity="Attendance", mappedBy="enrollment", fetch="EXTRA_LAZY")
      */
     private $attendances;
@@ -194,6 +194,18 @@ class Enrollment
     public function getAttendances()
     {
         return $this->attendances;
+    }
+
+    public function addAttendance(Attendance $att)
+    {
+        if (!$this->hasAttendance($att)) {
+            $this->attendances->add($att);
+        }
+    }
+
+    public function hasAttendance(Attendance $att)
+    {
+        return $this->attendances->contains($att);
     }
 
 }

@@ -2,43 +2,49 @@
     <?php echo $this->message; ?>
     <hr>
 
-    <div class="table-responsive">
-        <table class='table'>
-            <thead>
-                <tr>
-                    <th>#</th>
-                    <th>Username</th>
-                    <th>Password</th>
-                    <th>Password Salt</th>
-                    <th>Active</th>
-                    <th>Registration Date</th>
-                    <th>Roles</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($this->users as $user): ?>
-                    <tr>
-                        <td><?php echo $this->escapeHtml($user->getUserId()); ?></td>
-                        <td><?php echo $this->escapeHtml($user->getUserName()); ?></td>
-                        <td><?php echo $this->escapeHtml($user->getUserPassword()); ?></td>
-                        <td><?php echo $this->escapeHtml($user->getUserPasswordSalt()); ?></td>
-                        <td><?php echo $user->getUserActive() ? 'TRUE' : 'FALSE'; ?></td>
-                        <td><?php
-                            echo $this->escapeHtml($user->getUserRegistrationDate()
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="table-responsive">
+                <table id="userTable" class="table table-condensed table-striped">
+                    <thead>
+                        <tr>
+                            <th>#</th>
+                            <th>Registration Date</th>
+                            <th>Username</th>
+                            <th>Active</th>
+
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($this->users as $user): ?>
+                            <tr class="cats-row" data-id="<?php echo $user->getUserId(); ?>">
+                                <td><?php echo $this->escapeHtml($user->getUserId()); ?></td>
+                                <td>
+                                    <?php
+                                    echo $this->escapeHtml($user->getUserRegistrationDate()
                                             ->format('d/m/Y'));
-                            ?></td>
-                        <td class="text-center">
-                            <div class="btn-toolbar" role="toolbar" aria-label="...">
-                                <?php foreach ($user->getRole()->toArray() as $role): ?>
-                                    <button type="button" class="btn btn-primary"><?php echo $this->escapeHtml($role->getRoleName()); ?></button>
-                                <?php endforeach; ?>
-                            </div>
-                        </td>
-                        <td><a class="btn btn-danger"  href='<?php echo $this->url('authentication/user', array('action' => 'edit', 'id' => $user->getUserId())); ?>'>Edit</a></td>
-                        <td><a class="btn btn-danger"  href='<?php echo $this->url('authentication/user', array('action' => 'delete', 'id' => $user->getUserId())); ?>'>Delete</a></td>                        
-                    </tr>
-                <?php endforeach; ?>
-            </tbody>
-        </table>
+                                    ?>
+                                </td>  
+                                <td><?php echo $this->escapeHtml($user->getUserName()); ?></td>
+                                <td><?php echo $user->getUserActive() ? 'TRUE' : 'FALSE'; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </section>
+
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/authentication/user/user';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+</script>
