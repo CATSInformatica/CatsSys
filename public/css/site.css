@@ -195,7 +195,8 @@ footer hr {
     text-align: center;
     box-sizing: border-box;
     padding: 5px 5px;
-    border-top: 4px solid transparent; 
+    border-top: 4px solid transparent;
+    cursor: pointer;
 }
 .catssys-admin-structure > a {
     color: inherit;
