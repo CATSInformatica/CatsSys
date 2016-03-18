@@ -24,7 +24,7 @@ use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use SchoolManagement\Entity\AttendanceType;
-use SchoolManagement\Entity\Repository\Attendance as AttendanceRepository;
+use SchoolManagement\Entity\Repository\AttendanceRepository;
 use SchoolManagement\Form\SchoolAttendanceForm;
 use SchoolManagement\Model\AttendanceList;
 use SchoolManagement\Model\PdfAttendanceList;
