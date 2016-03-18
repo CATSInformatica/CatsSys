@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityRepository;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class Enrollment extends EntityRepository
+class EnrollmentRepository extends EntityRepository
 {
 
     public function findAllCurrentStudents($params)

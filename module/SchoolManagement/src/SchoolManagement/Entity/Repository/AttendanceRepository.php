@@ -14,7 +14,7 @@ use SchoolManagement\Entity\AttendanceType;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class Attendance extends EntityRepository
+class AttendanceRepository extends EntityRepository
 {
 
     /**

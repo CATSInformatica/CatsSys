@@ -9,7 +9,7 @@ use Doctrine\ORM\EntityRepository;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class AttendanceType extends EntityRepository
+class AttendanceTypeRepository extends EntityRepository
 {
 
     public function findByAttendanceTypeIds($ids)
