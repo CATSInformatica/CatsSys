@@ -32,7 +32,9 @@ define(['jquery', 'app/pages/school-management/exam/add-question'], function () 
         return {
             init: function () {
                 initFieldControlBtns();
+                setTrumbowyg(null);
                 setFormBehavior();
+                initMathJax();
                 selectSubject();
                 selectCorrectAnswer();
                 partialValidation();

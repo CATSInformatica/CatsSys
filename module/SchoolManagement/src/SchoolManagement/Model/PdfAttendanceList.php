@@ -34,7 +34,7 @@ class PdfAttendanceList {
 
     public function generateList() {
         $pdf = new FPDF('P', 'mm', 'A4');
-        $pdf->SetFillColor(170);
+        $pdf->SetFillColor(220);
         $pdf->addPage();
         $pdf->setMargins(5, 5, 5);
 

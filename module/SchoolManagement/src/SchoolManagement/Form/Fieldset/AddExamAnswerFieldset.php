@@ -26,7 +26,8 @@ class AddExamAnswerFieldset extends Fieldset implements InputFilterProviderInter
             'name' => 'examAnswerDescription',
             'type' => 'textarea',
             'attributes' => array(
-                'rows' => 4,
+                'rows' => 10,
+                'class' => 'textarea',
             ),
             'options' => array(
                 'label' => 'Alternativa 1',
