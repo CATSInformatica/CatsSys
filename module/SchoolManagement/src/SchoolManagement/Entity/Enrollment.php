@@ -21,7 +21,7 @@ use Recruitment\Entity\Registration;
  *      uniqueConstraints={@ORM\UniqueConstraint(name="class_registration_idx", 
  *          columns={"class_id", "registration_id"})}
  * )
- * @ORM\Entity(repositoryClass="SchoolManagement\Entity\Repository\Enrollment")
+ * @ORM\Entity(repositoryClass="SchoolManagement\Entity\Repository\EnrollmentRepository")
  */
 class Enrollment
 {

@@ -22,12 +22,13 @@
                                 <td class="text-center">
                                     <?php echo $job->getDepartment()->getDepartmentName(); ?>
                                 </td>
+                                
+                                <td class="text-center">
+                                    <?php echo $job->getJobName(); ?>
+                                </td>
                                 <td class="text-center">
                                     <?php $parentJob = $job->getParent(); ?>
                                     <?php echo $parentJob !== null ? $parentJob->getJobName() : 'NENHUM'; ?>
-                                </td>
-                                <td class="text-center">
-                                    <?php echo $job->getJobName(); ?>
                                 </td>
                                 <td>
                                     <ol type="i">

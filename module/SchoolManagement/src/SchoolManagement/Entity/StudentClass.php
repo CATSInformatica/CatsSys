@@ -18,7 +18,7 @@ use SchoolManagement\Entity\Enrollment;
  *
  * @author Márcio
  * @ORM\Table(name="class")
- * @ORM\Entity(repositoryClass="SchoolManagement\Entity\Repository\StudentClass")
+ * @ORM\Entity(repositoryClass="SchoolManagement\Entity\Repository\StudentClassRepository")
  */
 class StudentClass
 {

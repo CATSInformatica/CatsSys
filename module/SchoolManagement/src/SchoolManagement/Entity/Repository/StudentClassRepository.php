@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityRepository;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class StudentClass extends EntityRepository
+class StudentClassRepository extends EntityRepository
 {
 
     public function findByEndDateGratherThan(\DateTime $endDate)
