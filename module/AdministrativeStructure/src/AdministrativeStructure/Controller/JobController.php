@@ -189,4 +189,49 @@ class JobController extends AbstractEntityActionController
         ]);
     }
 
+    /**
+     * Permite atribuir cargos à voluntários
+     * 
+     * @todo
+     *  - Criar entidade JobTitle
+     *      - Data de Entrada
+     *      - Data de Saída
+     *      - Registration
+     *      - Job
+     * 
+     *  - Ao criar um jobTitle deve-se verificar
+     *      - Pessoa possui usuário?
+     *          - Sim: Adicionar o papel correspondente ao cargo
+     *          - Não: Criar um usuário e adicionar o papel correspondente ao cargo
+     * 
+     */
+    public function assignJobTitleAction()
+    {
+        
+    }
+
+    /**
+     * Permite retirar cargos de voluntários
+     * 
+     * @todo
+     *  - Remove um jobTitle
+     *  - Ao remover deve-se retirar o papel correspondente do usuário
+     */
+    public function removeJobTitleAction()
+    {
+        
+    }
+
+    /**
+     * Permite finalizar cargos de voluntários
+     * 
+     * @todo
+     * - Adiciona data de saída no JobTitle correspondente
+     * - Retira o papel correspondente do usuário
+     */
+    public function closeJobTitleAction()
+    {
+        
+    }
+
 }
