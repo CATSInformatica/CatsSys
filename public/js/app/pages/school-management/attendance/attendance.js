@@ -603,7 +603,8 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
             var achieved;
             $.each(data, function (enroll, content) {
                 tr += "<tr>";
-                tr += "<td>" + ("0000" + enroll).substring(enroll.length) + "</td>";
+                tr += "<td class='text-right'>" + 
+                        ("0000" + enroll).substring(enroll.length) + "</td>";
                 tr += "<td>" + content.name + "</td>";
 
                 var arrCurrent = [0, 0, 0, 0, 0, 0, 0];
