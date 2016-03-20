@@ -29,37 +29,37 @@ class AttendanceAnalysis
 
     protected $students;
     protected $attendances;
+    protected $groupedAttendances;
 
     public function __construct($students, $attendances)
     {
         $this->students = $students;
         $this->attendances = $attendances;
+        $this->groupedAttendances = [];
     }
 
     public function getMonthlyAttendance()
     {
-        $groupedAttendances = [];
-
         $this->sortStudents();
+        $this->sortAttendances();
 
-        foreach ($this->attendances as $att) {
-
-            $groupedAttendances[$att['enrollmentId']]['name'] = $this->students[$att['enrollmentId']];
-            $groupedAttendances[$att['enrollmentId']][$att['date']
-                    ->format('Ymd')][$att['attendanceTypeId']] = $att['attendanceType'];
-        }
-
-        return $groupedAttendances;
+        return $this->groupedAttendances;
     }
 
     protected function sortStudents()
     {
-        $students = [];
         foreach ($this->students as $st) {
-            $students[$st['enrollmentId']] = $st['personFirstName'] . ' ' . $st['personLastName'];
+            $this->groupedAttendances[$st['enrollmentId']]['name'] = $st['personFirstName'] . ' ' .
+                $st['personLastName'];
         }
+    }
 
-        $this->students = $students;
+    public function sortAttendances()
+    {
+        foreach ($this->attendances as $att) {
+            $this->groupedAttendances[$att['enrollmentId']][$att['date']
+                    ->format('Ymd')][$att['attendanceTypeId']] = $att['attendanceType'];
+        }
     }
 
 }
