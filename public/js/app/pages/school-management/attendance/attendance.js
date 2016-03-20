@@ -180,9 +180,10 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
 
         showList = function (list, index) {
             var i, j;
-            var container = $("<div class='panel box box-success col-md-6 col-xs-12 cats-row' style='display:none;'>" +
+            var container = $("<div class='panel box box-success col-md-6 col-xs-12' style='display:none;'>" +
                     "<div class='box-header with-border'>" +
-                    "<h4 class='box-title'>" +
+                    "<input name='attendanceListRadio' type='radio'> " +
+                    "<h4 class='box-title listTitle'>" +
                     "<a data-toggle='collapse' data-parent='#" + attendanceLists.attr("id") + "' " +
                     "href='#collapse-" + index + "'>" +
                     "Lista de " + moment(list.date, "YYYY-MM-DD")
@@ -226,10 +227,11 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
 
         setAttendanceActionListeners = function () {
 
-            // block cats-selected-row change on table
-            attendanceLists.off("click", ".attendanceListTable");
-            attendanceLists.on("click", ".attendanceListTable", function (e) {
-                e.stopPropagation();
+            attendanceLists.off("click", ".listTitle");
+            attendanceLists.on("click", ".listTitle", function () {
+                $(this)
+                        .prev("input[name=attendanceListRadio]")
+                        .prop("checked", true);
             });
 
             attendanceLists.off("click", ".attendanceListTable td.attendanceStatus");
@@ -591,7 +593,6 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
             return data;
         };
 
-
         mountAnalysisTable = function (month, data) {
 
             var ret = getDaysArrayByMonth(month);
@@ -603,7 +604,7 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
             var achieved;
             $.each(data, function (enroll, content) {
                 tr += "<tr>";
-                tr += "<td class='text-right'>" + 
+                tr += "<td class='text-right'>" +
                         ("0000" + enroll).substring(enroll.length) + "</td>";
                 tr += "<td>" + content.name + "</td>";
 
@@ -733,7 +734,9 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
 
                 switch (selectedItemId) {
                     case 'attendance-list-save':
-                        var index = $(".cats-selected-row")
+                        var index = attendanceLists
+                                .find("[name=attendanceListRadio]:checked")
+                                .closest(".panel")
                                 .find(".attendanceListTable")
                                 .data("id");
                         return listModels[index];
