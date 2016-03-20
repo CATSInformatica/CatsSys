@@ -5,7 +5,7 @@
  */
 
 
-define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
+define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, moment) {
 
     var generate = (function () {
 
@@ -18,8 +18,11 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
         var attendanceLists = $("#attendanceLists");
         var listModels = [];
         var allowanceMonth = $("#allowanceMonth");
+        var attendanceMonth = $("#attendanceMonth");
         var allowanceStudentsByMonth = {};
+        var attendanceStudentsByMonth = {};
         var allowanceStudents = $("#allowanceStudents");
+        var attendanceContainer = $("#attendanceContainer");
         var studentClass = $("#studentClass");
         var chosenAllowanceList = $("#chosenAllowanceList");
         var chosenDate = null;
@@ -255,9 +258,9 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
             });
         };
 
-        initAllowanceDatepicker = function () {
+        initAttendanceMonthpicker = function (monthElement) {
 
-            allowanceMonth.datetimepicker({
+            monthElement.datetimepicker({
                 format: 'MMMM',
                 inline: true,
                 viewMode: 'months',
@@ -266,17 +269,34 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
                 defaultDate: moment("1", "D")
             });
 
-            allowanceMonth.on("dp.change", function (e) {
+            monthElement.on("dp.change", function (e) {
                 var startDate = e.date.format('YYYY-MM-DD');
-                var endDate = e.date.add(1, 'months').format('YYYY-MM-DD');
+                var endDate = e.date
+                        .add(1, 'months')
+                        .subtract(1, 'days')
+                        .format('YYYY-MM-DD');
 
-                searchAllowanceBetween(startDate, endDate);
+                console.log(startDate);
+                console.log(endDate);
+
+                if (monthElement.is(allowanceMonth)) {
+                    searchAllowanceBetween(startDate, endDate);
+                } else if (monthElement.is(attendanceMonth)) {
+                    searchAttendanceBetween(startDate, endDate);
+                }
             });
 
             var start = moment().format("YYYY-MM-01");
-            var end = moment().add(1, 'months').format("YYYY-MM-01");
+            var end = moment(start, "YYYY-MM-DD")
+                    .add(1, 'months')
+                    .subtract(1, 'days')
+                    .format("YYYY-MM-DD");
 
-            searchAllowanceBetween(start, end);
+            if (monthElement.is(allowanceMonth)) {
+                searchAllowanceBetween(start, end);
+            } else if (monthElement.is(attendanceMonth)) {
+                searchAttendanceBetween(start, end);
+            }
         };
 
         searchAllowanceBetween = function (start, end) {
@@ -344,6 +364,35 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
             }
         };
 
+        searchAttendanceBetween = function (start, end) {
+
+            var attr = start.split('-')[1];
+
+            if (typeof attendanceStudentsByMonth[attr] === "undefined") {
+                attendanceStudentsByMonth[attr] = true;
+
+                var sclass = $("#sclass").val();
+
+                $.ajax({
+                    url: "/school-management/school-attendance/analysis",
+                    type: "POST",
+                    data: {
+                        sclass: sclass,
+                        beginDate: start,
+                        endDate: end
+                    },
+                    success: function (response) {
+                        showMonthAttendance(attr, response.data);
+                    },
+                    error: function (textStatus) {
+                        console.log(textStatus);
+                    }
+                });
+            } else {
+                $("#nav_tab_" + attr).tab("show");
+            }
+        };
+
         showMonthAllowances = function (month, content) {
 
             var monthTemplate = "<div class='box box-solid' style='display:none;' id='month-" + month + "'>" +
@@ -400,6 +449,32 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
 
             allowanceStudents.prepend(monthTemplate);
             monthTemplate.slideDown("fast");
+        };
+
+        showMonthAttendance = function (month, data) {
+
+            var tab = "tab_" + month;
+
+            attendanceContainer
+                    .find(".nav-tabs")
+                    .append("<li><a id='nav_" + tab + "' href='#" + tab +
+                            "' data-toggle='tab' aria-expanded='true'>" +
+                            moment(month, "MM").format("MMMM") + "</a></li>");
+
+            var table = mountAnalysisTable(month, data);
+
+            attendanceContainer
+                    .find(".tab-content")
+                    .append("<div id='" + tab + "' class='tab-pane'><div class='table-responsive'>" +
+                            table +
+                            "</div></div>");
+
+            $("#nav_" + tab).tab("show");
+
+            $("#table_" + month).DataTable({
+                dom: 'flript',
+                paging: false
+            });
         };
 
         moveMonthAllowancesUp = function (month) {
@@ -516,6 +591,111 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
             return data;
         };
 
+
+        mountAnalysisTable = function (month, data) {
+
+            var ret = getDaysArrayByMonth(month);
+            var days = ret.days;
+            var arrMax = ret.daysOfTheWeek;
+            var table = "";
+            var tr = "";
+            var max = sum(arrMax);
+            var achieved;
+            $.each(data, function (enroll, content) {
+                tr += "<tr>";
+                tr += "<td class='text-right'>" + 
+                        ("0000" + enroll).substring(enroll.length) + "</td>";
+                tr += "<td>" + content.name + "</td>";
+
+                var arrCurrent = [0, 0, 0, 0, 0, 0, 0];
+
+                var sit;
+                // foreach day of the month
+                $.each(days, function (day, dayOfWeek) {
+
+                    if (dayOfWeek !== 0) {
+                        if (content.hasOwnProperty(day)) {
+                            sit = content[day];
+                            if (sit.hasOwnProperty("5")) {
+                                arrCurrent[dayOfWeek] += 1;
+                            } else {
+                                if (sit.hasOwnProperty("1")) {
+                                    arrCurrent[dayOfWeek] += 0.5;
+                                } else if (sit.hasOwnProperty("3")) {
+                                    arrCurrent[dayOfWeek] += 0.5;
+                                }
+                                if (sit.hasOwnProperty("2")) {
+                                    arrCurrent[dayOfWeek] += 0.5;
+                                } else if (sit.hasOwnProperty("4")) {
+                                    arrCurrent[dayOfWeek] += 0.5;
+                                }
+                            }
+                        }
+                    }
+                });
+
+                achieved = sum(arrCurrent);
+
+                tr +=
+                        "<td class='text-center'>" + arrCurrent[1] + "</td>" +
+                        "<td class='text-center'>" + arrCurrent[2] + "</td>" +
+                        "<td class='text-center'>" + arrCurrent[3] + "</td>" +
+                        "<td class='text-center'>" + arrCurrent[4] + "</td>" +
+                        "<td class='text-center'>" + arrCurrent[5] + "</td>" +
+                        "<td class='text-center'>" + arrCurrent[6] + "</td>" +
+                        "<td class='text-center'>" + achieved + "/" + max +
+                        "<td class='text-center'>" + ((achieved / max) * 100).toFixed(2) + "% " +
+                        "</tr>";
+            });
+
+            table = "<table id='table_" + month
+                    + "' class='table table-bordered attendanceListTable'><thead>" +
+                    "<tr>" +
+                    "<th class='text-center'>Matrícula</th>" +
+                    "<th class='text-center'>Aluno</th>" +
+                    "<th class='text-center'>Segunda (" + arrMax[1] + ")</th>" +
+                    "<th class='text-center'>Terça (" + arrMax[2] + ")</th> " +
+                    "<th class='text-center'>Quarta (" + arrMax[3] + ")</th> " +
+                    "<th class='text-center'>Quinta (" + arrMax[4] + ")</th> " +
+                    "<th class='text-center'>Sexta (" + arrMax[5] + ")</th> " +
+                    "<th class='text-center'>Sábado (" + arrMax[6] + ")</th> " +
+                    "<th class='text-center'>Total (" + max + ")</th> " +
+                    "<th class='text-center'> % </th> " +
+                    "</tr>" +
+                    "</thead><body>";
+
+            table += tr;
+            table += "</body></table>";
+
+            return table;
+        };
+
+        getDaysArrayByMonth = function (month) {
+            var daysInMonth = moment(month, "MM").daysInMonth();
+            var days = {};
+            var daysOfTheWeek = [0, 0, 0, 0, 0, 0, 0];
+
+            while (daysInMonth) {
+                var current = moment().date(daysInMonth);
+                days[current.format("YYYYMMDD")] = current.format("e");
+                daysOfTheWeek[current.format("e")]++;
+                daysInMonth--;
+            }
+
+            return {
+                days: days,
+                daysOfTheWeek: daysOfTheWeek
+            };
+        };
+
+        sum = function (arr) {
+            var sum = 0;
+            for (var i = 1; i < arr.length; i++) {
+                sum += arr[i];
+            }
+            return sum;
+        };
+
         return {
             init: function () {
                 moment.locale("pt-br");
@@ -536,7 +716,12 @@ define(['masks', 'moment', 'datetimepicker'], function (masks, moment) {
 
                 // edit allowance
                 if (allowanceMonth.length > 0) {
-                    initAllowanceDatepicker();
+                    initAttendanceMonthpicker(allowanceMonth);
+                }
+
+                // analyze
+                if (attendanceMonth.length > 0) {
+                    initAttendanceMonthpicker(attendanceMonth);
                 }
 
                 // add allowance

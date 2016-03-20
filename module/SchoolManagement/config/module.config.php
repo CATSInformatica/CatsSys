@@ -371,6 +371,22 @@ return array(
                             ),
                         ),
                     ),
+                    array(
+                        'label' => 'Analyze',
+                        'route' => 'school-management/school-attendance',
+                        'action' => 'analyze',
+                        'icon' => 'fa fa-calculator',
+//                        'toolbar' => array(
+//                            array(
+//                                'url' => '/school-management/school-attendance/deleteAllowance/$id',
+//                                'title' => 'Remover Abono',
+//                                'id' => 'allowance-delete',
+//                                'description' => 'Remove os abonos selecionados',
+//                                'class' => 'fa fa-close bg-red',
+//                                'fntype' => 'selectedAjaxClick',
+//                            ),
+//                        ),
+                    ),
                 ),
             ),
             array(

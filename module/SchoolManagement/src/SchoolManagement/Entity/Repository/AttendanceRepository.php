@@ -17,6 +17,36 @@ use SchoolManagement\Entity\AttendanceType;
 class AttendanceRepository extends EntityRepository
 {
 
+    public function findAttendance($params)
+    {
+        $qb = $this->_em->createQueryBuilder();
+
+        $qb->select('e.enrollmentId, t.date, at.attendanceTypeId, at.attendanceType')
+            ->from('SchoolManagement\Entity\Attendance', 't')
+            ->join('t.attendanceType', 'at')
+            ->join('t.enrollment', 'e')
+            ->join('e.class', 'c')
+            ->where('c.classId = :class') // assiduidade da turma :class
+            ->andWhere('e.enrollmentEndDate IS NULL') // apenas alunos atuais
+            ->andWhere('at.attendanceTypeId IN (:atts)') // restringe os tipos de abonos e presenças
+            ->andWhere($qb->expr()->between('t.date', ':beginDate', ':endDate'))
+            ->setParameters([
+                'atts' => [
+                    AttendanceType::TYPE_ATTENDANCE_BEGIN,
+                    AttendanceType::TYPE_ATTENDANCE_END,
+                    AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_FULL,
+                    AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_BEGIN,
+                    AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_END,
+                ],
+                'beginDate' => $params['beginDate'],
+                'endDate' => $params['endDate'],
+                'class' => $params['class'],
+            ])
+            ->orderBy('e.enrollmentId, t.date');
+
+        return $qb->getQuery()->getResult();
+    }
+
     /**
      * Salva a lista de presença de uma data específica no banco de dados
      * 
@@ -30,10 +60,22 @@ class AttendanceRepository extends EntityRepository
         $conn->beginTransaction();
         try {
 
-            $conn->delete('attendance', [
-                'attendance_date' => $date
+            $conn->delete('attendance',
+                [
+                'attendance_date' => $date,
+                'attendance_type_id' => AttendanceType::TYPE_ATTENDANCE_BEGIN,
                 ], [
                 'date',
+                PDO::PARAM_INT,
+            ]);
+
+            $conn->delete('attendance',
+                [
+                'attendance_date' => $date,
+                'attendance_type_id' => AttendanceType::TYPE_ATTENDANCE_END,
+                ], [
+                'date',
+                PDO::PARAM_INT,
             ]);
 
             foreach ($students as $student) {
@@ -93,7 +135,7 @@ class AttendanceRepository extends EntityRepository
             ->join('r.person', 'p')
             ->where('(a.attendanceType = :id1 OR a.attendanceType = :id2 OR  a.attendanceType = :id3 )')
             ->andWhere('a.date >= :beginDate')
-            ->andWhere('a.date < :endDate')
+            ->andWhere('a.date <= :endDate')
             ->setParameters(array(
                 'id1' => AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_FULL,
                 'id2' => AttendanceType::TYPE_ATTENDANCE_ALLOWANCE_BEGIN,
