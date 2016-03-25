@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-define(['jquery', 'datatable'], function () {
+define(['jquery', 'datatable', 'mathjax'], function () {
     var question = (function () {
 
         var questionTable = $('#question-table');
@@ -32,7 +32,7 @@ define(['jquery', 'datatable'], function () {
                                 },
                                 0: data[i].questionId,
                                 1: data[i].questionEnunciation,
-                                2: data[i].questionAnswer
+                                2: data[i].questionAnswersStr
                             });
                         }
 

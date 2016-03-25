@@ -1,7 +1,130 @@
 <section class="content">
     <?php
-    $this->headTitle()->append('Simulados gerados')
+    $this->headTitle()->append('Gerar Simulado')
         ->setSeparator(' - ');
     ?>
     <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+            <div class="box box-primary color-palette-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title text-uppercase"><i class="fa fa-balance-scale"></i> Parte 1</h3>
+                </div>
+                <div class="box-body">
+                    <div class="row">
+                        <table class="table table-bordered">
+                            <tr>
+                                <?php foreach ($this->baseSubjectsName as $sName) : ?>
+                                    <th><h4 class="text-uppercase"><?php echo $sName; ?></h4></th>
+                                <?php endforeach; ?>
+                            </tr>
+                            <tr>
+                                <?php foreach ($this->lvlOneSubjects as $siblings) : ?>
+                                    <td>
+                                        <div class="container-fluid">
+                                            <?php foreach ($siblings as $s) : ?>
+                                                <div class="row">
+                                                    <?php echo $s->getSubjectName(); ?>
+                                                    <input type="number" class="col-md-5 col-xs-12 pull-right amount-input" min="0">
+                                                </div><br>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </td>
+                                <?php endforeach; ?>
+                            </tr>
+                        </table>
+                        <div class="col-md-12"><strong id="question-count">Total: 0</strong></div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+            <div class="box box-success color-palette-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title text-uppercase"><i class="fa fa-check-square-o"></i> Parte 2</h3>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-4 col-sm-12" id="subjects">
+                        <dl class="col-xs-12 no-padding">
+                            <?php foreach ($this->lvlOneSubjects as $siblings) : ?>
+                                <?php foreach ($siblings as $s) : ?>
+                                    <dt><?php echo $s->getSubjectName() ?></dt>
+                                    <dd class="col-xs-12" id="subject-<?php echo $s->getSubjectId() ?>">
+                                        <select name="subject" class="col-xs-12 no-padding no-border" multiple>
+                                            <?php
+                                            foreach ($s->getChildren()->toArray() as $topic) :
+                                                ?>
+                                                <option value="<?php echo $topic->getSubjectId() ?>"><?php echo $topic->getSubjectName() ?></option>
+                                            <?php endforeach; ?>
+                                        </select>
+                                    </dd>
+                                <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </dl>
+                    </div>
+                    <div class="col-md-8 col-sm-12" id="questions">
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-bordered" id="question-table">
+                                <thead>
+                                <th></th>
+                                <th>Questões</th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                    <div class="col-xs-12"><strong id="question-count">Total: 0</strong></div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+            <div class="box box-warning color-palette-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title text-uppercase"><i class="fa fa-file-text-o"></i> Parte 3</h3>
+                </div>
+                <div class="box-body">
+                    <!-- Nav tabs -->
+                    <ul class="nav nav-tabs" role="tablist">
+                        <li role="presentation" class="active"><a href="#test-1" aria-controls="test-1" role="tab" data-toggle="tab">Prova 1</a></li>
+                        <li role="presentation"><a href="#test-2" aria-controls="test-2" role="tab" data-toggle="tab">Prova 2</a></li>
+                    </ul>
+
+                    <!-- Tab panes -->
+                    <div class="tab-content">
+                        <div role="tabpanel" class="tab-pane active" id="test-1">
+                            <div>
+                                
+                            </div> 
+                        </div>
+                        <div role="tabpanel" class="tab-pane" id="test-2">
+                            <div class="container-fluid">
+
+                            </div>                             
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+    </div>
 </section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/exam/index';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

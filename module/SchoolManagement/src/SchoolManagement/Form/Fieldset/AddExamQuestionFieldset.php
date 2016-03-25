@@ -33,6 +33,7 @@ class AddExamQuestionFieldset extends Fieldset implements InputFilterProviderInt
                 ),
                 'attributes' => array(
                     'id' => 'subject',
+                    'autocomplete' => 'on',
                 ),
             ))
             ->add(array(
@@ -66,7 +67,6 @@ class AddExamQuestionFieldset extends Fieldset implements InputFilterProviderInt
                 'options' => array(
                     'label' => 'Alternativa Correta',
                     'value_options' => array(
-                        '0' => 'Nenhum',
                         /* Inseridos dinamicamente */
                     ),
                     'disable_inarray_validator' => true,
@@ -76,7 +76,7 @@ class AddExamQuestionFieldset extends Fieldset implements InputFilterProviderInt
                 'name' => 'answerOptions',
                 'type' => 'Zend\Form\Element\Collection',
                 'options' => array(
-                    'count' => 0,
+                    'count' => 5,
                     'should_create_template' => true,
                     'template_placeholder' => '__placeholder__',
                     'target_element' => new AddExamAnswerFieldset($obj),

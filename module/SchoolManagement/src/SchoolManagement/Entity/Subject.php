@@ -32,7 +32,7 @@ class Subject
     /**
      *
      * @var string 
-     * @ORM\Column(name="subject_name", type="string", nullable=false)
+     * @ORM\Column(name="subject_name", type="string", unique=true, nullable=false)
      */
     private $subjectName;
     
