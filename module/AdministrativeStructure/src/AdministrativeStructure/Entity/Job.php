@@ -102,6 +102,20 @@ class Job
     protected $parent;
 
     /**
+     *
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="Office", mappedBy="job")
+     */
+    protected $offices;
+
+    /**
+     * Indica se o cargo está disponível para uso
+     * @var bool
+     * @ORM\Column(name="job_is_available", type="boolean", nullable=false)
+     */
+    protected $isAvalable;
+
+    /**
      * Cargos imediatamente subordinados.
      * 
      * Autorelacionamento `OneToMany` bidirecional com $parent
@@ -122,6 +136,8 @@ class Job
     public function __construct()
     {
         $this->children = new ArrayCollection();
+        $this->offices = new ArrayCollection();
+        $this->isAvalable = true;
     }
 
     /**
@@ -221,6 +237,19 @@ class Job
     {
         $this->department = $department;
         return $this;
+    }
+
+    /**
+     * Retorna a situação do cargo.
+     * 
+     * Se ($isAvailable === false) o cargo está desabilitado e não pode ser associado a nenhuma pessoa. Caso contrário,
+     * o cargo está disponível.
+     * 
+     * @return bool
+     */
+    public function getIsAvailable()
+    {
+        return $this->isAvalable;
     }
 
     /**
@@ -406,6 +435,33 @@ class Job
             }
         }
         return $rids;
+    }
+
+    /**
+     * Adiciona novos cargos ao trabalho. Se o cargo já existe ele é ignorado.
+     * 
+     * @param Collection $offices
+     * @return AdministrativeStructure\Entity\Job
+     */
+    public function addOffices(Collection $offices)
+    {
+        foreach ($offices as $office) {
+            if (!$this->hasOffice($office)) {
+                $this->offices->add($office);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Verifica se o cargo já existe.
+     * 
+     * @param AdministrativeStructure\Entity\Office $office
+     * @return bool
+     */
+    public function hasOffice(Office $office)
+    {
+        return $this->offices->contains($office);
     }
 
 }

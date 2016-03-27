@@ -8,7 +8,7 @@
 requirejs.config({
     baseUrl: '/vendor',
     paths: {
-        jquery: 'AdminLTE/plugins/jQuery/jQuery-2.1.4.min',
+        jquery: 'AdminLTE/plugins/jQuery/jQuery-2.2.0.min',
         bootstrap: 'bootstrap/dist/js/bootstrap.min',
         smoothscroll: 'smooth-scroll/dist/js/smooth-scroll.min',
         app: '/js/app'

@@ -16,6 +16,7 @@ use Doctrine\Common\Collections\Collection;
 class RecruitmentStatus
 {
 
+    const STATUSTYPE_ALL = -1;
     const STATUSTYPE_REGISTERED = 0;
     const STATUSTYPE_CALLEDFOR_INTERVIEW = 1;
     const STATUSTYPE_CANCELED_REGISTRATION = 2;
@@ -34,6 +35,7 @@ class RecruitmentStatus
     /**
      * Descrição das constantes anteriores
      */
+    const STATUSTYPEDESC_ALL = 'TODOS';
     const STATUSTYPEDESC_REGISTERED = 'INSCRITO';
     const STATUSTYPEDESC_CALLEDFOR_INTERVIEW = 'CONVOCADO PARA ENTREVISTA';
     const STATUSTYPEDESC_CANCELED_REGISTRATION = 'INSCRIÇÃO CANCELADA';

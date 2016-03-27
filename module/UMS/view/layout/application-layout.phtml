@@ -36,22 +36,28 @@
         ?>
 
     </head>
-    <body class="skin-blue fixed" style="background: white;">
+    <body class="skin-blue fixed">
 
         <!-- Wrapper -->
-        <div class="wrapper">
+        <div class="wrapper" style="background: white;">
 
             <header class="main-header">
-
+                <!-- Logo -->
                 <a href="<?php echo $this->url('ums'); ?>" class="logo">
-                    <b>CATS</b>
+                    <!-- mini logo for sidebar mini 50x50 pixels -->
+                    <span class="logo-mini"><b>C</b></span>
+                    <!-- logo for regular state and mobile devices -->
+                    <span class="logo-lg"><b>CATS</b></span>
                 </a>
-
                 <!-- Header Navbar: style can be found in header.less -->
                 <nav class="navbar navbar-static-top" role="navigation">
 
+                    <!-- Sidebar toggle button-->
                     <a href="#" class="sidebar-toggle" data-toggle="offcanvas" role="button">
                         <span class="sr-only">Toggle navigation</span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
+                        <span class="icon-bar"></span>
                     </a>
 
                     <!-- Navbar Right Menu -->
@@ -116,15 +122,14 @@
                     </div>
                 </nav>
             </header>
+            <!-- =============================================== -->
             <!-- Left side column. contains the sidebar -->
             <aside class="main-sidebar">
                 <!-- sidebar: style can be found in sidebar.less -->
                 <section class="sidebar">
 
                     <!-- sidebar menu: : style can be found in sidebar.less -->
-
                     <!-- Sidebar Menu Items - These collapse to the responsive navigation menu on small screens -->
-
                     <?php
                     echo $this->
                         navigation('navigation')
@@ -132,15 +137,13 @@
                         ->setUlClass('sidebar-menu')
                         ->setPartial('menu/template');
                     ?>
-
                     <!-- /.Sidebar Menu Items -->
-
                 </section>
                 <!-- /.sidebar -->
             </aside>
-
-            <!-- Right side column. Contains the content of the page -->
-            <div class="content-wrapper" style="height: 100% !important;">
+            <!-- =============================================== -->
+            <!-- Content Wrapper. Contains page content -->
+            <div class="content-wrapper" style="height: 100%; background: none;">
                 <!-- Main content -->
                 <section class="content-header">
                     <?php
@@ -151,8 +154,15 @@
                     ?>
                 </section>
                 <?php echo $this->content; ?>
+            </div>            
+            <!-- /.content-wrapper -->
 
-            </div><!-- /.right-side -->
+            <footer class="main-footer" style="display:none;">
+                <div class="pull-right hidden-xs">
+                    <b>Version</b> 2.0.0-alpha.1
+                </div>
+                <strong>License GPLv3.</strong>
+            </footer>
 
             <!-- Control Sidebar -->
             <aside class="control-sidebar control-sidebar-dark">
@@ -172,90 +182,96 @@
                     </div>
                 </div>
             </aside>
+            <!-- /.control-sidebar -->
+            <!-- Add the sidebar's background. This div must be placed
+            immediately after the control sidebar -->
             <div class="control-sidebar-bg"></div>
+
         </div>
-    </body>
-    <script data-main="/js/config" src="/vendor/requirejs/require.js" ></script>
-    <script>
-        require(['config'], function () {
 
-            // for file inputs
-            $(document).on('change', '.btn-file :file', function () {
-                var input = $(this),
-                        numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                        label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                input.trigger('fileselect', [numFiles, label]);
-            });
+        <script data-main="/js/config" src="/vendor/requirejs/require.js" ></script>
+        <script>
+            require(['config'], function () {
 
-            $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
-                $(this).siblings('.btn-file-name').text(label);
-            });
-
-            // change user active role
-            $(function () {
-
-
-
-//                $('.role').on('click', function () {
-//                    var role = $(this);
-//                    var jsonRole = JSON.stringify({
-//                        'role': role.text().toLowerCase()
-//                    });
-//                    $.ajax({
-//                        url: '/authorization/role/changeActiveUserRole',
-//                        type: 'POST',
-//                        dataType: 'json',
-//                        async: true,
-//                        data: jsonRole,
-//                        success: function (msg) {
-//
-//                            // change role in menu
-//                            if (msg.success) {
-//                                var newActiveRole = role.text();
-//                                role.text($('.active-role').text());
-//                                $('.active-role').text(newActiveRole);
-//                            }
-//
-//                            console.log(msg);
-//                        },
-//                        error: function (msg) {
-//                            console.log(msg);
-//                        }
-//                    });
-//                });
-
-                require(['app/models/Main', 'pace'], function (Main) {
-
-                    $(document).ajaxStart(function () {
-                        Pace.restart();
-                    });
-
-                    var config = {
-                        toolbarElement: '.system-toolbar',
-                        toolbarItem: 'li',
-                        toolbarSelectedItem: '.cats-selected-row',
-                        toolbarContainer: '.control-sidebar',
-                        toolbarContainerOpen: 'control-sidebar-open'
-                    };
-
-                    if (typeof appConfig !== 'undefined') {
-                        require([appConfig.getScriptSrc()], function (pageScript) {
-                            Main.setPageConfig(pageScript);
-                            pageScript.init();
-                        });
-                    }
-
-                    // deprecated
-                    if (typeof standardConfig !== 'undefined') {
-                        standardConfig.init();
-                    }
-
-                    Main.setConfig(config);
-                    Main.init();
+                // for file inputs
+                $(document).on('change', '.btn-file :file', function () {
+                    var input = $(this),
+                            numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+                    input.trigger('fileselect', [numFiles, label]);
                 });
 
+                $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
+                    $(this).siblings('.btn-file-name').text(label);
+                });
+
+                // change user active role
+                $(function () {
+
+                    // show footer
+                    $(".main-footer").toggle("slide");
+
+                    //                $('.role').on('click', function () {
+                    //                    var role = $(this);
+                    //                    var jsonRole = JSON.stringify({
+                    //                        'role': role.text().toLowerCase()
+                    //                    });
+                    //                    $.ajax({
+                    //                        url: '/authorization/role/changeActiveUserRole',
+                    //                        type: 'POST',
+                    //                        dataType: 'json',
+                    //                        async: true,
+                    //                        data: jsonRole,
+                    //                        success: function (msg) {
+                    //
+                    //                            // change role in menu
+                    //                            if (msg.success) {
+                    //                                var newActiveRole = role.text();
+                    //                                role.text($('.active-role').text());
+                    //                                $('.active-role').text(newActiveRole);
+                    //                            }
+                    //
+                    //                            console.log(msg);
+                    //                        },
+                    //                        error: function (msg) {
+                    //                            console.log(msg);
+                    //                        }
+                    //                    });
+                    //                });
+
+                    require(['app/models/Main', 'pace'], function (Main) {
+
+                        $(document).ajaxStart(function () {
+                            Pace.restart();
+                        });
+
+                        var config = {
+                            toolbarElement: '.system-toolbar',
+                            toolbarItem: 'li',
+                            toolbarSelectedItem: '.cats-selected-row',
+                            toolbarContainer: '.control-sidebar',
+                            toolbarContainerOpen: 'control-sidebar-open'
+                        };
+
+                        if (typeof appConfig !== 'undefined') {
+                            require([appConfig.getScriptSrc()], function (pageScript) {
+                                Main.setPageConfig(pageScript);
+                                pageScript.init();
+                            });
+                        }
+
+                        // deprecated
+                        if (typeof standardConfig !== 'undefined') {
+                            standardConfig.init();
+                        }
+
+                        Main.setConfig(config);
+                        Main.init();
+                    });
+
+                });
             });
-        });
-    </script>
+        </script>
+    </body>
 </div>
 </html>

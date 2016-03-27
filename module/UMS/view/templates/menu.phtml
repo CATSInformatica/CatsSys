@@ -15,7 +15,6 @@ $container = $this->container;
         <?php $hasChildren = $page->hasPages() ?>
 
         <?php if (!$hasChildren): ?>
-            <!-- the page doesn't have any child -->
             <li <?php echo ($page->isActive() ? 'class="active"' : ''); ?> >
                 <a href="<?php echo $page->getHref() ?>">
 
@@ -32,7 +31,6 @@ $container = $this->container;
             </li>
 
         <?php else: ?>
-            <!-- At least one child exists -->
             <?php
             //check if access is allowed for at least one item who isn't a separator
             $access = false;

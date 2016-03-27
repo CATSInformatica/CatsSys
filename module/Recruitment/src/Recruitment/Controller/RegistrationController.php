@@ -9,7 +9,6 @@
 namespace Recruitment\Controller;
 
 use Database\Controller\AbstractEntityActionController;
-use Database\Service\EntityManagerService;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
@@ -228,7 +227,7 @@ class RegistrationController extends AbstractEntityActionController
                 $em = $this->getEntityManager();
                 $form = new SearchRegistrationsForm($em);
                 $form->setData($request->getPost());
-
+                
                 if ($form->isValid()) {
 
                     $data = $form->getData();
@@ -237,19 +236,12 @@ class RegistrationController extends AbstractEntityActionController
                     $sid = $data['registrationStatus'];
 
                     $em = $this->getEntityManager();
-                    if (RecruitmentStatus::statusTypeExists($sid)) {
-                        $regs = $em->getRepository('Recruitment\Entity\Registration')->findByStatusType($rid, $sid);
-                    } else {
-                        $regs = $em->getRepository('Recruitment\Entity\Registration')->findBy(array(
-                            'recruitment' => $rid,
-                        ));
-                    }
+                    $regs = $em->getRepository('Recruitment\Entity\Registration')->findByStatusType($rid, $sid);
 
                     foreach ($regs as $r) {
                         $status = $r->getCurrentRegistrationStatus();
                         $timestamp = $status->getTimestamp();
                         $statusType = $status->getRecruitmentStatus()->getStatusType();
-
                         $person = $r->getPerson();
 
                         $result[] = array(
