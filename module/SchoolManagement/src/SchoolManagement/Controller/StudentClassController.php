@@ -180,4 +180,36 @@ class StudentClassController extends AbstractEntityActionController
         ));
     }
 
+    /**
+     * Exibe informações importantes dos alunos matriculados na turma $id.
+     * @return ViewModel
+     */
+    public function showStudentsByClassAction()
+    {
+        $id = $this->params('id', false);
+
+        if ($id) {
+            try {
+                $em = $this->getEntityManager();
+
+                $students = $em->getRepository('SchoolManagement\Entity\Enrollment')->findByClass($id);
+
+                return new ViewModel([
+                    'students' => $students,
+                    'message' => null,
+                ]);
+            } catch (\Exception $ex) {
+                return new ViewModel([
+                    'message' => $ex->getMessage(),
+                    'students' => null,
+                ]);
+            }
+        }
+
+        return new ViewModel([
+            'message' => 'Nenhuma turma selecionada',
+            'students' => null,
+        ]);
+    }
+
 }
