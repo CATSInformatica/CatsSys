@@ -158,6 +158,38 @@ return [
                         'privilege' => 'create',
                         'icon' => 'fa fa-user',
                     ],
+                    [
+                        'label' => 'Office manager',
+                        'route' => 'administrative-structure/job',
+                        'action' => 'office-manager',
+                        'resource' => 'AdministrativeStructure\Controller\Job',
+                        'privilege' => 'office-manager',
+                        'icon' => 'fa fa-male',
+                        'toolbar' => [
+                            [
+                                'url' => '/administrative-structure/job/add-office/$id',
+                                'title' => 'Associar Cargo',
+                                'description' => 'Associa o cargo selecionado ao voluntário '
+                                . 'escolhido',
+                                'class' => 'fa fa-pencil-square-o bg-green',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ],
+                            [
+                                'url' => '/administrative-structure/job/end-office/$id',
+                                'title' => 'Finalizar cargo',
+                                'description' => 'Conclui o cargo do voluntário escolhido',
+                                'class' => 'fa fa-pencil-square-o bg-yellow',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ],
+                            [
+                                'url' => '/administrative-structure/job/remove-office/$id',
+                                'title' => 'Remover Cargo',
+                                'description' => 'Remove o cargo selecionado do voluntário escolhido',
+                                'class' => 'fa fa-pencil-square-o bg-red',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ],
+                        ],
+                    ],
                 ],
             ],
         ],

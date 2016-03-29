@@ -7,6 +7,7 @@ use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+
 /**
  * User
  *
@@ -15,6 +16,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class User
 {
+
     /**
      * @var integer
      *
@@ -65,7 +67,7 @@ class User
      * @ORM\ManyToMany(targetEntity="Authorization\Entity\Role", mappedBy="user")
      */
     private $role;
-    
+
     /**
      * Constructor
      */
@@ -74,7 +76,6 @@ class User
         $this->role = new ArrayCollection();
         $this->userRegistrationDate = new DateTime();
     }
-
 
     /**
      * Get userId
@@ -215,8 +216,8 @@ class User
      */
     public function addRole(Role $role)
     {
-        $this->role[] = $role;
-
+        $role->addUser($this);
+        $this->role->add($role);
         return $this;
     }
 
@@ -227,7 +228,9 @@ class User
      */
     public function removeRole(Role $role)
     {
+        $role->removeUser($this);
         $this->role->removeElement($role);
+        return $this;
     }
 
     /**
@@ -239,4 +242,5 @@ class User
     {
         return $this->role;
     }
+
 }

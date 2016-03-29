@@ -15,7 +15,7 @@ use Doctrine\ORM\EntityRepository;
  *
  * @author marcio
  */
-class Recruitment extends EntityRepository
+class RecruitmentRepository extends EntityRepository
 {
 
     /**

@@ -11,6 +11,7 @@
                             <th class="text-center">Cargo Superior</th>
                             <th class="text-center">Cargos Subordinados</th>
                             <th class="text-center">Descrição </th>
+                            <th class="text-center">Situação </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -42,6 +43,9 @@
                                 <td class="text-center">
                                     <?php echo $job->getJobDescription(); ?>
                                 </td>
+                                <td class="text-center">
+                                    <?php echo $job->getIsAvailable() ? 'TRUE' : 'FALSE'; ?>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>
@@ -50,3 +54,15 @@
         </div>
     </div>
 </section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/administrative-structure/job/job';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+</script>

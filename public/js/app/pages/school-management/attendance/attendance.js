@@ -56,7 +56,7 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
             var currentCount = $('form fieldset > fieldset').length;
             if (currentCount > 1) {
                 $('form fieldset > fieldset').last().remove();
-                templateDate.subtract(1, 'days').format('DD/MM/YYYY')
+                templateDate.subtract(1, 'days').format('DD/MM/YYYY');
             }
         };
 

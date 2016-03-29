@@ -1,0 +1,91 @@
+<section class="content">    
+    <p><?php echo $message; ?></p>
+
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+            <div class="col-md-12 col-xs-12">
+                <div class="form-group">
+                    <label>Turma</label>
+                    <select id="studentClass" class="form-control">
+                        <?php foreach ($classes as $cl): ?>
+                            <option value="<?php echo $cl->getClassId(); ?>">  <?php echo $cl->getClassName(); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <div class="form-group">
+                    <label>Arquivo de respostas dos alunos (<code>.csv</code>)</label>
+                    <div class="input-group btn-file">
+                        <span class="input-group-addon"><i class="fa fa-file-excel-o"></i></span>
+                        <input name="answers" id="answers" type="file">
+                        <span class="form-control btn-file-name">Nenhum arquivo selecionado</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <div class="form-group">
+                    <label>Gabarito oficial (<code>.csv</code>)</label>
+                    <div class="input-group btn-file">
+                        <span class="input-group-addon"><i class="fa fa-file-excel-o"></i></span>
+                        <input name="template" id="template" type="file">
+                        <span class="form-control btn-file-name">Nenhum arquivo selecionado</span>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12">
+                <button id="calculate" class="btn btn-primary btn-block"> <i class="fa fa-magic"></i> Processar </button>
+            </div>
+        </div>
+
+        <div class="col-md-12 col-xs-12">
+            <br>
+            <h4 class="text-center">Cálculos</h4>
+            <hr>
+
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active"><a href="#tab_answers" data-toggle="tab" aria-expanded="true">Respostas</a></li>
+                    <li class=""><a href="#tab_template" data-toggle="tab" aria-expanded="false">Gabarito</a></li>
+                    <li class=""><a href="#tab_result" data-toggle="tab" aria-expanded="false">Resultado</a></li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_answers">
+                        <div class="table-responsive" id="answer-container">
+                            @TODO tabela com respostas dos alunos
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_template">
+                        <div class="table-responsive" id="template-container">
+                            @TODO tabela com o gabarito
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_result">
+                        <div class="table-responsive" id="result-container">
+                            @TODO tabela de resultado
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+            </div>
+        </div>
+
+    </div>
+
+</section>
+
+
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/exam/exam-preview';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+</script>

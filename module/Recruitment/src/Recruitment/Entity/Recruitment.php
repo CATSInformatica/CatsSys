@@ -20,10 +20,15 @@ use Recruitment\Entity\Registration;
  * @ORM\Table(name="recruitment", uniqueConstraints={
  * @ORM\UniqueConstraint(name="recruitment_nyeart_idx", columns={"recruitment_number", "recruitment_year", "recruitment_type"})
  * })
- * @ORM\Entity(repositoryClass="Recruitment\Entity\Repository\Recruitment")
+ * @ORM\Entity(repositoryClass="Recruitment\Entity\Repository\RecruitmentRepository")
  */
 class Recruitment
 {
+
+    /**
+     * Indica pesquisa por todos os processos seletivos de voluntário
+     */
+    const ALL_VOLUNTEER_RECRUITMENTS = -1;
 
     /**
      * 1: Processo seletivo de Alunos
