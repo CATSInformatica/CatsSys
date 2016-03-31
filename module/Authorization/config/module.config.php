@@ -157,7 +157,7 @@ return array(
                                 'fntype' => 'selectedAjaxClick',
                             ),
 //                            array(
-//                                'url' => '/authorization/role/delete/$id',
+//                                'url' => '/authorization/role/edit/$id',
 //                                'title' => 'Editar',
 //                                'description' => 'Editar um papel selecionado',
 //                                'class' => 'fa fa-edit bg-blue',
@@ -203,7 +203,16 @@ return array(
                         'label' => 'Show resources',
                         'route' => 'authorization/resource',
                         'action' => 'index',
-                        'icon' => 'fa fa-retweet'
+                        'icon' => 'fa fa-retweet',
+                        'toolbar' => [
+                            [
+                                'url' => '/authorization/resource/delete/$id',
+                                'title' => 'Remover',
+                                'description' => 'Remove o recurso selecionado',
+                                'class' => 'fa fa-trash-o bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            ],
+                        ],
                     ),
                     array(
                         'label' => 'Create a resource',
@@ -224,7 +233,16 @@ return array(
                         'label' => 'Show privileges',
                         'route' => 'authorization/privilege',
                         'action' => 'index',
-                        'icon' => 'fa fa-bullseye'
+                        'icon' => 'fa fa-bullseye',
+                        'toolbar' => [
+                            [
+                                'url' => '/authorization/privilege/delete/$id',
+                                'title' => 'Remover',
+                                'description' => 'Remove o privilégio selecionado',
+                                'class' => 'fa fa-trash-o bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            ],
+                        ],
                     ),
                     array(
                         'label' => 'Create a privilege',
