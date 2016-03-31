@@ -16,28 +16,214 @@
  */
 
 
-define(['bootbox', 'jquerycsv'], function (bootbox) {
+define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
 
     var students = [];
     var csvData = {
         answers: null,
         template: null
     };
-
+    var studentAnswers = {};
+    var finalTemplate = {
+        groups: null,
+        answers: null
+    };
+    /**
+     * @todo createResultTable()
+     * @returns {undefined}
+     */
     startListeners = function () {
 
         bindImportEvent();
         $("#calculate").click(function () {
             getStudents($("#studentClass").val()).then(function () {
-                console.log(students);
-                console.log(csvData);
+                processTemplate();
+                processStudents();
+                createAnswersTable();
+                createTemplateTable();
+                createResultTable();
             });
         });
-
     };
 
+
+    createResultTable = function () {
+        $("#result-container").slideUp("fast").html("");
+        var table = "<table class='table table-condensed table-striped attendanceListTable'>";
+        table += "<thead><tr><th class='text-center'>Matrícula</th>" +
+                "<th class='text-center'>Aluno</th>";
+
+        for (var i = 0; i < finalTemplate.groups.length; i++) {
+            table += "<th class='text-center'>" +
+                    finalTemplate.groups[i] + "</th>";
+        }
+
+
+        table += "</tr></thead><tbody>";
+
+        var lastGroup;
+        var sum;
+        $.each(studentAnswers, function (key, value) {
+            lastGroup = finalTemplate.groups[0];
+            sum = 0;
+            table += "<tr><td class='text-center'>" + key + "</td>";
+            if (typeof value.name !== "undefined") {
+                table += "<td style='white-space:nowrap;'>" + value.name +
+                        "</td>";
+            } else {
+                table += "<td style='white-space:nowrap;'>[DESLIGADO / NÃO ENCONTRADO]</td>";
+            }
+
+            if (typeof value.answers !== "undefined") {
+                for (var j = 0; j < finalTemplate.answers.length; j++) {
+
+                    if (lastGroup !== finalTemplate.answers[j].group) {
+                        table += "<td class='text-center'>" + sum + "</td>";
+                        sum = 0;
+                        lastGroup = finalTemplate.answers[j].group;
+                    }
+
+                    if (finalTemplate.answers[j].answer.toLowerCase() === "x"
+                            || finalTemplate.answers[j].answer === value.answers[j]) {
+                        sum++;
+                    }
+                }
+                table += "<td class='text-center'>" + sum + "</td></tr>";
+            } else {
+                for (var j = 0; j < finalTemplate.groups.length; j++) {
+                    table += "<td></td>";
+                }
+            }
+
+        });
+
+        table += "</tbody></table>";
+        $("#result-container")
+                .append(table);
+
+        $("#result-container").find("table").DataTable({
+            dom: 'lftip',
+            paging: false
+        });
+        
+        $("#result-container")
+                .slideDown("fast");
+    };
+
+    createAnswersTable = function () {
+        $("#answer-container").slideUp("fast").html("");
+        var table = "<table class='table table-condensed table-striped attendanceListTable'>";
+        table += "<thead><tr><th class='text-center'>Matrícula</th>";
+        table += "<th class='text-center'>Aluno</th>";
+        for (var i = 0; i < finalTemplate.answers.length; i++) {
+            table += "<th class='text-center'>" + (i + 1) + "</th>";
+        }
+
+        table += "</tr></thead><tbody>";
+        $.each(studentAnswers, function (key, value) {
+
+            table += "<tr><td class='text-center'>" + key + "</td>";
+            if (typeof value.name !== "undefined") {
+                table += "<td style='white-space:nowrap;'>" + value.name +
+                        "</td>";
+            } else {
+                table += "<td style='white-space:nowrap;'>[DESLIGADO / NÃO ENCONTRADO]</td>";
+            }
+
+            if (typeof value.answers !== "undefined") {
+                for (var j = 0; j < finalTemplate.answers.length; j++) {
+                    table += "<td class='text-center'>" + value.answers[j] +
+                            "</td>";
+                }
+            }
+
+            table += "</tr>";
+        });
+        table += "</tbody></table>";
+        $("#answer-container")
+                .append(table)
+                .slideDown("fast");
+    };
+    createTemplateTable = function () {
+        $("#template-container").slideUp("fast").html("");
+        var table = "<table class='table table-condensed table-striped attendanceListTable'>";
+        table += "<thead><tr><th class='text-center'>Questão</th>";
+        table += "<th class='text-center'>Resposta</th></tr></thead><tbody>";
+
+        var lastGroup = null;
+
+        for (var i = 0; i < finalTemplate.answers.length; i++) {
+
+            if (lastGroup !== finalTemplate.answers[i].group) {
+                lastGroup = finalTemplate.answers[i].group;
+                table += "<tr><th colspan='2' class='text-center'>" +
+                        lastGroup + "</th></tr>";
+            }
+
+            table += "<tr><td class='text-center'>" + (i + 1) +
+                    "</td><td class='text-center'>" +
+                    finalTemplate.answers[i].answer +
+                    "</td></tr>";
+        }
+
+        table += "</tbody></table>";
+        $("#template-container")
+                .append(table)
+                .slideDown("fast");
+    };
     /**
-     * @TODO ver como utilizar o delimiter ";"
+     * Cria o vetor de respostas combinando com os nomes dos alunos
+     * 
+     * @returns {undefined}
+     */
+    processStudents = function () {
+        var ans = null;
+        var temporaryId;
+        var partialId;
+        for (var i = 1; i < csvData.answers.length; i++) {
+            ans = csvData.answers[i];
+            temporaryId = ans.slice(1, 6).join('');
+            studentAnswers[temporaryId] = {};
+            studentAnswers[temporaryId].answers = ans.slice(6);
+        }
+
+        for (var i = 1; i < students.length; i++) {
+            partialId = "" + students[i].enrollmentId;
+            temporaryId = ("00000" + partialId).substring(partialId.length);
+            if (typeof studentAnswers[temporaryId] === "undefined") {
+                studentAnswers[temporaryId] = {};
+            }
+            studentAnswers[temporaryId].name = students[i].personFirstName +
+                    " " + students[i].personLastName;
+        }
+    };
+    /**
+     * Organiza o gabarito.
+     * 
+     * @returns {undefined}
+     */
+    processTemplate = function () {
+
+        var lastGroup = null;
+        finalTemplate.groups = [];
+        finalTemplate.answers = [];
+        var group = null;
+        for (var i = 1; i < csvData.template[1].length; i++) {
+            group = csvData.template[0][i].split("]")[0].substring(1);
+            if (lastGroup !== group) {
+                lastGroup = group;
+                finalTemplate.groups.push(group);
+            }
+
+            finalTemplate.answers.push({
+                group: group,
+                answer: csvData.template[1][i]
+            });
+
+        }
+    };
+    /**
+     * Lê os arquivos csv
      * 
      * @returns {undefined}
      */
@@ -46,30 +232,23 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         $("#answers, #template").click(function () {
             $(this).val("");
         });
-
         $("#answers, #template").change(function (e) {
 
             var prop = $(this).attr("id");
             var files = e.target.files; // FileList object
             var file = files[0];
-
             var reader = new FileReader();
             reader.readAsText(file);
-
             reader.onload = function (event) {
                 csvData[prop] = $.csv
                         .toArrays(event.target.result, {separator: ";"});
             };
-
             reader.onerror = function () {
                 bootbox.alert("Não foi possível abrir o arquivo <b>" +
                         file.name + "<br>");
             };
         });
     };
-
-
-
     /**
      * 
      * @param {type} classId
@@ -92,8 +271,6 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
             }
         });
     };
-
-
     var preview = (function () {
         return {
             init: function () {
@@ -101,6 +278,5 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
             }
         };
     }());
-
     return preview;
 });
