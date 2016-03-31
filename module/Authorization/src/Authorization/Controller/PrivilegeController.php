@@ -12,6 +12,7 @@ use Authorization\Entity\Privilege;
 use Authorization\Form\PrivilegeForm;
 use Database\Controller\AbstractEntityActionController;
 use Exception;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -80,7 +81,7 @@ class PrivilegeController extends AbstractEntityActionController
                 ));
             } catch (Exception $ex) {
                 return new ViewModel(array(
-                    'message' => $ex->getCode() . ': ' . $ex->getMessage(),
+                    'message' => $ex->getMessage(),
                 ));
             }
         }
@@ -102,18 +103,18 @@ class PrivilegeController extends AbstractEntityActionController
                 $em->remove($privilege);
                 $em->flush();
 
-                return new ViewModel(array(
+                return new JsonModel(array(
                     'message' => 'Privilégio removido com sucesso.',
                 ));
             } catch (Exception $ex) {
-                return new ViewModel(array(
-                    'message' => $ex->getCode() . ': ' . $ex->getMessage(),
+                return new JsonModel(array(
+                    'message' => $ex->getMessage(),
                 ));
             }
         }
 
-        return new ViewModel(array(
-            'message' => 'Param id can\'t be empty',
+        return new JsonModel(array(
+            'message' => 'Nenhum privilégio foi selecionado',
         ));
     }
 

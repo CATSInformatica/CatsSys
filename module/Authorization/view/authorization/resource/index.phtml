@@ -1,32 +1,28 @@
 <section class="content">
-    <?php if (!empty($this->message)): ?>
-        <?php echo $this->message; ?>
-    <?php else: ?>
+    <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <?php if ($resources): ?>
 
-        <div class="table-responsive">
-            <table class='table'>
-                <thead>
-                    <tr>
-                        <th class="text-center">#</th>
-                        <th class="text-center">Resource Name</th>
-                        <th></th>
-                         <th></th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php foreach ($this->resources as $resource): ?>
-                        <tr>
-                            <td><?php echo $this->escapeHtml($resource->getResourceId()); ?></td>
-                            <td class="text-center"><?php echo $this->escapeHtml($resource->getResourceName()); ?></td>
-                            <td><a class="btn btn-danger"  href='<?php echo $this->url('authorization/resource', array('action' => 'edit', 'id' => $resource->getResourceId())); ?>'>Edit</a></td>
-                            <td><a class="btn btn-danger"  href='<?php echo $this->url('authorization/resource', array('action' => 'delete', 'id' => $resource->getResourceId())); ?>'>Delete</a></td>
-                        </tr>
-                    <?php endforeach; ?>
-                </tbody>
-            </table>
+                <div class="table-responsive">
+                    <table class="table table-condensed table-striped" id="resource-table">
+                        <thead>
+                            <tr>
+                                <th class="text-center">#</th>
+                                <th class="text-center">Resource Name</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <?php foreach ($resources as $resource): ?>
+                                <tr class="cats-row" data-id="<?php echo $resource->getResourceId(); ?>">
+                                    <td><?php echo $resource->getResourceId(); ?></td>
+                                    <td class="text-center"><?php echo $resource->getResourceName(); ?></td>
+                                </tr>
+                            <?php endforeach; ?>
+                        </tbody>
+                    </table>
+                </div>
+            <?php endif; ?>
         </div>
-    <?php endif; ?>
+    </div>
 </section>
-
-
-

@@ -1,32 +1,34 @@
 <section class="content">
     <?php echo $this->message; ?>
 
-    <div class="table-responsive">
-        <table class='table'>
-            <thead>
-                <tr>
-                    <th class="text-center">#</th>
-                    <th class="text-center">Privilege Name</th>
-                    <th class="text-center">Allow?</th>
-                    <th class="text-center">Resource Name</th>
-                    <th class="text-center">Role Name</th>
-                    <th></th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php foreach ($this->privileges as $privilege): ?>
-                    <tr>
-                        <td class="text-center"> <?php echo $this->escapeHtml($privilege->getPrivilegeId()); ?></td>
-                        <td class="text-center"> <?php echo $this->escapeHtml($privilege->getPrivilegeName()); ?></td>
-                        <td class="text-center"> <?php echo $this->escapeHtml($privilege->getPrivilegePermissionAllow() ? 'TRUE' : 'FALSE'); ?></td>
-                        <td class="text-center"> <?php echo $this->escapeHtml($privilege->getResource()->getResourceName()); ?></td>
-                        <td class="text-center"> <?php echo $this->escapeHtml($privilege->getRole()->getRoleName()); ?></td>
-                        <td class="text-center"> <a class="btn btn-danger" href="<?php echo $this->url('authorization/privilege',
-                    array('action' => 'delete', 'id' => $privilege->getPrivilegeId())); ?>">Delete</a></td>
-                    </tr>
+    <div class="row">
+        <div class="col-md-8 col-md-offset-2">
+            <div class="table-responsive">
+                <table class='table'>
+                    <thead>
+                        <tr>
+                            <th class="text-center">#</th>
+                            <th class="text-center">Privilege Name</th>
+                            <th class="text-center">Allow?</th>
+                            <th class="text-center">Resource Name</th>
+                            <th class="text-center">Role Name</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($this->privileges as $privilege): ?>
+                        <tr class="cats-row" data-id="<?php echo $privilege->getPrivilegeId(); ?>">
+                                <td class="text-center"> <?php echo $privilege->getPrivilegeId(); ?></td>
+                                <td class="text-center"> <?php echo $privilege->getPrivilegeName(); ?></td>
+                                <td class="text-center"> <?php echo $privilege->getPrivilegePermissionAllow() ? 
+                                    'TRUE' : 'FALSE'; ?></td>
+                                <td class="text-center"> <?php echo $privilege->getResource()->getResourceName(); ?></td>
+                                <td class="text-center"> <?php echo $privilege->getRole()->getRoleName(); ?></td>
+                            </tr>
 <?php endforeach; ?>
-            </tbody>
-        </table>
+                    </tbody>
+                </table>
+            </div>
+        </div>
     </div>
 </section>
 
