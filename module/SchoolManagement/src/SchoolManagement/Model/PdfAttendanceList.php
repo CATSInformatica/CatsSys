@@ -23,7 +23,7 @@ class PdfAttendanceList {
 
     public function __construct($students = []) {
         $this->students = $students;
-        $this->dummyStudents();
+        //$this->dummyStudents();
     }
 
     protected function dummyStudents() {
