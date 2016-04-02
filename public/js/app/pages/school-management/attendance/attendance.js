@@ -278,9 +278,6 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
                         .subtract(1, 'days')
                         .format('YYYY-MM-DD');
 
-                console.log(startDate);
-                console.log(endDate);
-
                 if (monthElement.is(allowanceMonth)) {
                     searchAllowanceBetween(startDate, endDate);
                 } else if (monthElement.is(attendanceMonth)) {
