@@ -17,6 +17,9 @@
 
 define(['datatable'], function () {
 
+
+    var diagramData = [];
+
     var jobModule = (function () {
 
         initJobDataTable = function () {
@@ -115,6 +118,69 @@ define(['datatable'], function () {
             return jobDt + jobDd;
         };
 
+
+        /**
+         * Substituir essas funções por funções definitivas
+         * 
+         * @returns {undefined}
+         */
+
+        testGoogleChart = function () {
+
+            require(['https://www.gstatic.com/charts/loader.js'], function () {
+                google.charts.load('current', {packages: ["orgchart"]});
+                google.charts.setOnLoadCallback(drawChart);
+
+                function drawChart() {
+                    var data = new google.visualization.DataTable();
+                    data.addColumn('string', 'Name');
+                    data.addColumn('string', 'Manager');
+                    data.addColumn('string', 'ToolTip');
+
+                    $.ajax({
+                        url: "/administrative-structure/job/get-jobs",
+                        type: "GET",
+                        success: function (data) {
+                            var jobs = data.jobs;
+                            console.log(data.jobs);
+                            for (var i = 0; i < jobs.length; i++) {
+                                testGoogleChartMountVector(jobs[i], '');
+                            }
+                        },
+                        error: function (error) {
+                            console.log(error);
+                        }
+                    }).then(function () {
+
+                        // For each orgchart box, provide the name, manager, and tooltip to show.
+                        data.addRows(diagramData);
+
+                        // Create the chart.
+                        var chart = new google.visualization.OrgChart(document.getElementById('hierarchy'));
+                        // Draw the chart, setting the allowHtml option to true for the tooltips.
+                        chart.draw(data, {
+                            allowHtml: true,
+                            allowCollapse: true,
+                            nodeClass: 'hierarchy-color',
+                            selectedNodeClass: 'hierarchy-color-selected'
+                        });
+                    });
+                }
+            });
+        };
+
+        testGoogleChartMountVector = function (job, parent) {
+
+            diagramData.push([job.name + '<br>[' + job.department + ']', parent, '']);
+
+            for (var i = 0; i < job.children.length; i++) {
+                testGoogleChartMountVector(job.children[i], job.name + '<br>[' + job.department + ']');
+            }
+
+            return;
+        };
+
+
         return {
             init: function () {
 
@@ -124,15 +190,16 @@ define(['datatable'], function () {
                 }
 
                 // job/office-manager
-                /**
-                 * @todo
-                 *      - ajax para buscar todos os cargos disponíveis
-                 *      - funções para tratamento dos posts dos botões
-                 */
                 if ($("#office-table").length > 0) {
                     initDataTable();
                     initJobs();
                 }
+
+                //job/hiearchy
+                if ($("#hierarchy").length > 0) {
+                    testGoogleChart();
+                }
+
             },
             getDataOf: function (selectedItemId) {
                 var jobs = [];

@@ -33,7 +33,7 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class JobFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
-    public function __construct(ObjectManager $obj, $name = null, $options = array())
+    public function __construct(ObjectManager $obj, $disabledJobId = null, $name = null, $options = array())
     {
         parent::__construct($name, $options);
 
@@ -65,6 +65,13 @@ class JobFieldset extends Fieldset implements InputFilterProviderInterface
                 ],
             ])
             ->add([
+                'name' => 'isAvailable',
+                'type' => 'checkbox',
+                'options' => [
+                    'label' => 'Ativo',
+                ],
+            ])
+            ->add([
                 'name' => 'jobDescription',
                 'type' => 'textarea',
                 'attributes' => [
@@ -84,8 +91,15 @@ class JobFieldset extends Fieldset implements InputFilterProviderInterface
                     'target_class' => 'AdministrativeStructure\Entity\Job',
                     'property' => 'jobName',
                     'label' => 'Cargo Superior',
+                    'is_method' => true,
+                    'find_method' => array(
+                        'name' => 'findIgnoring',
+                        'params' => array(
+                            'ignoredId' => $disabledJobId
+                        ),
+                    ),
                 ),
-            ]);
+        ]);
     }
 
     public function getInputFilterSpecification()
@@ -113,7 +127,7 @@ class JobFieldset extends Fieldset implements InputFilterProviderInterface
                         'name' => 'StringLength',
                         'options' => [
                             'min' => '5',
-                            'max' => '500',
+                            'max' => '1000',
                         ],
                     ],
                 ],
@@ -124,6 +138,9 @@ class JobFieldset extends Fieldset implements InputFilterProviderInterface
             'parent' => [
                 'required' => false,
             ],
+            'isAvailable' => [
+                'required' => false,
+            ]
         ];
     }
 

@@ -31,7 +31,7 @@ use Authorization\Entity\Role;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  * @ORM\Table(name="job")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AdministrativeStructure\Entity\Repository\JobRepository")
  */
 class Job
 {
@@ -62,7 +62,7 @@ class Job
      * Ex: *"Responsável pelos simulados: formatação, aplicação e correção."*
      * 
      * @var string
-     * @ORM\Column(name="job_description", type="string", length=500)
+     * @ORM\Column(name="job_description", type="string", length=1000)
      */
     protected $jobDescription;
 
@@ -113,7 +113,7 @@ class Job
      * @var bool
      * @ORM\Column(name="job_is_available", type="boolean", nullable=false)
      */
-    protected $isAvalable;
+    protected $isAvailable;
 
     /**
      * Cargos imediatamente subordinados.
@@ -137,7 +137,6 @@ class Job
     {
         $this->children = new ArrayCollection();
         $this->offices = new ArrayCollection();
-        $this->isAvalable = true;
     }
 
     /**
@@ -249,7 +248,18 @@ class Job
      */
     public function getIsAvailable()
     {
-        return $this->isAvalable;
+        return $this->isAvailable;
+    }
+
+    /**
+     * 
+     * @param bool $value
+     * @return Self
+     */
+    public function setIsAvailable($value)
+    {
+        $this->isAvailable = $value;
+        return $this;
     }
 
     /**

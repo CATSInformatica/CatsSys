@@ -125,6 +125,13 @@ return [
                         'icon' => 'fa fa-users',
                         'toolbar' => [
                             [
+                                'url' => '/administrative-structure/job/hierarchy',
+                                'title' => 'Hierarquia de cargos',
+                                'description' => 'Monta um diagrama da hierarquia de cargos',
+                                'class' => 'fa fa-usb  bg-green',
+                                'fntype' => 'httpClick',
+                            ],
+                            [
                                 'url' => '/administrative-structure/job/delete/$id',
                                 'title' => 'Remover cargo',
                                 'description' => 'Permite remover os cargos escolhidos',
@@ -141,11 +148,19 @@ return [
                         ],
                         'pages' => [
                             [
-                                'label' => 'Show jobs',
+                                'label' => 'Edit a job',
                                 'route' => 'administrative-structure/job',
                                 'action' => 'edit',
                                 'resource' => 'AdministrativeStructure\Controller\Job',
                                 'privilege' => 'edit',
+                                'icon' => 'fa fa-usb',
+                            ],
+                            [
+                                'label' => 'Job hierarchy',
+                                'route' => 'administrative-structure/job',
+                                'action' => 'hierarchy',
+                                'resource' => 'AdministrativeStructure\Controller\Job',
+                                'privilege' => 'hierarchy',
                                 'icon' => 'fa fa-usb',
                             ]
                         ]
