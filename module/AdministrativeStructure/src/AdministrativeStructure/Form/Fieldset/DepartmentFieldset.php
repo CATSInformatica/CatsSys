@@ -127,7 +127,7 @@ class DepartmentFieldset extends Fieldset implements InputFilterProviderInterfac
                         'name' => 'StringLength',
                         'options' => array(
                             'min' => 10,
-                            'max' => 500,
+                            'max' => 1000,
                         ),
                     ),
                 ),

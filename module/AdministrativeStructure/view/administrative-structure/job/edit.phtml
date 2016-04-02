@@ -20,6 +20,12 @@
 
                 <div class="form-group">
                     <div class="col-md-12">
+                        <?php echo $this->formRow($job->get('isAvailable')); ?>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
                         <?php echo $this->formRow($job->get('parent')); ?>
                     </div>
                 </div>

@@ -33,11 +33,11 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class JobForm extends Form implements InputFilterProviderInterface, FormInterface
 {
 
-    public function __construct(ObjectManager $obj, $name = null, $options = array())
+    public function __construct(ObjectManager $obj, $disabledJobId = null, $name = null, $options = array())
     {
         parent::__construct($name, $options);
 
-        $jobFieldset = new JobFieldset($obj, 'job');
+        $jobFieldset = new JobFieldset($obj, $disabledJobId, 'job');
         $jobFieldset->setUseAsBaseFieldset(true);
 
         $this->add($jobFieldset);

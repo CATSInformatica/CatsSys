@@ -1,45 +1,55 @@
 <section class="content">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
+            <p><?php echo $message; ?></p>
+            <?php if ($form !== null): ?>
+                <?php
+                $form->prepare();
+                $job = $form->get('job');
+                ?>
+                <?php echo $this->form()->openTag($form); ?>
 
-            <?php
-            $form->prepare();
-            $job = $form->get('job');
-            ?>
-            <?php echo $this->form()->openTag($form); ?>
-
-            <div class="form-group">
-                <div class="col-md-6">
-                    <?php echo $this->formRow($job->get('jobName')); ?>
+                <div class="form-group">
+                    <div class="col-md-6">
+                        <?php echo $this->formRow($job->get('jobName')); ?>
+                    </div>
+                    <div class="col-md-6">
+                        <?php echo $this->formRow($job->get('department')); ?>
+                    </div>
                 </div>
-                <div class="col-md-6">
-                    <?php echo $this->formRow($job->get('department')); ?>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <?php echo $this->formRow($job->get('isAvailable')); ?>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <div class="col-md-12">
-                    <?php echo $this->formRow($job->get('parent')); ?>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <?php echo $this->formRow($job->get('parent')); ?>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <div class="col-md-12">
-                    <?php echo $this->formRow($form->get('roles')); ?>
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <?php echo $this->formRow($form->get('roles')); ?>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <div class="col-md-12">
-                    <?php echo $this->formRow($job->get('jobDescription')); ?>
+
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <?php echo $this->formRow($job->get('jobDescription')); ?>
+                    </div>
                 </div>
-            </div>
 
-            <div class="form-group">
-                <?php echo $this->formSubmit($form->get('submit')); ?>
-            </div>
+                <div class="form-group">
+                    <?php echo $this->formSubmit($form->get('submit')); ?>
+                </div>
 
-            <?php echo $this->form()->closeTag(); ?>
+                <?php echo $this->form()->closeTag(); ?>
+            <?php endif; ?>
         </div>
     </div>
 

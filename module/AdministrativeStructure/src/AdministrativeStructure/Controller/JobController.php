@@ -81,20 +81,30 @@ class JobController extends AbstractEntityActionController
             $data = $request->getPost();
             $form->setData($data);
             if ($form->isValid()) {
-                $roles = new ArrayCollection();
-                if (isset($data['roles'])) {
-                    foreach ($data['roles'] as $roleIdx) {
-                        $roles->add($em->getReference('Authorization\Entity\Role', $roleIdx));
+                try {
+
+                    $roles = new ArrayCollection();
+                    if (isset($data['roles'])) {
+                        foreach ($data['roles'] as $roleIdx) {
+                            $roles->add($em->getReference('Authorization\Entity\Role', $roleIdx));
+                        }
                     }
+                    $job->setParentRoles($roles);
+                    $em->persist($job);
+                    $em->flush();
+                    return $this->redirect()->toRoute('administrative-structure/job', ['action' => 'index']);
+                } catch (\Exception $ex) {
+                    return new ViewModel([
+                        'form' => $form,
+                        'message' => $ex->getMessage(),
+                    ]);
                 }
-                $job->setParentRoles($roles);
-                $em->persist($job);
-                $em->flush();
             }
         }
 
         return new ViewModel([
             'form' => $form,
+            'message' => null,
         ]);
     }
 
@@ -115,7 +125,7 @@ class JobController extends AbstractEntityActionController
             $em = $this->getEntityManager();
 
             $job = $em->find('AdministrativeStructure\Entity\Job', $id);
-            $form = new JobForm($em);
+            $form = new JobForm($em, $id);
             $form->bind($job);
 
             if ($request->isPost()) {
@@ -356,7 +366,7 @@ class JobController extends AbstractEntityActionController
                         // retira o papel associado ao cargo
                         $role = $office->getJob()->getRole();
                         $user->removeRole($role);
-                        
+
                         $em->remove($office);
                         $em->merge($user);
                     }
@@ -526,6 +536,14 @@ class JobController extends AbstractEntityActionController
         }
 
         return $person->getUser();
+    }
+
+    /**
+     * Exibe a hierarquia de Cargos
+     */
+    public function hierarchyAction()
+    {
+        return new ViewModel();
     }
 
 }
