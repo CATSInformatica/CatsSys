@@ -135,12 +135,14 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
             // cálculo da quantidade de acertos por questão
             totalCounter = hitCounter = 0;
             $.each(studentAnswers, function (key, value) {
+                if (typeof value.answers !== "undefined") {
 
-                if (value.answers[i] === finalTemplate.answers[i].answer) {
-                    hitCounter++;
+                    if (value.answers[i] === finalTemplate.answers[i].answer) {
+                        hitCounter++;
+                    }
+
+                    totalCounter++;
                 }
-
-                totalCounter++;
             });
 
             table += "<td class='text-center'>" + hitCounter + "</td>" +
@@ -165,8 +167,8 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
 
         var table = "<table class='table table-condensed " +
                 "table-striped attendanceListTable'>";
-        table += "<thead><tr><th class='text-center'>Questão</th>";
-        table += "<th class='text-center'>Resposta</th></tr></thead><tbody>";
+        table += "<thead><tr><th class='text-center'>Matrícula</th>";
+        table += "<th class='text-center'>Aluno</th>";
 
         for (var i = 0; i < finalTemplate.groups.length; i++) {
             table += "<th class='text-center'>" +
@@ -177,6 +179,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
 
         var lastGroup;
         var sum;
+
         $.each(studentAnswers, function (key, value) {
             lastGroup = finalTemplate.groups[0];
             sum = 0;
@@ -313,7 +316,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
 
         for (var i = 1; i < students.length; i++) {
             partialId = "" + students[i].enrollmentId;
-            tempoenrollmentIdraryId = ("00000" + partialId).substring(partialId.length);
+            enrollmentId = ("00000" + partialId).substring(partialId.length);
             if (typeof studentAnswers[enrollmentId] === "undefined") {
                 studentAnswers[enrollmentId] = {};
             }
