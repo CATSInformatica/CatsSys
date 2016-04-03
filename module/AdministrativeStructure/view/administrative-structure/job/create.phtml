@@ -1,3 +1,4 @@
+<?php $this->headLink()->appendStylesheet($this->basePath('vendor/trumbowyg/dist/ui/trumbowyg.min.css')); ?>
 <section class="content">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -54,3 +55,16 @@
     </div>
 
 </section>
+
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/administrative-structure/job/job';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+</script>
