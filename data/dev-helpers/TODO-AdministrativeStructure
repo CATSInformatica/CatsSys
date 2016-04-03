@@ -1,0 +1,11 @@
+
+ Data de criação do cargo (ok)
+ Data de revisão do cargo (ok)
+ Remoção do limite de caracteres na descrição do Cargo (ok)
+ Exibição da data de criação e da data de revisão do cargo em job/index.phtml (ok)
+ Alteração do item cargo superior de radio button para select (ok)
+ Remoção do limite de caracteres nos departamentos e nos cargos (ok)
+ truncar a descrição do cargo em job/index.phtml (ok)
+ utilização de editor Html na descrição do cargo em create e edit (ok)
+ criação de grupos de opções no select de cargo superior para facilitar a busca de cargos
+ utilização de js para exibir a descrição completa do cargo ao clicar

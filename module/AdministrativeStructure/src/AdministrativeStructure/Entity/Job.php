@@ -62,7 +62,7 @@ class Job
      * Ex: *"Responsável pelos simulados: formatação, aplicação e correção."*
      * 
      * @var string
-     * @ORM\Column(name="job_description", type="string", length=1000)
+     * @ORM\Column(name="job_description", type="text", nullable=false)
      */
     protected $jobDescription;
 
@@ -126,6 +126,22 @@ class Job
     protected $children;
 
     /**
+     * Data de criação do cargo.
+     * 
+     * @var \DateTime
+     * @ORM\Column(name="job_creation_date", type="datetime", nullable=false)
+     */
+    protected $creationDate;
+
+    /**
+     * Última revisão do cargo.
+     * 
+     * @var \DateTime
+     * @ORM\Column(name="job_last_revision_date", type="datetime", nullable=true)
+     */
+    protected $lastRevisionDate;
+
+    /**
      * Armazena o cargo imeditamente superior anterior (necessário para edição)
      * 
      * 
@@ -137,6 +153,7 @@ class Job
     {
         $this->children = new ArrayCollection();
         $this->offices = new ArrayCollection();
+        $this->creationDate = new \DateTime();
     }
 
     /**
@@ -472,6 +489,48 @@ class Job
     public function hasOffice(Office $office)
     {
         return $this->offices->contains($office);
+    }
+
+    /**
+     * Retorna a data de criação do cargo.
+     * 
+     * @param string $format formato da data a ser retornada
+     * @return mixed string|null data formatada de acordo com $format
+     */
+    public function getCreationDate($format = 'd/m/Y \à\s H:m:i')
+    {
+        if ($this->creationDate !== null) {
+            return $this->creationDate->format($format);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Retorna a última data de revisão do cargo.
+     * 
+     * @param string $format formato da data a ser retornada
+     * @return mixed string|null data formatada de acordo com $format
+     */
+    public function getLastRevisionDate($format = 'd/m/Y \à\s H:m:i')
+    {
+        if ($this->lastRevisionDate !== null) {
+            return $this->lastRevisionDate->format($format);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Define a data da última revisão realizada no cargo.
+     * 
+     * @param \DateTime $lastRevisionDate
+     * @return Self
+     */
+    public function setLastRevisionDate(\DateTime $lastRevisionDate)
+    {
+        $this->lastRevisionDate = $lastRevisionDate;
+        return $this;
     }
 
 }

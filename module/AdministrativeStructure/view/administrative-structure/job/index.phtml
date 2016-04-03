@@ -6,6 +6,8 @@
                     <thead>
                         <tr>
                             <th class="text-center">#</th>
+                            <th class="text-center">Criado em</th>
+                            <th class="text-center">Última Revisão</th>
                             <th class="text-center">Departamento</th>
                             <th class="text-center">Cargo</th>
                             <th class="text-center">Cargo Superior</th>
@@ -19,6 +21,12 @@
                             <tr class="cats-row" data-id="<?php echo $job->getJobId(); ?>">
                                 <td class="text-center">
                                     <?php echo $job->getJobId(); ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php echo $job->getCreationDate(); ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php echo $job->getLastRevisionDate(); ?>
                                 </td>
                                 <td class="text-center">
                                     <?php echo $job->getDepartment()->getDepartmentName(); ?>
@@ -41,13 +49,14 @@
                                     </ol>
                                 </td>
                                 <td class="text-center">
-                                    <?php echo $job->getJobDescription(); ?>
+                                    <?php echo substr($job->getJobDescription(), 0,
+                                        100) . '...'; ?>
                                 </td>
                                 <td class="text-center">
-                                    <?php echo $job->getIsAvailable() ? 'TRUE' : 'FALSE'; ?>
+    <?php echo $job->getIsAvailable() ? 'TRUE' : 'FALSE'; ?>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
+<?php endforeach; ?>
                     </tbody>
                 </table>
             </div>

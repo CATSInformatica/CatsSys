@@ -125,6 +125,7 @@ class JobController extends AbstractEntityActionController
             $em = $this->getEntityManager();
 
             $job = $em->find('AdministrativeStructure\Entity\Job', $id);
+
             $form = new JobForm($em, $id);
             $form->bind($job);
 
@@ -140,6 +141,7 @@ class JobController extends AbstractEntityActionController
                     }
 
                     $job->addParentRoles($roles);
+                    $job->setLastRevisionDate(new \DateTime());
                     $parent = $job->getParentBuffer();
 
                     if ($parent !== null) {

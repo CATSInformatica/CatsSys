@@ -71,14 +71,14 @@ return [
                         'action' => 'index',
                         'resource' => 'AdministrativeStructure\Controller\Department',
                         'privilege' => 'index',
-                        'icon' => 'fa fa-folder-open',
+                        'icon' => 'fa fa-sitemap',
                         'pages' => [
                             ['label' => 'Edit a department',
                                 'route' => 'administrative-structure/department',
                                 'action' => 'edit',
                                 'resource' => 'AdministrativeStructure\Controller\Department',
                                 'privilege' => 'edit',
-                                'icon' => 'fa fa-folder-open',
+                                'icon' => 'fa fa-sitemap',
                             ],
                         ],
                         'toolbar' => [
@@ -86,7 +86,7 @@ return [
                                 'url' => '/administrative-structure/department/edit/$id',
                                 'title' => 'Editar departamento',
                                 'description' => 'Permite alterar as informações do departamento escolhido',
-                                'class' => 'fa fa-university  bg-blue',
+                                'class' => 'fa fa-university bg-blue',
                                 'fntype' => 'selectedHttpClick',
                             ],
                             [
@@ -94,7 +94,7 @@ return [
                                 'id' => 'department-delete',
                                 'title' => 'Remover departamento',
                                 'description' => 'Remove o departamento escolhido se ele não possuir departamentos filhos',
-                                'class' => 'fa fa-university  bg-red',
+                                'class' => 'fa fa-university bg-red',
                                 'fntype' => 'selectedAjaxClick',
                             ],
                         ],
@@ -105,17 +105,8 @@ return [
                         'action' => 'add',
                         'resource' => 'AdministrativeStructure\Controller\Department',
                         'privilege' => 'add',
-                        'icon' => 'fa fa-folder-open',
+                        'icon' => 'fa fa-sitemap',
                     ],
-                ],
-            ],
-            [
-                'label' => 'Job',
-                'uri' => '#',
-                'icon' => 'fa fa-usb',
-                'resource' => 'AdministrativeStructure\Controller\Job',
-                'order' => 14,
-                'pages' => [
                     [
                         'label' => 'Show jobs',
                         'route' => 'administrative-structure/job',
