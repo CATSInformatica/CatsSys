@@ -23,7 +23,62 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
         answers: null,
         template: null
     };
+
+    /**
+     * É construído na forma
+     * studentAnswers = {
+     *  <enrollmentId with 5 digits>: {
+     *     name: <student fullname>,
+     *    answers: ["A", "C", ...]
+     *   },
+     *   ...
+     * }
+     * Exemplo:
+     * studentAnswers = {
+     *      00301: {
+     *          name: "Matheus Azevedo Martins",
+     *          answers: ["A", "B", "E", ..., "", "A|E", "C", ...]
+     *      },
+     *      0045: {
+     *          ...
+     *      },
+     * ...
+     * }
+     * 
+     * @type object
+     */
     var studentAnswers = {};
+
+    /**
+     * é construído na forma
+     * finalTemplate = {
+     *      groups: ["Group 1", "Group 2", ...],
+     *      answers: [
+     *          {group: "Group 1", answer: "A"}, 
+     *          {group: "Group 1", answer: "D"}, 
+     *          ..., 
+     *          {group: "Group 2", answer: "C"}, 
+     *          ...
+     *      ]
+     * }
+     * 
+     * Exemplo
+     * finalTemplate = {
+     *      groups: [
+     *          "Linguagens Códigos e Suas Tecnologias", 
+     *          "Ciências da Natureza e Suas Tecnologias"
+     *      ],
+     *      answers: [
+     *          {group: "Linguagens Códigos e Suas Tecnologias", answer: "A"}, 
+     *          {group: "Linguagens Códigos e Suas Tecnologias", answer: "D"}, 
+     *          ...,
+     *          {group: "Ciências da Natureza e Suas Tecnologias", answer: "C"}, 
+     *          ...
+     *      ]
+     * }
+     * 
+     * @type object
+     */
     var finalTemplate = {
         groups: null,
         answers: null
@@ -42,22 +97,81 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
                 createAnswersTable();
                 createTemplateTable();
                 createResultTable();
+                createHitRatioTable();
             });
         });
     };
 
 
+    /**
+     * Tabela com a taxa de acertos por questão
+     * @returns {undefined}
+     */
+    createHitRatioTable = function () {
+        $("#hit-ratio-container").slideUp("fast").html("");
+        var table = "<table class='table table-condensed " +
+                "table-striped attendanceListTable'>";
+        table += "<thead><tr><th class='text-center'>Questão</th>";
+        table += "<th class='text-center'>Acertos</th>" +
+                "<th class='text-center'>Total</th>" +
+                "<th class='text-center'>Percentual (%)</th>" +
+                "</tr></thead><tbody>";
+
+        var lastGroup = null;
+        var hitCounter;
+        var totalCounter;
+
+        // para cada resposta
+        for (var i = 0; i < finalTemplate.answers.length; i++) {
+
+            if (lastGroup !== finalTemplate.answers[i].group) {
+                lastGroup = finalTemplate.answers[i].group;
+                table += "<tr><th colspan='4' class='text-center bg-green'>" +
+                        lastGroup + "</th></tr>";
+            }
+
+            table += "<tr><td class='text-center'>" + (i + 1) + "</td>";
+
+            // cálculo da quantidade de acertos por questão
+            totalCounter = hitCounter = 0;
+            $.each(studentAnswers, function (key, value) {
+
+                if (value.answers[i] === finalTemplate.answers[i].answer) {
+                    hitCounter++;
+                }
+
+                totalCounter++;
+            });
+
+            table += "<td class='text-center'>" + hitCounter + "</td>" +
+                    "<td class='text-center'>" + totalCounter + "</td>" +
+                    "<td class='text-center'>" +
+                    (100 * hitCounter / totalCounter).toFixed(2) + "</td>";
+        }
+
+        table += "</tbody></table>";
+
+        $("#hit-ratio-container")
+                .append(table)
+                .slideDown("fast");
+    };
+
+    /**
+     * Tabela com o total de acertos de cada aluno por área do gabarito
+     * @returns {undefined}
+     */
     createResultTable = function () {
         $("#result-container").slideUp("fast").html("");
-        var table = "<table class='table table-condensed table-striped attendanceListTable'>";
-        table += "<thead><tr><th class='text-center'>Matrícula</th>" +
-                "<th class='text-center'>Aluno</th>";
+
+        var table = "<table class='table table-condensed " +
+                "table-striped attendanceListTable'>";
+        table += "<thead><tr><th class='text-center'>Questão</th>";
+        table += "<th class='text-center'>Resposta</th></tr></thead><tbody>";
 
         for (var i = 0; i < finalTemplate.groups.length; i++) {
             table += "<th class='text-center'>" +
                     finalTemplate.groups[i] + "</th>";
         }
-
 
         table += "</tr></thead><tbody>";
 
@@ -105,11 +219,15 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
             dom: 'lftip',
             paging: false
         });
-        
+
         $("#result-container")
                 .slideDown("fast");
     };
 
+    /**
+     * Tabela de respostas dos alunos em cada questão
+     * @returns {undefined}
+     */
     createAnswersTable = function () {
         $("#answer-container").slideUp("fast").html("");
         var table = "<table class='table table-condensed table-striped attendanceListTable'>";
@@ -144,6 +262,12 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
                 .append(table)
                 .slideDown("fast");
     };
+
+    /**
+     * Gabarito
+     * 
+     * @returns {undefined}
+     */
     createTemplateTable = function () {
         $("#template-container").slideUp("fast").html("");
         var table = "<table class='table table-condensed table-striped attendanceListTable'>";
@@ -156,7 +280,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
 
             if (lastGroup !== finalTemplate.answers[i].group) {
                 lastGroup = finalTemplate.answers[i].group;
-                table += "<tr><th colspan='2' class='text-center'>" +
+                table += "<tr><th colspan='2' class='text-center bg-green'>" +
                         lastGroup + "</th></tr>";
             }
 
@@ -178,22 +302,22 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
      */
     processStudents = function () {
         var ans = null;
-        var temporaryId;
+        var enrollmentId;
         var partialId;
         for (var i = 1; i < csvData.answers.length; i++) {
             ans = csvData.answers[i];
-            temporaryId = ans.slice(1, 6).join('');
-            studentAnswers[temporaryId] = {};
-            studentAnswers[temporaryId].answers = ans.slice(6);
+            enrollmentId = ans.slice(1, 6).join('');
+            studentAnswers[enrollmentId] = {};
+            studentAnswers[enrollmentId].answers = ans.slice(6);
         }
 
         for (var i = 1; i < students.length; i++) {
             partialId = "" + students[i].enrollmentId;
-            temporaryId = ("00000" + partialId).substring(partialId.length);
-            if (typeof studentAnswers[temporaryId] === "undefined") {
-                studentAnswers[temporaryId] = {};
+            tempoenrollmentIdraryId = ("00000" + partialId).substring(partialId.length);
+            if (typeof studentAnswers[enrollmentId] === "undefined") {
+                studentAnswers[enrollmentId] = {};
             }
-            studentAnswers[temporaryId].name = students[i].personFirstName +
+            studentAnswers[enrollmentId].name = students[i].personFirstName +
                     " " + students[i].personLastName;
         }
     };
