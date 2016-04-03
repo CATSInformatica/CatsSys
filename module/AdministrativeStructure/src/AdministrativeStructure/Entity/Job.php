@@ -497,7 +497,7 @@ class Job
      * @param string $format formato da data a ser retornada
      * @return mixed string|null data formatada de acordo com $format
      */
-    public function getCreationDate($format = 'd/m/Y \à\s H:m:i')
+    public function getCreationDate($format = 'd/m/Y \à\s H:i:s')
     {
         if ($this->creationDate !== null) {
             return $this->creationDate->format($format);
@@ -512,7 +512,7 @@ class Job
      * @param string $format formato da data a ser retornada
      * @return mixed string|null data formatada de acordo com $format
      */
-    public function getLastRevisionDate($format = 'd/m/Y \à\s H:m:i')
+    public function getLastRevisionDate($format = 'd/m/Y \à\s H:i:s')
     {
         if ($this->lastRevisionDate !== null) {
             return $this->lastRevisionDate->format($format);
