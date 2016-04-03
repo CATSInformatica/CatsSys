@@ -185,9 +185,7 @@ class RoleController extends AbstractEntityActionController
                 $role = $em->getReference('Authorization\Entity\Role', $data['role_id']);
 
                 $user->addRole($role);
-                $role->addUser($user);
                 $em->persist($user);
-                $em->persist($role);
                 $em->flush();
 
                 return $this->redirect()->toRoute('authorization/role',
@@ -198,12 +196,14 @@ class RoleController extends AbstractEntityActionController
             } catch (Exception $ex) {
                 return new ViewModel(array(
                     'message' => $ex->getCode() . ': ' . $ex->getMessage(),
+                    'form' => null,
                 ));
             }
         }
 
         return new ViewModel([
-            'form' => $form
+            'form' => $form,
+            'message' => null,
         ]);
     }
 
