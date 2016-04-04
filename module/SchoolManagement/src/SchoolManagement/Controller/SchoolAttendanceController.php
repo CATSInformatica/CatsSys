@@ -26,6 +26,7 @@ use Exception;
 use SchoolManagement\Entity\AttendanceType;
 use SchoolManagement\Entity\Repository\AttendanceRepository;
 use SchoolManagement\Form\SchoolAttendanceForm;
+use SchoolManagement\Model\AttendanceAnalysis;
 use SchoolManagement\Model\AttendanceList;
 use SchoolManagement\Model\PdfAttendanceList;
 use Zend\View\Model\JsonModel;
@@ -383,6 +384,58 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
 
         return new JsonModel([
             'message' => 'Esta url só pode ser acessada via post',
+        ]);
+    }
+
+    /**
+     * Exibe a porcentagem de presença, no mês, dos alunos da turma $id
+     * 
+     */
+    public function analysisAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
+
+            try {
+                $em = $this->getEntityManager();
+                $students = $em->getRepository('SchoolManagement\Entity\Enrollment')->findAllCurrentStudents([
+                    'class' => $data['sclass'],
+                ]);
+
+                $attendances = $em->getRepository('SchoolManagement\Entity\Attendance')->findAttendance([
+                    'class' => $data['sclass'],
+                    'beginDate' => new \DateTime($data['beginDate']),
+                    'endDate' => new \DateTime($data['endDate'])
+                ]);
+
+                $attAnalysis = new AttendanceAnalysis($students, $attendances);
+
+                return new JsonModel([
+                    'data' => $attAnalysis->getMonthlyAttendance(),
+                    'message' => 'ok',
+                ]);
+            } catch (Exception $ex) {
+                return new JsonModel([
+                    'message' => $ex->getMessage(),
+                ]);
+            }
+        }
+
+        return new JsonModel([
+            'message' => 'Esta url só pode ser acessada via post',
+        ]);
+    }
+
+    public function analyzeAction()
+    {
+        $em = $this->getEntityManager();
+        $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')
+            ->findByEndDateGratherThan(new \DateTime('now'));
+
+        return new ViewModel([
+            'classes' => $classes,
         ]);
     }
 

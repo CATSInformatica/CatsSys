@@ -20,9 +20,17 @@
 namespace AdministrativeStructure\Controller;
 
 use AdministrativeStructure\Entity\Job;
+use AdministrativeStructure\Entity\Office;
 use AdministrativeStructure\Form\JobForm;
+use Authentication\Entity\User;
+use Authentication\Service\UserService;
 use Database\Controller\AbstractEntityActionController;
 use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
+use Recruitment\Entity\Person;
+use Recruitment\Entity\Recruitment;
+use Recruitment\Entity\RecruitmentStatus;
+use Recruitment\Form\SearchRegistrationsForm;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -34,6 +42,11 @@ use Zend\View\Model\ViewModel;
 class JobController extends AbstractEntityActionController
 {
 
+    /**
+     * Exibe os cargos criados, o cargo superior e cargos subordinados.
+     * 
+     * @return ViewModel
+     */
     public function indexAction()
     {
 
@@ -46,6 +59,15 @@ class JobController extends AbstractEntityActionController
         ]);
     }
 
+    /**
+     * Cria um cargo (ou posto de trabalho).
+     * 
+     * A criação envolve a adição de quais funções (papéis) o cargo possuirá, a criação de um papel para o cargo e
+     * quem será o cargo superior que herdará (pode ser nenhum) o papel do cargo em criação.
+     * 
+     * 
+     * @return ViewModel
+     */
     public function createAction()
     {
         $request = $this->getRequest();
@@ -59,23 +81,41 @@ class JobController extends AbstractEntityActionController
             $data = $request->getPost();
             $form->setData($data);
             if ($form->isValid()) {
-                $roles = new ArrayCollection();
-                if (isset($data['roles'])) {
-                    foreach ($data['roles'] as $roleIdx) {
-                        $roles->add($em->getReference('Authorization\Entity\Role', $roleIdx));
+                try {
+
+                    $roles = new ArrayCollection();
+                    if (isset($data['roles'])) {
+                        foreach ($data['roles'] as $roleIdx) {
+                            $roles->add($em->getReference('Authorization\Entity\Role', $roleIdx));
+                        }
                     }
+                    $job->setParentRoles($roles);
+                    $em->persist($job);
+                    $em->flush();
+                    return $this->redirect()->toRoute('administrative-structure/job', ['action' => 'index']);
+                } catch (\Exception $ex) {
+                    return new ViewModel([
+                        'form' => $form,
+                        'message' => $ex->getMessage(),
+                    ]);
                 }
-                $job->setParentRoles($roles);
-                $em->persist($job);
-                $em->flush();
             }
         }
 
         return new ViewModel([
             'form' => $form,
+            'message' => null,
         ]);
     }
 
+    /**
+     * Permite editar cargos cadastrados.
+     * 
+     * A edição é um pouco complexa, pois envove, além do nome do cargo, a alteração dos papéis que o cargo possui e,
+     * em caso de mudança do cargo superior ($parent !== null), envolve a remoção do papel herado pelo cargo superior.
+     * 
+     * @return ViewModel
+     */
     public function editAction()
     {
         $id = $this->params('id', false);
@@ -85,7 +125,8 @@ class JobController extends AbstractEntityActionController
             $em = $this->getEntityManager();
 
             $job = $em->find('AdministrativeStructure\Entity\Job', $id);
-            $form = new JobForm($em);
+
+            $form = new JobForm($em, $id);
             $form->bind($job);
 
             if ($request->isPost()) {
@@ -100,6 +141,7 @@ class JobController extends AbstractEntityActionController
                     }
 
                     $job->addParentRoles($roles);
+                    $job->setLastRevisionDate(new \DateTime());
                     $parent = $job->getParentBuffer();
 
                     if ($parent !== null) {
@@ -177,7 +219,7 @@ class JobController extends AbstractEntityActionController
                 return new JsonModel([
                     'message' => 'Cargo removido com sucesso',
                 ]);
-            } catch (\Exception $ex) {
+            } catch (Exception2 $ex) {
                 return new JsonModel([
                     'message' => $ex->getMessage(),
                 ]);
@@ -187,6 +229,323 @@ class JobController extends AbstractEntityActionController
         return new JsonModel([
             'message' => 'Nenhum cargo foi especificado',
         ]);
+    }
+
+    /**
+     * Exibe os cargos e os voluntários para que seja possível realizar as associações ou removê-las.
+     * 
+     * @return ViewModel
+     */
+    public function officeManagerAction()
+    {
+        try {
+            $em = $this->getEntityManager();
+            $form = new SearchRegistrationsForm($em, Recruitment::VOLUNTEER_RECRUITMENT_TYPE);
+
+            $form
+                ->get('registrationStatus')
+                ->setValue(RecruitmentStatus::STATUSTYPE_VOLUNTEER)
+                ->setAttribute('disabled', 'disabled');
+
+            return new ViewModel(array(
+                'message' => null,
+                'form' => $form,
+            ));
+        } catch (Exception $ex) {
+            return new ViewModel(array(
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.',
+                'form' => null,
+            ));
+        }
+    }
+
+    /**
+     * Permite atribuir cargos a voluntários
+     * 
+     *  - Ao criar um Office deve-se verificar
+     *      - Pessoa possui usuário?
+     *          - Sim: Adicionar o papel correspondente ao cargo
+     *          - Não: Criar um usuário e adicionar o papel correspondente ao cargo
+     * 
+     */
+    public function addOfficeAction()
+    {
+        $id = $this->params('id', false);
+        $request = $this->getRequest();
+        $data = $request->getPost();
+
+        if ($id && $data['jobs']) {
+
+            $em = $this->getEntityManager();
+
+            try {
+
+                $registration = $em->find('Recruitment\Entity\Registration', $id);
+                $user = $this->getUserIfExistsCreateIfNotExists($registration->getPerson());
+
+
+                foreach ($data['jobs'] as $jobId) {
+
+                    $office = $em->getRepository('AdministrativeStructure\Entity\Office')->findOneBy([
+                        'registration' => $id,
+                        'job' => $jobId,
+                        'end' => null,
+                    ]);
+
+                    // se o voluntário não possui o cargo
+                    if ($office === null) {
+                        $job = $em->find('AdministrativeStructure\Entity\Job', $jobId);
+
+                        // adiciona os papéis dos cargos escolhidos ao vetor de papeis do usuário associado a 
+                        // $registration
+                        $user->addRole($job->getRole());
+
+                        // cria uma nova associação do voluntário com o cargo
+                        $office = new Office();
+                        $office
+                            ->setRegistration($registration)
+                            ->setJob($job);
+
+                        // salva o cargo
+                        $em->persist($office);
+                        // salva o usuário
+                        $em->persist($user);
+                    }
+                }
+
+                $em->flush();
+
+                return new JsonModel([
+                    'message' => 'Cargo(s) adicionado(s) com sucesso',
+                ]);
+            } catch (\Exception $ex) {
+                return new JsonModel([
+                    'message' => $ex->getMessage(),
+                ]);
+            }
+        }
+
+        return new JsonModel([
+            'message' => 'Nenhum voluntário ou cargo selecionado',
+        ]);
+    }
+
+    /**
+     * Permite retirar cargos de voluntários.
+     * 
+     * Deve ser utilizada apenas em casos em que adição do cargo foi efeita indevidamente.
+     * 
+     * @todo
+     *  - Remove um Office
+     *  - Ao remover deve-se retirar o papel correspondente do usuário
+     */
+    public function removeOfficeAction()
+    {
+        $id = $this->params('id', false);
+        $request = $this->getRequest();
+        $data = $request->getPost();
+
+        if ($id && $data['jobs']) {
+
+            $em = $this->getEntityManager();
+
+            try {
+
+                $registration = $em->find('Recruitment\Entity\Registration', $id);
+                $user = $this->getUserIfExistsCreateIfNotExists($registration->getPerson());
+
+                foreach ($data['jobs'] as $jobId) {
+
+                    $office = $em->getRepository('AdministrativeStructure\Entity\Office')->findOneBy([
+                        'registration' => $id,
+                        'job' => $jobId,
+                        'end' => null,
+                    ]);
+
+                    // se o voluntário possui o cargo
+                    if ($office !== null) {
+
+                        // retira o papel associado ao cargo
+                        $role = $office->getJob()->getRole();
+                        $user->removeRole($role);
+
+                        $em->remove($office);
+                        $em->merge($user);
+                    }
+                }
+
+                $em->flush();
+
+                return new JsonModel([
+                    'message' => 'Cargo(s) removido(s) com sucesso',
+                ]);
+            } catch (\Exception $ex) {
+                return new JsonModel([
+                    'message' => $ex->getMessage(),
+                ]);
+            }
+        }
+
+        return new JsonModel([
+            'message' => 'Nenhum voluntário ou cargo selecionado',
+        ]);
+    }
+
+    /**
+     * Permite finalizar cargos de voluntários.
+     * 
+     * Deve ser utilizada sempre que um voluntário deixar de possuir um cargo
+     * 
+     * @todo
+     * - Adiciona data de saída no Office correspondente
+     * - Retira o papel correspondente do usuário
+     */
+    public function endOfficeAction()
+    {
+        $id = $this->params('id', false);
+        $request = $this->getRequest();
+        $data = $request->getPost();
+
+        if ($id && $data['jobs']) {
+
+            $em = $this->getEntityManager();
+
+            try {
+
+                $registration = $em->find('Recruitment\Entity\Registration', $id);
+                $user = $this->getUserIfExistsCreateIfNotExists($registration->getPerson());
+
+                foreach ($data['jobs'] as $jobId) {
+
+                    $office = $em->getRepository('AdministrativeStructure\Entity\Office')->findOneBy([
+                        'registration' => $id,
+                        'job' => $jobId,
+                        'end' => null,
+                    ]);
+
+                    // se o voluntário possui o cargo
+                    if ($office !== null) {
+
+                        // retira o papel associado ao cargo
+                        $user->removeRole($office->getJob()->getRole());
+
+                        $office->setEnd(new \DateTime());
+                        $em->merge($office);
+                        $em->merge($user);
+                    }
+                }
+
+                $em->flush();
+
+                return new JsonModel([
+                    'message' => 'Cargo(s) finalizado(s) com sucesso',
+                ]);
+            } catch (\Exception $ex) {
+                return new JsonModel([
+                    'message' => $ex->getMessage(),
+                ]);
+            }
+        }
+
+        return new JsonModel([
+            'message' => 'Nenhum voluntário ou cargo selecionado',
+        ]);
+    }
+
+    /**
+     * Encontra todos os cargos e organiza-os em forma de uma floresta.
+     */
+    public function getJobsAction()
+    {
+
+        $em = $this->getEntityManager();
+
+        $jobs = $em->getRepository('AdministrativeStructure\Entity\Job')->findBy([
+            'parent' => null,
+        ]);
+
+        $jobsArr = [];
+
+        // Floresta de cargos
+        foreach ($jobs as $job) {
+            $jobsArr[] = $this->depthFirstSearch($job);
+        }
+
+        return new JsonModel([
+            'jobs' => $jobsArr,
+        ]);
+    }
+
+    /**
+     * Busca em profundidade.
+     * 
+     * Monta a árvore de cargos
+     * 
+     * @param type $jobModel Cargo pai
+     * @return array Árvore de cargos
+     */
+    protected function depthFirstSearch(Job $jobModel)
+    {
+
+        $childrenArr = [];
+
+        $jobArr = [
+            'id' => $jobModel->getJobId(),
+            'name' => $jobModel->getJobName(),
+            'department' => $jobModel->getDepartment()->getDepartmentName(),
+            'children' => &$childrenArr,
+        ];
+
+        $children = $jobModel->getChildren()->toArray();
+
+        foreach ($children as $child) {
+            $childrenArr[] = $this->depthFirstSearch($child);
+        }
+
+        return $jobArr;
+    }
+
+    /**
+     * Busca pelo usuário da inscrição $id. Caso não exista cria um novo.
+     * 
+     * @param Person $person pessoa associada à inscrição
+     * @return User
+     */
+    protected function getUserIfExistsCreateIfNotExists(Person $person)
+    {
+
+        $em = $this->getEntityManager();
+
+        // se não possui usuário
+        if ($person->getUser() === null) {
+
+            $user = new User();
+            $userName = $person->getPersonEmail();
+            $userPassword = preg_replace('/[.,-]/', '', $person->getPersonCpf());
+            $pass = UserService::encryptPassword($userPassword);
+
+            $user
+                ->setUserName($userName)
+                ->setUserPassword($pass['password'])
+                ->setUserPasswordSalt($pass['password_salt'])
+                ->setUserActive(true);
+
+            $person->setUser($user);
+
+            $em->merge($person);
+
+            return $user;
+        }
+
+        return $person->getUser();
+    }
+
+    /**
+     * Exibe a hierarquia de Cargos
+     */
+    public function hierarchyAction()
+    {
+        return new ViewModel();
     }
 
 }

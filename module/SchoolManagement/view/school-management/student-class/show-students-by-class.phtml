@@ -1,0 +1,53 @@
+<section class="content">
+    <p><?php echo $message; ?></p>
+
+    <div class="row">
+        <?php if ($students !== null): ?>
+
+            <div class="col-md-10 col-md-offset-1 col-xs-12">
+                <div class="row">
+                    <div class="table-responsive">
+                        <table class="table table-condensed table-striped">
+                            <thead>
+                                <tr>
+                                    <th class="text-center">Matrícula</th>
+                                    <th class="text-center">Data de Nascimento</th>
+                                    <th class="text-center">Nome</th>
+                                    <th class="text-center">Sexo</th>
+                                    <th class="text-center">Cpf</th>
+                                    <th class="text-center">Rg</th>
+                                    <th class="text-center">Telefone</th>
+                                    <th class="text-center">Email</th>
+                                    <th class="text-center">Rede Social</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <?php foreach ($students as $st): ?>
+                                    <tr>
+                                        <td class="text-center">
+                                            <?php
+                                            echo str_pad($st['enrollmentId'], 5, "0", STR_PAD_LEFT);
+                                            ?></td>
+                                        <td class="text-center">
+                                            <?php echo $st['personBirthday']->format('d/m/Y'); ?></td>
+                                        <td class="text-center"><?php echo $st['personFullName']; ?></td>
+                                        <td class="text-center"><?php echo $st['personGender']
+                                            == \Recruitment\Entity\Person::GENDER_F ? 'F' : 'M'; ?></td>
+                                        <td class="text-center"><?php echo $st['personCpf']; ?></td>
+                                        <td class="text-center"><?php echo $st['personRg']; ?></td>
+                                        <td class="text-center"><?php echo $st['personPhone']; ?></td>
+                                        <td class="text-center"><?php echo $st['personEmail']; ?></td>
+                                        <td class="text-center"><a href="<?php echo $st['personSocialMedia']; ?>"> 
+                                                <i class="fa fa-facebook-official" ></i> </a>
+                                        </td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <?php endif; ?>
+    </div>
+
+</section>

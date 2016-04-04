@@ -13,6 +13,7 @@ use Authorization\Form\ResourceFilter;
 use Authorization\Form\ResourceForm;
 use Database\Controller\AbstractEntityActionController;
 use Exception;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -58,8 +59,9 @@ class ResourceController extends AbstractEntityActionController
                     $em->persist($resource);
                     $em->flush();
 
-                    return $this->redirect()->toRoute('authorization/resource', array(
-                        'action' => 'index'
+                    return $this->redirect()->toRoute('authorization/resource',
+                            array(
+                            'action' => 'index'
                     ));
                 } catch (Exception $ex) {
                     return new ViewModel(array(
@@ -81,21 +83,21 @@ class ResourceController extends AbstractEntityActionController
         if ($id) {
             $em = $this->getEntityManager();
             try {
-                $role = $em->getReference('Authorization\Entity\Resource', array('resourceId' => $id));
-                $em->remove($role);
+                $resource = $em->getReference('Authorization\Entity\Resource', array('resourceId' => $id));
+                $em->remove($resource);
                 $em->flush();
-                return new ViewModel(array(
-                    'message' => 'Resource deleted successfully',
+                return new JsonModel(array(
+                    'message' => 'Recurso removido com sucesso',
                 ));
             } catch (Exception $ex) {
-                return new ViewModel(array(
-                    'message' => $ex->getCode() . ': ' . $ex->getMessage(),
+                return new JsonModel(array(
+                    'message' => $ex->getMessage(),
                 ));
             }
         }
 
-        return new ViewModel(array(
-            'message' => 'Param id no found.',
+        return new JsonModel(array(
+            'message' => 'Nenhum recurso foi selecionado',
         ));
     }
 

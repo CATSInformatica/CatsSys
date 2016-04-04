@@ -34,7 +34,9 @@ class PdfAttendanceList {
 
     public function generateList() {
         $pdf = new FPDF('P', 'mm', 'A4');
+        //cor do fundo(listras)
         $pdf->SetFillColor(220);
+        
         $pdf->addPage();
         $pdf->setMargins(5, 5, 5);
 
@@ -44,33 +46,36 @@ class PdfAttendanceList {
         $pdf->SetFont(self::FONT, 'B', 16);
         $pdf->Cell(0, 10, utf8_decode("LISTA DE PRESENÇA"), '1', 1, 'C');
 
-        $pdf->SetFont(self::FONT, 'B', 11);
-        $pdf->Cell(20, 5, "Matricula", '1', 0, 'C');
-        $pdf->Cell(70, 5, "Nome", '1', 0);
-        $pdf->Cell(22, 5, "__/__", '1', 0, 'C');
-        $pdf->Cell(22, 5, "__/__", '1', 0, 'C');
-        $pdf->Cell(22, 5, "__/__", '1', 0, 'C');
-        $pdf->Cell(22, 5, "__/__", '1', 0, 'C');
-        $pdf->Cell(22, 5, "__/__", '1', 1, 'C');
+        $pdf->SetFont(self::FONT, 'B', 10);
+        $pdf->Cell(17, 5, "Matricula", '1', 0, 'C');
+        $pdf->Cell(75, 5, "Nome", '1', 0);
+        $pdf->Cell(18, 5, "___/___", '1', 0, 'C');
+        $pdf->Cell(18, 5, "___/___", '1', 0, 'C');
+        $pdf->Cell(18, 5, "___/___", '1', 0, 'C');
+        $pdf->Cell(18, 5, "___/___", '1', 0, 'C');
+        $pdf->Cell(18, 5, "___/___", '1', 0, 'C');
+        $pdf->Cell(18, 5, "___/___", '1', 1, 'C');
 
-        $pdf->SetFont(self::FONT, '', 9);
+        $pdf->SetFont(self::FONT, '', 8.3);
         foreach ($this->students as $idx => $student) {
             if(!($idx%2)){
-                $pdf->Cell(20, 4, $student["id"], '1', 0, 'C', true);
-                $pdf->Cell(70, 4, utf8_decode($student["name"]), '1', 0, 'L',true);
-                $pdf->Cell(22, 4, "", '1', 0, 'C', true);
-                $pdf->Cell(22, 4, "", '1', 0, 'C', true);
-                $pdf->Cell(22, 4, "", '1', 0, 'C', true);
-                $pdf->Cell(22, 4, "", '1', 0, 'C', true);
-                $pdf->Cell(22, 4, "", '1', 1, 'C', true);
+                $pdf->Cell(17, 4, $student["id"], '1', 0, 'C', true);
+                $pdf->Cell(75, 4, utf8_decode($student["name"]), '1', 0, 'L',true);
+                $pdf->Cell(18, 4, "", '1', 0, 'C', true);
+                $pdf->Cell(18, 4, "", '1', 0, 'C', true);
+                $pdf->Cell(18, 4, "", '1', 0, 'C', true);
+                $pdf->Cell(18, 4, "", '1', 0, 'C', true);
+                $pdf->Cell(18, 4, "", '1', 0, 'C', true);
+                $pdf->Cell(18, 4, "", '1', 1, 'C', true);
             } else {
-                $pdf->Cell(20, 4, $student["id"], '1', 0, 'C');
-                $pdf->Cell(70, 4, utf8_decode($student["name"]), '1', 0);
-                $pdf->Cell(22, 4, "", '1', 0, 'C');
-                $pdf->Cell(22, 4, "", '1', 0, 'C');
-                $pdf->Cell(22, 4, "", '1', 0, 'C');
-                $pdf->Cell(22, 4, "", '1', 0, 'C');
-                $pdf->Cell(22, 4, "", '1', 1, 'C');
+                $pdf->Cell(17, 4, $student["id"], '1', 0, 'C');
+                $pdf->Cell(75, 4, utf8_decode($student["name"]), '1', 0);
+                $pdf->Cell(18, 4, "", '1', 0, 'C');
+                $pdf->Cell(18, 4, "", '1', 0, 'C');
+                $pdf->Cell(18, 4, "", '1', 0, 'C');
+                $pdf->Cell(18, 4, "", '1', 0, 'C');
+                $pdf->Cell(18, 4, "", '1', 0, 'C');
+                $pdf->Cell(18, 4, "", '1', 1, 'C');
             }
         }
         

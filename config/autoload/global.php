@@ -23,9 +23,9 @@ return array(
                     'charset' => 'utf8', // extra
                     'driverOptions' => array(
                         1002 => 'SET NAMES utf8'
-                    )
-                )
-            )
+                    ),
+                ),
+            ),
         )
     ),
     'module_layouts' => array(

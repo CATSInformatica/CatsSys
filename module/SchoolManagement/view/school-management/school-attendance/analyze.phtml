@@ -1,0 +1,40 @@
+<section class="content">
+    <div class="row">
+        <div class="container-fluid">
+
+            <div class="row">
+                <div class="col-md-4 col-xs-12">
+                    <select id="sclass" class="form-control">
+                        <?php foreach ($classes as $cl): ?>
+                            <option value="<?php echo $cl->getClassId(); ?>"><?php echo $cl->getClassName(); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+                <div id="attendanceMonth" class="col-md-8 col-xs-12"></div>
+            </div>
+        </div>
+
+        <div class="container-fluid">
+            <div id="attendanceContainer" class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                </ul>
+                <div class="tab-content">
+                </div>
+                <!-- /.tab-content -->
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/attendance/attendance';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

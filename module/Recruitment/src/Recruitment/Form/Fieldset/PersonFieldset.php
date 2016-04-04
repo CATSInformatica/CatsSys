@@ -293,6 +293,9 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
             ),
             'personEmail' => array(
                 'required' => true,
+                'filters' => [
+                    ['name' => 'StringToLower']
+                ],
                 'validators' => array(
                     array(
                         'name' => 'Zend\Validator\StringLength',

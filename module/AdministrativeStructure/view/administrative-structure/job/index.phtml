@@ -6,11 +6,14 @@
                     <thead>
                         <tr>
                             <th class="text-center">#</th>
+                            <th class="text-center">Criado em</th>
+                            <th class="text-center">Última Revisão</th>
                             <th class="text-center">Departamento</th>
                             <th class="text-center">Cargo</th>
                             <th class="text-center">Cargo Superior</th>
                             <th class="text-center">Cargos Subordinados</th>
                             <th class="text-center">Descrição </th>
+                            <th class="text-center">Situação </th>
                         </tr>
                     </thead>
                     <tbody>
@@ -20,9 +23,15 @@
                                     <?php echo $job->getJobId(); ?>
                                 </td>
                                 <td class="text-center">
+                                    <?php echo $job->getCreationDate(); ?>
+                                </td>
+                                <td class="text-center">
+                                    <?php echo $job->getLastRevisionDate(); ?>
+                                </td>
+                                <td class="text-center">
                                     <?php echo $job->getDepartment()->getDepartmentName(); ?>
                                 </td>
-                                
+
                                 <td class="text-center">
                                     <?php echo $job->getJobName(); ?>
                                 </td>
@@ -33,20 +42,36 @@
                                 <td>
                                     <ol type="i">
                                         <?php
-                                        foreach ($job->getChildren()->toArray() as $job):
+                                        foreach ($job->getChildren()->toArray() as $j):
                                             ?>
-                                            <li> <?php echo $job->getJobName(); ?></li>
+                                            <li> <?php echo $j->getJobName(); ?></li>
                                         <?php endforeach; ?>
                                     </ol>
                                 </td>
                                 <td class="text-center">
-                                    <?php echo $job->getJobDescription(); ?>
+                                    <?php echo substr($job->getJobDescription(), 0,
+                                        100) . '...'; ?>
+                                </td>
+                                <td class="text-center">
+    <?php echo $job->getIsAvailable() ? 'TRUE' : 'FALSE'; ?>
                                 </td>
                             </tr>
-                        <?php endforeach; ?>
+<?php endforeach; ?>
                     </tbody>
                 </table>
             </div>
         </div>
     </div>
 </section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/administrative-structure/job/job';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+</script>

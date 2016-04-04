@@ -80,7 +80,10 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
             },
             getDataOf: function (action) {
 
-                if (action === "fn-enroll" || action === "fn-unenroll") {
+                if (action === "fn-enroll"
+                        || action === "fn-unenroll"
+                        || action === "fn-close-enroll"
+                        ) {
                     return {
                         studentClass: $("select[name=studentClasses]").val()
                     };

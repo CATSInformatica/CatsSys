@@ -25,7 +25,7 @@ $lastPage = null;
 
 <ol class="breadcrumb">
 <?php foreach ($this->pages as $key => $page): ?>
-        <li>
+        <li <?php echo !($key < $lastPageIndex) ? 'class="active"' : '' ?>>
         <?php
         // if this isn't the last page, add a link and the separator
         if ($key < $lastPageIndex):

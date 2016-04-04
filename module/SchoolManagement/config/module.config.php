@@ -13,6 +13,8 @@ return array(
             'SchoolManagement\Controller\StudyResources' => Factory\Controller\StudyResourcesControllerFactory::class,
             'SchoolManagement\Controller\SchoolSubject' => Factory\Controller\SchoolSubjectControllerFactory::class,
             'SchoolManagement\Controller\SchoolExam' => Factory\Controller\SchoolExamControllerFactory::class,
+            'SchoolManagement\Controller\SchoolExamPreview' =>
+            Factory\Controller\SchoolExamPreviewControllerFactory::class,
         ),
     ),
     'router' => array(
@@ -127,6 +129,18 @@ return array(
                             ),
                         ),
                     ),
+                    'school-exam-preview' => [
+                        'type' => 'Segment',
+                        'options' => [
+                            'route' => '/school-exam-preview[/:action]',
+                            'constraints' => [
+                                'action' => 'index',
+                            ],
+                            'defaults' => [
+                                'controller' => 'SchoolManagement\Controller\SchoolExamPreview',
+                            ],
+                        ],
+                    ],
                 ),
             ),
         ),
@@ -177,11 +191,12 @@ return array(
                         'icon' => 'fa fa-graduation-cap',
                         'toolbar' => array(
                             array(
-                                'url' => '/school-management/student-class/delete/$id',
-                                'title' => 'Remover',
-                                'description' => 'Permite remover uma turma que ainda não possua alunos',
-                                'class' => 'fa fa-trash-o bg-red',
-                                'fntype' => 'selectedAjaxClick',
+                                'url' => '/school-management/student-class/show-students-by-class/$id',
+                                'title' => 'Ver alunos',
+                                'description' => 'Exibe informações de alunos matriculados na turma escolhida',
+                                'class' => 'fa fa-users bg-green',
+                                'fntype' => 'selectedHttpClick',
+                                'target' => '_blank',
                             ),
                             array(
                                 'url' => '/school-management/school-attendance/printList/$id',
@@ -191,6 +206,13 @@ return array(
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '_blank',
                             ),
+                            array(
+                                'url' => '/school-management/student-class/delete/$id',
+                                'title' => 'Remover',
+                                'description' => 'Permite remover uma turma que ainda não possua alunos',
+                                'class' => 'fa fa-trash-o bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                            ),
                         ),
                         'pages' => array(
                             array(
@@ -198,6 +220,12 @@ return array(
                                 'route' => 'school-management/school-attendance',
                                 'action' => 'printList',
                                 'icon' => 'fa fa-file-text-o',
+                            ),
+                            array(
+                                'label' => 'Students',
+                                'route' => 'school-management/student-class',
+                                'action' => 'show-students-by-class',
+                                'icon' => 'fa fa-users',
                             ),
                         ),
                     ),
@@ -230,7 +258,7 @@ return array(
                                 'id' => 'fn-enroll',
                                 'title' => 'Matricular',
                                 'description' => 'Matricula o candidato em uma turma.',
-                                'class' => 'fa fa-check bg-blue',
+                                'class' => 'fa fa-check bg-green',
                                 'fntype' => 'ajaxPostSelectedClick',
                             ),
                             array(
@@ -238,7 +266,15 @@ return array(
                                 'id' => 'fn-unenroll',
                                 'title' => 'Desmatricular',
                                 'description' => 'Remove a matrícula do candidato na turma selecionada.',
-                                'class' => 'fa fa-close bg-red',
+                                'class' => 'fa fa-trash bg-red',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ),
+                            array(
+                                'url' => '/school-management/enrollment/close-enroll/$id',
+                                'id' => 'fn-close-enroll',
+                                'title' => 'Encerrar Matrícula',
+                                'description' => 'Faz o encerramento da matrícula de alunos.',
+                                'class' => 'fa fa-close bg-blue',
                                 'fntype' => 'ajaxPostSelectedClick',
                             ),
                         ),
@@ -369,6 +405,22 @@ return array(
                             ),
                         ),
                     ),
+                    array(
+                        'label' => 'Analyze',
+                        'route' => 'school-management/school-attendance',
+                        'action' => 'analyze',
+                        'icon' => 'fa fa-calculator',
+//                        'toolbar' => array(
+//                            array(
+//                                'url' => '/school-management/school-attendance/deleteAllowance/$id',
+//                                'title' => 'Remover Abono',
+//                                'id' => 'allowance-delete',
+//                                'description' => 'Remove os abonos selecionados',
+//                                'class' => 'fa fa-close bg-red',
+//                                'fntype' => 'selectedAjaxClick',
+//                            ),
+//                        ),
+                    ),
                 ),
             ),
             array(
@@ -479,6 +531,12 @@ return array(
                         'action' => 'add-question',
                         'icon' => 'fa fa-question-circle',
                     ),
+                    [
+                        'label' => 'Exam result preview',
+                        'route' => 'school-management/school-exam-preview',
+                        'action' => 'index',
+                        'icon' => 'fa fa-file-text-o',
+                    ],
                 ),
             ),
         ),

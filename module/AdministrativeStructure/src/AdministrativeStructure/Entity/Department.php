@@ -43,7 +43,7 @@ class Department
     /**
      *
      * @var string
-     * @ORM\Column(name="department_description", type="string", length=500, nullable=false)
+     * @ORM\Column(name="department_description", type="text", nullable=false)
      */
     private $departmentDescription;
 

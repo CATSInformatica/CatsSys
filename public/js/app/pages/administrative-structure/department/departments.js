@@ -21,7 +21,7 @@ define(['jquery'], function () {
                             .addClass(departmentIcon.val());
                 }
 
-                departmentIcon.on('keyup click', function () {
+                departmentIcon.on('keyup click blur', function () {
                     $(this)
                             .next('span')
                             .find('i')

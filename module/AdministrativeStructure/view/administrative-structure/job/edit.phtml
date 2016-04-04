@@ -1,3 +1,4 @@
+<?php $this->headLink()->appendStylesheet($this->basePath('vendor/trumbowyg/dist/ui/trumbowyg.min.css')); ?>
 <section class="content">
     <div class="row">
         <div class="col-md-8 col-md-offset-2">
@@ -15,6 +16,12 @@
                     </div>
                     <div class="col-md-6">
                         <?php echo $this->formRow($job->get('department')); ?>
+                    </div>
+                </div>
+
+                <div class="form-group">
+                    <div class="col-md-12">
+                        <?php echo $this->formRow($job->get('isAvailable')); ?>
                     </div>
                 </div>
 
@@ -47,3 +54,14 @@
 
 </section>
 
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/administrative-structure/job/job';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+</script>

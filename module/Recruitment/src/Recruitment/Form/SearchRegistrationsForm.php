@@ -2,10 +2,11 @@
 
 namespace Recruitment\Form;
 
+use Doctrine\Common\Persistence\ObjectManager;
+use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\RecruitmentStatus;
 use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
-use Doctrine\Common\Persistence\ObjectManager;
 
 /**
  * Description of RegistrationSearchForm
@@ -29,14 +30,14 @@ class SearchRegistrationsForm extends Form implements InputFilterProviderInterfa
             );
         }
 
-
         $this
             ->add(array(
                 'name' => 'recruitment',
                 'type' => 'select',
                 'options' => array(
                     'label' => 'Processo seletivo',
-                    'value_options' => $this->getRecruitments($recruitments),
+                    'value_options' => $this->getRecruitments($recruitments,
+                        $rtype !== Recruitment::STUDENT_RECRUITMENT_TYPE),
                 ),
             ))
             ->add(array(
@@ -73,7 +74,7 @@ class SearchRegistrationsForm extends Form implements InputFilterProviderInterfa
                         => RecruitmentStatus::STATUSTYPEDESC_CALLEDFOR_PREINTERVIEW,
                         RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE
                         => RecruitmentStatus::STATUSTYPEDESC_PREINTERVIEW_COMPLETE,
-                        -1 => 'TODOS',
+                        RecruitmentStatus::STATUSTYPE_ALL => RecruitmentStatus::STATUSTYPEDESC_ALL,
                     ),
                 ),
             ))
@@ -92,13 +93,17 @@ class SearchRegistrationsForm extends Form implements InputFilterProviderInterfa
         ;
     }
 
-    protected function getRecruitments($recruitments)
+    protected function getRecruitments($recruitments, $addAllOption = false)
     {
         $rArr = [];
 
         foreach ($recruitments as $r) {
             $rArr[$r->getRecruitmentId()] = $r->getRecruitmentNumber() . 'º Processo Seletivo de '
                 . $r->getRecruitmentYear();
+        }
+
+        if ($addAllOption) {
+            $rArr[Recruitment::ALL_VOLUNTEER_RECRUITMENTS] = 'TODOS';
         }
 
         return $rArr;

@@ -71,14 +71,14 @@ return [
                         'action' => 'index',
                         'resource' => 'AdministrativeStructure\Controller\Department',
                         'privilege' => 'index',
-                        'icon' => 'fa fa-folder-open',
+                        'icon' => 'fa fa-sitemap',
                         'pages' => [
                             ['label' => 'Edit a department',
                                 'route' => 'administrative-structure/department',
                                 'action' => 'edit',
                                 'resource' => 'AdministrativeStructure\Controller\Department',
                                 'privilege' => 'edit',
-                                'icon' => 'fa fa-folder-open',
+                                'icon' => 'fa fa-sitemap',
                             ],
                         ],
                         'toolbar' => [
@@ -86,7 +86,7 @@ return [
                                 'url' => '/administrative-structure/department/edit/$id',
                                 'title' => 'Editar departamento',
                                 'description' => 'Permite alterar as informações do departamento escolhido',
-                                'class' => 'fa fa-university  bg-blue',
+                                'class' => 'fa fa-university bg-blue',
                                 'fntype' => 'selectedHttpClick',
                             ],
                             [
@@ -94,7 +94,7 @@ return [
                                 'id' => 'department-delete',
                                 'title' => 'Remover departamento',
                                 'description' => 'Remove o departamento escolhido se ele não possuir departamentos filhos',
-                                'class' => 'fa fa-university  bg-red',
+                                'class' => 'fa fa-university bg-red',
                                 'fntype' => 'selectedAjaxClick',
                             ],
                         ],
@@ -105,17 +105,8 @@ return [
                         'action' => 'add',
                         'resource' => 'AdministrativeStructure\Controller\Department',
                         'privilege' => 'add',
-                        'icon' => 'fa fa-folder-open',
+                        'icon' => 'fa fa-sitemap',
                     ],
-                ],
-            ],
-            [
-                'label' => 'Job',
-                'uri' => '#',
-                'icon' => 'fa fa-usb',
-                'resource' => 'AdministrativeStructure\Controller\Job',
-                'order' => 14,
-                'pages' => [
                     [
                         'label' => 'Show jobs',
                         'route' => 'administrative-structure/job',
@@ -124,6 +115,13 @@ return [
                         'privilege' => 'index',
                         'icon' => 'fa fa-users',
                         'toolbar' => [
+                            [
+                                'url' => '/administrative-structure/job/hierarchy',
+                                'title' => 'Hierarquia de cargos',
+                                'description' => 'Monta um diagrama da hierarquia de cargos',
+                                'class' => 'fa fa-usb  bg-green',
+                                'fntype' => 'httpClick',
+                            ],
                             [
                                 'url' => '/administrative-structure/job/delete/$id',
                                 'title' => 'Remover cargo',
@@ -141,11 +139,19 @@ return [
                         ],
                         'pages' => [
                             [
-                                'label' => 'Show jobs',
+                                'label' => 'Edit a job',
                                 'route' => 'administrative-structure/job',
                                 'action' => 'edit',
                                 'resource' => 'AdministrativeStructure\Controller\Job',
                                 'privilege' => 'edit',
+                                'icon' => 'fa fa-usb',
+                            ],
+                            [
+                                'label' => 'Job hierarchy',
+                                'route' => 'administrative-structure/job',
+                                'action' => 'hierarchy',
+                                'resource' => 'AdministrativeStructure\Controller\Job',
+                                'privilege' => 'hierarchy',
                                 'icon' => 'fa fa-usb',
                             ]
                         ]
@@ -157,6 +163,38 @@ return [
                         'resource' => 'AdministrativeStructure\Controller\Job',
                         'privilege' => 'create',
                         'icon' => 'fa fa-user',
+                    ],
+                    [
+                        'label' => 'Office manager',
+                        'route' => 'administrative-structure/job',
+                        'action' => 'office-manager',
+                        'resource' => 'AdministrativeStructure\Controller\Job',
+                        'privilege' => 'office-manager',
+                        'icon' => 'fa fa-male',
+                        'toolbar' => [
+                            [
+                                'url' => '/administrative-structure/job/add-office/$id',
+                                'title' => 'Associar Cargo',
+                                'description' => 'Associa o cargo selecionado ao voluntário '
+                                . 'escolhido',
+                                'class' => 'fa fa-pencil-square-o bg-green',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ],
+                            [
+                                'url' => '/administrative-structure/job/end-office/$id',
+                                'title' => 'Finalizar cargo',
+                                'description' => 'Conclui o cargo do voluntário escolhido',
+                                'class' => 'fa fa-pencil-square-o bg-yellow',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ],
+                            [
+                                'url' => '/administrative-structure/job/remove-office/$id',
+                                'title' => 'Remover Cargo',
+                                'description' => 'Remove o cargo selecionado do voluntário escolhido',
+                                'class' => 'fa fa-pencil-square-o bg-red',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ],
+                        ],
                     ],
                 ],
             ],
