@@ -23,6 +23,7 @@
     "bootstrap-social": "~4.12.0",
     "jquery-csv": "*",
     "MathJax": "mathjax/MathJax#~2.6.1",
-    "trumbowyg": "~1.1.7"
+    "trumbowyg": "~1.1.7",
+    "jquery.columnizer": "^1.6.2"
   }
 }

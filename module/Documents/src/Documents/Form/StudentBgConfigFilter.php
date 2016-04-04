@@ -32,7 +32,7 @@ class StudentBgConfigFilter extends InputFilter
                             'name' => 'Zend\Validator\StringLength',
                             'options' => array(
                                 'min' => '5',
-                                'max' => '150',
+                                'max' => '300',
                             ),
                         ),
                     ),
@@ -49,7 +49,7 @@ class StudentBgConfigFilter extends InputFilter
                             'name' => 'Zend\Validator\StringLength',
                             'options' => array(
                                 'min' => '5',
-                                'max' => '50',
+                                'max' => '100',
                             ),
                         ),
                     ),

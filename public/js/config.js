@@ -10,6 +10,7 @@ requirejs.config({
     paths: {
         jquery: 'AdminLTE/plugins/jQuery/jQuery-2.2.0.min',
         jquerycsv: 'jquery-csv/src/jquery.csv',
+        jquerycolumnizer: 'jquery.columnizer/src/jquery.columnizer.min',
         bootstrap: 'AdminLTE/bootstrap/js/bootstrap.min',
         jmaskedinput: 'jquery.maskedinput/dist/jquery.maskedinput.min',
         slimscroll: 'AdminLTE/plugins/slimScroll/jquery.slimscroll.min',
