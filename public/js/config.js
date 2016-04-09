@@ -28,7 +28,8 @@ requirejs.config({
         trumbowygpt: 'trumbowyg/dist/langs/pt.min',
         trumbowygcolors: 'trumbowyg/dist/plugins/colors/trumbowyg.colors.min',
         trumbowygupload: 'trumbowyg/dist/plugins/upload/trumbowyg.upload.min',
-        chart: 'AdminLTE/plugins/chartjs/Chart.min'
+        chart: 'AdminLTE/plugins/chartjs/Chart.min',
+        filesaver: 'file-saver.js/FileSaver'
     },
     shim: {
         bootstrap: {
