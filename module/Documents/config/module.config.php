@@ -98,7 +98,6 @@ return array(
                 'uri' => '#',
                 'icon' => 'fa fa-files-o',
                 'order' => 8,
-                'resource' => 'Documents\Controller\StudentBgConfig',
                 'pages' => array(
                     array(
                         'label' => 'Show background configs',
