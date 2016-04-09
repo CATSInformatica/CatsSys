@@ -17,6 +17,7 @@
         "zendframework/zend-developer-tools": "^0.0.2",
         "evandotpro/edp-module-layouts": "^1.0",
         "neilime/zf2-twb-bundle": "^2.6",
-        "itbz/fpdf": "^1.7"
+        "itbz/fpdf": "^1.7",
+        "ircmaxell/random-lib": "^1.1"
     }
 }
