@@ -2,17 +2,14 @@
 Sugestões
 
     Subject
-        Remover o campo Professor de "Subject".
-        Exibir mensagem de sucesso ao cadastrar com sucesso a disciplina. 
-O formulário pode continuar sendo exibido para o próximo cadastro.
+        FEITO - Remover o campo Professor de "Subject".                                         
+        FEITO - Exibir mensagem de sucesso ao cadastrar com sucesso a disciplina. 
+        FEITO - O formulário pode continuar sendo exibido para o próximo cadastro.
 
     Questions
-        Mudar ordenação de alternativas de "cardinal" para "Alfabética"
-(Apenas na interface)
-        A inserção de imagens deveria ser feita via codificação da imagem em formato de texto,
-aparentemente, não está funcionando.
-        Exemplo:
-            Alternativa 1 ~> Alternativa A.
+        FEITO - Mudar ordenação de alternativas de "cardinal" para "Alfabética" (Apenas na interface) Exemplo: Alternativa 1 ~> Alternativa A.
+        FEITO - A inserção de imagens deveria ser feita via codificação da imagem em formato de texto, aparentemente, não está funcionando.
+        
     Em editar questão excutar a função de previsualização ao carregar a página
 pela primeira vez.
     A pré-visualização está associada ao evento keyup talvez seja possível fazer algo
@@ -33,8 +30,7 @@ do tipo (isto é só um rascunho que dará a ideia menos trabalhosa)
     // no init do editar
     NewPreviewFunction($(selector));
 
-    Em exibir questão alterar nome do select de Situação para Tipo e deixar 
-pré-selecionada a opção Questão Fechada ao invés de Todas.
+    FEITO - Em exibir questão alterar nome do select de Situação para Tipo e deixar pré-selecionada a opção Questão Fechada ao invés de Todas.
 
     Simulados
         Na página de criação de simulados seria bastante interessante se, 
@@ -58,8 +54,6 @@ os tópicos de cada disciplina.
 
     O MathJax não está funcionando na página de geração de simulados, acredito que 
 o motivo seja pelo fato de a imagem logo_logo_prova não estar presente (causando erro no js).
-    Observação importante: Imagens em img/ devem ser adicionadas ao .gitignore.
-    Exemplo:
-        !logo_prova.png
+    FEITO - Observação importante: Imagens em img/ devem ser adicionadas ao .gitignore. Exemplo: !logo_prova.png
 
     

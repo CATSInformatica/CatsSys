@@ -12,6 +12,7 @@ define(['jquery', 'datatable', 'trumbowyg', 'trumbowygpt', 'trumbowygbase64'], f
         var CLOSED_QUESTION = "1";
         var OPEN_QUESTION = "2";
         var preview = null;
+        var alternativeListStyle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];  
 
         /*
          * 
@@ -28,10 +29,10 @@ define(['jquery', 'datatable', 'trumbowyg', 'trumbowygpt', 'trumbowygbase64'], f
                 // é necessário numerar os campos de alternativas e mostrar os radio buttons
                 var asnwerFields = $('#alternatives-fieldset > fieldset');
                 asnwerFields.each(function (i, elem) {
-                    $(elem).find('div > label').html('Alternativa ' + (i + 1));
+                    $(elem).find('div > label').html('Alternativa ' + alternativeListStyle[i]);
                     var radioBtn = ''
                             + '<div class="radio-inline"><label class="control-label">'
-                            + '<input type="radio" name="exam-question[correctAnswer]" value="' + i + '" id="alternative-' + i + '">' + (i + 1) + '</label></div>';
+                            + '<input type="radio" name="exam-question[correctAnswer]" value="' + i + '" id="alternative-' + i + '">' + alternativeListStyle[i] + '</label></div>';
                     $('#correct-answer').append(radioBtn);
                 });
             }
@@ -56,12 +57,12 @@ define(['jquery', 'datatable', 'trumbowyg', 'trumbowygpt', 'trumbowygbase64'], f
             template = template.replace(/__placeholder__/g, currentCount);
 
             if ($("#question-type").val() === CLOSED_QUESTION) {
-                template = template.replace("Alternativa 1", "Alternativa " + (currentCount + 1));
+                template = template.replace("Alternativa 1", "Alternativa " + alternativeListStyle[currentCount]);
 
                 // Adiciona um radio button para selecionar esta alternativa como a correta
                 var radioBtn = ''
                         + '<div class="radio-inline"><label class="control-label">'
-                        + '<input type="radio" name="exam-question[correctAnswer]" id="correct-answer" value="' + currentCount + '">' + (currentCount + 1) + '</label></div>';
+                        + '<input type="radio" name="exam-question[correctAnswer]" id="correct-answer" value="' + currentCount + '">' + alternativeListStyle[currentCount] + '</label></div>';
                 $('#correct-answer').append(radioBtn);
             } else {
                 template = template.replace("Alternativa 1", "Resposta");
