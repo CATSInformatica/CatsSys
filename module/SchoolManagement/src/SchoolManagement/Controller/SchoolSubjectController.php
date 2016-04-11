@@ -72,7 +72,17 @@ class SchoolSubjectController extends AbstractEntityActionController
                     $subject->setParent($parent);
                     $em->persist($subject);
                     $em->flush();
-                    $this->redirect()->toRoute('school-management/school-subject', array('action' => 'index'));
+
+                    $subject = new Subject();
+                    $form = new SubjectForm($em);
+                    $form->bind($subject);
+                    return new ViewModel(array(
+                        'message' => "Disciplina cadastrada com sucesso!",
+                        'form' => $form,
+                    ));
+                    
+                } catch (UniqueConstraintViolationException $ex) {
+                    $message = 'Essa disciplina já existe.';
                 } catch (Exception $ex) {
                     $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                         'Erro: ' . $ex->getMessage();

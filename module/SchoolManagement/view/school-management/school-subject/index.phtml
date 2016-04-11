@@ -9,8 +9,7 @@
                         <th class="text-center">#</th>
                         <th class="text-center">Disciplina</th>
                         <th class="text-center">Descrição</th>
-                        <th class="text-center">Professor</th>
-                        <th class="text-center">Abaixo de</th>
+                        <th class="text-center">Disciplina superior</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -20,7 +19,6 @@
                                 <td class="text-center"> <?php echo $subject->getSubjectId(); ?></td>
                                 <td class="text-center"> <?php echo $subject->getSubjectName(); ?></td>
                                 <td class="text-center"> <?php echo $subject->getSubjectDescription(); ?></td>
-                                <td class="text-center"> <?php echo 'Fulano da Silva' ?></td>
                                 <td class="text-center"> 
                                     <?php if ($subject->getParent() !== null): ?>
                                         <dd><?php echo $subject->getParent()->getSubjectName(); ?></dd>

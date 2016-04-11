@@ -4,8 +4,6 @@ namespace SchoolManagement;
 
 return array(
     'controllers' => array(
-//        'invokables' => array(
-//        ),
         'factories' => array(
             'SchoolManagement\Controller\SchoolAttendance' =>
             Factory\Controller\SchoolAttendanceControllerFactory::class,
@@ -481,10 +479,10 @@ return array(
                 'resource' => 'SchoolManagement\Controller\SchoolExam',
                 'pages' => array(
                     array(
-                        'label' => 'Show Exams',
+                        'label' => 'Create Exam',
                         'route' => 'school-management/school-exam',
                         'action' => 'index',
-                        'icon' => 'fa fa-list-alt',
+                        'icon' => 'fa fa-file-text-o',
                     ),
                     array(
                         'label' => 'Show Questions',
@@ -494,6 +492,7 @@ return array(
                         'toolbar' => array(
                             array(
                                 'url' => '/school-management/school-exam/edit-question/$id',
+                                'privilege' => 'edit-question',
                                 'title' => 'Editar',
                                 'id' => 'question-edit',
                                 'description' => 'Permite editar a questão selecionada',
@@ -502,6 +501,7 @@ return array(
                             ),
                             array(
                                 'url' => '/school-management/school-exam/delete-question/$id',
+                                'privilege' => 'delete-question',
                                 'title' => 'Remover',
                                 'id' => 'question-delete',
                                 'description' => 'Permite remoção da questão selecionada',
