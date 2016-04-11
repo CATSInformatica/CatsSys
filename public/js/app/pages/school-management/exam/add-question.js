@@ -226,14 +226,14 @@ define(['jquery', 'datatable', 'trumbowyg', 'trumbowygpt', 'trumbowygbase64'], f
             $(elem).trumbowyg({
                 lang: 'pt',
                 btnsDef: {
-                    imagem: {
+                    image: {
                         dropdown: ['insertImage', 'base64'],
                         ico: 'insertImage'
                     }
                 },
                 btns: ['formatting',
                     '|', 'btnGrp-design',
-                    '|', 'imagem',
+                    '|', 'image',
                     '|', 'btnGrp-justify',
                     '|', 'btnGrp-lists',
                     '|', 'horizontalRule']
