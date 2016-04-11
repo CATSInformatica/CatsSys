@@ -24,6 +24,7 @@
     "jquery-csv": "*",
     "MathJax": "mathjax/MathJax#~2.6.1",
     "trumbowyg": "~1.1.7",
-    "jquery.columnizer": "^1.6.2"
+    "jquery.columnizer": "^1.6.2",
+    "file-saver.js": "~1.20150507.2"
   }
 }

@@ -1,0 +1,189 @@
+<section class="content">
+
+    <p><?php echo $message; ?></p>
+
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-book"></i> Instruções</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+
+            <ul>
+                <li>Em <b><i class="fa fa-wrench"></i> Configurações</b>, escolha a turma, o subtítulo do cartão de respostas e se haverá ou não marcadores para idiomas.</li>
+                <li>Em <b><i class="fa fa-stack-overflow"></i> Resultados</b>, na aba <b>Modelo</b> pressione <b>Processar</b> e verifique se o modelo de gabarito está atentendo as 
+                    suas nessidades. Se desejar imprimir gabaritos sem qualquer preenchimento adicional pressione 
+                    imprimir nessa mesma aba.</li>
+                <li>Se quiser que os gabaritos venham com o número de matrícula e nome dos alunos já preenchidos 
+                    pressione <b>Processar</b> na aba <b>Folhas de Resposta</b>. Observação: O processamento dos 
+                    gabaritos dos alunos é pesado então tenha um pouco de paciência.</li>
+                <li>Quando os gabaritos forem exibidos na tela será possível salvá-los. Para isto pressione 
+                    <b>Imprimir</b> na mesma aba (<b>Folhas de Resposta</b>). </li>
+                <li> As folhas de resposta são salvas no formato 
+                    <a href="http://www.w3schools.com/svg/" target="_blank">SVG</a>
+                    (<em>Scalable Vector Graphics</em>), 
+                    no <b><a href="http://www.ubuntu.com/download" target="_blank">Ubuntu</a></b>, 
+                    deve-se seguir os passos abaixo:
+                    <ol>
+                        <li>Verificar se os programas <b>Inkscape</b> e <b>PdfTk</b> estão instalados. Eles podem ser instalados via terminal pelo comando:
+                            <code>
+                                sudo apt-get install inkscape pdftk -y
+                            </code>
+                            . Será necessário inserir a senha de administrador do sistema.
+                        </li>
+                        <li>
+                            Inicialmentem ao baixar os gabaritos, eles são salvos na pasta <b>Downloads</b>. Crie uma nova pasta e mova todos os gabaritos para dentro dela.
+                        </li>
+                        <li>Entre na pasta, abra o terminal e digite o comando: <code> gedit svgToPdf.sh</code>. 
+                            Este comando criará um arquivo para <em>shell script</em> que fará a conversão dos <em>svg's</em> para o formato <em>pdf</em>.</li>
+                        <li>Cole nesse arquivo o seguinte conteúdo:<br>
+                            <hr>
+                            <code>
+                                #!/bin/bash <br>
+                                <br>
+                                for file in *.svg; do<br>
+                                filename=${file%%.*};<br>
+                                inkscape -f $file -A "${filename}.pdf";<br>
+                                done;<br>
+                                <br>
+                                pdftk *.pdf output gabaritos;<br>
+                                rm *.pdf;<br>
+                                mv gabaritos gabaritos.pdf;<br>
+                            </code>
+                            <hr>
+                            <br> Na sequência salve o arquivo e feche o editor de texto.
+                        </li>
+                        <li>De volta ao terminal digite o comando: <code>sh svgToPdf.sh</code> e aguarde o processamento. Quando o script terminar de executar será criado um arquivo chamado <b>gabaritos.pdf</b> que contém cada gabarito em uma página A4. Neste ponto, verifique se todos os gabaritos estão no pdf e mande imprimir o arquivo.</li>
+                    </ol>
+                </li>
+            </ul>
+
+        </div>
+        <!-- /.box-body -->
+    </div>
+
+    <div class="box box-success">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-wrench"></i> Configurações</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="col-md-6 col-xs-12">
+                <div class="form-group">
+                    <label>Turma</label>
+                    <select id="studentClass" class="form-control">
+                        <?php foreach ($classes as $cl): ?>
+                            <option value="<?php echo $cl->getClassId(); ?>">  <?php echo $cl->getClassName(); ?>
+                            </option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+            <div class="col-md-6 col-xs-12">
+                <div class="form-group">
+                    <label>Subtítulo do cartão de respostas</label>
+                    <input type="text" id="input-subtitle" class="form-control">
+                </div>
+            </div>
+            <div class="col-md-12 col-xs-12">
+                <div class="form-group">
+                    <label> Incluir Idioma </label>
+                    <div class="radio">
+                        <label><input type="radio" name="input-language" value="hidden">Não</label>
+                    </div>
+                    <div class="radio">
+                        <label><input type="radio" name="input-language" value="visible" checked>Sim</label>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+
+    <div class="box box-success">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-stack-overflow"></i> Resultados</h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="nav-tabs-custom">
+                <ul class="nav nav-tabs">
+                    <li class="active">
+                        <a href="#tab_template" data-toggle="tab" aria-expanded="true">Modelo</a>
+                    </li>
+                    <li class="">
+                        <a href="#tab_answers_sheets" data-toggle="tab" aria-expanded="false">Folhas de Resposta</a>
+                    </li>
+                </ul>
+                <div class="tab-content">
+                    <div class="tab-pane active" id="tab_template">
+                        <button class="btn btn-primary btn-flat print-sheet" data-type="template">
+                            <i class="fa fa-print"></i> Imprimir
+                        </button>
+                        <button class="btn btn-danger btn-flat" id="process-template">
+                            <i class="fa fa-stack-overflow"></i> Processar
+                        </button>
+                        <br>
+                        <div class="col-md-6 col-md-offset-3 col-xs-12" id="template-container" style="display: none;">
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                    <div class="tab-pane" id="tab_answers_sheets">
+
+                        <button class="btn btn-primary btn-flat print-sheet text-center"  data-type="students">
+                            <i class="fa fa-print"></i> Imprimir
+                        </button>
+                        <button class="btn btn-danger btn-flat" id="process-students">
+                            <i class="fa fa-stack-overflow"></i> Processar
+                        </button>
+                        <br>
+                        <div class="table-responsive text-center" id="students-container" style="display: none;">
+
+                        </div>
+                    </div>
+                    <!-- /.tab-pane -->
+                </div>
+                <!-- /.tab-content -->
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+
+
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/documents/answersSheet/studentAnswersSheets';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>
+
+<style>
+    svg {
+        width: 90%;
+        height: 90%;
+        display: block;
+        margin: 0.25cm auto;
+        border: thin solid gray;
+        box-shadow: 6px 6px 2px -2px rgba(184,184,184,1);
+    }
+</style>
