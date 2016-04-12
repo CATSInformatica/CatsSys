@@ -134,11 +134,17 @@ class GeneratePdfController extends AbstractEntityActionController
                 $data = $form->getData();
                 
                 try {
-                    $em = $this->getEntityManager();
-
+                    $people = [];
+                    
                     //  Obtém as informações dos alunos da turma selecionada
                     $enrolls = $studentClasses[$data['class_id']]['enrollments'];
-                    if (empty($enrolls)) {
+                    foreach($enrolls as $enroll) {
+                        //  Aluno não encerrou matrícula
+                        if ($enroll->getEnrollmentEndDate() === null) {
+                            $people[] = $enroll->getRegistration()->getPerson();
+                        }
+                    } 
+                    if (empty($people)) {
                         $message = 'A turma selecionada não possui alunos cadastrados.';
                         return new ViewModel(array(
                             'message' => $message,
@@ -146,9 +152,6 @@ class GeneratePdfController extends AbstractEntityActionController
                             'pdf' => $pdf
                         ));                         
                     }
-                    foreach($enrolls as $enroll) {
-                        $people[] = $enroll->getRegistration()->getPerson();
-                    } 
                     
                     // Agrupa as informações dos alunos da turma
                     foreach($people as $person) {
