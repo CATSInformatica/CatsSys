@@ -4,12 +4,15 @@
  * and open the template in the editor.
  */
 
-define(['jquery', 'datatable', 'trumbowyg', 'trumbowygpt', 'trumbowygcolors', 'trumbowygupload'], function () {
+define(['jquery', 'datatable', 'trumbowyg', 'trumbowygpt', 'trumbowygbase64'], function () {
+
     var addQuestion = (function () {
+
         //  Tipos de questão
         var CLOSED_QUESTION = "1";
         var OPEN_QUESTION = "2";
         var preview = null;
+        var alternativeListStyle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];  
 
         /*
          * 
@@ -19,24 +22,66 @@ define(['jquery', 'datatable', 'trumbowyg', 'trumbowygpt', 'trumbowygcolors', 't
             // Inicializa o campo onde ficarão os radio buttons para selecionar a alternativa correta
             var correctAnswerField = $('#alternative-control-btns').
                     before('<div class="form-group"><label for="correct-answer">Alternativa Correta</label><div id="correct-answer"></div></div><br>');
-            $('#correct-answer').append('<div class="radio-inline"><label class="control-label">'
-                    + '<input type="radio" name="exam-question[correctAnswer]" id="none-radio" value="-1" disabled> Nenhum </label></div>');
+            $('#correct-answer').append('<div class="radio-inline"></div>');
 
-            // No caso de edição ou na exibição de erros vindos do servidor 
-            // é necessário numerar os campos de alternativas e mostrar os radio buttons
-            var asnwerFields = $('#alternatives-fieldset > fieldset');
-            asnwerFields.each(function (i, elem) {
-                $(elem).find('div > label').html('Alternativa ' + (i + 1));
-                var radioBtn = ''
-                        + '<div class="radio-inline"><label class="control-label">'
-                        + '<input type="radio" name="exam-question[correctAnswer]" value="' + i + '" id="alternative-' + i + '">' + (i + 1) + '</label></div>';
-                $('#correct-answer').append(radioBtn);
-            });
-            
-            // Se a questão for aberta, esconde os botões de controle
+            if ($("#question-type").val() === CLOSED_QUESTION) {
+                // No caso de edição ou na exibição de erros vindos do servidor 
+                // é necessário numerar os campos de alternativas e mostrar os radio buttons
+                var asnwerFields = $('#alternatives-fieldset > fieldset');
+                asnwerFields.each(function (i, elem) {
+                    $(elem).find('div > label').html('Alternativa ' + alternativeListStyle[i]);
+                    var radioBtn = ''
+                            + '<div class="radio-inline"><label class="control-label">'
+                            + '<input type="radio" name="exam-question[correctAnswer]" value="' + i + '" id="alternative-' + i + '">' + alternativeListStyle[i] + '</label></div>';
+                    $('#correct-answer').append(radioBtn);
+                });
+            }
+
+            // Se a questão for aberta, esconde os botões de controle e muda 
+            // o nome do campo de resposta
             if ($("#question-type").val() === OPEN_QUESTION) {
                 $("#alternative-control-btns").hide();
                 $('#correct-answer').parent().hide();
+                $('#alternatives-fieldset > fieldset > div > label').html('Resposta');
+            }
+        };
+
+        /*
+         * 
+         *  Adiciona uma alternativa para a questão (textarea e radio button) 
+         */
+        addAlternative = function () {
+            // Adiciona um campo para inserir a alternativa
+            var currentCount = $('#alternatives-fieldset > fieldset').length;
+            var template = $('#alternatives-fieldset span').data('template');
+            template = template.replace(/__placeholder__/g, currentCount);
+
+            if ($("#question-type").val() === CLOSED_QUESTION) {
+                template = template.replace("Alternativa 1", "Alternativa " + alternativeListStyle[currentCount]);
+
+                // Adiciona um radio button para selecionar esta alternativa como a correta
+                var radioBtn = ''
+                        + '<div class="radio-inline"><label class="control-label">'
+                        + '<input type="radio" name="exam-question[correctAnswer]" id="correct-answer" value="' + currentCount + '">' + alternativeListStyle[currentCount] + '</label></div>';
+                $('#correct-answer').append(radioBtn);
+            } else {
+                template = template.replace("Alternativa 1", "Resposta");
+            }
+            $('#alternatives-fieldset').append(template);
+
+            setTrumbowyg($('#alternatives-fieldset > fieldset').last().find('textarea'));
+        };
+
+        /*
+         * 
+         *  Remove a última alternativa da questão (textarea e radio button) 
+         */
+        removeAlternative = function () {
+            if ($('#alternatives-fieldset > fieldset').length > 0) {
+                if ($("#question-type").val() === CLOSED_QUESTION) {
+                    $('#correct-answer div').last().remove();
+                }
+                $('#alternatives-fieldset fieldset').last().remove();
             }
         };
 
@@ -51,61 +96,59 @@ define(['jquery', 'datatable', 'trumbowyg', 'trumbowygpt', 'trumbowygcolors', 't
             // Impede que o usuário selecione o tipo de questão como aberta se 
             // houver ao menos um campo de alternativas
             $("#question-type").change(function () {
+                $('#modal-question-type').modal('show');
+                
+                //  Volta o tipo da questão para o anterior, até que se 
+                //  confirme o desejo de mundança
                 if ($("#question-type").val() === OPEN_QUESTION) {
-                    //  Se já existem campos para as alternativas, não se pode selecionar
-                    //  o tipo de questão como aberta
-                    //  **TODO: Permitir essa opção mostrando um modal perguntando se 
-                    //          se o usuário tem certeza.
-                    if ($('#alternatives-fieldset > fieldset').length > 0) {
-                        $("#question-type").val(CLOSED_QUESTION);
-                    } else {
+                    $("#question-type").val(CLOSED_QUESTION);
+                } else {
+                    $("#question-type").val(OPEN_QUESTION);
+                }
+
+                //  Mensagem do modal dependendo do tipo anterior da questão
+                if ($("#question-type").val() === OPEN_QUESTION) {
+                    $('#change-type-text').html('O conteúdo da resposta será perdido.<br>Tem certeza que deseja mudar o tipo da questão para FECHADA?');
+                } else {
+                    $('#change-type-text').html('O conteúdo das alternativas será perdido.<br>Tem certeza que deseja mudar o tipo da questão para ABERTA?');
+                }
+
+                $('#btn-change-type').unbind().click(function () {
+                    $('#modal-question-type').modal('hide');
+
+                    if ($("#question-type").val() === CLOSED_QUESTION) {
+                        while ($('#alternatives-fieldset > fieldset').length > 0) {
+                            removeAlternative();
+                        }
+                        $("#question-type").val(OPEN_QUESTION);
+                        addAlternative();
                         $("#alternative-control-btns").hide();
                         $('#correct-answer').parent().hide();
+                    } else { 
+                        removeAlternative();
+                        $("#question-type").val(CLOSED_QUESTION);
+                        while ($('#alternatives-fieldset > fieldset').length < 5) {
+                            addAlternative();
+                        }
+                        $("#alternative-control-btns").show();
+                        $('#correct-answer').parent().show();
                     }
-                } else {
-                    $("#alternative-control-btns").show();
-                    $('#correct-answer').parent().show();
-                }
+                });
+
             });
-            
-            /*
-             * 
-             *  Adiciona uma alternativa para a questão (textarea e radio button) 
-             */
+
             $('#add-alternative-btn').click(function () {
-                if ($("#question-type").val() === CLOSED_QUESTION) {
-                    // Adiciona um campo para inserir a alternativa
-                    var currentCount = $('#alternatives-fieldset > fieldset').length;
-                    var template = $('#alternatives-fieldset span').data('template');
-                    template = template.replace(/__placeholder__/g, currentCount);
-                    template = template.replace("Alternativa 1", "Alternativa " + (currentCount + 1));
-                    $('#alternatives-fieldset').append(template);
-
-                    // Adiciona um radio button para selecionar esta alternativa como a correta
-                    var radioBtn = ''
-                            + '<div class="radio-inline"><label class="control-label">'
-                            + '<input type="radio" name="exam-question[correctAnswer]" id="correct-answer" value="' + currentCount + '">' + (currentCount + 1) + '</label></div>';
-                    $('#correct-answer').append(radioBtn);
-
-                    setTrumbowyg($('#alternatives-fieldset > fieldset').last().find('textarea'));
-                }
+                addAlternative();
             });
-            
-            /*
-             * 
-             *  Remove a última alternativa da questão (textarea e radio button) 
-             */
+
             $('#remove-alternative-btn').click(function () {
-                if ($("#question-type").val() === CLOSED_QUESTION && $('#alternatives-fieldset > fieldset').length > 0) {
-                    $('#correct-answer div').last().remove();
-                    $('#alternatives-fieldset fieldset').last().remove();
-                }
+                removeAlternative();
             });
         };
 
         /*
          * 
-         *  Validação parcial do formulário
+         *  Validação parcial do formulário quando a pergunta é do tipo fechada
          *      *   Verifica se uma resposta correta foi escolhida
          */
         partialValidation = function () {
@@ -159,7 +202,7 @@ define(['jquery', 'datatable', 'trumbowyg', 'trumbowygpt', 'trumbowygcolors', 't
                 });
             });
         };
-        
+
         /*
          *  elem === null
          *      Transforma todo textarea da página em um Trumbowyg (editor wysiwyg HTML)
@@ -185,19 +228,16 @@ define(['jquery', 'datatable', 'trumbowyg', 'trumbowygpt', 'trumbowygcolors', 't
                 lang: 'pt',
                 btnsDef: {
                     image: {
-                        dropdown: ['insertImage', 'upload'],
+                        dropdown: ['insertImage', 'base64'],
                         ico: 'insertImage'
                     }
                 },
-                btns: ['viewHTML',
-                    '|', 'formatting',
+                btns: ['formatting',
                     '|', 'btnGrp-design',
                     '|', 'image',
                     '|', 'btnGrp-justify',
                     '|', 'btnGrp-lists',
-                    '|', 'horizontalRule',
-                    '|', 'foreColor',
-                    '|', 'backColor']
+                    '|', 'horizontalRule']
             });
         };
 

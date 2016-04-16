@@ -33,11 +33,11 @@ class SearchQuestionsForm extends Form implements InputFilterProviderInterface
                 'name' => 'questionType',
                 'type' => 'select',
                 'options' => array(
-                    'label' => 'Situação',
+                    'label' => 'Tipo',
                     'value_options' => array(
-                        -1 => "Todas",
                         ExamQuestion::QUESTION_TYPE_CLOSED => "Questão Fechada", 
                         ExamQuestion::QUESTION_TYPE_OPEN => "Questão Aberta",
+                        -1 => "Todas",
                     ),
                 ),
             ))
