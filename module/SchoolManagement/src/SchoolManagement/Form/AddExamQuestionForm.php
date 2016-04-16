@@ -4,6 +4,7 @@ namespace SchoolManagement\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use SchoolManagement\Entity\ExamQuestion;
 use SchoolManagement\Form\Fieldset\AddExamQuestionFieldset;
 use Zend\Form\Form;
 
@@ -15,13 +16,12 @@ use Zend\Form\Form;
 class AddExamQuestionForm extends Form
 {
 
-    public function __construct(ObjectManager $obj)
+    public function __construct(ObjectManager $obj, $typeOfQuestion = ExamQuestion::QUESTION_TYPE_CLOSED,
+        $numberOfAnswers = AddExamQuestionFieldset::DEFAULT_NUMBER_OF_ANSWERS)
     {
         parent::__construct('add-exam-question');
-
         $this->setHydrator(new DoctrineHydrator($obj));
-        
-        $examQuestionFieldset = new AddExamQuestionFieldset($obj);
+        $examQuestionFieldset = new AddExamQuestionFieldset($obj, $typeOfQuestion, $numberOfAnswers);
         $examQuestionFieldset->setUseAsBaseFieldset(true);
         $this->add($examQuestionFieldset);
 
@@ -30,22 +30,22 @@ class AddExamQuestionForm extends Form
                 'name' => 'addAlternative',
                 'type' => 'button',
                 'attributes' => array(
-                    'class' => 'btn-success',
+                    'class' => 'btn-success btn-flat',
                     'id' => 'add-alternative-btn',
                 ),
                 'options' => array(
-                    'label' => 'Adicionar Alternativa',
+                    'fontAwesome' => 'plus',
                 ),
             ))
             ->add(array(
                 'name' => 'removeAlternative',
                 'type' => 'button',
                 'attributes' => array(
-                    'class' => 'btn-danger',
+                    'class' => 'btn-danger btn-flat',
                     'id' => 'remove-alternative-btn',
                 ),
                 'options' => array(
-                    'label' => 'Remover Alternativa',
+                    'fontAwesome' => 'minus',
                 ),
             ))
             ->add(array(
@@ -55,7 +55,10 @@ class AddExamQuestionForm extends Form
                     'class' => 'btn btn-primary btn-block',
                     'id' => 'add-question-btn',
                     'value' => 'Adicionar Questão',
-                )
+                ),
+                'options' => [
+                    'label' => 'Salvar',
+                ],
             ))
         ;
     }

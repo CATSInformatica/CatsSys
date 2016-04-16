@@ -101,8 +101,6 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
             ->add(array(
                 'name' => 'responsibility',
                 'type' => 'radio',
-                'attributes' => array(
-                ),
                 'options' => array(
                     'label' => 'Responsabilidade*',
                     'value_options' => array(

@@ -159,22 +159,39 @@ class SchoolExamController extends AbstractEntityActionController
         $message = null;
 
         $q = $this->params('id', false);
+
         if ($q) {
+
             try {
                 $question = $em->find('SchoolManagement\Entity\ExamQuestion', $q);
                 $aId = null;
+
                 foreach ($question->getAnswerOptions() as $i => $q) {
                     if ($q->getIsCorrect()) {
                         $aId = $i;
                         break;
                     }
                 }
+
                 $typeBefore = $question->getExamQuestionType();
-                $form = new AddExamQuestionForm($em, count($question->getAnswerOptions()->toArray()));
+
+                $subId = $question->getSubject()->getSubjectId();
+                $form = new AddExamQuestionForm($em, $typeBefore, count($question->getAnswerOptions()->toArray()));
+                
+                $form
+                    ->get('exam-question')
+                    ->get('subjectId')
+                    ->setValue($subId);
+                $form
+                    ->get('exam-question')
+                    ->get('correctAnswer')
+                    ->setValue($aId);
+
                 $form->bind($question);
-                $form->get('submit')->setAttribute('value', 'Editar');
+
                 if ($request->isPost()) {
                     $form->setData($request->getPost());
+
                     if ($form->isValid()) {
                         $data = $form->getData(\Zend\Form\FormInterface::VALUES_AS_ARRAY)['exam-question'];
 
@@ -199,19 +216,19 @@ class SchoolExamController extends AbstractEntityActionController
                             $examQuestionType === ExamQuestion::QUESTION_TYPE_OPEN) {
                             $ao[0]->setIsCorrect(true);
                         }
-                        
-                        $question->setSubject($em->find('SchoolManagement\Entity\Subject', $data['subjectId']));
+
+                        $question->setSubject($em->getReference('SchoolManagement\Entity\Subject', $data['subjectId']));
                         $em->persist($question);
                         $em->flush();
-                        $this->redirect()->toRoute('school-management/school-exam', array('action' => 'question'));
+                        return $this
+                                ->redirect()
+                                ->toRoute('school-management/school-exam', array('action' => 'question'));
                     }
                 }
 
                 return new ViewModel(array(
                     'message' => $message,
                     'form' => $form,
-                    'sId' => $question->getSubject()->getSubjectId(),
-                    'aId' => $aId,
                 ));
             } catch (Exception $ex) {
                 $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
@@ -223,8 +240,6 @@ class SchoolExamController extends AbstractEntityActionController
         return new ViewModel(array(
             'message' => $message,
             'form' => null,
-            'sId' => null,
-            'aId' => null,
         ));
     }
 
@@ -279,6 +294,7 @@ class SchoolExamController extends AbstractEntityActionController
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
+
                 $data = $form->getData(\Zend\Form\FormInterface::VALUES_AS_ARRAY)['exam-question'];
                 $ao = $examQuestion->getAnswerOptions()->toArray();
 
@@ -293,7 +309,8 @@ class SchoolExamController extends AbstractEntityActionController
                 if ($examQuestionType === ExamQuestion::QUESTION_TYPE_OPEN && $alternatives > 0) {
                     $ao[0]->setIsCorrect(true);
                 }
-                $examQuestion->setSubject($em->find('SchoolManagement\Entity\Subject', $data['subjectId']));
+                $examQuestion->setSubject($em->getReference('SchoolManagement\Entity\Subject', $data['subjectId']));
+
                 $em->persist($examQuestion);
                 $em->flush();
 
