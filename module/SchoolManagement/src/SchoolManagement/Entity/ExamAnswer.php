@@ -32,7 +32,7 @@ class ExamAnswer
     /**
      *
      * @var string 
-     * @ORM\Column(name="exam_answer_description", type="string", nullable=false)
+     * @ORM\Column(name="exam_answer_description", type="text", nullable=false)
      */
     private $examAnswerDescription;    
 

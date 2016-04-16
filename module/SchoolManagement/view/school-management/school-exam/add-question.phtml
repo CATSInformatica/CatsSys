@@ -8,42 +8,24 @@
     <div class="row">
 
         <div class="container-fluid">
-            <p>Por favor, antes de inserir a questão, aguarde até que a fórmula abaixo seja exibida. 
-                Caso a fórmula não apareça dentro de alguns segundos, por favor, recarregue a página.</p>
-            <br>
-            <h3 id="testEquation" style="display:none;" class="text-center">
-                $$ e^{ix} = \cos{x} + i \sin{x}. $$
-            </h3>
+            <div class="col-md-6 col-xs-6">
+                <p class="text-justify">Por favor, antes de inserir a questão, aguarde até que a fórmula ao lado seja exibida. 
+                    <br>Caso a fórmula não apareça dentro de alguns segundos, por favor, recarregue a página.</p>
+                <br>
+            </div>
+            <div class="col-md-6 col-xs-6">
+                <h4 id="testEquation" style="display:none;" class="text-center">
+                    $$ e^{ix} = \cos{x} + i \sin{x}. $$
+                </h4>
+            </div>
         </div>
         <hr>
         <?php if ($form !== null): ?>
             <div class="container-fluid">
-                <div class="col-xs-12 col-md-6">
-                    <h3 class="text-center">Questão</h3>
-                    <?php $form->prepare(); ?>
-                    <?php echo $this->form()->openTag($form); ?>
-                    <div class="col-md-12">
-                        <?php echo $this->formRow($form->get('exam-question')->get('subjectId')); ?>
-                        <?php echo $this->formRow($form->get('exam-question')->get('examQuestionType')); ?>
-                        <?php echo $this->formRow($form->get('exam-question')->get('examQuestionEnunciation')); ?>
-                        <div class="hero-unit">
-                            <?php echo $this->formCollection($form->get('exam-question')->get('answerOptions')); ?>
-                        </div>
-                        <div class="btn-group btn-group-justified" id="alternative-control-btns">
-                            <div class="btn-group"><?php echo $this->formElement($form->get('addAlternative')); ?></div>
-                            <div class="btn-group"><?php echo $this->formElement($form->get('removeAlternative')); ?></div>             
-                        </div>
-                        <br>
-                    </div>
-                    <div class="col-md-12">
-                        <?php echo $this->formRow($form->get('submit')); ?>
-                    </div>
-                    <?php echo $this->form()->closeTag(); ?>
-                </div>
-                <div class="col-xs-12 col-md-6">
-                    <h3 class="text-center">Pré-visualização</h3>
-                    <div id="mathPreview" class="text-justify"></div>
-                    <div id="mathBuffer"></div>
+                <div class="col-xs-12 col-md-10 col-md-offset-1">
+                    <?php echo $this->render('question_form_template', array(
+                        'form' => $form,
+                    )) ?>
                 </div>
             </div>
         <?php endif; ?>
@@ -66,8 +48,12 @@
                         </div><!-- /.box-body -->
                     </div>
                     <div class="modal-footer">
-                        <button type="button" class="btn btn-danger" data-dismiss="modal"><i class="fa fa-times"></i> Cancelar</button>
-                        <button id="btn-change-type" type="button" class="btn btn-primary"><i class="fa fa-check"></i> Mudar tipo da questão</button>
+                        <button type="button" class="btn btn-danger" data-dismiss="modal">
+                            <i class="fa fa-times"></i> Cancelar
+                        </button>
+                        <button id="btn-change-type" type="button" class="btn btn-primary">
+                            <i class="fa fa-check"></i> Mudar tipo da questão
+                        </button>
                     </div>
                 </div>
             </div>

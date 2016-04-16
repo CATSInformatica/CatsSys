@@ -18,7 +18,7 @@ class AddExamAnswerFieldset extends Fieldset implements InputFilterProviderInter
     public function __construct($obj)
     {
         parent::__construct('exam-answer');
-        
+
         $this->setHydrator(new DoctrineHydrator($obj))
             ->setObject(new ExamAnswer());
 
@@ -26,11 +26,11 @@ class AddExamAnswerFieldset extends Fieldset implements InputFilterProviderInter
             'name' => 'examAnswerDescription',
             'type' => 'textarea',
             'attributes' => array(
-                'rows' => 10,
+                'rows' => 15,
                 'class' => 'textarea',
             ),
             'options' => array(
-                'label' => 'Alternativa 1',
+                'label' => 'Resposta',
             ),
         ));
     }
@@ -40,10 +40,6 @@ class AddExamAnswerFieldset extends Fieldset implements InputFilterProviderInter
         return array(
             'examAnswerDescription' => array(
                 'required' => true,
-                'filters' => array(
-                    array('name' => 'StringTrim'),
-                    array('name' => 'StripTags'),
-                ),
             ),
         );
     }

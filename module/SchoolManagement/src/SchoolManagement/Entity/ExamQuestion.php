@@ -34,7 +34,7 @@ class ExamQuestion
     /**
      *
      * @var string 
-     * @ORM\Column(name="exam_question_enunciation", type="string", nullable=false)
+     * @ORM\Column(name="exam_question_enunciation", type="text", nullable=false)
      */
     private $examQuestionEnunciation;
 

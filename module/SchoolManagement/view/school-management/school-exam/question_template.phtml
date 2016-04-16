@@ -1,0 +1,40 @@
+<?php
+$options = $examQuestion->get('answerOptions');
+$numberOfAnswers = $options->getCount();
+?>
+
+<div class="nav-tabs-custom" id="question-panel">
+    <ul class="nav nav-pills nav-tabs bg-gray">
+
+        <li class="active">
+            <a href="#examQuestionEnunciation_tab" data-toggle="tab">
+                Enunciado
+            </a>
+        </li>
+        <?php for ($i = 0; $i < $numberOfAnswers; $i++): ?>
+            <li class="answer-tab-header">
+                <a href="#answer_<?php echo $i; ?>" data-toggle="tab">
+                    <?php echo 'Resp. ' . chr(ord('A') + $i); ?>
+                </a>
+            </li>
+        <?php endfor; ?>
+    </ul>
+    <div class="tab-content">
+        <div class="tab-pane active" id="examQuestionEnunciation_tab">
+            <?php echo $this->formRow($examQuestion->get('examQuestionEnunciation')); ?>
+        </div>
+        <!-- /.tab-pane -->
+
+        <?php foreach ($options as $idx => $option): ?>
+            <div class="tab-pane answer-tab" id="answer_<?php echo $idx; ?>">
+                <fieldset>
+                    <?php echo $this->formRow($option->get('examAnswerDescription')); ?>
+                </fieldset>
+            </div>
+            <!-- /.tab-pane -->
+        <?php endforeach; ?>
+    </div>
+    <!-- /.tab-content -->
+
+    <?php echo $this->formCollection()->renderTemplate($options); ?>
+</div>
