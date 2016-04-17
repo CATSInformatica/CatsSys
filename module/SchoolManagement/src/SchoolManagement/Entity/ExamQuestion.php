@@ -56,11 +56,7 @@ class ExamQuestion
     /**
      *
      * @var ExamAnswer
-     * @ORM\ManyToMany(targetEntity="ExamAnswer", cascade={"persist", "remove"}, orphanRemoval=true)
-     * @ORM\JoinTable(name="answer_options",
-     *      joinColumns={@ORM\JoinColumn(name="exam_question_id", referencedColumnName="exam_question_id", onDelete="CASCADE")},
-     *      inverseJoinColumns={@ORM\JoinColumn(name="exam_answer_id", referencedColumnName="exam_answer_id", unique=true, onDelete="CASCADE")}
-     *      )
+     * @ORM\OneToMany(targetEntity="ExamAnswer", mappedBy="question", cascade={"persist", "remove"}, orphanRemoval=true)
      */
     private $answerOptions;
 

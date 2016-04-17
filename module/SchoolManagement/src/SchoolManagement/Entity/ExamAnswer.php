@@ -34,7 +34,15 @@ class ExamAnswer
      * @var string 
      * @ORM\Column(name="exam_answer_description", type="text", nullable=false)
      */
-    private $examAnswerDescription;    
+    private $examAnswerDescription;
+
+    /**
+     *
+     * @var ExamQuestion
+     * @ORM\ManyToOne(targetEntity="ExamQuestion", inversedBy="answerOptions", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="question_id", referencedColumnName="exam_question_id")
+     */
+    private $question;
 
     function __construct()
     {
@@ -67,6 +75,15 @@ class ExamAnswer
     {
         return $this->isCorrect;
     }
+    
+    /**
+     * 
+     * @return ExamQuestion
+     */
+    function getQuestion()
+    {
+        return $this->question;
+    }
 
     /**
      * 
@@ -87,6 +104,17 @@ class ExamAnswer
     function setExamAnswerDescription($examAnswerDescription)
     {
         $this->examAnswerDescription = $examAnswerDescription;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param ExamQuestion $question
+     * @return ExamAnswer
+     */
+    function setQuestion($question)
+    {
+        $this->question = $question;
         return $this;
     }
 
