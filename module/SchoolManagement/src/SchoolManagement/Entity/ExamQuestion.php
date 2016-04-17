@@ -69,7 +69,7 @@ class ExamQuestion
      * 
      * @return integer
      */
-    function getExamQuestionId()
+    public function getExamQuestionId()
     {
         return $this->examQuestionId;
     }
@@ -78,7 +78,7 @@ class ExamQuestion
      * 
      * @return string
      */
-    function getExamQuestionEnunciation()
+    public function getExamQuestionEnunciation()
     {
         return $this->examQuestionEnunciation;
     }
@@ -87,7 +87,7 @@ class ExamQuestion
      * 
      * @return integer
      */
-    function getExamQuestionType()
+    public function getExamQuestionType()
     {
         return $this->examQuestionType;
     }
@@ -96,7 +96,7 @@ class ExamQuestion
      * 
      * @return Subject
      */
-    function getSubject()
+    public function getSubject()
     {
         return $this->subject;
     }
@@ -105,7 +105,7 @@ class ExamQuestion
      * 
      * @return Doctrine\Common\Collections\ArrayCollection
      */
-    function getAnswerOptions()
+    public function getAnswerOptions()
     {
         return $this->answerOptions;
     }
@@ -115,7 +115,7 @@ class ExamQuestion
      * @param string $examQuestionEnunciation
      * @return ExamQuestion
      */
-    function setExamQuestionEnunciation($examQuestionEnunciation)
+    public function setExamQuestionEnunciation($examQuestionEnunciation)
     {
         $this->examQuestionEnunciation = $examQuestionEnunciation;
         return $this;
@@ -126,7 +126,7 @@ class ExamQuestion
      * @param integer $examQuestionType
      * @return ExamQuestion
      */
-    function setExamQuestionType($examQuestionType)
+    public function setExamQuestionType($examQuestionType)
     {
         $this->examQuestionType = $examQuestionType;
         return $this;
@@ -137,20 +137,9 @@ class ExamQuestion
      * @param Subject $subject
      * @return ExamQuestion
      */
-    function setSubject($subject)
+    public function setSubject($subject)
     {
         $this->subject = $subject;
-        return $this;
-    }
-
-    /**
-     * 
-     * @param Doctrine\Common\Collections\ArrayCollection $answerOptions
-     * @return ExamQuestion
-     */
-    function setAnswerOptions($answerOptions)
-    {
-        $this->answerOptions = $answerOptions;
         return $this;
     }
 
@@ -159,10 +148,13 @@ class ExamQuestion
      * @param Collection $answers
      * @return ExamQuestion
      */
-    function addAnswerOptions(Collection $answers)
+    public function addAnswerOptions(Collection $answers)
     {
         foreach ($answers as $ans) {
-            $this->answerOptions->add($ans);
+            if(!$this->hasAnswer($ans)) {
+                $ans->setQuestion($this);
+                $this->answerOptions->add($ans);
+            }
         }
         return $this;
     }
@@ -172,7 +164,7 @@ class ExamQuestion
      * @param Collection $answers
      * @return ExamQuestion
      */
-    function removeAnswerOptions(Collection $answers)
+    public function removeAnswerOptions(Collection $answers)
     {
         foreach ($answers as $ans) {
             $this->answerOptions->removeElement($ans);
@@ -185,7 +177,7 @@ class ExamQuestion
      * @param ExamAnswer $answer
      * @return boolean
      */
-    function hasAnswer($answer)
+    public function hasAnswer($answer)
     {
         return $this->answerOptions->contains($answer);
     }
