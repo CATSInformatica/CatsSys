@@ -34,7 +34,7 @@ do tipo (isto é só um rascunho que dará a ideia menos trabalhosa)
     FEITO - Em exibir questão alterar nome do select de Situação para Tipo e deixar pré-selecionada a opção Questão Fechada ao invés de Todas.
 
     Simulados
-        Na página de criação de simulados seria bastante interessante se, 
+        FEITO - Na página de criação de simulados seria bastante interessante se, 
 para cada disciplina existisse a opção "Sem tópico definido" (ou um nome simular)
  dentro do multiselect. Esta opção carrega, exatamente, as questões associadas
 diretamente a disciplina pai das opções do select.

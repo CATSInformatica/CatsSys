@@ -81,19 +81,22 @@
                                                 $stack->push($topic);
                                                 while (!$stack->isEmpty()) {
                                                     $current = $stack->pop();
-                                                    if ($visited[$current->getSubjectId()]) {
+                                                    if (isset($visited[$current->getSubjectId()])) {
                                                         continue;
                                                     }
                                                     $visited[$current->getSubjectId()] = true;
-                                                    if (empty($current->getChildren()->toArray())): ?>
-                                                        <option value="<?php echo $current->getSubjectId();?>"><?php echo $current->getSubjectName(); ?></option>;
-                                                    <?php endif;
+                                                    if (empty($current->getChildren()->toArray())):
+                                                        ?>
+                                                        <option value="<?php echo $current->getSubjectId(); ?>"><?php echo $current->getSubjectName(); ?></option>;
+                                                        <?php
+                                                    endif;
                                                     foreach ($current->getChildren()->toArray() as $child) {
                                                         $stack->push($child);
                                                     }
                                                 }
                                                 ?>
                                             <?php endforeach; ?>
+                                            <option value="<?php echo $s->getSubjectId(); ?>">SEM TÓPICO DEFINIDO</option>
                                         </select>
                                     </dd>
                                 <?php endforeach; ?>

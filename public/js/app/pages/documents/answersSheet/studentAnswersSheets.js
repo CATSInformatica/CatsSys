@@ -100,7 +100,6 @@ define(['filesaver'], function () {
                 studentAnswersSheet = svgTemplate.clone();
                 studentAnswersSheet.attr("id", "template_" +
                         students[i].enrollmentId);
-
                 markEnrollment(studentAnswersSheet,
                         students[i].enrollmentId,
                         students[i].personFirstName + " " + students[i].personLastName
@@ -111,10 +110,9 @@ define(['filesaver'], function () {
                 $("#students-container")
                         .append(
                                 $("<div class='col-md-6 col-xs-12'>")
-                                .append(studentAnswersSheet));
-
+                                .append(studentAnswersSheet)
+                                );
 //                progress = (i + 1) * 100 / (students.length);
-
 //                $("#student-progress")
 //                        .css("width", progress + "%")
 //                        .attr('aria-valuenow', progress);
@@ -128,6 +126,7 @@ define(['filesaver'], function () {
         markEnrollment = function (svg, idNumber, name) {
 
             var idNumber = enrollmentToArray(idNumber);
+            svg.data("identity", idNumber.join("") + "_" + name.replace(/ /g, "_"));
 
             for (var i = 0; i < idNumber.length; i++) {
                 svg
@@ -167,7 +166,7 @@ define(['filesaver'], function () {
                 data = (new XMLSerializer())
                         .serializeToString(svgs[i][0]);
                 blob = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
-                saveAs(blob, svgs[i].attr("id") + "_" + (new Date).getTime() +
+                saveAs(blob, svgs[i].data("identity") + "-" + (new Date).getTime() +
                         ".svg");
             }
 
