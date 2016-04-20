@@ -15,6 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
+@import url("/vendor/AdminLTE/bootstrap/css/bootstrap.min.css");
+
 *, * p {
     margin: 0;
 }
@@ -37,8 +39,8 @@
 .exam-content {
     width: 210mm;
     padding: 0 15mm;
-    height: 196mm;
-    margin: 0 0 60mm;
+    height: 256mm;
+    margin: 0;
 }
 
 .exam-footer {
@@ -56,9 +58,10 @@
 }
 
 
-.preview-page {
+#preview-page {
     width: 210mm;
     padding: 0;
+    margin: 0 auto;
 }
 
 .exam-questions {
