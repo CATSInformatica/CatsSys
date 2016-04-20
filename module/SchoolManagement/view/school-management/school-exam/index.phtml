@@ -22,11 +22,6 @@
                                 <?php foreach ($this->baseSubjectsName as $sName) : ?>
                                     <th>
                                         <h4 class="text-uppercase"><?php echo $sName; ?></h4>
-                                        <!-- NÃO IMPLEMENTADO AINDA
-                                        <select class="form-control" class="exam-number-input">
-                                            <option value="1">Prova 1º dia</option>
-                                            <option value="2">Prova 2º dia</option>
-                                        </select> -->
                                     </th>
                                 <?php endforeach; ?>
                             </tr>
@@ -87,7 +82,9 @@
                                                     $visited[$current->getSubjectId()] = true;
                                                     if (empty($current->getChildren()->toArray())):
                                                         ?>
-                                                        <option value="<?php echo $current->getSubjectId(); ?>"><?php echo $current->getSubjectName(); ?></option>;
+                                                        <option value="<?php echo $current->getSubjectId(); ?>">
+                                                            <?php echo $current->getSubjectName(); ?>
+                                                        </option>
                                                         <?php
                                                     endif;
                                                     foreach ($current->getChildren()->toArray() as $child) {
@@ -129,63 +126,46 @@
                 <div class="box-header with-border">
                     <h3 class="box-title text-uppercase"><i class="fa fa-file-text-o"></i> PRÉ-VISUALIZAÇÃO</h3>
                 </div>
-                <div class="box-body">
-                    <!-- Nav tabs -->
-                    <ul class="nav nav-tabs" role="tablist">
-                        <li role="presentation" class="active"><a href="#exam-part-1" aria-controls="exam-part-1" role="tab" data-toggle="tab">PROVA - 1º DIA</a></li>
-                        <li role="presentation"><a href="#exam-part-2" aria-controls="exam-part-2" role="tab" data-toggle="tab">PROVA - 2º DIA</a></li>
-                    </ul>
+                <div class="box-body" id="exam-part-1">
 
-                    <!-- Tab panes -->
-                    <div class="tab-content">
-                        <div role="tabpanel" class="tab-pane active" id="exam-part-1">
-                            <div class="do-not-print row">
-                                <div class="col-xs-6 col-xs-offset-3 col-md-4 col-md-offset-4">
-                                    <button class="btn-primary btn-block btn" id="print-notebook-1">IMPRIMIR</button>
-                                </div>
-                            </div> 
-
-                            <!-- TEMPLATE DA DE CADA PÁGINA (CABEÇALHO, CONTEÚDO, RODAPÉ) -->
-                            <div class="exam-page">
-                                <div class="exam-header">
-                                    <div class="col-xs-3 no-padding">
-                                        <img class="center-block cats-logo" src="/img/logo_prova.png">
-                                    </div>
-                                    <div class="col-xs-9 no-padding">
-                                        <p class="text-center header-text"><strong>Curso Assistencial Theodomiro Santiago</strong><br>
-                                            Av. BPS, 1303 - UNIFEI - Campus Professor J.R. Seabra - Sala I.1.2.47 - Itajubá - MG<br>
-                                            <strong>Tel.:</strong>(38) 8871-2364 | <strong>Email:</strong> catsensino@gmail.com | familiacats.com</p>
-                                    </div>
-                                </div>
-                                <div class="exam-content">
-
-                                </div>
-                                <div class="exam-footer">
-                                    <p><span class="exam-name"></span><span class="page-number pull-right"></span></p>
-                                </div>
-                            </div>
-
-                            <!-- PREVIEW -->
-                            <div class="preview-page">
-                                <div class="exam-questions">
-                                </div>
-                            </div>
-
-                            <!-- DIV PARA IMPRESSÃO -->
-                            <div class="print-page">
-
-                            </div>                         
+                    <div class="do-not-print row">
+                        <div class="col-xs-6 col-xs-offset-3 col-md-4 col-md-offset-4">
+                            <button class="btn-primary btn-block btn" id="print-exam">IMPRIMIR</button>
                         </div>
-                        <!--  NÃO IMPLEMENTADO AINDA 
-                        <div role="tabpanel" class="tab-pane" id="exam-part-2">
-                            <div class="do-not-print row">
-                                <div class="col-xs-6 col-xs-offset-3 col-md-4 col-md-offset-4">
-                                    <button class="btn-primary btn-block btn" id="print-notebook-2">IMPRIMIR</button>
-                                </div>
-                            </div> 
+                    </div> 
 
-                        </div>   -->                          
+                    <!-- TEMPLATE DA DE CADA PÁGINA (CABEÇALHO, CONTEÚDO, RODAPÉ) -->
+                    <div class="exam-page">
+                        <div class="exam-header">
+                            <div class="col-xs-3 no-padding">
+                                <img class="center-block cats-logo" src="/img/logo_prova.png">
+                            </div>
+                            <div class="col-xs-9 no-padding">
+                                <p class="text-center header-text"><strong>Curso Assistencial Theodomiro Santiago</strong><br>
+                                    Av. BPS, 1303 - UNIFEI - Campus Professor J.R. Seabra - Sala I.1.2.47 - Itajubá - MG<br>
+                                    <strong>Tel.:</strong>(38) 8871-2364 | <strong>Email:</strong> catsensino@gmail.com | familiacats.com</p>
+                            </div>
+                        </div>
+                        <div class="exam-content">
+
+                        </div>
+                        <div class="exam-footer">
+                            <p><span class="exam-name"></span><span class="page-number pull-right"></span></p>
+                        </div>
                     </div>
+
+                    <!-- PREVIEW -->
+                    <div id="preview-page">
+                        <div class="exam-questions">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- DIV PARA IMPRESSÃO -->
+                    <div id="print-page">
+
+                    </div> 
                 </div>
                 <!-- /.col -->
             </div>

@@ -8,7 +8,7 @@ define(['jquery'], function () {
     var edit = (function () {
 
         /*
-         *  Impede que o conteúdo da textarea seja exibido pelo MathJax, impedindo a edição
+         *  Impede que o conteúdo da textarea seja exibido pelo MathJax, permitindo a edição
          */
         initTextArea = function () {
             $('.trumbowyg-editor').addClass('tex2jax_ignore');

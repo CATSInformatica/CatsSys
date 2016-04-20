@@ -29,7 +29,8 @@ requirejs.config({
         trumbowygpt: 'trumbowyg/dist/langs/pt.min',
         trumbowygbase64: 'trumbowyg/dist/plugins/base64/trumbowyg.base64.min',
         chart: 'AdminLTE/plugins/chartjs/Chart.min',
-        filesaver: 'file-saver.js/FileSaver'
+        filesaver: 'file-saver.js/FileSaver',
+        jqueryprint: 'jQuery.print/jQuery.print'
     },
     shim: {
         bootstrap: {
@@ -67,6 +68,9 @@ requirejs.config({
                 MathJax.Hub.Startup.onload();
                 return MathJax;
             }
+        },
+        jqueryprint: {
+            deps: ['jquery']
         }
     }
 });

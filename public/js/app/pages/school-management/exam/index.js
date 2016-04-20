@@ -15,21 +15,31 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer'], function () {
+define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
     var index = (function () {
 
+        //  Array de objetos com as questões carregadas por ajax
+        //  índice = id da questão
         var examQuestions = [];
-        var selectedQuestions = [];
+        //  Array de objetos com formatação para inserir no DataTable as questões de uma disciplina 
+        //  índice = id da disciplina
         var sQuestionsDatatable = [];
+        //  Array de bool com as questões selecionadas
+        //  índice = id da questão
+        var selectedQuestions = [];
+        //  id do DataTable
         var questionTable = $('#question-table');
+        //  Número de questões adicionadas        
         var questionCount = 0;
-        var examPage = 1;
 
         setListeners = function () {
+            /*
+             * Atualiza o indicador ao lado das disciplinas quanto ao número desejado de questões
+             */
             $('.amount-input').change(function () {
                 var sId = $(this).data('s-id');
                 var subjectAmount = parseInt($(this).val());
-                
+
                 var oldValue = parseInt($(this).data('old-value'));
                 if (isNaN(oldValue)) {
                     oldValue = 0;
@@ -39,9 +49,9 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer'], function () {
                     subjectAmount -= oldValue;
                 }
                 $('#s-' + sId + '-amount').html(subjectAmount);
-                
+
                 $(this).data('old-value', subjectAmount);
-                
+
                 var count = 0;
                 $('.amount-input').each(function () {
                     if ($(this).val() !== '') {
@@ -51,6 +61,9 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer'], function () {
                 $('#question-count').html('Total: ' + count);
             });
 
+            /*
+             * Carrega as questões da disciplina selecionada no DataTable
+             */
             $('select[name=subject]').change(function () {
                 var optionSelected = $("option:selected", this);
                 $('#last-selected').prop('selected', false);
@@ -63,43 +76,51 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer'], function () {
                 }
             });
 
+            /*
+             * Adiciona todas as questões selecionadas (checkbox)
+             */
             $('#add-exam-question').click(function () {
                 $('.select-questions:checkbox:checked').each(function () {
                     addQuestion($(this).val());
                 });
             });
 
-            $('#print-notebook-1').click(function () {
-                generateExam();
+            /*
+             * Mostra o diálogo de impressão do simulado
+             */
+            $('#print-exam').click(function () {
+                //  Prepara a div #print-page
+                generateExam();                
 
-                var page = $('.print-page').first().clone();
-                page.find('.do-not-print').each(function () {
-                    $(this).attr('style', 'display: none');
+                MathJax.Hub.Queue(["Typeset", MathJax.Hub, 'print-page'], function () {
+                    //  Abre o diálogo de impressão da div #print-page usando jqueryprint
+                    $('#print-page').print({
+                        globalStyles: true,
+                        mediaPrint: true,
+                        stylesheet: '/css/exam-print.css',
+                        noPrintSelector: null,
+                        iframe: true,
+                        append: null,
+                        prepend: null,
+                        manuallyCopyFormValues: true,
+                        deferred: $.Deferred(),
+                        timeout: 250,
+                        title: null,
+                        doctype: '<!doctype html>'
+                    });
                 });
-
-                var printPage = window.open('', '', 'width=840,height=1200');
-                printPage.document.write(page.html());
-                printPage.document.write('<link rel="stylesheet" href="/css/exam-print.css" type="text/css" />');
-                printPage.document.write('<link rel="stylesheet" href="/vendor/AdminLTE/bootstrap/css/bootstrap.min.css" type="text/css" />');
-
-                printPage.document.close();
-                printPage.focus();
-
-
-
-                /*var printContents = $('#print-page').html();
-                 var originalContents = $('body').html();
-                 $('body').html(printContents);
-                 $(".do-not-print").css("display", "none");
-                 window.print();
-                 questionTable.DataTable().destroy();
-                 $('body').html(originalContents);*/
             });
 
+            /*
+             * Remove a questão a qual está associado o ícone
+             */
             $('.exam-questions').on('click', '.rm-question', function () {
                 removeQuestion(parseInt(parseInt($(this).parents('.question-block').attr('id').substr(2))));
             });
 
+            /*
+             * Troca de posição com a questão de cima, se existir e for da mesma disciplina.
+             */
             $('.exam-questions').on('click', '.move-up', function () {
                 var qBlock = $(this).parent().parent();
                 var previous = qBlock.prev('.question-block');
@@ -111,6 +132,9 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer'], function () {
                 }
             });
 
+            /*
+             * Troca de posição com a questão de baixo, se existir e for da mesma disciplina.
+             */
             $('.exam-questions').on('click', '.move-down', function () {
                 var qBlock = $(this).parent().parent();
                 var next = qBlock.next('.question-block');
@@ -122,16 +146,33 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer'], function () {
                 }
             });
 
+            /*
+             * Insere o nome preenchido no campo "Nome do Simulado" no rodapé do simulado
+             */
             $('#exam-name-input').on('keyup', function () {
                 $('.exam-name').html($('#exam-name-input').val());
             });
         };
 
+        /*
+         * Remove os dados do DataTable e insere os contidos em 'data'
+         * 
+         * @param {array} data - Array de objetos contendo as informações a serem carregadas na tabela
+         * 
+         * data contém:
+         *      DT_RowAttr: (Objeto que determina os atributos de cada linha da tabela)
+         *      0: (Primeira coluna - checkbox com o id da questão)
+         *      1: (Segunda coluna - Descrição da questão)
+         * }
+         */
         setDatatable = function (data) {
             questionTable.DataTable().clear();
             questionTable.DataTable().rows.add(data).draw();
         };
 
+        /*
+         * Inicializa a tabela e define a forma de obtenção de dados por ajax em 'dataSrc'
+         */
         initDataTable = function () {
             questionTable.DataTable({
                 dom: 'tp',
@@ -172,23 +213,35 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer'], function () {
             });
         };
 
+        /*
+         * Configura (cabeçalho, duas colunas, rodapé) e gera a versão de impressão na div #print-page
+         */
         generateExam = function () {
-            var content_height = 884.88;
-            var page = 1;   // Página Inicial
+
+            var content_height = 900;
+            var page = 1;   // Número da primeira página
+            
+            
+            $('#exam-part-1').append('<div id="exam-temp"></div>');
+            $('#exam-temp').html($("#preview-page").first().html());
+            $('#exam-temp').find('.do-not-print').each(function () {
+                $(this).remove();
+            });
+            $('#print-page').html('');
+
             function buildExamLayout() {
-                if ($('.exam-questions').contents().length > 0) {
+                if ($('#exam-temp > .exam-questions').contents().length > 0) {
                     $page = $(".exam-page").first().clone().addClass("page").css("display", "block");
 
-                    $page.find(".page-number").first().append(page);
-                    $(".print-page").append($page);
-                    page++;
+                    $page.find(".page-number").first().append(page++);
+                    $("#print-page").append($page);
 
-                    $('.exam-questions').columnize({
+                    $('#exam-temp > .exam-questions').columnize({
                         columns: 2,
                         target: ".page:last .exam-content",
                         overflow: {
                             height: content_height,
-                            id: ".exam-questions",
+                            id: "#exam-temp > .exam-questions",
                             doneFunc: function () {
                                 buildExamLayout();
                             }
@@ -197,8 +250,16 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer'], function () {
                 }
             }
             buildExamLayout();
+
+            $('#exam-temp').remove();
+
         };
 
+        /*
+         * Adiciona uma questão ao simulado
+         * 
+         * @param {int} qId - id da questão
+         */
         addQuestion = function (qId) {
             if (typeof selectedQuestions[qId] === 'undefined' || selectedQuestions[qId] === false) {
                 selectedQuestions[qId] = true;
@@ -216,18 +277,22 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer'], function () {
                         + '<i class="move-down fa fa-sort-desc"></i>'
                         + '</span>'
                         + '<div><p class="text-justify"><span class="q-number">' + questionCount + '</span>) ' + examQuestions[qId]['enunciation'] + '</p></div>';
-                
-                var alternativeListStyle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];                
+
+                var alternativeListStyle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
                 for (var i = 0; i < examQuestions[qId]['alternatives'].length; ++i) {
                     q += '<div><p class="text-justify">' + alternativeListStyle[i] + ') ' + examQuestions[qId]['alternatives'][i] + '</div>';
                 }
                 q += '</div>';
-                
+
                 $('#s-' + examQuestions[qId]['subject']).append(q);
-                return;
             }
         };
 
+        /*
+         * Remove uma questão do simulado
+         * 
+         * @param {int} qId - id da questão
+         */
         removeQuestion = function (qId) {
             var qBlock = $('#q-' + qId);
             var qNumber = qBlock.find('.q-number').html();
