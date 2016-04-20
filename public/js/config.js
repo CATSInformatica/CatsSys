@@ -8,8 +8,9 @@
 requirejs.config({
     baseUrl: '/vendor',
     paths: {
-        jquery: 'AdminLTE/plugins/jQuery/jQuery-2.1.4.min',
-        jquerycsv: 'jquery-csv/src/jquery.csv.min',
+        jquery: 'AdminLTE/plugins/jQuery/jQuery-2.2.0.min',
+        jquerycsv: 'jquery-csv/src/jquery.csv',
+        jquerycolumnizer: 'jquery.columnizer/src/jquery.columnizer.min',
         bootstrap: 'AdminLTE/bootstrap/js/bootstrap.min',
         jmaskedinput: 'jquery.maskedinput/dist/jquery.maskedinput.min',
         slimscroll: 'AdminLTE/plugins/slimScroll/jquery.slimscroll.min',
@@ -26,9 +27,10 @@ requirejs.config({
         app: '/js/app',
         trumbowyg: 'trumbowyg/dist/trumbowyg.min',
         trumbowygpt: 'trumbowyg/dist/langs/pt.min',
-        trumbowygcolors: 'trumbowyg/dist/plugins/colors/trumbowyg.colors.min',
-        trumbowygupload: 'trumbowyg/dist/plugins/upload/trumbowyg.upload.min',
-        chart: 'AdminLTE/plugins/chartjs/Chart.min'
+        trumbowygbase64: 'trumbowyg/dist/plugins/base64/trumbowyg.base64.min',
+        chart: 'AdminLTE/plugins/chartjs/Chart.min',
+        filesaver: 'file-saver.js/FileSaver',
+        jqueryprint: 'jQuery.print/jQuery.print'
     },
     shim: {
         bootstrap: {
@@ -66,6 +68,9 @@ requirejs.config({
                 MathJax.Hub.Startup.onload();
                 return MathJax;
             }
+        },
+        jqueryprint: {
+            deps: ['jquery']
         }
     }
 });

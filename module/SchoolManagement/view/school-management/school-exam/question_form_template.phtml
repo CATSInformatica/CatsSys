@@ -1,0 +1,53 @@
+<h3 class="text-center">Questão</h3>
+<?php
+$form->prepare();
+$examQuestion = $form->get('exam-question');
+?>
+<?php echo $this->form()->openTag($form); ?>
+<div class="col-md-8">
+    <?php echo $this->formRow($examQuestion->get('subjectId')); ?>
+</div>
+<div class="col-md-4">
+    <?php echo $this->formRow($examQuestion->get('examQuestionType')); ?>
+</div>
+<div class="col-md-12" id="answers-blah">
+    <div class="col-md-6">
+        <div class="form-group">
+            <div class="col-xs-12 col-md-4">
+                <?php echo $this->formLabel($examQuestion->get('correctAnswer')); ?>
+            </div>
+            <div class="col-xs-12 col-md-6" id="correct-answer">
+                <?php echo $this->formElement($examQuestion->get('correctAnswer')); ?>
+                <?php echo $this->formElementErrors($examQuestion->get('correctAnswer')); ?>
+            </div>
+        </div>
+    </div>
+    <div class="col-md-6">
+        <div class="form-group">
+            <div class="col-xs-12 col-md-4">
+                <label>Adicionar/Remover Respostas</label>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <?php echo $this->formElement($form->get('addAlternative')); ?>
+                <?php echo $this->formElement($form->get('removeAlternative')); ?>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="col-md-6 col-xs-12">
+    <?php
+    echo $this->partial('question_template', [
+        'examQuestion' => $examQuestion
+    ]);
+    ?>
+</div>
+<div class="col-md-6 col-xs-12">
+    <div id="mathPreview" class="text-justify"></div>
+    <div id="mathBuffer"></div>
+</div>
+
+<div class="col-md-12">
+    <?php echo $this->formRow($form->get('submit')); ?>
+</div>
+<?php
+echo $this->form()->closeTag();

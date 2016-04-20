@@ -120,11 +120,12 @@ class Role
     /**
      * Add user
      *
-     * @param Usereturn Role
+     * @param User
+     * @return Self
      */
     public function addUser(User $user)
     {
-        $this->user[] = $user;
+        $this->user->add($user);
         return $this;
     }
 
@@ -135,7 +136,6 @@ class Role
      */
     public function removeUser(User $user)
     {
-        $user->removeRole($this);
         $this->user->removeElement($user);
     }
 

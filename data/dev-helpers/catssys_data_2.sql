@@ -26,7 +26,9 @@ INSERT INTO `resource` VALUES
 (24,'Version\\Controller\\VersionInfo'),
 (25,'SchoolManagement\\Controller\\SchoolSubject'),
 (26,'SchoolManagement\\Controller\\SchoolExam'),
-(27,'AdministrativeStructure\\Controller\\Job')
+(27,'AdministrativeStructure\\Controller\\Job'),
+(NULL,'SchoolManagement\\Controller\\SchoolExamPreview'),
+(NULL,'Documents\\Controller\\StudentAnswersSheets')
 ;
 UNLOCK TABLES;
 
@@ -121,4 +123,22 @@ INSERT INTO `attendance_type` VALUES
 (3, 'ABONO INÍCIO DO DIA'),
 (4, 'ABONO FINAL DO DIA'),
 (5, 'ABONO INTEGRAL');
+UNLOCK TABLES;
+
+LOCK TABLES `subject` WRITE;
+/*!40000 ALTER TABLE `subject` DISABLE KEYS */;
+INSERT INTO `subject` VALUES 
+(42,NULL,'MATEMÁTICA E SUAS TECNOLOGIAS','MATEMÁTICA E SUAS TECNOLOGIAS'),
+(43,NULL,'CIÊNCIAS HUMANAS E SUAS TECNOLOGIAS','CIÊNCIAS HUMANAS E SUAS TECNOLOGIAS'),
+(44,NULL,'LINGUAGENS, CÓDIGOS E SUAS TECNOLOGIAS','LINGUAGENS, CÓDIGOS E SUAS TECNOLOGIAS'),
+(45,NULL,'CIÊNCIAS DA NATUREZA E SUAS TECNOLOGIAS','CIÊNCIAS DA NATUREZA E SUAS TECNOLOGIAS'),
+(46,42,'ÁLGEBRA','Álgebra'),(47,42,'GEOMETRIA','Geometria'),(48,43,'GEOGRAFIA','Geografia'),
+(49,43,'HISTÓRIA','História'),(50,44,'ESPANHOL','Espanhol'),(51,44,'GRAMÁTICA','Gramática'),
+(52,44,'INGLÊS','Inglês'),(53,44,'LITERATURA','Literatura'),(54,45,'BIOLOGIA ANIMAL','Biologia Animal'),
+(55,45,'BIOLOGIA VEGETAL','Biologia Vegetal'),(56,45,'FÍSICA - ELÉTRICA','Física - Elétrica'),
+(57,45,'FÍSICA - MECÂNICA','Física - Mecânica'),(58,45,'FÍSICA - ÓTICA','Física - Ótica'),
+(59,45,' QUÍMICA INORGÂNICA','Química Inorgânica'),
+(60,45,'QUÍMICA ORGÂNICA','Química Orgânica'),
+(61,46,'POLINÔMIOS','Polinômios');
+/*!40000 ALTER TABLE `subject` ENABLE KEYS */;
 UNLOCK TABLES;

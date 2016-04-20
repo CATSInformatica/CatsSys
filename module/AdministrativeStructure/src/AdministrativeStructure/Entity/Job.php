@@ -31,7 +31,7 @@ use Authorization\Entity\Role;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  * @ORM\Table(name="job")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="AdministrativeStructure\Entity\Repository\JobRepository")
  */
 class Job
 {
@@ -62,7 +62,7 @@ class Job
      * Ex: *"Responsável pelos simulados: formatação, aplicação e correção."*
      * 
      * @var string
-     * @ORM\Column(name="job_description", type="string", length=500)
+     * @ORM\Column(name="job_description", type="text", nullable=false)
      */
     protected $jobDescription;
 
@@ -102,6 +102,20 @@ class Job
     protected $parent;
 
     /**
+     *
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="Office", mappedBy="job")
+     */
+    protected $offices;
+
+    /**
+     * Indica se o cargo está disponível para uso
+     * @var bool
+     * @ORM\Column(name="job_is_available", type="boolean", nullable=false)
+     */
+    protected $isAvailable;
+
+    /**
      * Cargos imediatamente subordinados.
      * 
      * Autorelacionamento `OneToMany` bidirecional com $parent
@@ -110,6 +124,22 @@ class Job
      * @ORM\OneToMany(targetEntity="Job", mappedBy="parent")
      */
     protected $children;
+
+    /**
+     * Data de criação do cargo.
+     * 
+     * @var \DateTime
+     * @ORM\Column(name="job_creation_date", type="datetime", nullable=false)
+     */
+    protected $creationDate;
+
+    /**
+     * Última revisão do cargo.
+     * 
+     * @var \DateTime
+     * @ORM\Column(name="job_last_revision_date", type="datetime", nullable=true)
+     */
+    protected $lastRevisionDate;
 
     /**
      * Armazena o cargo imeditamente superior anterior (necessário para edição)
@@ -122,6 +152,8 @@ class Job
     public function __construct()
     {
         $this->children = new ArrayCollection();
+        $this->offices = new ArrayCollection();
+        $this->creationDate = new \DateTime();
     }
 
     /**
@@ -220,6 +252,30 @@ class Job
     public function setDepartment(Department $department)
     {
         $this->department = $department;
+        return $this;
+    }
+
+    /**
+     * Retorna a situação do cargo.
+     * 
+     * Se ($isAvailable === false) o cargo está desabilitado e não pode ser associado a nenhuma pessoa. Caso contrário,
+     * o cargo está disponível.
+     * 
+     * @return bool
+     */
+    public function getIsAvailable()
+    {
+        return $this->isAvailable;
+    }
+
+    /**
+     * 
+     * @param bool $value
+     * @return Self
+     */
+    public function setIsAvailable($value)
+    {
+        $this->isAvailable = $value;
         return $this;
     }
 
@@ -406,6 +462,75 @@ class Job
             }
         }
         return $rids;
+    }
+
+    /**
+     * Adiciona novos cargos ao trabalho. Se o cargo já existe ele é ignorado.
+     * 
+     * @param Collection $offices
+     * @return AdministrativeStructure\Entity\Job
+     */
+    public function addOffices(Collection $offices)
+    {
+        foreach ($offices as $office) {
+            if (!$this->hasOffice($office)) {
+                $this->offices->add($office);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * Verifica se o cargo já existe.
+     * 
+     * @param AdministrativeStructure\Entity\Office $office
+     * @return bool
+     */
+    public function hasOffice(Office $office)
+    {
+        return $this->offices->contains($office);
+    }
+
+    /**
+     * Retorna a data de criação do cargo.
+     * 
+     * @param string $format formato da data a ser retornada
+     * @return mixed string|null data formatada de acordo com $format
+     */
+    public function getCreationDate($format = 'd/m/Y \à\s H:i:s')
+    {
+        if ($this->creationDate !== null) {
+            return $this->creationDate->format($format);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Retorna a última data de revisão do cargo.
+     * 
+     * @param string $format formato da data a ser retornada
+     * @return mixed string|null data formatada de acordo com $format
+     */
+    public function getLastRevisionDate($format = 'd/m/Y \à\s H:i:s')
+    {
+        if ($this->lastRevisionDate !== null) {
+            return $this->lastRevisionDate->format($format);
+        } else {
+            return null;
+        }
+    }
+
+    /**
+     * Define a data da última revisão realizada no cargo.
+     * 
+     * @param \DateTime $lastRevisionDate
+     * @return Self
+     */
+    public function setLastRevisionDate(\DateTime $lastRevisionDate)
+    {
+        $this->lastRevisionDate = $lastRevisionDate;
+        return $this;
     }
 
 }

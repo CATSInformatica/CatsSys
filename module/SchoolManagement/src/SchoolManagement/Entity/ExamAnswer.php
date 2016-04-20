@@ -32,11 +32,19 @@ class ExamAnswer
     /**
      *
      * @var string 
-     * @ORM\Column(name="exam_answer_description", type="string", nullable=false)
+     * @ORM\Column(name="exam_answer_description", type="text", nullable=false)
      */
-    private $examAnswerDescription;    
+    private $examAnswerDescription;
 
-    function __construct()
+    /**
+     *
+     * @var ExamQuestion
+     * @ORM\ManyToOne(targetEntity="ExamQuestion", inversedBy="answerOptions", cascade={"persist", "remove"})
+     * @ORM\JoinColumn(name="question_id", referencedColumnName="exam_question_id", nullable=false)
+     */
+    private $question;
+
+    public function __construct()
     {
         $this->isCorrect = false;
     }
@@ -45,7 +53,7 @@ class ExamAnswer
      * 
      * @return integer
      */
-    function getExamAnswerId()
+    public function getExamAnswerId()
     {
         return $this->examAnswerId;
     }
@@ -54,7 +62,7 @@ class ExamAnswer
      * 
      * @return string
      */
-    function getExamAnswerDescription()
+    public function getExamAnswerDescription()
     {
         return $this->examAnswerDescription;
     }
@@ -63,9 +71,18 @@ class ExamAnswer
      * 
      * @return boolean
      */
-    function getIsCorrect()
+    public function getIsCorrect()
     {
         return $this->isCorrect;
+    }
+    
+    /**
+     * 
+     * @return ExamQuestion
+     */
+    public function getQuestion()
+    {
+        return $this->question;
     }
 
     /**
@@ -73,7 +90,7 @@ class ExamAnswer
      * @param boolean $isCorrect
      * @return ExamAnswer
      */
-    function setIsCorrect($isCorrect)
+    public function setIsCorrect($isCorrect)
     {
         $this->isCorrect = $isCorrect;
         return $this;
@@ -84,9 +101,20 @@ class ExamAnswer
      * @param string $examAnswerDescription
      * @return ExamAnswer
      */
-    function setExamAnswerDescription($examAnswerDescription)
+    public function setExamAnswerDescription($examAnswerDescription)
     {
         $this->examAnswerDescription = $examAnswerDescription;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param ExamQuestion $question
+     * @return ExamAnswer
+     */
+    public function setQuestion($question)
+    {
+        $this->question = $question;
         return $this;
     }
 

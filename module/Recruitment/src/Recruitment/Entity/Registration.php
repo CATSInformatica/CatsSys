@@ -22,7 +22,7 @@ use Doctrine\Common\Collections\Criteria;
  * @ORM\Table(name="registration", 
  *      uniqueConstraints={@ORM\UniqueConstraint(name="person_recruitment_idx", columns={"recruitment_id", "person_id"})},
  * )
- * @ORM\Entity(repositoryClass="Recruitment\Entity\Repository\Registration")
+ * @ORM\Entity(repositoryClass="Recruitment\Entity\Repository\RegistrationRepository")
  */
 class Registration
 {
@@ -40,14 +40,14 @@ class Registration
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
-    private $registrationId;
+    protected $registrationId;
 
     /**
      *
      * @var \DateTime
      * @ORM\Column(name="registration_date", type="datetime", nullable=false)
      */
-    private $registrationDate;
+    protected $registrationDate;
 
     /**
      *
@@ -55,7 +55,7 @@ class Registration
      * @ORM\ManyToOne(targetEntity="\Recruitment\Entity\Recruitment", inversedBy="registrations")
      * @ORM\JoinColumn(name="recruitment_id", referencedColumnName="recruitment_id", nullable=false)
      */
-    private $recruitment;
+    protected $recruitment;
 
     /**
      *
@@ -64,7 +64,7 @@ class Registration
      *  cascade={"persist", "merge"})
      * @ORM\JoinColumn(name="pre_inteview_id", referencedColumnName="pre_interview_id")
      */
-    private $preInterview;
+    protected $preInterview;
 
     /**
      * @var Person
@@ -72,7 +72,7 @@ class Registration
      * cascade={"persist"})
      * @ORM\JoinColumn(name="person_id", referencedColumnName="person_id", nullable=false)
      */
-    private $person;
+    protected $person;
 
     /**
      * STUDENT SPECIFIC ATTRIBUTES
@@ -90,7 +90,7 @@ class Registration
      *          referencedColumnName="recruitment_know_about_id")}
      * )
      */
-    private $recruitmentKnowAbout;
+    protected $recruitmentKnowAbout;
 
     /**
      * VOLUNTEER SPECIFIC ATTRIBUTES
@@ -100,41 +100,41 @@ class Registration
      * @var string
      * @ORM\Column(name="registration_occupation", type="string", length=700, nullable=true)
      */
-    private $occupation;
+    protected $occupation;
 
     /**
      * @var string
      * @ORM\Column(name="registration_education", type="string", length=700, nullable=true)
      */
-    private $education;
+    protected $education;
 
     /**
      *
      * @var string
      * @ORM\Column(name="registration_volunteer_work", type="string", length=700, nullable=true)
      */
-    private $volunteerWork;
+    protected $volunteerWork;
 
     /**
      *
      * @var string
      * @ORM\Column(name="registration_howandwhen_knowus", type="string", length=700, nullable=true)
      */
-    private $howAndWhenKnowUs;
+    protected $howAndWhenKnowUs;
 
     /**
      *
      * @var string
      * @ORM\Column(name="registration_whywork_withus", type="string", length=700, nullable=true)
      */
-    private $whyWorkWithUs;
+    protected $whyWorkWithUs;
 
     /**
      *
      * @var string
      * @ORM\Column(name="registration_volunteer_workwithus", type="string", length=700, nullable=true)
      */
-    private $volunteerWithUs;
+    protected $volunteerWithUs;
 
     /**
      * self-evaluation levels
@@ -150,55 +150,55 @@ class Registration
      * @var integer
      * @ORM\Column(name="registration_responsibility", type="smallint", nullable=true)
      */
-    private $responsibility;
+    protected $responsibility;
 
     /**
      *
      * @var integer
      * @ORM\Column(name="registration_proactive", type="smallint", nullable=true)
      */
-    private $proactive;
+    protected $proactive;
 
     /**
      *
      * @var integer
      * @ORM\Column(name="registration_volunteer_spirit", type="smallint", nullable=true)
      */
-    private $volunteerSpirit;
+    protected $volunteerSpirit;
 
     /**
      *
      * @var integer
      * @ORM\Column(name="registration_commitment", type="smallint", nullable=true)
      */
-    private $commitment;
+    protected $commitment;
 
     /**
      *
      * @var integer
      * @ORM\Column(name="registration_team_work", type="smallint", nullable=true)
      */
-    private $teamWork;
+    protected $teamWork;
 
     /**
      *
      * @var integer
      * @ORM\Column(name="registration_efficiency", type="smallint", nullable=true)
      */
-    private $efficiency;
+    protected $efficiency;
 
     /**
      * @var integer
      * @ORM\Column(name="registration_courtesy", type="smallint", nullable=true)
      */
-    private $courtesy;
+    protected $courtesy;
 
     /**
      * @var Collection
      * @ORM\OneToMany(targetEntity="RegistrationStatus", mappedBy="registration", cascade={"persist", "remove"},
      *      orphanRemoval=true)
      */
-    private $registrationStatus;
+    protected $registrationStatus;
 
     /**
      *
@@ -206,7 +206,7 @@ class Registration
      * @ORM\OneToOne(targetEntity="VolunteerInterview", inversedBy="registration", cascade={"persist", "merge"})
      * @ORM\JoinColumn(name="volunteer_interview_id", referencedColumnName="volunteer_interview_id")
      */
-    private $volunteerInterview;
+    protected $volunteerInterview;
 
     /**
      *
@@ -214,7 +214,7 @@ class Registration
      * @ORM\OneToOne(targetEntity="StudentInterview", inversedBy="registration", cascade={"persist", "merge"})
      * @ORM\JoinColumn(name="student_interview_id", referencedColumnName="student_interview_id")
      */
-    private $studentInterview;
+    protected $studentInterview;
 
     public function __construct()
     {

@@ -68,7 +68,10 @@ class EnrollmentController extends AbstractEntityActionController
     }
 
     /**
-     * Faz a matrícula do aluno $sid na turma $cid
+     * Faz a matrícula do aluno $sid na turma $cid.
+     * 
+     * Se a matrícula já existe (tiver sido encerrada) ela é reabilidatada.
+     * Caso contrário um novo $enrollment é criado
      */
     public function enrollAction()
     {
@@ -87,17 +90,29 @@ class EnrollmentController extends AbstractEntityActionController
 
                 $em = $this->getEntityManager();
 
-                $class = $em->getReference('SchoolManagement\Entity\StudentClass', $data['studentClass']);
-                $registration = $em->getReference('Recruitment\Entity\Registration', $sid);
-                $enrollment = new Enrollment();
+                $enrollment = $em->getRepository('SchoolManagement\Entity\Enrollment')->findOneBy(array(
+                    'class' => $data['studentClass'],
+                    'registration' => $sid
+                ));
 
-                $enrollment
-                    ->setClass($class)
-                    ->setRegistration($registration);
+                if ($enrollment === null) {
+                    $class = $em->getReference('SchoolManagement\Entity\StudentClass', $data['studentClass']);
+                    $registration = $em->getReference('Recruitment\Entity\Registration', $sid);
+                    $enrollment = new Enrollment();
 
-                $class->addEnrollment($enrollment);
+                    $enrollment
+                        ->setClass($class)
+                        ->setRegistration($registration);
 
-                $em->persist($class);
+                    $class->addEnrollment($enrollment);
+
+                    $em->persist($class);
+                } else {
+                    $enrollment->setEnrollmentEndDate(null);
+                    $em->merge($enrollment);
+                }
+
+
                 $em->flush();
 
                 $message = 'Matrícula realizada com sucesso.';
@@ -154,7 +169,12 @@ class EnrollmentController extends AbstractEntityActionController
                         . ' foram escolhidos corretamente.';
                 }
             } catch (Exception $ex) {
-                $message = 'Erro: ' . $ex->getMessage();
+                if ($ex instanceof ConstraintViolationException) {
+                    $message = 'Não é possível remover este aluno. Ele possui listas de presença/abono ou alguma outra '
+                        . 'atividade associada. Se deseja retirar o aluno da turma escolha a ação [Encerrar Matrícula].';
+                } else {
+                    $message = 'Erro: ' . $ex->getMessage();
+                }
             }
         } else {
             $message = 'Turma e/ou aluno não especificado(s).';
@@ -163,6 +183,59 @@ class EnrollmentController extends AbstractEntityActionController
         return new JsonModel(array(
             'message' => $message,
         ));
+    }
+
+    /**
+     * Encerra a matrícula de um aluno em uma turma. Define um valor para enrollmentEndDate em Enrollment.
+     * 
+     * @return JsonModel
+     * @throws RuntimeException
+     */
+    public function closeEnrollAction()
+    {
+        $sid = $this->params('id', false);
+        $request = $this->getRequest();
+
+        if ($sid && $request->isPost()) {
+            try {
+
+                $data = $request->getPost();
+
+                if (!is_numeric($data['studentClass'])) {
+                    throw new RuntimeException('Turma não especificada');
+                }
+
+                $em = $this->getEntityManager();
+
+                $enrollment = $em->getRepository('SchoolManagement\Entity\Enrollment')->findOneBy(array(
+                    'class' => $data['studentClass'],
+                    'registration' => $sid
+                ));
+
+                if ($enrollment !== null) {
+                    $enrollment->setEnrollmentEndDate(new \DateTime());
+                    $em->merge($enrollment);
+                    $em->flush();
+                    $message = 'Matrícula encerrada com sucesso.';
+                } else {
+                    $message = 'O aluno não está matriculado na turma escolhida.'
+                        . ' Por favor verifique se o aluno e a turma'
+                        . ' foram escolhidos corretamente.';
+                }
+
+                return new JsonModel([
+                    'message' => $message,
+                ]);
+            } catch (Exception $ex) {
+                return new JsonModel([
+                    'message' => $ex->getMessage(),
+                ]);
+            }
+        }
+
+        return new JsonModel([
+            'message' => 'Nenhum aluno especificado',
+        ]);
     }
 
 }

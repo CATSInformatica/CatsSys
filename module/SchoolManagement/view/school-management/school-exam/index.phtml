@@ -1,7 +1,189 @@
 <section class="content">
     <?php
-    $this->headTitle()->append('Simulados gerados')
+    $this->headLink()->appendStylesheet('/css/exam-print.css', 'all');
+    $this->headTitle()->append('Gerar Simulado')
         ->setSeparator(' - ');
     ?>
     <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+            <div class="box box-primary color-palette-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title text-uppercase"><i class="fa fa-balance-scale"></i> CONFIGURAÇÃO DO SIMULADO</h3>
+                </div>
+                <div class="box-body">
+                    <div class="form-group col-xs-12">
+                        <label for="exam-name-input">Nome do Simulado</label>
+                        <input type="text" class="form-control" id="exam-name-input" placeholder="1º Simulado Oficial do CATS">
+                    </div>
+                    <div class="row">
+                        <table class="table table-bordered">
+                            <tr>
+                                <?php foreach ($this->baseSubjectsName as $sName) : ?>
+                                    <th>
+                                        <h4 class="text-uppercase"><?php echo $sName; ?></h4>
+                                    </th>
+                                <?php endforeach; ?>
+                            </tr>
+                            <tr>
+                                <?php foreach ($this->lvlOneSubjects as $siblings) : ?>
+                                    <td>
+                                        <div class="container-fluid">
+                                            <?php foreach ($siblings as $s) : ?>
+                                                <div class="row">
+                                                    <?php echo $s->getSubjectName(); ?>
+                                                    <input type="number" class="col-md-5 col-xs-12 pull-right amount-input" 
+                                                           data-s-id="<?php echo $s->getSubjectId(); ?>" data-old-value="" min="0">
+                                                </div><br>
+                                            <?php endforeach; ?>
+                                        </div>
+                                    </td>
+                                <?php endforeach; ?>
+                            </tr>
+                        </table>
+                        <div class="col-md-12"><strong id="question-count">Total: 0</strong></div>
+                        <!-- /.col -->
+                    </div>
+                    <!-- /.row -->
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+            <div class="box box-success color-palette-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title text-uppercase"><i class="fa fa-check-square-o"></i> SELEÇÃO DAS QUESTÕES</h3>
+                </div>
+                <div class="box-body">
+                    <div class="col-md-4 col-sm-12" id="subjects">
+                        <dl class="col-xs-12 no-padding">
+                            <?php foreach ($this->lvlOneSubjects as $siblings) : ?>
+                                <?php foreach ($siblings as $s) : ?>
+                                    <dt><?php echo $s->getSubjectName(); ?>
+                                        <span class="pull-right">
+                                            <span class="text-green">-</span>/
+                                            <span id="s-<?php echo $s->getSubjectId(); ?>-amount" class="text-blue"></span>
+                                        </span>
+                                    </dt>
+                                    <dd class="col-xs-12" id="subject-<?php echo $s->getSubjectId() ?>">
+                                        <select name="subject" class="col-xs-12 no-padding no-border" multiple>
+                                            <?php
+                                            foreach ($s->getChildren()->toArray() as $topic) :
+                                                ?>
+                                                <?php
+                                                $visited = [];
+                                                $stack = new SplStack();
+                                                $stack->push($topic);
+                                                while (!$stack->isEmpty()) {
+                                                    $current = $stack->pop();
+                                                    if (isset($visited[$current->getSubjectId()])) {
+                                                        continue;
+                                                    }
+                                                    $visited[$current->getSubjectId()] = true;
+                                                    if (empty($current->getChildren()->toArray())):
+                                                        ?>
+                                                        <option value="<?php echo $current->getSubjectId(); ?>">
+                                                            <?php echo $current->getSubjectName(); ?>
+                                                        </option>
+                                                        <?php
+                                                    endif;
+                                                    foreach ($current->getChildren()->toArray() as $child) {
+                                                        $stack->push($child);
+                                                    }
+                                                }
+                                                ?>
+                                            <?php endforeach; ?>
+                                            <option value="<?php echo $s->getSubjectId(); ?>">SEM TÓPICO DEFINIDO</option>
+                                        </select>
+                                    </dd>
+                                <?php endforeach; ?>
+                            <?php endforeach; ?>
+                        </dl>
+                    </div>
+                    <div class="col-md-8 col-sm-12" id="questions">
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-bordered" id="question-table">
+                                <thead>
+                                <th></th>
+                                <th>Questões</th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-6 col-xs-offset-3">
+                            <button class="btn-primary btn-block btn" id="add-exam-question">Adicionar</button>                            
+                        </div>
+                    </div>
+                    <div class="col-xs-12"><strong id="question-count">Total: 0</strong></div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+            <div class="box box-warning color-palette-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title text-uppercase"><i class="fa fa-file-text-o"></i> PRÉ-VISUALIZAÇÃO</h3>
+                </div>
+                <div class="box-body" id="exam-part-1">
+
+                    <div class="do-not-print row">
+                        <div class="col-xs-6 col-xs-offset-3 col-md-4 col-md-offset-4">
+                            <button class="btn-primary btn-block btn" id="print-exam">IMPRIMIR</button>
+                        </div>
+                    </div> 
+
+                    <!-- TEMPLATE DA DE CADA PÁGINA (CABEÇALHO, CONTEÚDO, RODAPÉ) -->
+                    <div class="exam-page">
+                        <div class="exam-header">
+                            <div class="col-xs-3 no-padding">
+                                <img class="center-block cats-logo" src="/img/logo_prova.png">
+                            </div>
+                            <div class="col-xs-9 no-padding">
+                                <p class="text-center header-text"><strong>Curso Assistencial Theodomiro Santiago</strong><br>
+                                    Av. BPS, 1303 - UNIFEI - Campus Professor J.R. Seabra - Sala I.1.2.47 - Itajubá - MG<br>
+                                    <strong>Tel.:</strong>(38) 8871-2364 | <strong>Email:</strong> catsensino@gmail.com | familiacats.com</p>
+                            </div>
+                        </div>
+                        <div class="exam-content">
+
+                        </div>
+                        <div class="exam-footer">
+                            <p><span class="exam-name"></span><span class="page-number pull-right"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- PREVIEW -->
+                    <div id="preview-page">
+                        <div class="exam-questions">
+                        </div>
+                    </div>
+
+                    <hr>
+
+                    <!-- DIV PARA IMPRESSÃO -->
+                    <div id="print-page">
+
+                    </div> 
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+</div>
 </section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/exam/index';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

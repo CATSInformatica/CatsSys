@@ -33,7 +33,7 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class JobFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
-    public function __construct(ObjectManager $obj, $name = null, $options = array())
+    public function __construct(ObjectManager $obj, $disabledJobId = null, $name = null, $options = array())
     {
         parent::__construct($name, $options);
 
@@ -65,27 +65,42 @@ class JobFieldset extends Fieldset implements InputFilterProviderInterface
                 ],
             ])
             ->add([
+                'name' => 'isAvailable',
+                'type' => 'checkbox',
+                'options' => [
+                    'label' => 'Ativo',
+                ],
+            ])
+            ->add([
                 'name' => 'jobDescription',
                 'type' => 'textarea',
                 'attributes' => [
-                    'placeholder' => 'Responsável pela gestão da área de informática que corresponde à ...',
+                    'placeholder' => 'A descrição deve possuir ao menos 10 caracteres ...',
                     'rows' => 10,
                 ],
                 'options' => [
                     'label' => 'Descrição',
-                    'add-on-prepend' => '<i class="fa fa-font"></i>',
                 ],
             ])
             ->add([
                 'name' => 'parent',
-                'type' => 'DoctrineModule\Form\Element\ObjectRadio',
+                'type' => 'DoctrineModule\Form\Element\ObjectSelect',
                 'options' => array(
                     'object_manager' => $obj,
                     'target_class' => 'AdministrativeStructure\Entity\Job',
                     'property' => 'jobName',
+                    'display_empty_item' => true,
+                    'empty_item_label' => 'Nenhum',
                     'label' => 'Cargo Superior',
+                    'is_method' => true,
+                    'find_method' => array(
+                        'name' => 'findIgnoring',
+                        'params' => array(
+                            'ignoredId' => $disabledJobId
+                        ),
+                    ),
                 ),
-            ]);
+        ]);
     }
 
     public function getInputFilterSpecification()
@@ -112,8 +127,7 @@ class JobFieldset extends Fieldset implements InputFilterProviderInterface
                     [
                         'name' => 'StringLength',
                         'options' => [
-                            'min' => '5',
-                            'max' => '500',
+                            'min' => 5,
                         ],
                     ],
                 ],
@@ -124,6 +138,9 @@ class JobFieldset extends Fieldset implements InputFilterProviderInterface
             'parent' => [
                 'required' => false,
             ],
+            'isAvailable' => [
+                'required' => false,
+            ]
         ];
     }
 

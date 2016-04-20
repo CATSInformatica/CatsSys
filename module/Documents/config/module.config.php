@@ -7,6 +7,8 @@ return array(
         'factories' => array(
             'Documents\Controller\StudentBgConfig' => Factory\Controller\StudentBgConfigControllerFactory::class,
             'Documents\Controller\GeneratePdf' => Factory\Controller\GeneratePdfControllerFactory::class,
+            'Documents\Controller\StudentAnswersSheets' =>
+            Factory\Controller\StudentAnswersSheetsControllerFactory::class,
         ),
     ),
     'router' => array(
@@ -45,6 +47,19 @@ return array(
                             ),
                         ),
                     ),
+                    'student-answers-sheets' => [
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/student-answers-sheets/:action[/:id]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'Documents\Controller\StudentAnswersSheets',
+                            ),
+                        ),
+                    ],
                 ),
             ),
         ),
@@ -83,7 +98,6 @@ return array(
                 'uri' => '#',
                 'icon' => 'fa fa-files-o',
                 'order' => 8,
-                'resource' => 'Documents\Controller\StudentBgConfig',
                 'pages' => array(
                     array(
                         'label' => 'Show background configs',
@@ -128,6 +142,14 @@ return array(
                         'privilege' => 'students-board',
                         'icon' => 'fa fa-file-pdf-o'
                     ),
+                    [
+                        'label' => 'Student answers sheets',
+                        'route' => 'documents/student-answers-sheets',
+                        'action' => 'index',
+                        'resource' => 'Documents\Controller\StudentAnswersSheets',
+                        'privilege' => 'index',
+                        'icon' => 'fa fa-chevron-circle-down',
+                    ]
                 ),
             ),
         ),

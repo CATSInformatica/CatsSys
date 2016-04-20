@@ -16,7 +16,11 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class AddExamQuestionFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
-    public function __construct(ObjectManager $obj)
+    const DEFAULT_NUMBER_OF_ANSWERS = 5;
+
+    public function __construct(ObjectManager $obj, $questionType = ExamQuestion::QUESTION_TYPE_CLOSED,
+        $numberOfAnswers = self::DEFAULT_NUMBER_OF_ANSWERS
+    )
     {
         parent::__construct('exam-question');
 
@@ -47,13 +51,14 @@ class AddExamQuestionFieldset extends Fieldset implements InputFilterProviderInt
                 ),
                 'attributes' => array(
                     'id' => 'question-type',
+                    'value' => $questionType,
                 ),
             ))
             ->add(array(
                 'name' => 'examQuestionEnunciation',
                 'type' => 'textarea',
                 'attributes' => array(
-                    'rows' => 10,
+                    'rows' => 15,
                     'id' => 'question-enunciation',
                 ),
                 'options' => array(
@@ -64,28 +69,47 @@ class AddExamQuestionFieldset extends Fieldset implements InputFilterProviderInt
                 'type' => 'Zend\Form\Element\Radio',
                 'name' => 'correctAnswer',
                 'options' => array(
-                    'label' => 'Alternativa Correta',
-                    'value_options' => array(
-                        '0' => 'Nenhum',
-                        /* Inseridos dinamicamente */
-                    ),
+                    'label' => 'Resposta Correta',
+                    'value_options' => self::generateAnswers($numberOfAnswers),
                     'disable_inarray_validator' => true,
+                    'inline' => true,
                 ),
             ))
             ->add(array(
                 'name' => 'answerOptions',
                 'type' => 'Zend\Form\Element\Collection',
                 'options' => array(
-                    'count' => 0,
+                    'count' => $numberOfAnswers,
                     'should_create_template' => true,
                     'template_placeholder' => '__placeholder__',
                     'target_element' => new AddExamAnswerFieldset($obj),
                 ),
-                'attributes' => array(
-                    'id' => 'alternatives-fieldset',
-                )
             ))
         ;
+    }
+
+    /**
+     * Gera um ventor no formato
+     *  [
+     *      0 => 'A',
+     *      1 => 'B',
+     *      .
+     *      .
+     *      .
+     *      ($numberOfAnswers - 1) => ascii_character_of('A' + $numberOfAnswers - 1);
+     *  ]
+     * 
+     * @param type $numberOfAnswers
+     * @return type
+     */
+    protected function generateAnswers($numberOfAnswers)
+    {
+        $ansArr = [];
+        for ($i = 0; $i < $numberOfAnswers; $i++) {
+            $ansArr[] = chr(ord('A') + $i);
+        }
+
+        return $ansArr;
     }
 
     protected function getSubjects($obj)
@@ -109,10 +133,6 @@ class AddExamQuestionFieldset extends Fieldset implements InputFilterProviderInt
             ),
             'examQuestionEnunciation' => array(
                 'required' => true,
-                'filters' => array(
-                    array('name' => 'StringTrim'),
-                    array('name' => 'StripTags'),
-                ),
             ),
             'correctAnswer' => array(
                 'required' => false,

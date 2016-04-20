@@ -42,9 +42,29 @@ class SchoolExamController extends AbstractEntityActionController
      */
     public function indexAction()
     {
-        return new ViewModel(array(
-            'message' => null,
-        ));
+        try {
+            $em = $this->getEntityManager();
+            $subjects = $em->getRepository('SchoolManagement\Entity\Subject')->findAll();
+            $lvlOneSubjects = [];
+            $baseSubjectsName = [];
+            foreach ($subjects as $s) {
+                if ($s->getParent() !== null && $s->getParent()->getParent() === null) {
+                    $baseSubjectsName[$s->getParent()->getSubjectId()] = $s->getParent()->getSubjectName();
+                    $lvlOneSubjects[$s->getParent()->getSubjectId()][] = $s;
+                }
+            }
+            return new ViewModel(array(
+                'message' => null,
+                'lvlOneSubjects' => $lvlOneSubjects,
+                'baseSubjectsName' => $baseSubjectsName,
+            ));
+        } catch (Exception $ex) {
+            return new ViewModel(array(
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                'lvlOneSubjects' => null,
+                'baseSubjectsName' => null,
+            ));
+        }
     }
 
     /**
@@ -68,25 +88,26 @@ class SchoolExamController extends AbstractEntityActionController
                     $subject = $em->getReference('SchoolManagement\Entity\Subject', $data['subject']);
                     $questionType = $data['questionType'];
                     if ($questionType > 0) { // Um tipo específico de questão foi selecionado
-                        $questions = $em->getRepository('SchoolManagement\Entity\ExamQuestion')->findBy(array(
+                        $questions = $em->getRepository('SchoolManagement\Entity\ExamQuestion')->findBy([
                             'examQuestionType' => $questionType,
                             'subject' => $subject,
-                        ));
+                        ]);
                     } else {
-                        $questions = $em->getRepository('SchoolManagement\Entity\ExamQuestion')->findBy(array(
+                        $questions = $em->getRepository('SchoolManagement\Entity\ExamQuestion')->findBy([
                             'subject' => $subject,
-                        ));
+                        ]);
                     }
                     foreach ($questions as $q) {
-                        $answers = '';
+                        $answers = [];
                         $answerOptions = $q->getAnswerOptions()->toArray();
                         foreach ($answerOptions as $ao) {
-                            $answers .= $ao->getExamAnswerDescription() . "<br>";
+                            $answers[] = $ao->getExamAnswerDescription();
                         }
                         $result[] = array(
                             'questionId' => $q->getExamQuestionId(),
                             'questionEnunciation' => $q->getExamQuestionEnunciation(),
-                            'questionAnswer' => $answers,
+                            'questionAnswers' => $answers,
+                            'questionAnswersStr' => implode("<br>", $answers),
                         );
                     }
                 }
@@ -94,7 +115,8 @@ class SchoolExamController extends AbstractEntityActionController
                 $result[] = array(
                     'questionId' => -1,
                     'questionEnunciation' => 'Erro: ' . $ex,
-                    'questionAnswer' => '-',
+                    'questionAnswers' => '-',
+                    'questionAnswersStr' => null,
                 );
             }
         }
@@ -137,22 +159,39 @@ class SchoolExamController extends AbstractEntityActionController
         $message = null;
 
         $q = $this->params('id', false);
+
         if ($q) {
+
             try {
                 $question = $em->find('SchoolManagement\Entity\ExamQuestion', $q);
                 $aId = null;
+
                 foreach ($question->getAnswerOptions() as $i => $q) {
                     if ($q->getIsCorrect()) {
                         $aId = $i;
                         break;
                     }
                 }
+
                 $typeBefore = $question->getExamQuestionType();
-                $form = new AddExamQuestionForm($em, count($question->getAnswerOptions()->toArray()));
+
+                $subId = $question->getSubject()->getSubjectId();
+                $form = new AddExamQuestionForm($em, $typeBefore, count($question->getAnswerOptions()->toArray()));
+
+                $form
+                    ->get('exam-question')
+                    ->get('subjectId')
+                    ->setValue($subId);
+                $form
+                    ->get('exam-question')
+                    ->get('correctAnswer')
+                    ->setValue($aId);
+
                 $form->bind($question);
-                $form->get('submit')->setAttribute('value', 'Editar');
+
                 if ($request->isPost()) {
                     $form->setData($request->getPost());
+
                     if ($form->isValid()) {
                         $data = $form->getData(\Zend\Form\FormInterface::VALUES_AS_ARRAY)['exam-question'];
 
@@ -160,7 +199,7 @@ class SchoolExamController extends AbstractEntityActionController
                         $ao = $question->getAnswerOptions()->toArray();
                         $correctAnswer = (int) ($data['correctAnswer']);
                         $examQuestionType = (int) ($data['examQuestionType']);
-                        
+
                         $alternatives = count($ao);
                         if ($examQuestionType === ExamQuestion::QUESTION_TYPE_CLOSED &&
                             $correctAnswer >= 0 && $correctAnswer < $alternatives &&
@@ -175,20 +214,21 @@ class SchoolExamController extends AbstractEntityActionController
                         //  Se o tipo da questão foi editado de fechada para aberta, remove todas as alternativas
                         if ($typeBefore === ExamQuestion::QUESTION_TYPE_CLOSED &&
                             $examQuestionType === ExamQuestion::QUESTION_TYPE_OPEN) {
-                            $question->removeAnswerOptions($question->getAnswerOptions());
+                            $ao[0]->setIsCorrect(true);
                         }
-                        $question->setSubject($em->find('SchoolManagement\Entity\Subject', $data['subjectId']));
+
+                        $question->setSubject($em->getReference('SchoolManagement\Entity\Subject', $data['subjectId']));
                         $em->persist($question);
                         $em->flush();
-                        $this->redirect()->toRoute('school-management/school-exam', array('action' => 'question'));
+                        return $this
+                                ->redirect()
+                                ->toRoute('school-management/school-exam', array('action' => 'question'));
                     }
                 }
 
                 return new ViewModel(array(
                     'message' => $message,
                     'form' => $form,
-                    'sId' => $question->getSubject()->getSubjectId(),
-                    'aId' => $aId,
                 ));
             } catch (Exception $ex) {
                 $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
@@ -200,8 +240,6 @@ class SchoolExamController extends AbstractEntityActionController
         return new ViewModel(array(
             'message' => $message,
             'form' => null,
-            'sId' => null,
-            'aId' => null,
         ));
     }
 
@@ -256,10 +294,10 @@ class SchoolExamController extends AbstractEntityActionController
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
+
                 $data = $form->getData(\Zend\Form\FormInterface::VALUES_AS_ARRAY)['exam-question'];
                 $ao = $examQuestion->getAnswerOptions()->toArray();
 
-                //  Conversão para inteiro
                 $correctAnswer = (int) ($data['correctAnswer']);
                 $examQuestionType = (int) ($data['examQuestionType']);
                 $alternatives = count($data['answerOptions']);
@@ -268,7 +306,11 @@ class SchoolExamController extends AbstractEntityActionController
                     $correctAnswer >= 0 && $correctAnswer < $alternatives) {
                     $ao[$correctAnswer]->setIsCorrect(true);
                 }
-                $examQuestion->setSubject($em->find('SchoolManagement\Entity\Subject', $data['subjectId']));
+                if ($examQuestionType === ExamQuestion::QUESTION_TYPE_OPEN && $alternatives > 0) {
+                    $ao[0]->setIsCorrect(true);
+                }
+                $examQuestion->setSubject($em->getReference('SchoolManagement\Entity\Subject', $data['subjectId']));
+
                 $em->persist($examQuestion);
                 $em->flush();
 

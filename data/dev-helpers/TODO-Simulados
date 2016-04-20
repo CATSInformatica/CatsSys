@@ -1,0 +1,61 @@
+
+Sugestões
+
+    Subject
+        FEITO - Remover o campo Professor de "Subject".                                         
+        FEITO - Exibir mensagem de sucesso ao cadastrar com sucesso a disciplina. 
+        FEITO - O formulário pode continuar sendo exibido para o próximo cadastro.
+    Questions
+        FEITO - Mudar ordenação de alternativas de "cardinal" para "Alfabética" (Apenas na interface) Exemplo: Alternativa 1 ~> Alternativa A.
+        FEITO - A inserção de imagens deveria ser feita via codificação da imagem em formato de texto, aparentemente, não está funcionando.
+        
+    FEITO - Em editar questão, executar a função de pré-visualização ao carregar a página
+pela primeira vez.
+    A pré-visualização está associada ao evento "keyup" talvez seja possível fazer algo
+do tipo (isto é só um rascunho que dará a ideia menos trabalhosa)
+
+   // Atualmente
+
+    $(selector).on("keyup", function() {
+        ... content
+    });
+
+    // Sugestão
+
+    $(selector).on("keyup", function() {
+        NewPreviewFunction($(this));
+    });
+
+    // no init do editar
+    NewPreviewFunction($(selector));
+
+    
+
+    FEITO - Em exibir questão alterar nome do select de Situação para Tipo e deixar pré-selecionada a opção Questão Fechada ao invés de Todas.
+
+    Simulados
+        FEITO - Na página de criação de simulados seria bastante interessante se, 
+para cada disciplina existisse a opção "Sem tópico definido" (ou um nome simular)
+ dentro do multiselect. Esta opção carrega, exatamente, as questões associadas
+diretamente a disciplina pai das opções do select.
+        Exemplo:
+        
+        Algebra:
+            - Polinômios
+            - Funções modulares
+            - Números irracionais
+            - ...
+            - Sem tópico definido
+
+        Neste exemplo, ao clicar na opção sem tópico definido, as questões associadas
+diretamente à algebra são carregadas. Ou seja, o id associado à opção "Sem tópico definido"
+é, exatamente, o id da disciplina de "Algebra".
+        Esta modificação é importante, pois evita que seja necessário criar imediatamente
+os tópicos de cada disciplina.
+
+    O MathJax não está funcionando na página de geração de simulados, acredito que 
+o motivo seja pelo fato de a imagem logo_logo_prova não estar presente (causando erro no js).
+    FEITO - Observação importante: Imagens em img/ devem ser adicionadas ao .gitignore.
+            Exemplo: !logo_prova.png
+
+    
