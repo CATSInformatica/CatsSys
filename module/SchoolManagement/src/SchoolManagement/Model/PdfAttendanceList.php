@@ -8,39 +8,44 @@
 
 namespace SchoolManagement\Model;
 
-use fpdf\FPDF;
+//use fpdf\FPDF;
+use Documents\Model\DefaultPdf;
 
 /**
  * Gera a lista de chamada da turma selecionada
  *
  * @author Breno Silva <brenog.silva@hotmail.com>
  */
-class PdfAttendanceList {
+class PdfAttendanceList
+{
 
     const FONT = 'Arial';
 
     private $students;
 
-    public function __construct($students = []) {
+    public function __construct($students = [])
+    {
         $this->students = $students;
         //$this->dummyStudents();
     }
 
-    protected function dummyStudents() {
+    protected function dummyStudents()
+    {
         for ($i = 0; $i < 103; $i++) {
             $this->students[] = $this->students[0];
         }
     }
 
-    public function generateList() {
-        $pdf = new FPDF('P', 'mm', 'A4');
+    public function generateList()
+    {
+        $pdf = new DefaultPdf('P', 'mm', 'A4');
         //cor do fundo(listras)
         $pdf->SetFillColor(220);
-        
+
         $pdf->addPage();
         $pdf->setMargins(5, 5, 5);
 
-        $pdf->SetXY(5, 20);
+        //$pdf->SetXY(0, 0);
         $pdf->SetDrawColor(150);
 
         $pdf->SetFont(self::FONT, 'B', 16);
@@ -58,9 +63,9 @@ class PdfAttendanceList {
 
         $pdf->SetFont(self::FONT, '', 8.3);
         foreach ($this->students as $idx => $student) {
-            if(!($idx%2)){
+            if (!($idx % 2)) {
                 $pdf->Cell(17, 4, $student["id"], '1', 0, 'C', true);
-                $pdf->Cell(75, 4, utf8_decode($student["name"]), '1', 0, 'L',true);
+                $pdf->Cell(75, 4, utf8_decode($student["name"]), '1', 0, 'L', true);
                 $pdf->Cell(18, 4, "", '1', 0, 'C', true);
                 $pdf->Cell(18, 4, "", '1', 0, 'C', true);
                 $pdf->Cell(18, 4, "", '1', 0, 'C', true);
@@ -78,7 +83,7 @@ class PdfAttendanceList {
                 $pdf->Cell(18, 4, "", '1', 1, 'C');
             }
         }
-        
+
         return $pdf->Output('Chamada.pdf', 'I', true);
     }
 
