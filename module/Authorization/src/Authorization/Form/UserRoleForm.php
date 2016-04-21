@@ -47,8 +47,8 @@ class UserRoleForm extends Form
             ))
             ->add(array(
                 'name' => 'Submit',
+                'type' => 'Submit',
                 'attributes' => array(
-                    'type' => 'submit',
                     'class' => 'btn btn-primary btn-block',
                     'value' => 'Go',
                 )
