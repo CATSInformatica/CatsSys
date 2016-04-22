@@ -149,4 +149,51 @@ class AttendanceRepository extends EntityRepository
         return $qb->getQuery()->getResult();
     }
 
+    /**
+     * Busca a presença dos tipos $types de todos os alunos atualmente matriculados na turma $schoolClass.
+     * 
+     * @param Connection $conn
+     * @param integer $schoolClass
+     * @param array $types
+     * @param string $date
+     * @return array
+     */
+    public static function findStudentAttendances(Connection $conn, $schoolClass, array $types, $date)
+    {
+
+        $query = $conn->createQueryBuilder();
+        $query
+            ->select(
+                'e.enrollment_id', 
+                'CONCAT(CONCAT(p.person_firstname, \' \'), p.person_lastname) as name'
+                )
+            ->from('enrollment', 'e')
+            ->innerJoin('e', 'registration', 'r', 'e.registration_id = r.registration_id')
+            ->innerJoin('e', 'person', 'p', 'r.person_id = p.person_id')
+            ->leftJoin('e', 'attendance', 'a', 'a.enrollment_id = a.enrollment_id')
+            ->where('e.enrollment_enddate IS NULL')
+            ->andWhere('e.class_id = ?')
+            ->andWhere('a.attendance_date = ?');
+
+        $orX = $query
+            ->expr()
+            ->orX();
+
+        $typeLength = count($types);
+
+        for ($i = 0; $i < $typeLength; $i++) {
+            $orX->add('a.attendance_type_id = ?');
+        }
+
+        $query
+            ->andWhere($orX)
+            ->orderBy('name', 'ASC')
+            ->setParameters(array_merge([$schoolClass, $date], $types));
+
+        $sth = $query->execute();
+        $list = $sth->fetchAll();
+
+        return $list;
+    }
+
 }

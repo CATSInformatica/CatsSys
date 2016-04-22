@@ -24,6 +24,7 @@ class AttendanceDateFieldset extends Fieldset implements InputFilterProviderInte
             'type' => 'text',
             'attributes' => array(
                 'class' => 'text-center',
+                'value' => date('d/m/Y'),
             ),
             'options' => array(
                 'add-on-prepend' => '<i class="glyphicon glyphicon-calendar"></i>',

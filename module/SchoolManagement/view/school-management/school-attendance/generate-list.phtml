@@ -28,7 +28,7 @@
                 </div>
 
                 <div class="col-md-12">
-                    <?php echo $this->formRow($form->get('submit')); ?>
+                    <?php echo $this->formSubmit($form->get('submit')); ?>
                 </div>
                 <?php echo $this->form()->closeTag(); ?>
 
@@ -40,7 +40,7 @@
 <script>
 
     appConfig = (function () {
-        var scriptSrc = 'app/pages/school-management/attendance/attendance';
+        var scriptSrc = 'app/pages/school-management/attendance/attendance-add-allowance';
         return {
             getScriptSrc: function () {
                 return scriptSrc;

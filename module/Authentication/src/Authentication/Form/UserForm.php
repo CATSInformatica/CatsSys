@@ -68,8 +68,8 @@ class UserForm extends Form
 
         $this->add(array(
             'name' => 'submit',
+            'type' => 'Submit',
             'attributes' => array(
-                'type' => 'submit',
                 'value' => 'Salvar',
                 'id' => 'submitbutton',
                 'class' => 'btn btn-primary btn-block'

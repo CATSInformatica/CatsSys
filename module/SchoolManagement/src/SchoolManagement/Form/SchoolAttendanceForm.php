@@ -98,6 +98,7 @@ class SchoolAttendanceForm extends Form implements InputFilterProviderInterface
                 'name' => 'submit',
                 'type' => 'submit',
                 'attributes' => array(
+                    'label' => 'Gerar Lista',
                     'value' => 'Gerar Lista',
                     'class' => 'btn-primary btn-block',
                 ),

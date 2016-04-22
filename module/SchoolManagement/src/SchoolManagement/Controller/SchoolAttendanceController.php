@@ -49,7 +49,7 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
     }
 
     /**
-     * Gera a lista de presença para uma turma em uma data selecionada
+     * Gera a lista de presença, em formato csv, para uma turma nas datas selecionadas
      */
     public function generateListAction()
     {
@@ -72,6 +72,79 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
                 'message' => 'Erro inesperado: ' . $ex->getMessage(),
             ));
         }
+    }
+
+    /**
+     * Gera a lista de presença, exibida na própria página, para uma turma nas datas selecionadas
+     * @return ViewModel
+     */
+    public function generateListV2Action()
+    {
+        try {
+            $em = $this->getEntityManager();
+            $form = new SchoolAttendanceForm($em,
+                [
+                AttendanceType::TYPE_ATTENDANCE_BEGIN,
+                AttendanceType::TYPE_ATTENDANCE_END
+                ]
+            );
+
+            return new ViewModel(array(
+                'form' => $form,
+                'message' => null,
+            ));
+        } catch (Exception $ex) {
+            return new ViewModel(array(
+                'form' => null,
+                'message' => 'Erro inesperado: ' . $ex->getMessage(),
+            ));
+        }
+    }
+
+    /**
+     * Busca as listas dos alunos nos dias 'dates' do tipo 'types' da turma 'classId'.
+     * 
+     * @return JsonModel
+     */
+    public function getListsAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
+
+            if (is_numeric($data['classId']) && count($data['dates']) > 0 && count($data['types']) > 0) {
+
+                try {
+
+
+                    $conn = $this->getDbalConnection();
+
+                    $lists = [];
+                    foreach ($data['dates'] as $date) {
+                        $lists[] = AttendanceRepository::findStudentAttendances(
+                                $conn, $data['classId'], $data['types'], $date
+                        );
+                    }
+
+                    return new JsonModel([
+                        'lists' => $lists,
+                    ]);
+                } catch (Exception $ex) {
+                    return new JsonModel([
+                        'message' => $ex->getMessage(),
+                    ]);
+                }
+            }
+
+            return new JsonModel([
+                'message' => 'Dados inválidos.',
+            ]);
+        }
+
+        return new JsonModel([
+            'message' => 'Esta url só pode ser acessada via post',
+        ]);
     }
 
     /**
@@ -100,7 +173,11 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
         if ($request->isPost()) {
 
             $em = $this->getEntityManager();
-            $form = new SchoolAttendanceForm($em);
+            $form = new SchoolAttendanceForm($em,
+                [
+                AttendanceType::TYPE_ATTENDANCE_BEGIN,
+                AttendanceType::TYPE_ATTENDANCE_END
+            ]);
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
@@ -158,7 +235,6 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
 
     public function saveAction()
     {
-
         $request = $this->getRequest();
 
         if ($request->isPost()) {

@@ -373,6 +373,12 @@ return array(
                             ),
                         ),
                     ),
+                    [
+                        'label' => 'Generate lists v2',
+                        'route' => 'school-management/school-attendance',
+                        'action' => 'generateListV2',
+                        'icon' => 'fa fa-list-alt',
+                    ],
                     array(
                         'label' => 'Add allowance',
                         'route' => 'school-management/school-attendance',
@@ -410,16 +416,6 @@ return array(
                         'route' => 'school-management/school-attendance',
                         'action' => 'analyze',
                         'icon' => 'fa fa-calculator',
-//                        'toolbar' => array(
-//                            array(
-//                                'url' => '/school-management/school-attendance/deleteAllowance/$id',
-//                                'title' => 'Remover Abono',
-//                                'id' => 'allowance-delete',
-//                                'description' => 'Remove os abonos selecionados',
-//                                'class' => 'fa fa-close bg-red',
-//                                'fntype' => 'selectedAjaxClick',
-//                            ),
-//                        ),
                     ),
                 ),
             ),
