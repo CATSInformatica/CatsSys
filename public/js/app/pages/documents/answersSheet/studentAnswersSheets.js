@@ -122,7 +122,6 @@ define(['filesaver'], function () {
 
         };
 
-
         markEnrollment = function (svg, idNumber, name) {
 
             var idNumber = enrollmentToArray(idNumber);
@@ -164,12 +163,15 @@ define(['filesaver'], function () {
 
             var blob = null;
             var data = null;
+            var documentName = "";
 
             for (var i = 0; i < svgs.length; i++) {
                 data = (new XMLSerializer())
                         .serializeToString(svgs[i][0]);
                 blob = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
-                saveAs(blob, svgs[i].data("identity") + "-" + (new Date).getTime() +
+                documentName = typeof svgs[i].data("identity") !== "undefined" 
+                ? svgs[i].data("identity") : "Modelo";
+                saveAs(blob, documentName + "-" + (new Date).getTime() +
                         ".svg");
             }
 
