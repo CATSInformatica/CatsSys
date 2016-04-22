@@ -151,10 +151,13 @@ define(['filesaver'], function () {
         formatTemplate = function () {
             var subtitle = $("#input-subtitle").val();
             var visibility = $("input[name=input-language]:checked").val();
-
-            svgTemplate.find("#subtitle > tspan").text(subtitle);
+            var svgWidth = svgTemplate[0].getAttribute("viewBox").split(" ")[2];
+            var textElement = svgTemplate.find("#subtitle > tspan");
+            textElement.text(subtitle);
+            var textWidth = textElement[0].getBoundingClientRect().width;
+            var xPosition = (svgWidth / 2) - (textWidth / 2);
+            textElement.attr("x", xPosition);
             svgTemplate.find("#language-group").attr("visibility", visibility);
-
         };
 
         print = function (svgs) {
