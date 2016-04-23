@@ -25,8 +25,22 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
         var allowanceMonth = $("#allowanceMonth");
         var allowanceStudentsByMonth = {};
         var allowanceStudents = $("#allowanceStudents");
-        
 
+        var ATTENDANCE_TYPES = {
+            ATTENDANCE_BEGIN: 1,
+            ATTENDANCE_END: 2,
+            ATTENDANCE_ALLOWANCE_BEGIN: 3,
+            ATTENDANCE_ALLOWANCE_END: 4,
+            ATTENDANCE_ALLOWANCE_FULL: 5
+        };
+
+
+        /**
+         * Calendário para controle da assiduidade
+         * 
+         * @param {type} monthElement
+         * @returns {undefined}
+         */
         initAttendanceMonthpicker = function (monthElement) {
 
             monthElement.datetimepicker({
@@ -65,6 +79,12 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             }
         };
 
+        /**
+         * Busca as faltas e abonos no intervalo especificado (intervalo = mês).
+         * @param {type} start
+         * @param {type} end
+         * @returns {undefined}
+         */
         searchAttendanceBetween = function (start, end) {
 
             var attr = start.split('-')[1];
@@ -94,6 +114,13 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             }
         };
 
+        /**
+         * Exibe a tabela de assiduidade dos alunos.
+         * 
+         * @param {type} month
+         * @param {type} data
+         * @returns {undefined}
+         */
         showMonthAttendance = function (month, data) {
 
             var tab = "tab_" + month;
@@ -120,6 +147,13 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             });
         };
 
+        /**
+         * Faz os cálculos dos valores de presença dos alunos.
+         * 
+         * @param {type} month
+         * @param {type} data
+         * @returns {String}
+         */
         mountAnalysisTable = function (month, data) {
 
             var ret = getDaysArrayByMonth(month);
@@ -129,7 +163,9 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             var tr = "";
             var max = sum(arrMax);
             var achieved;
+
             $.each(data, function (enroll, content) {
+
                 tr += "<tr>";
                 tr += "<td class='text-right'>" +
                         ("0000" + enroll).substring(enroll.length) + "</td>";
@@ -142,22 +178,45 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                 $.each(days, function (day, dayOfWeek) {
 
                     if (dayOfWeek !== 0) {
+                        /**
+                         * Existe falta ou abono do dia 'day'
+                         */
                         if (content.hasOwnProperty(day)) {
+
                             sit = content[day];
-                            if (sit.hasOwnProperty("5")) {
+
+                            /**
+                             * Se possui abono integral ganha 
+                             * presença completa do dia
+                             * 
+                             */
+                            if (sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_FULL)) {
                                 arrCurrent[dayOfWeek] += 1;
                             } else {
-                                if (sit.hasOwnProperty("1")) {
-                                    arrCurrent[dayOfWeek] += 0.5;
-                                } else if (sit.hasOwnProperty("3")) {
+
+                                /**
+                                 * Se possui abono do início do dia ou 
+                                 * não possui falta do início do dia
+                                 * ganha presença parcial
+                                 */
+                                if (sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_BEGIN)
+                                        || !sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_BEGIN)) {
                                     arrCurrent[dayOfWeek] += 0.5;
                                 }
-                                if (sit.hasOwnProperty("2")) {
-                                    arrCurrent[dayOfWeek] += 0.5;
-                                } else if (sit.hasOwnProperty("4")) {
+
+                                /**
+                                 * Se possui abono do final do dia ou 
+                                 * não possui falta do final do dia
+                                 * ganha presença parcial
+                                 */
+                                if (sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END)
+                                        || !sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_END)) {
                                     arrCurrent[dayOfWeek] += 0.5;
                                 }
                             }
+                        } else {
+                            //Não existe falta nem abono, aluno presente.
+                            arrCurrent[dayOfWeek] += 1;
                         }
                     }
                 });
@@ -198,6 +257,13 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             return table;
         };
 
+        /**
+         * Utilizado pelo editar abono.
+         * 
+         * @param {type} start
+         * @param {type} end
+         * @returns {undefined}
+         */
         searchAllowanceBetween = function (start, end) {
 
             /**
@@ -263,6 +329,12 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             }
         };
 
+        /**
+         * Arrasta os abonos do mês para o topo ao clicar no calendário.
+         * 
+         * @param {type} month
+         * @returns {undefined}
+         */
         moveMonthAllowancesUp = function (month) {
             allowanceStudents
                     .find("#month-" + month)
@@ -272,6 +344,13 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                     .slideDown("fast");
         };
 
+        /**
+         * Exibe os abonos do mês.
+         * 
+         * @param {type} month
+         * @param {type} content
+         * @returns {undefined}
+         */
         showMonthAllowances = function (month, content) {
 
             var monthTemplate = "<div class='box box-solid' style='display:none;' id='month-" + month + "'>" +
@@ -330,6 +409,12 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             monthTemplate.slideDown("fast");
         };
 
+        /**
+         * Busca os dias do mês para a listagem dos abonos de cada dia.
+         * 
+         * @param {type} month
+         * @returns {analyze-edit-allowance_L18.analyze-edit-allowance_L19.getDaysArrayByMonth.analyze-edit-allowanceAnonym$8}
+         */
         getDaysArrayByMonth = function (month) {
             var daysInMonth = moment(month, "MM").daysInMonth();
             var days = {};
@@ -348,6 +433,11 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             };
         };
 
+        /**
+         * Soma os valores do array, utilzado na análise.
+         * @param {type} arr
+         * @returns {Number}
+         */
         sum = function (arr) {
             var sum = 0;
             for (var i = 1; i < arr.length; i++) {
@@ -355,8 +445,6 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             }
             return sum;
         };
-
-        
 
         return {
             init: function () {

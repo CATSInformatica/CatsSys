@@ -117,14 +117,15 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
 
                 try {
 
-
                     $conn = $this->getDbalConnection();
 
                     $lists = [];
                     foreach ($data['dates'] as $date) {
-                        $lists[] = AttendanceRepository::findStudentAttendances(
-                                $conn, $data['classId'], $data['types'], $date
-                        );
+                        foreach ($data['types'] as $type) {
+                            $lists[$date][$type] = AttendanceRepository::findStudentAttendances(
+                                    $conn, $data['classId'], $date, $type
+                            );
+                        }
                     }
 
                     return new JsonModel([
@@ -233,6 +234,11 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
         );
     }
 
+    /**
+     * Salva a lista de presença (salva apenas faltas) na data $date, dos tipos 'types' dos alunos 'students'.
+     * 
+     * @return JsonModel
+     */
     public function saveAction()
     {
         $request = $this->getRequest();
@@ -244,9 +250,15 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
             $conn = $this->getDbalConnection();
             try {
 
-                AttendanceRepository::insertNewList(
-                    $conn, $data['students'], $date
-                );
+                if (!empty($data['students'])) {
+                    AttendanceRepository::insertNewList(
+                        $conn, $date, $data['types'], $data['students']
+                    );
+                } else {
+                    AttendanceRepository::insertNewList(
+                        $conn, $date, $data['types']
+                    );
+                }
 
                 $message = 'Lista de ' . $date->format('d/m/Y') . ' enviada com sucesso.';
             } catch (\Exception $ex) {
@@ -264,7 +276,7 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
     }
 
     /*
-     * gera a lista de chamada para a turma selecionada
+     * Gera a lista de chamada para a turma selecionada.
      * 
      */
 

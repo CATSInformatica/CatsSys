@@ -32,7 +32,8 @@ and open the template in the editor.
     
     &:hover td {
         @extend .cats-selected-bg;
-    }
+        transition: 0s !important;
+    };
 }
 
 .cats-selected-bg {
