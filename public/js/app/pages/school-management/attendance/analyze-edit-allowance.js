@@ -86,9 +86,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
          * @returns {undefined}
          */
         searchAttendanceBetween = function (start, end) {
-
             var attr = start.split('-')[1];
-
             if (typeof attendanceStudentsByMonth[attr] === "undefined") {
                 attendanceStudentsByMonth[attr] = true;
 
@@ -157,6 +155,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
         mountAnalysisTable = function (month, data) {
 
             var ret = getDaysArrayByMonth(month);
+
             var days = ret.days;
             var arrMax = ret.daysOfTheWeek;
             var table = "";
@@ -416,12 +415,13 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
          * @returns {analyze-edit-allowance_L18.analyze-edit-allowance_L19.getDaysArrayByMonth.analyze-edit-allowanceAnonym$8}
          */
         getDaysArrayByMonth = function (month) {
+
             var daysInMonth = moment(month, "MM").daysInMonth();
             var days = {};
             var daysOfTheWeek = [0, 0, 0, 0, 0, 0, 0];
 
             while (daysInMonth) {
-                var current = moment().date(daysInMonth);
+                var current = moment(month, "MM").date(daysInMonth);
                 days[current.format("YYYYMMDD")] = current.format("e");
                 daysOfTheWeek[current.format("e")]++;
                 daysInMonth--;
