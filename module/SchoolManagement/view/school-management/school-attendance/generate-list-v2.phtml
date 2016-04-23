@@ -1,56 +1,6 @@
 <section class="content">
     <div class="row">
         <div class="col-md-12 col-xs-12">
-            <div class="box box-info">
-                <div class="box-header with-border">
-                    <h3 class="box-title"><span class="fa fa-wrench"></span> Configuração</h3>
-                    <div class="box-tools pull-right">
-                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                            <i class="fa fa-minus"></i>
-                        </button>
-                    </div>
-                </div>
-                <!-- /.box-header -->
-                <div class="box-body" style="display: block;">
-                    <p><?php echo $message ?></p>
-                    <?php if ($form !== null): ?>
-                        <?php $form->prepare(); ?>
-                        <?php echo $this->form()->openTag($form); ?>
-                        <div class="col-md-12 col-xs-12">
-                            <?php echo $this->formRow($form->get('schoolClasses')); ?>
-                        </div>
-
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <label>Inserir/Remover datas</label>
-                                <div class="btn-group btn-block" role="toolbar" aria-label="attendance date buttons">
-                                    <?php echo $this->formElement($form->get('addAttendanceDate')); ?>
-                                    <?php echo $this->formElement($form->get('removeAttendanceDate')); ?>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div class="col-md-12 col-xs-12">
-                            <?php echo $this->formCollection($form->get('dates')); ?>
-                        </div>
-
-                        <div class="col-md-12 col-xs-12">
-                            <?php echo $this->formRow($form->get('attendanceType')); ?>
-                        </div>
-
-                        <div class="col-md-12">
-                            <div class="form-group">
-                                <button id="generatev2" type="button" class="btn btn-primary btn-block">Gerar Lista</button>
-                            </div>
-                        </div>
-                        <?php echo $this->form()->closeTag(); ?>
-                    <?php endif; ?>
-                </div>
-                <!-- /.box-body -->
-            </div>
-        </div>
-        
-        <div class="col-md-12 col-xs-12">
             <div class="box box-danger">
                 <div class="box-header with-border">
                     <h3 class="box-title"><span class="fa fa-list-alt"></span> Listas</h3>
@@ -62,11 +12,65 @@
                 </div>
                 <!-- /.box-header -->
                 <div class="box-body" style="display: block;">
+                    <div class="col-md-8 col-md-offset-2">
+                        <div class="table-responsive">
+                            <table id="attendanceV2Table" class="table table-bordered table-condensed 
+                                   table-striped attendanceListTable">
+                            </table>
+                        </div>
+                    </div>
                 </div>
                 <!-- /.box-body -->
             </div>
         </div>
-        
+        <div class="col-md-12 col-xs-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><span class="fa fa-wrench"></span> Configuração</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="display: block;">
+                    <div class="col-md-8 col-md-offset-2">
+                        <p><?php echo $message ?></p>
+                        <?php if ($form !== null): ?>
+                            <?php $form->prepare(); ?>
+                            <?php echo $this->form()->openTag($form); ?>
+
+                            <?php echo $this->formRow($form->get('schoolClasses')); ?>
+                            <label>Inserir/Remover datas</label>
+                            <div class="col-md-12">
+                                <div class="btn-group btn-block" role="toolbar" aria-label="attendance date buttons">
+                                    <?php echo $this->formElement($form->get('addAttendanceDate')); ?>
+                                    <?php echo $this->formElement($form->get('removeAttendanceDate')); ?>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12">
+                                <br>
+                                <?php echo $this->formCollection($form->get('dates')); ?>
+                            </div>
+
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <?php echo $this->formRow($form->get('attendanceType')); ?>
+                                </div>  
+                            </div>
+
+                            <div class="col-md-12">
+                                <button id="generatev2" type="button" class="btn btn-primary btn-block">Gerar Lista</button>
+                            </div>
+                            <?php echo $this->form()->closeTag(); ?>
+                        <?php endif; ?>
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
 </section>
 <script>
 

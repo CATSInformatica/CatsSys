@@ -48,55 +48,43 @@ class AttendanceRepository extends EntityRepository
     }
 
     /**
-     * Salva a lista de presença de uma data específica no banco de dados
+     * Salva a lista de presença (salva as faltas) de uma data específica no banco de dados.
      * 
      * @param Connection $conn
-     * @param array $students
-     * @param DateTime $date
+     * @param DateTime $date Data da lista de presença
+     * @param array $types Tipos de presença
+     * @param array $students Alunos
      * @throws Exception
      */
-    public static function insertNewList(Connection $conn, array $students, DateTime $date)
+    public static function insertNewList(Connection $conn, DateTime $date, array $types, array $students = [])
     {
         $conn->beginTransaction();
         try {
 
-            $conn->delete('attendance',
-                [
-                'attendance_date' => $date,
-                'attendance_type_id' => AttendanceType::TYPE_ATTENDANCE_BEGIN,
-                ], [
-                'date',
-                PDO::PARAM_INT,
-            ]);
-
-            $conn->delete('attendance',
-                [
-                'attendance_date' => $date,
-                'attendance_type_id' => AttendanceType::TYPE_ATTENDANCE_END,
-                ], [
-                'date',
-                PDO::PARAM_INT,
-            ]);
+            foreach ($types as $type) {
+                $conn->delete('attendance',
+                    [
+                    'attendance_date' => $date,
+                    'attendance_type_id' => $type,
+                    ], [
+                    'date',
+                    PDO::PARAM_INT,
+                ]);
+            }
 
             foreach ($students as $student) {
-
-                foreach ($student['types'] as $stype) {
-
-                    if ($stype['status']) {
-                        $conn->insert('attendance',
-                            [
-                            'enrollment_id' => $student['id'],
-                            'attendance_type_id' => $stype['id'],
-                            'attendance_date' => $date,
-                            ],
-                            [
-                            PDO::PARAM_INT,
-                            PDO::PARAM_INT,
-                            'date'
-                            ]
-                        );
-                    }
-                }
+                $conn->insert('attendance',
+                    [
+                    'enrollment_id' => $student['id'],
+                    'attendance_type_id' => $student['type'],
+                    'attendance_date' => $date,
+                    ],
+                    [
+                    PDO::PARAM_INT,
+                    PDO::PARAM_INT,
+                    'date'
+                    ]
+                );
             }
             $conn->commit();
         } catch (Exception $ex) {
@@ -150,47 +138,29 @@ class AttendanceRepository extends EntityRepository
     }
 
     /**
-     * Busca a presença dos tipos $types de todos os alunos atualmente matriculados na turma $schoolClass.
+     * Busca as faltas dos tipos $type de todos os alunos atualmente matriculados na turma $schoolClass na data $date.
      * 
      * @param Connection $conn
      * @param integer $schoolClass
-     * @param array $types
      * @param string $date
+     * @param integer $type
      * @return array
      */
-    public static function findStudentAttendances(Connection $conn, $schoolClass, array $types, $date)
+    public static function findStudentAttendances(Connection $conn, $schoolClass, $date, $type)
     {
 
         $query = $conn->createQueryBuilder();
-        $query
-            ->select(
-                'e.enrollment_id', 
-                'CONCAT(CONCAT(p.person_firstname, \' \'), p.person_lastname) as name'
-                )
-            ->from('enrollment', 'e')
-            ->innerJoin('e', 'registration', 'r', 'e.registration_id = r.registration_id')
-            ->innerJoin('e', 'person', 'p', 'r.person_id = p.person_id')
-            ->leftJoin('e', 'attendance', 'a', 'a.enrollment_id = a.enrollment_id')
+        $sth = $query
+            ->select('a.enrollment_id')
+            ->from('attendance', 'a')
+            ->join('a', 'enrollment', 'e', 'e.enrollment_id = a.enrollment_id')
             ->where('e.enrollment_enddate IS NULL')
             ->andWhere('e.class_id = ?')
-            ->andWhere('a.attendance_date = ?');
+            ->andWhere('a.attendance_date = ?')
+            ->andWhere('a.attendance_type_id = ?')
+            ->setParameters([$schoolClass, $date, $type])
+            ->execute();
 
-        $orX = $query
-            ->expr()
-            ->orX();
-
-        $typeLength = count($types);
-
-        for ($i = 0; $i < $typeLength; $i++) {
-            $orX->add('a.attendance_type_id = ?');
-        }
-
-        $query
-            ->andWhere($orX)
-            ->orderBy('name', 'ASC')
-            ->setParameters(array_merge([$schoolClass, $date], $types));
-
-        $sth = $query->execute();
         $list = $sth->fetchAll();
 
         return $list;

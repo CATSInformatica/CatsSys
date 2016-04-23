@@ -20,6 +20,9 @@ and open the template in the editor.
   background: white;
   color: #333; }
 
+.attendanceListTable tr:hover td {
+  transition: 0s !important; }
+
 .cats-selected-bg, .attendanceListTable tr:hover td {
   background-color: #5d9ede;
   transition: all 0.5s;

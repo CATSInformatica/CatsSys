@@ -378,6 +378,16 @@ return array(
                         'route' => 'school-management/school-attendance',
                         'action' => 'generateListV2',
                         'icon' => 'fa fa-list-alt',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/school-management/school-attendance/save',
+                                'title' => 'Enviar Lista',
+                                'id' => 'attendance-listv2-save',
+                                'description' => 'Salva ou atualiza a lista selecionada',
+                                'class' => 'fa fa-upload bg-green',
+                                'fntype' => 'ajaxPostClick',
+                            ),
+                        ),
                     ],
                     array(
                         'label' => 'Add allowance',
