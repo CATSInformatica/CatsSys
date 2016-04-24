@@ -321,6 +321,7 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
             });
         };
         importReset = function () {
+            listModels = [];
             attendanceLists.html("");
         };
         createLists = function () {
