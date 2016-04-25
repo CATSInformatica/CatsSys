@@ -44,12 +44,11 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
                 if (isNaN(oldValue)) {
                     oldValue = 0;
                 }
-                if ($('#s-' + sId + '-amount').html() !== '') {
-                    subjectAmount += parseInt($('#s-' + sId + '-amount').html());
+                if ($('#select-' + sId).find('.q-amount').html() !== '') {
+                    subjectAmount += parseInt($('#select-' + sId).find('.q-amount').html());
                     subjectAmount -= oldValue;
                 }
-                $('#s-' + sId + '-amount').html(subjectAmount);
-
+                $('#select-' + sId).find('.q-amount').html(subjectAmount);
                 $(this).data('old-value', subjectAmount);
 
                 var count = 0;
@@ -58,7 +57,8 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
                         count += parseInt($(this).val());
                     }
                 });
-                $('#question-count').html('Total: ' + count);
+                $('#question-count').html(count);
+                updateRemainingQuestions();
             });
 
             /*
@@ -89,8 +89,21 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
              * Mostra o diálogo de impressão do simulado
              */
             $('#print-exam').click(function () {
-                //  Prepara a div #print-page
-                generateExam();                
+
+                var firstPage = null;
+                if ($('.exam-questions .wording-block').length !== 0) {
+                    firstPage = $(".exam-page").first().clone().addClass("page")
+                            .css("display", "block");
+                    var wordingBlock = $('.exam-questions .wording-block').clone();
+                    wordingBlock.find('do-not-print').each(function () {
+                        $(this).remove();
+                    });
+                    firstPage.find('.exam-content').html(wordingBlock.html());
+                    firstPage.find('.page-number').html('1');
+                }
+
+                //  Prepara a div #print-page (columnizer)
+                generateExam();
 
                 MathJax.Hub.Queue(["Typeset", MathJax.Hub, 'print-page'], function () {
                     //  Abre o diálogo de impressão da div #print-page usando jqueryprint
@@ -101,7 +114,7 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
                         noPrintSelector: null,
                         iframe: true,
                         append: null,
-                        prepend: null,
+                        prepend: firstPage,
                         manuallyCopyFormValues: true,
                         deferred: $.Deferred(),
                         timeout: 250,
@@ -115,14 +128,14 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
              * Remove a questão a qual está associado o ícone
              */
             $('.exam-questions').on('click', '.rm-question', function () {
-                removeQuestion(parseInt(parseInt($(this).parents('.question-block').attr('id').substr(2))));
+                removeQuestion(parseInt(parseInt($(this).parents('.question-block').data('id'))));
             });
 
             /*
              * Troca de posição com a questão de cima, se existir e for da mesma disciplina.
              */
             $('.exam-questions').on('click', '.move-up', function () {
-                var qBlock = $(this).parent().parent();
+                var qBlock = $(this).parents('.question-block');
                 var previous = qBlock.prev('.question-block');
                 if (previous.length !== 0) {
                     var qNumber = qBlock.find('.q-number').html();
@@ -136,7 +149,7 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
              * Troca de posição com a questão de baixo, se existir e for da mesma disciplina.
              */
             $('.exam-questions').on('click', '.move-down', function () {
-                var qBlock = $(this).parent().parent();
+                var qBlock = $(this).parents('.question-block');
                 var next = qBlock.next('.question-block');
                 if (next.length !== 0) {
                     var qNumber = qBlock.find('.q-number').html();
@@ -151,6 +164,20 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
              */
             $('#exam-name-input').on('keyup', function () {
                 $('.exam-name').html($('#exam-name-input').val());
+            });
+        };
+
+        updateRemainingQuestions = function () {
+            $('#remaining-questions')
+                    .html(parseInt($('#question-count').html()) - questionCount);
+        };
+
+        /*
+         * Provoca a contagem do número total de questões, definidas por padrão, e atualiza a interface
+         */
+        initQuestionAmount = function () {
+            $(".amount-input").each(function () {
+                $(this).trigger("change");
             });
         };
 
@@ -201,7 +228,8 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
                                     "id": "question-" + data[i].questionId,
                                     "data-id": data[i].questionId
                                 },
-                                0: '<input type="checkbox" class="select-questions" value="' + data[i].questionId + '">',
+                                0: '<input type="checkbox" class="select-questions" value="'
+                                        + data[i].questionId + '">',
                                 1: data[i].questionEnunciation
                             });
                         }
@@ -220,8 +248,10 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
 
             var content_height = 900;
             var page = 1;   // Número da primeira página
-            
-            
+            if ($('.exam-questions .wording-block').length !== 0) {
+                page = 2; // Página 1 - Redação
+            }
+
             $('#exam-part-1').append('<div id="exam-temp"></div>');
             $('#exam-temp').html($("#preview-page").first().html());
             $('#exam-temp').find('.do-not-print').each(function () {
@@ -231,7 +261,8 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
 
             function buildExamLayout() {
                 if ($('#exam-temp > .exam-questions').contents().length > 0) {
-                    $page = $(".exam-page").first().clone().addClass("page").css("display", "block");
+                    $page = $(".exam-page").first().clone().addClass("page")
+                            .css("display", "block");
 
                     $page.find(".page-number").first().append(page++);
                     $("#print-page").append($page);
@@ -262,30 +293,127 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
          */
         addQuestion = function (qId) {
             if (typeof selectedQuestions[qId] === 'undefined' || selectedQuestions[qId] === false) {
+                var subjectId = examQuestions[qId]['subject'];
+                var baseSubjectId = $('#last-selected').parents('.base-subject-info').data('id');
+                var subjectName = $('#select-' + examQuestions[qId]['subject']).data("name");
+
                 selectedQuestions[qId] = true;
                 ++questionCount;
-                var subjectId = examQuestions[qId]['subject'];
-                if ($('#s-' + subjectId).length === 0) {
-                    var subjectName = $('option[value="' + subjectId + '"]').html();
-                    $('.exam-questions').append('<div id="s-' + examQuestions[qId]['subject'] + '">'
-                            + '<h3 class="text-center no-margin dontend"><strong class="title">' + subjectName + '</strong></h3></div>');
-                }
-                var q = '<div id=q-' + qId + ' class="question-block">'
-                        + '<span class="do-not-print control-icons pull-right">'
-                        + '<i class="rm-question fa fa-times"></i><br>'
-                        + '<i class="move-up fa fa-sort-asc"></i><br>'
-                        + '<i class="move-down fa fa-sort-desc"></i>'
-                        + '</span>'
-                        + '<div><p class="text-justify"><span class="q-number">' + questionCount + '</span>) ' + examQuestions[qId]['enunciation'] + '</p></div>';
+                $('#select-' + subjectId).find('.q-added')
+                        .html(parseInt($('#select-' + subjectId).find('.q-added').html()) + 1);
 
-                var alternativeListStyle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
-                for (var i = 0; i < examQuestions[qId]['alternatives'].length; ++i) {
-                    q += '<div><p class="text-justify">' + alternativeListStyle[i] + ') ' + examQuestions[qId]['alternatives'][i] + '</div>';
-                }
-                q += '</div>';
+                if (subjectName === "TEMAS PARA REDAÇÃO") {
+                    baseSubjectId = subjectId;
+                    if ($('#s-' + subjectId).length === 0) {
+                        var wordingBlock = '<div id="s-' + subjectId + '"'
+                                + 'class="wording-block do-not-print">'
+                                + '<h3 class="text-center no-margin">'
+                                + '<strong class="title"> PROPOSTA DE REDAÇÃO'
+                                + '</strong></h3></div>';
 
-                $('#s-' + examQuestions[qId]['subject']).append(q);
+                        $('.exam-questions').prepend(wordingBlock);
+                    }
+
+                    --questionCount;
+
+                    var q = '<div id="q-' + qId + '" class="question-block"'
+                            + 'data-id="' + qId + '" data-subject-id="' + subjectId + '">'
+                            + '<span class="do-not-print control-icons pull-right">'
+                            + '<i class="rm-question fa fa-times"></i><br>'
+                            + '</span>' + examQuestions[qId]['enunciation'];
+                } else {
+
+                    if (subjectName === "INGLÊS" || subjectName === "ESPANHOL") {
+                        baseSubjectId = subjectId;
+                        if ($('#s-' + subjectId).length === 0) {
+                            var subjectBlock = '<div id="s-' + subjectId + '">'
+                                    + '<h3 class="text-center no-margin">'
+                                    + '<strong class="title"> OPÇÃO ' + subjectName
+                                    + '</strong></h3></div>';
+                            switch (subjectName) {
+                                case "INGLÊS":
+                                    subjectBlock = subjectBlock
+                                            .replace('<div id', '<div class="english-block" id');
+
+                                    var wordingBlock = $('.exam-questions').first()
+                                            .find('.wording-block');
+                                    if (wordingBlock.length !== 0) {
+                                        wordingBlock.after(subjectBlock);
+                                    } else {
+                                        $('.exam-questions').prepend(subjectBlock);
+                                    }
+                                    break;
+                                case "ESPANHOL":
+                                    subjectBlock = subjectBlock
+                                            .replace('<div id', '<div class="spanish-block" id');
+
+                                    var englishBlock = $('.exam-questions').first()
+                                            .find('.english-block');
+                                    var wordingBlock = $('.exam-questions').first()
+                                            .find('.wording-block');
+                                    if (englishBlock.length !== 0) {
+                                        englishBlock.after(subjectBlock);
+                                    } else if (wordingBlock.length !== 0) {
+                                        wordingBlock.after(subjectBlock);
+                                    } else {
+                                        $('.exam-questions').prepend(subjectBlock);
+                                    }
+                                    break;
+                            }
+                        }
+                    } else if ($('#s-' + baseSubjectId).length === 0) { //  Se ainda não existir um bloco de questões dessa matéria, cria-se
+                        var baseSubjectName = $('#last-selected')
+                                .parents('.base-subject-info').data('name');
+                        $('.exam-questions').append('<div id="s-' + baseSubjectId + '">'
+                                + '<h3 class="text-center no-margin">'
+                                + '<strong class="title">' + baseSubjectName
+                                + '</strong></h3></div>');
+                    }
+
+                    var q = '<div id="q-' + qId + '" class="question-block"'
+                            + 'data-id="' + qId + '" data-subject-id="' + subjectId + '">'
+                            + '<span class="do-not-print control-icons pull-right">'
+                            + '<i class="rm-question fa fa-times"></i><br>'
+                            + '<i class="move-up fa fa-sort-asc"></i><br>'
+                            + '<i class="move-down fa fa-sort-desc"></i>'
+                            + '</span>' + '<p class="no-margin"><strong>QUESTÃO '
+                            + '<span class="q-number">' + questionCount + '</span>'
+                            + '</strong></p>' + examQuestions[qId]['enunciation'];
+
+                    for (var i = 0; i < examQuestions[qId]['alternatives'].length; ++i) {
+                        var alternative = examQuestions[qId]['alternatives'][i]
+                                .replace(/(<div.*?>)/,  '$1<span class="push-left">' 
+                                + '&#' + (9398 + i) + ';  </span>');
+                        if (alternative === examQuestions[qId]['alternatives'][i]) {
+                            alternative = '<span class="push-left">' 
+                                    + '&#' + (9398 + i) + ';  </span>' 
+                                    + alternative;
+                        }
+                        q += '<div>' + alternative + '</div>';
+                    }
+                    updateRemainingQuestions();
+                    q += '<hr class="q-divider"></div>';
+                }
+                $('#s-' + baseSubjectId).append(q);
+                reenumerateQuestions();
             }
+        };
+
+        /*
+         * Reenumera as questões 
+         */
+        reenumerateQuestions = function () {
+            var questions = $('.exam-questions > div');
+            var number = 1;
+
+            questions.each(function () {
+                if ($(this).hasClass('spanish-block')) {
+                    number = 1;
+                }
+                $(this).find('.question-block .q-number').each(function () {
+                    $(this).html(number++);
+                });
+            });
         };
 
         /*
@@ -294,29 +422,42 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
          * @param {int} qId - id da questão
          */
         removeQuestion = function (qId) {
+            selectedQuestions[qId] = false;
+
+            var subjectName = $('#select-' + examQuestions[qId]['subject']).data("name");
+            if (subjectName !== "TEMAS PARA REDAÇÃO") {
+                --questionCount;
+            }
+
             var qBlock = $('#q-' + qId);
             var qNumber = qBlock.find('.q-number').html();
+
+            $('#select-' + examQuestions[qId]['subject']).find('.q-added')
+                    .html(parseInt($('#select-' + examQuestions[qId]['subject'])
+                            .find('.q-added').html()) - 1);
+            updateRemainingQuestions();
 
             qBlock.nextAll().each(function () {
                 $(this).find('.q-number').html(qNumber++);
             });
             qBlock.parent().nextAll().each(function () {
-                $(this).find('.question-block .q-number').html(qNumber++);
+                $(this).find('.question-block .q-number').each(function () {
+                    $(this).html(qNumber++);
+                });
             });
-
-            if (qBlock.siblings('.question-block').length === 0) {
-                qBlock.parent().remove();
-            }
-
+            var parent = qBlock.parent();
             qBlock.remove();
-            selectedQuestions[qId] = false;
-            --questionCount;
+            if (parent.find('.question-block').length === 0) {
+                parent.remove();
+            }
+            reenumerateQuestions();
         };
 
         return {
             init: function () {
                 setListeners();
                 initDataTable();
+                initQuestionAmount();
             }
         };
 
