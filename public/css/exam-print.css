@@ -31,25 +31,22 @@
 }
 
 .exam-header {
-    width: 196mm;
-    height: 23mm;
-    border-bottom: 1px solid lightgray;
-    padding: 5mm 0 2mm;
-    margin-left: 7mm;
+    width: 210mm;
+    height: 26mm;
+    padding: 5mm 0;
 }
 
 .exam-content {
     width: 210mm;
-    padding: 2mm 7mm;
-    height: 260mm;
+    padding: 0 15mm;
+    height: 256mm;
+    margin: 0;
 }
 
 .exam-footer {
-    width: 196mm;
-    height: 14mm;
-    border-top: 1px solid lightgray;
-    padding: 2mm 3mm 5mm;
-    margin-left: 7mm;
+    width: 210mm;
+    height: 15mm;
+    padding: 5mm 12mm 5mm;
 }
 
 .exam-footer p {
@@ -60,10 +57,6 @@
     display: none;
 }
 
-.q-divider {
-    margin: 1.2mm;
-    border-top-color: lightgray;
-}
 
 #preview-page {
     width: 210mm;
@@ -79,30 +72,24 @@
     -webkit-column-count: 2;
 }
 
-.exam-content h3 {
-    font-size: 20px;
-}
-
-.question-block * {
-    line-height: 4.2mm;
-}
-
 .question-block div p {
     margin: 5px 0 0;
 }
 
 .first.column {
-    padding-right: 2mm;
-    border-right: 1px solid darkgray;
+    padding-right: 4mm;
 }
 
-.last.column {
-    padding-left: 2mm;
+.second.column {
+    padding-left: 4mm;
 }
 
 .title {
-    font-size: 17px; 
-    line-height: 18px;
+    font-size: 13pt;  
+}
+
+.q-number {
+    float: left;
 }
 
 .fa-times:hover, .fa-sort-asc:hover, .fa-sort-desc:hover {

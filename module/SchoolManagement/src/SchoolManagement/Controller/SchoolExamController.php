@@ -20,7 +20,6 @@
 namespace SchoolManagement\Controller;
 
 use Database\Controller\AbstractEntityActionController;
-use Doctrine\Common\Collections\Criteria;
 use SchoolManagement\Form\SearchQuestionsForm;
 use SchoolManagement\Form\AddExamQuestionForm;
 use SchoolManagement\Entity\ExamQuestion;
@@ -45,16 +44,25 @@ class SchoolExamController extends AbstractEntityActionController
     {
         try {
             $em = $this->getEntityManager();
-            $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')->findBy(array('parent' => null));
-            
+            $subjects = $em->getRepository('SchoolManagement\Entity\Subject')->findAll();
+            $lvlOneSubjects = [];
+            $baseSubjectsName = [];
+            foreach ($subjects as $s) {
+                if ($s->getParent() !== null && $s->getParent()->getParent() === null) {
+                    $baseSubjectsName[$s->getParent()->getSubjectId()] = $s->getParent()->getSubjectName();
+                    $lvlOneSubjects[$s->getParent()->getSubjectId()][] = $s;
+                }
+            }
             return new ViewModel(array(
                 'message' => null,
-                'baseSubjects' => $baseSubjects,
+                'lvlOneSubjects' => $lvlOneSubjects,
+                'baseSubjectsName' => $baseSubjectsName,
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
                 'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
-                'baseSubjects' => null,
+                'lvlOneSubjects' => null,
+                'baseSubjectsName' => null,
             ));
         }
     }
