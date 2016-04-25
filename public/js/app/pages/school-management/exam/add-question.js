@@ -227,6 +227,7 @@ define(['jquery', 'datatable'], function () {
                 elem = 'textarea';
             }
             $(elem).trumbowyg({
+                removeformatPasted: true,
                 lang: 'pt',
                 btnsDef: {
                     image: {
