@@ -1,38 +1,80 @@
 <section class="content">
     <div class="row">
-        <div class="col-md-6 col-md-offset-3 col-xs-12">
-            <p><?php echo $message ?></p>
-            <?php if ($form !== null): ?>
-                <?php $form->prepare(); ?>
-                <?php echo $this->form()->openTag($form); ?>
-                <div class="col-md-12 col-xs-12">
-                    <?php echo $this->formRow($form->get('schoolClasses')); ?>
-                </div>
-
-                <div class="col-md-12">
-                    <div class="form-group">
-                        <label>Inserir/Remover datas</label>
-                        <div class="btn-group btn-block" role="toolbar" aria-label="attendance date buttons">
-                            <?php echo $this->formElement($form->get('addAttendanceDate')); ?>
-                            <?php echo $this->formElement($form->get('removeAttendanceDate')); ?>
-                        </div>
+        <div class="col-md-12 col-xs-12">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><span class="fa fa-book"></span> Instruções</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
                     </div>
                 </div>
-
-                <div class="col-md-12 col-xs-12">
-                    <?php echo $this->formCollection($form->get('dates')); ?>
+                <!-- /.box-header -->
+                <div class="box-body" style="display: block;">
+                    <div class="col-md-10 col-md-offset-1">
+                        <p> Escolha a turma, as datas, os tipos de lista de presença e clique em <code>Gerar Lista</code>. <br>
+                            Um arquivo <code>.csv</code> (<em>comma-separated values</em>) será baixado, esse arquivo deverá ser aberto com um editor de planilhas como <a href="https://support.office.com/en-us/article/Import-or-export-text-txt-or-csv-files-5250ac4c-663c-47ce-937b-339e391393ba" target="_blank"><b>MS Excel</b></a> ou 
+                            <a href="https://help.libreoffice.org/Calc/Importing_and_Exporting_CSV_Files" target="_blank"><b>LibreOffice Calc</b></a>. Ao importar o documento em um desses editores você deverá utilizar como elemento separador a <b>vírgula</b> (<code>,</code>).</p>
+                        <p>As células correspondentes às presenças ou faltas dos alunos devem ser preenchida com os valores:</p>
+                        <ul>
+                            <li><b>X</b> ou <b>x</b> para faltas.</li>
+                            <li>Não preenchida ou qualquer símbolo diferente de <b>X</b> ou <b>x</b> para presenças.</li>
+                        </ul>
+                    </div>
                 </div>
-
-                <div class="col-md-12 col-xs-12">
-                    <?php echo $this->formRow($form->get('attendanceType')); ?>
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><span class="fa fa-gears"></span> Configuração</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
                 </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="display: block;">
+                    <div class="col-md-10 col-md-offset-1">
+                        <p><?php echo $message ?></p>
+                        <?php if ($form !== null): ?>
+                            <?php $form->prepare(); ?>
+                            <?php echo $this->form()->openTag($form); ?>
+                            <div class="col-md-12 col-xs-12">
+                                <?php echo $this->formRow($form->get('schoolClasses')); ?>
+                            </div>
 
-                <div class="col-md-12">
-                    <?php echo $this->formSubmit($form->get('submit')); ?>
+                            <div class="col-md-12">
+                                <div class="form-group">
+                                    <label>Inserir/Remover datas</label>
+                                    <div class="btn-group btn-block" role="toolbar" aria-label="attendance date buttons">
+                                        <?php echo $this->formElement($form->get('addAttendanceDate')); ?>
+                                        <?php echo $this->formElement($form->get('removeAttendanceDate')); ?>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="col-md-12 col-xs-12">
+                                <?php echo $this->formCollection($form->get('dates')); ?>
+                            </div>
+
+                            <div class="col-md-12 col-xs-12">
+                                <?php echo $this->formRow($form->get('attendanceType')); ?>
+                            </div>
+
+                            <div class="col-md-12">
+                                <?php echo $this->formSubmit($form->get('submit')); ?>
+                            </div>
+                            <?php echo $this->form()->closeTag(); ?>
+
+                        <?php endif; ?>
+                    </div>
                 </div>
-                <?php echo $this->form()->closeTag(); ?>
-
-            <?php endif; ?>
+                <!-- /.box-body -->
+            </div>
         </div>
 </section>
 
