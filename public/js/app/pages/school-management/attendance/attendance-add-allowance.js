@@ -342,7 +342,7 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
             var attendanceTypesIds = lists[1];
             var attendanceTypesNames = lists[2];
             var dates = [];
-            
+
             for (var i = 0; i < lists[3].length; i++) {
                 dates.push(lists[3][i].substring(2));
             }
@@ -379,7 +379,7 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
 
                         student.types.push({
                             id: attendanceTypesIds[a],
-                            status: lists[i][2 + a + d * (attendanceTypesIds.length + 1)].toUpperCase() !== "P"
+                            status: lists[i][2 + a + d * (attendanceTypesIds.length + 1)].toUpperCase() === "X"
                         });
                     }
 
