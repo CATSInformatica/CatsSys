@@ -20,6 +20,7 @@ use Doctrine\Common\Collections\ArrayCollection;
  */
 class Subject
 {
+
     /**
      *
      * @var integer 
@@ -28,21 +29,21 @@ class Subject
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $subjectId;
-    
+
     /**
      *
      * @var string 
      * @ORM\Column(name="subject_name", type="string", unique=true, nullable=false)
      */
     private $subjectName;
-    
+
     /**
      *
      * @var string 
      * @ORM\Column(name="subject_description", type="string", nullable=false)
      */
     private $subjectDescription;
-    
+
     /**
      *
      * @var Collection
@@ -57,7 +58,7 @@ class Subject
      * @ORM\JoinColumn(name="parent_id", referencedColumnName="subject_id", nullable=true)
      */
     private $parent;
-    
+
     public function __construct()
     {
         $this->children = new ArrayCollection();
@@ -108,7 +109,6 @@ class Subject
         return $this->parent;
     }
 
-        
     /**
      * 
      * @param string $subjectName
@@ -130,30 +130,31 @@ class Subject
         $this->subjectDescription = $subjectDescription;
         return $this;
     }
-    
-    /**
-     * 
-     * @param Collection $children
-     * @return \SchoolManagement\Entity\Subject
-     */
-    function setChildren($children)
-    {
-        $this->children = $children;
-        return $this;
-    }
-        
+
     /**
      * 
      * @param Subject $parent
      * @return \SchoolManagement\Entity\Subject
      */
-    function setParent($parent)
+    public function setParent($parent)
     {
         if ($parent !== null) {
             $parent->addChild($this);
+        } else if ($this->parent !== null) {
+            $this->parent->removeChild($this);
         }
         $this->parent = $parent;
         return $this;
+    }
+
+    /**
+     * Se a disciplina possui pai retorna true.
+     * 
+     * @return bool
+     */
+    public function hasParent()
+    {
+        return $this->parent === null;
     }
 
     /**
@@ -177,7 +178,6 @@ class Subject
     function removeChild($child)
     {
         $this->children->removeElement($child);
-        $child->setParent(null);
         return $this;
     }
 
