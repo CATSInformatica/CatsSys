@@ -13,6 +13,7 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use SchoolManagement\Entity\Subject;
 use SchoolManagement\Form\SubjectForm;
+use Zend\Form\FormInterface;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -63,7 +64,7 @@ class SchoolSubjectController extends AbstractEntityActionController
             $form->setData($request->getPost());
 
             if ($form->isValid()) {
-                $data = $form->getData(\Zend\Form\FormInterface::VALUES_AS_ARRAY)['subject'];
+                $data = $form->getData(FormInterface::VALUES_AS_ARRAY)['subject'];
                 $parent = null;
                 if ($data['subjectParent'] > 0) {
                     $parent = $em->find('SchoolManagement\Entity\Subject', $data['subjectParent']);
@@ -80,7 +81,6 @@ class SchoolSubjectController extends AbstractEntityActionController
                         'message' => "Disciplina cadastrada com sucesso!",
                         'form' => $form,
                     ));
-                    
                 } catch (UniqueConstraintViolationException $ex) {
                     $message = 'Essa disciplina já existe.';
                 } catch (Exception $ex) {
@@ -155,18 +155,16 @@ class SchoolSubjectController extends AbstractEntityActionController
                 if ($request->isPost()) {
                     $form->setData($request->getPost());
                     if ($form->isValid()) {
-                        $data = $form->getData(\Zend\Form\FormInterface::VALUES_AS_ARRAY)['subject'];
-                        //  o pai é, inicialmente, válido e diferente do filho
-                        if ($data['subjectParent'] > 0 && $data['subjectParent'] !== $subject->getSubjectId() &&
-                            //  o pai é nulo ou diferente do anterior
-                            ($subject->getParent() === null || $data['subjectParent'] !== $subject->getParent()->getSubjectId())) {
-                            $subject->getParent()->removeChild($subject);
+                        $data = $form->getData(FormInterface::VALUES_AS_ARRAY)['subject'];
+
+                        // existe um novo pai e ele é diferente do filho (evita ciclos triviais)
+                        if ($data['subjectParent'] > 0 && $data['subjectParent'] !== $subject->getSubjectId()) {
                             $subject->setParent($em->getReference('SchoolManagement\Entity\Subject',
                                     $data['subjectParent']));
-                        } else if ($data['subjectParent'] <= 0) {
-                            $subject->getParent()->removeChild($subject);
+                        } else {
                             $subject->setParent(null);
                         }
+
                         $em->merge($subject);
                         $em->flush();
                         $this->redirect()->toRoute('school-management/school-subject', array('action' => 'index'));
@@ -178,7 +176,7 @@ class SchoolSubjectController extends AbstractEntityActionController
                     'subject' => $subject,
                 ));
             } catch (Exception $ex) {
-                $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
+                $message = 'Erro inesperado. Entre com contato com o administrador do sistema. ' .
                     'Erro: ' . $ex->getMessage();
             }
         } else {
