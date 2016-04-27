@@ -505,9 +505,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                 content += "<div class='catssys-list-box'>";
                 doubleCounter = 0;
                 for (var i = 0; i < attAll.length; i++) {
-
                     content += "<label>" + moment(attAll[i].date, "YYYYMMDD").format("L") + ":</label> ";
-
                     if (attAll[i].situation === null) {
                         content += "PRESENÇA | PRESENÇA";
                     } else if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_FULL)) {
@@ -515,22 +513,18 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                     } else {
                         if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_BEGIN)) {
                             content += "ABONO | ";
-
                             if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END)) {
                                 content += "ABONO";
-
-                            } else if (ATTENDANCE_TYPES.ATTENDANCE_END) {
+                            } else if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_END)) {
                                 content += "FALTA";
                             } else {
                                 content += "PRESENÇA";
                             }
                         } else if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_BEGIN)) {
                             content += "FALTA | ";
-
                             if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END)) {
                                 content += "ABONO";
-
-                            } else if (ATTENDANCE_TYPES.ATTENDANCE_END) {
+                            } else if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_END)) {
                                 content += "FALTA &crarr;";
                                 doubleCounter++;
                             } else {
