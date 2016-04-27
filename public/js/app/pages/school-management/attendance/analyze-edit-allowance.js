@@ -26,6 +26,9 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
         var allowanceStudentsByMonth = {};
         var allowanceStudents = $("#allowanceStudents");
 
+        var anTables = {};
+        var studentData = {};
+
         var ATTENDANCE_TYPES = {
             ATTENDANCE_BEGIN: 1,
             ATTENDANCE_END: 2,
@@ -101,7 +104,8 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                         endDate: end
                     },
                     success: function (response) {
-                        showMonthAttendance(attr, response.data);
+                        studentData[attr] = response.data;
+                        showMonthAttendance(attr);
                     },
                     error: function (textStatus) {
                         console.log(textStatus);
@@ -119,7 +123,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
          * @param {type} data
          * @returns {undefined}
          */
-        showMonthAttendance = function (month, data) {
+        showMonthAttendance = function (month) {
 
             var tab = "tab_" + month;
 
@@ -129,7 +133,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                             "' data-toggle='tab' aria-expanded='true'>" +
                             moment(month, "MM").format("MMMM") + "</a></li>");
 
-            var table = mountAnalysisTable(month, data);
+            var table = mountAnalysisTable(month);
 
             attendanceContainer
                     .find(".tab-content")
@@ -139,20 +143,20 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
 
             $("#nav_" + tab).tab("show");
 
-            $("#table_" + month).DataTable({
+            anTables["table-" + month] = $("#table_" + month).DataTable({
                 dom: 'flript',
-                paging: false
+                paging: false,
+                order: [[10, 'asc']]
             });
         };
 
         /**
          * Faz os cálculos dos valores de presença dos alunos.
          * 
-         * @param {type} month
-         * @param {type} data
+         * @param String month
          * @returns {String}
          */
-        mountAnalysisTable = function (month, data) {
+        mountAnalysisTable = function (month) {
 
             var ret = getDaysArrayByMonth(month);
 
@@ -163,26 +167,38 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             var max = sum(arrMax);
             var achieved;
 
-            $.each(data, function (enroll, content) {
+            $.each(studentData[month], function (enroll, content) {
 
-                tr += "<tr>";
+                tr += "<tr data-student='" + enroll + "'>";
+                tr += "<td class='details-control'></td>";
                 tr += "<td class='text-right'>" +
                         ("0000" + enroll).substring(enroll.length) + "</td>";
                 tr += "<td>" + content.name + "</td>";
 
                 var arrCurrent = [0, 0, 0, 0, 0, 0, 0];
 
+                studentData[month][enroll].sortedByWeekDays = {};
+
                 var sit;
                 // foreach day of the month
                 $.each(days, function (day, dayOfWeek) {
 
-                    if (dayOfWeek !== 0) {
+                    if (dayOfWeek !== "0") {
+
+                        if (typeof studentData[month][enroll].sortedByWeekDays[dayOfWeek] === "undefined") {
+                            studentData[month][enroll].sortedByWeekDays[dayOfWeek] = [];
+                        }
+
                         /**
                          * Existe falta ou abono do dia 'day'
                          */
                         if (content.hasOwnProperty(day)) {
 
                             sit = content[day];
+                            studentData[month][enroll].sortedByWeekDays[dayOfWeek].push({
+                                date: day,
+                                situation: sit
+                            });
 
                             /**
                              * Se possui abono integral ganha 
@@ -216,10 +232,13 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                         } else {
                             //Não existe falta nem abono, aluno presente.
                             arrCurrent[dayOfWeek] += 1;
+                            studentData[month][enroll].sortedByWeekDays[dayOfWeek].push({
+                                date: day,
+                                situation: null
+                            });
                         }
                     }
                 });
-
                 achieved = sum(arrCurrent);
 
                 tr +=
@@ -232,11 +251,13 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                         "<td class='text-center'>" + achieved + "/" + max +
                         "<td class='text-center'>" + ((achieved / max) * 100).toFixed(2) + "% " +
                         "</tr>";
+
             });
 
             table = "<table id='table_" + month
-                    + "' class='table table-bordered attendanceListTable'><thead>" +
+                    + "' data-month='" + month + "' class='table table-condensed table-bordered table-hover'><thead>" +
                     "<tr>" +
+                    "<th></th>" +
                     "<th class='text-center'>Matrícula</th>" +
                     "<th class='text-center'>Aluno</th>" +
                     "<th class='text-center'>Segunda (" + arrMax[1] + ")</th>" +
@@ -446,6 +467,98 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             return sum;
         };
 
+        /**
+         * Exibir mais informações ao clicar na linha de algum aluno.
+         * @returns {undefined}
+         */
+        initTableListeners = function () {
+            $("#attendanceContainer").on("click", "table tr td.details-control", function () {
+                var tr = $(this).closest("tr");
+                var student = tr.data("student");
+                var month = tr.closest("table").data("month");
+                var row = anTables["table-" + month].row(tr);
+                var detailContent = null;
+
+                if (row.child.isShown()) {
+                    tr.removeClass("details");
+                    row.child.hide();
+                } else {
+                    tr.addClass("details");
+                    detailContent = getDetailsOf(studentData[month][student].sortedByWeekDays);
+                    row.child(detailContent).show();
+                }
+            });
+        };
+
+        /**
+         * Monta a visão detalhada da assiduidade de um aluno
+         * 
+         * @returns {undefined}
+         */
+        getDetailsOf = function (att) {
+
+            var content = "<h3 class='text-center'>Detalhamento</h3><hr><div class='container'>";
+
+            // Segunda à Sábado
+            $.each(att, function (weekDay, attAll) {
+                content += "<div class='col-lg-4 col-md-6 col-sm-6 col-xs-12'><h4 class='text-center'>" + moment(weekDay, "e").format("dddd") +
+                        "</h4>";
+                content += "<div class='list-group catssys-list-box'>";
+                for (var i = 0; i < attAll.length; i++) {
+
+                    content += "<div class='list-group-item "+ ((i % 2 !== 1) ? "active" : "") +" list-inline text-center'>";
+                    "<h4 class='list-group-item-heading'>" +
+                            moment(attAll[i].date, "YYYYMMDD").format("L") + "</h4><p class='list-group-item-text'>";
+
+                    if (attAll[i].situation === null) {
+                        content += "PRESENÇA | PRESENÇA";
+                    } else if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_FULL)) {
+                        content += "ABONO | ABONO";
+                    } else {
+                        if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_BEGIN)) {
+                            content += "ABONO | ";
+
+                            if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END)) {
+                                content += "ABONO";
+
+                            } else if (ATTENDANCE_TYPES.ATTENDANCE_END) {
+                                content += "FALTA";
+                            } else {
+                                content += "PRESENÇA";
+                            }
+                        } else if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_BEGIN)) {
+                            content += "FALTA | ";
+
+                            if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END)) {
+                                content += "ABONO";
+
+                            } else if (ATTENDANCE_TYPES.ATTENDANCE_END) {
+                                content += "FALTA";
+                            } else {
+                                content += "PRESENÇA";
+                            }
+                        } else {
+                            content += "PRESENÇA | ";
+                            if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END)) {
+                                content += "ABONO";
+                            } else {
+                                content += "FALTA";
+                            }
+                        }
+                    }
+
+                    content += "</p></div>";
+                }
+
+                content += "</div></div>";
+            });
+
+
+            content += "</div>";
+
+            return content;
+        };
+
         return {
             init: function () {
 
@@ -459,6 +572,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                 // analyze
                 if (attendanceMonth.length > 0) {
                     initAttendanceMonthpicker(attendanceMonth);
+                    initTableListeners();
                 }
             },
             getCallbackOf: function (selectedItemId) {
