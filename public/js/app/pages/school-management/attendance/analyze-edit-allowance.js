@@ -498,17 +498,15 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
         getDetailsOf = function (att) {
 
             var content = "<h3 class='text-center'>Detalhamento</h3><hr><div class='container'>";
-
+            var doubleCounter;
             // Segunda à Sábado
             $.each(att, function (weekDay, attAll) {
-                content += "<div class='col-lg-4 col-md-6 col-sm-6 col-xs-12'><h4 class='text-center'>" + moment(weekDay, "e").format("dddd") +
-                        "</h4>";
-                content += "<div class='list-group catssys-list-box'>";
+                content += "<div class='col-lg-4 col-md-6 col-sm-6 col-xs-12'><h4>" + moment(weekDay, "e").format("dddd") + "</h4>";
+                content += "<div class='catssys-list-box'>";
+                doubleCounter = 0;
                 for (var i = 0; i < attAll.length; i++) {
 
-                    content += "<div class='list-group-item "+ ((i % 2 !== 1) ? "active" : "") +" list-inline text-center'>";
-                    "<h4 class='list-group-item-heading'>" +
-                            moment(attAll[i].date, "YYYYMMDD").format("L") + "</h4><p class='list-group-item-text'>";
+                    content += "<label>" + moment(attAll[i].date, "YYYYMMDD").format("L") + ":</label> ";
 
                     if (attAll[i].situation === null) {
                         content += "PRESENÇA | PRESENÇA";
@@ -533,7 +531,8 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                                 content += "ABONO";
 
                             } else if (ATTENDANCE_TYPES.ATTENDANCE_END) {
-                                content += "FALTA";
+                                content += "FALTA &crarr;";
+                                doubleCounter++;
                             } else {
                                 content += "PRESENÇA";
                             }
@@ -546,10 +545,10 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                             }
                         }
                     }
-
-                    content += "</p></div>";
+                    content += "<br>";
                 }
 
+                content += "<label>Total: " + doubleCounter + "</label>";
                 content += "</div></div>";
             });
 
