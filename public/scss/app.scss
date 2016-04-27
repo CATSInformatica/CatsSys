@@ -29,7 +29,7 @@ and open the template in the editor.
 }
 
 .attendanceListTable tr {
-    
+
     &:hover td {
         @extend .cats-selected-bg;
         transition: 0s !important;
@@ -113,4 +113,28 @@ and open the template in the editor.
         background: #0F9A9A;
         color: white;
     };
+}
+
+.details-control {
+    position: relative;
+    text-align: center;
+    vertical-align: middle !important;
+
+    &:before {
+        content: "\f059";
+        font-family: FontAwesome;
+        font-style: normal;
+        font-weight: normal;
+        text-decoration: inherit;
+    };
+}
+
+.details {
+    td {
+        vertical-align: top !important;
+    }
+}
+
+.catssys-list-box {
+    height: 260px;
 }
