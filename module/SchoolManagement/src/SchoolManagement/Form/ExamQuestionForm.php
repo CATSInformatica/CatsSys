@@ -5,7 +5,7 @@ namespace SchoolManagement\Form;
 use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use SchoolManagement\Entity\ExamQuestion;
-use SchoolManagement\Form\Fieldset\AddExamQuestionFieldset;
+use SchoolManagement\Form\Fieldset\ExamQuestionFieldset;
 use Zend\Form\Form;
 
 /**
@@ -13,15 +13,15 @@ use Zend\Form\Form;
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class AddExamQuestionForm extends Form
+class ExamQuestionForm extends Form
 {
 
     public function __construct(ObjectManager $obj, $typeOfQuestion = ExamQuestion::QUESTION_TYPE_CLOSED,
-        $numberOfAnswers = AddExamQuestionFieldset::DEFAULT_NUMBER_OF_ANSWERS)
+        $numberOfAnswers = ExamQuestionFieldset::DEFAULT_NUMBER_OF_ANSWERS)
     {
-        parent::__construct('add-exam-question');
+        parent::__construct('exam-question-form');
         $this->setHydrator(new DoctrineHydrator($obj));
-        $examQuestionFieldset = new AddExamQuestionFieldset($obj, $typeOfQuestion, $numberOfAnswers);
+        $examQuestionFieldset = new ExamQuestionFieldset($obj, $typeOfQuestion, $numberOfAnswers, 'exam-question');
         $examQuestionFieldset->setUseAsBaseFieldset(true);
         $this->add($examQuestionFieldset);
 

@@ -5,12 +5,14 @@ $examQuestion = $form->get('exam-question');
 ?>
 <?php echo $this->form()->openTag($form); ?>
 <div class="col-md-8">
-    <?php echo $this->formRow($examQuestion->get('subjectId')); ?>
+    <?php echo $this->formRow($examQuestion->get('subject')); ?>
 </div>
 <div class="col-md-4">
     <?php echo $this->formRow($examQuestion->get('examQuestionType')); ?>
 </div>
-<div class="col-md-12" id="answers-blah">
+<?php $value = (int)$examQuestion->get('examQuestionType')->getValue(); ?>
+<div class="col-md-12" id="answers-blah" style="display: 
+     <?php echo (SchoolManagement\Entity\ExamQuestion::QUESTION_TYPE_OPEN === $value) ? 'none' : 'block'; ?>">
     <div class="col-md-6">
         <div class="form-group">
             <div class="col-xs-12 col-md-4">

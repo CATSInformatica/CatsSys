@@ -39,7 +39,7 @@ class ExamAnswer
     /**
      *
      * @var ExamQuestion
-     * @ORM\ManyToOne(targetEntity="ExamQuestion", inversedBy="answerOptions", cascade={"persist", "remove"})
+     * @ORM\ManyToOne(targetEntity="ExamQuestion", inversedBy="answerOptions")
      * @ORM\JoinColumn(name="question_id", referencedColumnName="exam_question_id", nullable=false)
      */
     private $question;
