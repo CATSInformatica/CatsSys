@@ -6,7 +6,7 @@
 
 define(['jquery'], function () {
     var edit = (function () {
-
+        
         return {
             init: function () {
                 require(['app/pages/school-management/exam/add-question'], function (QuestionModule) {

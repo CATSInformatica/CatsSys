@@ -45,25 +45,16 @@ class SchoolExamController extends AbstractEntityActionController
     {
         try {
             $em = $this->getEntityManager();
-            $subjects = $em->getRepository('SchoolManagement\Entity\Subject')->findAll();
-            $lvlOneSubjects = [];
-            $baseSubjectsName = [];
-            foreach ($subjects as $s) {
-                if ($s->getParent() !== null && $s->getParent()->getParent() === null) {
-                    $baseSubjectsName[$s->getParent()->getSubjectId()] = $s->getParent()->getSubjectName();
-                    $lvlOneSubjects[$s->getParent()->getSubjectId()][] = $s;
-                }
-            }
+            $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')->findBy(array('parent' => null));
+
             return new ViewModel(array(
                 'message' => null,
-                'lvlOneSubjects' => $lvlOneSubjects,
-                'baseSubjectsName' => $baseSubjectsName,
+                'baseSubjects' => $baseSubjects,
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
                 'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
-                'lvlOneSubjects' => null,
-                'baseSubjectsName' => null,
+                'baseSubjects' => null,
             ));
         }
     }
