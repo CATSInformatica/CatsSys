@@ -195,11 +195,6 @@ class SchoolExamController extends AbstractEntityActionController
                     $form->bind($question);
                     $form->setData($data);
 
-
-
-//                    echo $question->getAnswerOptions()->count();
-//                    exit;
-
                     if ($form->isValid()) {
 
                         //  Conversão para inteiro
