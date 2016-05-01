@@ -71,6 +71,14 @@ class CashFlow
      * @ORM\JoinColumn(name="cash_flow_type", referencedColumnName="cash_flow_type_id")
      */
     private $cashFlowType;
+
+    /**
+     *
+     * @var MonthlyBalance 
+     * @ORM\ManyToOne(targetEntity="MonthlyBalance", inversedBy="cashFlows")
+     * @ORM\JoinColumn(name="monthly_balance_id", referencedColumnName="monthly_balance_id")
+     */
+    private $monthlyBalance;
     
     /**
      * 
@@ -134,7 +142,16 @@ class CashFlow
     {
         return $this->cashFlowType;
     }
-
+    
+    /**
+     * 
+     * @return MonthlyBalance
+     */
+    function getMonthlyBalance()
+    {
+        return $this->monthlyBalance;
+    }
+    
     /**
      * 
      * @param \DateTime $cashFlowDate
@@ -143,6 +160,7 @@ class CashFlow
     function setCashFlowDate(\DateTime $cashFlowDate)
     {
         $this->cashFlowDate = $cashFlowDate;
+        return $this;
     }
 
     /**
@@ -153,6 +171,7 @@ class CashFlow
     function setCashFlowAmount($cashFlowAmount)
     {
         $this->cashFlowAmount = $cashFlowAmount;
+        return $this;
     }
 
     /**
@@ -163,6 +182,7 @@ class CashFlow
     function setCashFlowDescription($cashFlowDescription)
     {
         $this->cashFlowDescription = $cashFlowDescription;
+        return $this;
     }
 
     /**
@@ -173,6 +193,7 @@ class CashFlow
     function setCashFlowObservation($cashFlowObservation)
     {
         $this->cashFlowObservation = $cashFlowObservation;
+        return $this;
     }
 
     /**
@@ -183,6 +204,7 @@ class CashFlow
     function setDepartment(AdministrativeStructure\Entity\Department $department)
     {
         $this->department = $department;
+        return $this;
     }
 
     /**
@@ -193,7 +215,20 @@ class CashFlow
     function setCashFlowType(CashFlowType $cashFlowType)
     {
         $this->cashFlowType = $cashFlowType;
+        return $this;
     }
+
+    /**
+     * 
+     * @param MonthlyBalance $monthlyBalance
+     * @return CashFlow
+     */
+    function setMonthlyBalance(MonthlyBalance $monthlyBalance)
+    {
+        $this->monthlyBalance = $monthlyBalance;
+        return $this;
+    }
+
 
 
 }

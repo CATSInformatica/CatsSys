@@ -116,6 +116,7 @@ class CashFlowType
     function setCashFlowTypeName($cashFlowTypeName)
     {
         $this->cashFlowTypeName = $cashFlowTypeName;
+        return $this;
     }
 
     /**
@@ -126,6 +127,7 @@ class CashFlowType
     function setCashFlowTypeDescription($cashFlowTypeDescription)
     {
         $this->cashFlowTypeDescription = $cashFlowTypeDescription;
+        return $this;
     }
 
     /**
@@ -136,6 +138,7 @@ class CashFlowType
     function setCashFlowTypeDirection($cashFlowTypeDirection)
     {
         $this->cashFlowTypeDirection = $cashFlowTypeDirection;
+        return $this;
     }
 
     /**
@@ -146,6 +149,7 @@ class CashFlowType
     function setCashFlows(CashFlow $cashFlows)
     {
         $this->cashFlows = $cashFlows;
+        return $this;
     }
 
 
