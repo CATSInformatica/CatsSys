@@ -36,28 +36,28 @@
                             . Será necessário inserir a senha de administrador do sistema.
                         </li>
                         <li>
-                            Inicialmentem ao baixar os gabaritos, eles são salvos na pasta <b>Downloads</b>. Crie uma nova pasta e mova todos os gabaritos para dentro dela.
+                            Inicialmente, ao baixar os gabaritos, eles são salvos na pasta <b>Downloads</b>. Crie uma nova pasta e mova todos os gabaritos para dentro dela.
                         </li>
                         <li>Entre na pasta, abra o terminal e digite o comando: <code> gedit svgToPdf.sh</code>. 
                             Este comando criará um arquivo para <em>shell script</em> que fará a conversão dos <em>svg's</em> para o formato <em>pdf</em>.</li>
                         <li>Cole nesse arquivo o seguinte conteúdo:<br>
                             <hr>
                             <code>
-                                #!/bin/bash <br>
+                                #!/bin/bash<br>
                                 <br>
                                 for file in *.svg; do<br>
                                 filename=${file%%.*};<br>
                                 inkscape -f $file -A "${filename}.pdf";<br>
                                 done;<br>
                                 <br>
-                                pdftk *.pdf output gabaritos;<br>
+                                pdftk *.pdf output cartoes-de-resposta;<br>
                                 rm *.pdf;<br>
-                                mv gabaritos gabaritos.pdf;<br>
+                                mv cartoes-de-resposta cartoes-de-resposta.pdf;<br>
                             </code>
                             <hr>
                             <br> Na sequência salve o arquivo e feche o editor de texto.
                         </li>
-                        <li>De volta ao terminal digite o comando: <code>sh svgToPdf.sh</code> e aguarde o processamento. Quando o script terminar de executar será criado um arquivo chamado <b>gabaritos.pdf</b> que contém cada gabarito em uma página A4. Neste ponto, verifique se todos os gabaritos estão no pdf e mande imprimir o arquivo.</li>
+                        <li>De volta ao terminal digite o comando: <code>sh svgToPdf.sh</code> e aguarde o processamento terminar. Será criado um arquivo chamado <b>cartoes-de-resposta.pdf</b> que contém cada cartao de resposta em uma página A4. Neste ponto, verifique se todos os cartões estão no pdf e mande imprimir o arquivo.</li>
                     </ol>
                 </li>
             </ul>
