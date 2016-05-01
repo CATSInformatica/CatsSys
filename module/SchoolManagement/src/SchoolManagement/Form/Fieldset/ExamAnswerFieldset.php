@@ -2,22 +2,23 @@
 
 namespace SchoolManagement\Form\Fieldset;
 
-use Zend\Form\Fieldset;
+use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use Zend\InputFilter\InputFilterProviderInterface;
 use SchoolManagement\Entity\ExamAnswer;
+use Zend\Form\Fieldset;
+use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
  * Description of AddExamAnswerFieldset
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class AddExamAnswerFieldset extends Fieldset implements InputFilterProviderInterface
+class ExamAnswerFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
-    public function __construct($obj)
+    public function __construct(ObjectManager $obj, $name = null, $options = [])
     {
-        parent::__construct('exam-answer');
+        parent::__construct($name, $options);
 
         $this->setHydrator(new DoctrineHydrator($obj))
             ->setObject(new ExamAnswer());

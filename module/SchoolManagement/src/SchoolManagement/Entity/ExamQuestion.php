@@ -18,10 +18,9 @@ class ExamQuestion
 
     const QUESTION_TYPE_CLOSED = 1;
     const QUESTION_TYPE_OPEN = 2;
-    
     const QUESTION_TYPE_CLOSED_DESC = "Questão Fechada";
     const QUESTION_TYPE_OPEN_DESC = "Questão Aberta";
-    
+
     /**
      *
      * @var integer 
@@ -49,7 +48,7 @@ class ExamQuestion
      *
      * @var Subject
      * @ORM\ManyToOne(targetEntity="Subject")
-     * @ORM\JoinColumn(name="subject_id", referencedColumnName="subject_id")
+     * @ORM\JoinColumn(name="subject_id", referencedColumnName="subject_id", nullable=false)
      */
     private $subject;
 
@@ -151,7 +150,7 @@ class ExamQuestion
     public function addAnswerOptions(Collection $answers)
     {
         foreach ($answers as $ans) {
-            if(!$this->hasAnswer($ans)) {
+            if (!$this->hasAnswer($ans)) {
                 $ans->setQuestion($this);
                 $this->answerOptions->add($ans);
             }

@@ -164,14 +164,14 @@ define(['jquery', 'datatable'], function () {
         };
 
         initPreview = function () {
-            $("#add-exam-question").on("keyup", ".trumbowyg-editor", showPreview);
+            $("#exam-question-form").on("keyup", ".trumbowyg-editor", showPreview);
             showPreview();
         };
 
         showPreview = function () {
             var value = "";
 
-            $("#add-exam-question").find(".trumbowyg-editor").each(function (e) {
+            $("#exam-question-form").find(".trumbowyg-editor").each(function (e) {
                 if (e === 0) {
                     value += $(this).html();
                     value += "<hr>";
@@ -193,6 +193,7 @@ define(['jquery', 'datatable'], function () {
 
         initMathJax = function () {
             require(['mathjax'], function () {
+
                 setTimeout(function () {
                     $("#testEquation").fadeIn("fast");
                 }, 500);
@@ -249,6 +250,7 @@ define(['jquery', 'datatable'], function () {
                 require(['trumbowyg'], function () {
                     require(['trumbowygpt', 'trumbowygbase64'], function () {
                         setTrumbowyg(null);
+                        $(".trumbowyg-editor").addClass("tex2jax_ignore");
                         setFormBehavior();
                         initMathJax();
                         partialValidation();

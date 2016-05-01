@@ -1,6 +1,6 @@
 <?php
-$options = $examQuestion->get('answerOptions');
-$numberOfAnswers = $options->getCount();
+$answers = $examQuestion->get('answerOptions');
+$numberOfAnswers = $answers->getCount();
 ?>
 
 <div class="nav-tabs-custom" id="question-panel">
@@ -25,7 +25,7 @@ $numberOfAnswers = $options->getCount();
         </div>
         <!-- /.tab-pane -->
 
-        <?php foreach ($options as $idx => $option): ?>
+        <?php foreach ($answers as $idx => $option): ?>
             <div class="tab-pane answer-tab" id="answer_<?php echo $idx; ?>">
                 <fieldset>
                     <?php echo $this->formRow($option->get('examAnswerDescription')); ?>
@@ -36,5 +36,5 @@ $numberOfAnswers = $options->getCount();
     </div>
     <!-- /.tab-content -->
 
-    <?php echo $this->formCollection()->renderTemplate($options); ?>
+    <?php echo $this->formCollection()->renderTemplate($answers); ?>
 </div>

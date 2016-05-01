@@ -41,7 +41,7 @@ class AttendanceList
 
         foreach ($config['dates'] as $value) {
             $dt = new DateTime($value['attendanceDate']);
-            $this->config['Dates'][] = $dt->format('d/m/Y');
+            $this->config['Dates'][] = 'D-' . $dt->format('d/m/Y');
         }
     }
 

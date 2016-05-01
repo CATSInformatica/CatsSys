@@ -20,13 +20,13 @@
 namespace SchoolManagement\Controller;
 
 use Database\Controller\AbstractEntityActionController;
-use Doctrine\Common\Collections\Criteria;
-use SchoolManagement\Form\SearchQuestionsForm;
-use SchoolManagement\Form\AddExamQuestionForm;
+use Doctrine\Common\Collections\ArrayCollection;
+use Exception;
 use SchoolManagement\Entity\ExamQuestion;
+use SchoolManagement\Form\ExamQuestionForm;
+use SchoolManagement\Form\SearchQuestionsForm;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use Exception;
 
 /**
  * Description of SchoolExamController
@@ -46,7 +46,7 @@ class SchoolExamController extends AbstractEntityActionController
         try {
             $em = $this->getEntityManager();
             $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')->findBy(array('parent' => null));
-            
+
             return new ViewModel(array(
                 'message' => null,
                 'baseSubjects' => $baseSubjects,
@@ -156,8 +156,9 @@ class SchoolExamController extends AbstractEntityActionController
 
             try {
                 $question = $em->find('SchoolManagement\Entity\ExamQuestion', $q);
-                $aId = null;
+                $aId = 0;
 
+                // @Todo trocar por algum tipo de Criteria IsCorrect = true
                 foreach ($question->getAnswerOptions() as $i => $q) {
                     if ($q->getIsCorrect()) {
                         $aId = $i;
@@ -165,57 +166,61 @@ class SchoolExamController extends AbstractEntityActionController
                     }
                 }
 
-                $typeBefore = $question->getExamQuestionType();
-
-                $subId = $question->getSubject()->getSubjectId();
-                $form = new AddExamQuestionForm($em, $typeBefore, count($question->getAnswerOptions()->toArray()));
-
-                $form
-                    ->get('exam-question')
-                    ->get('subjectId')
-                    ->setValue($subId);
-                $form
-                    ->get('exam-question')
-                    ->get('correctAnswer')
-                    ->setValue($aId);
-
-                $form->bind($question);
-
                 if ($request->isPost()) {
-                    $form->setData($request->getPost());
+                    $data = $request->getPost();
+                    $numberOfOptions = count($data['exam-question']['answerOptions']);
+
+                    $type = $data['exam-question']['examQuestionType'];
+                    $form = new ExamQuestionForm($em, $type, $numberOfOptions);
+
+                    // por algum motivo, não sei dizer qual, o formulário não
+                    // faz a remoção de alternativas que sobram, caso:
+                    // nómero de alternativas antes da edição > número de alternativas depois da edição.
+                    // Faz a remoção manual.
+                    $options = $question->getAnswerOptions();
+                    if (($length = $options->count() - $numberOfOptions) > 0) {
+                        $optsToRemove = new ArrayCollection($options->slice($numberOfOptions, $length));
+                        $question->removeAnswerOptions($optsToRemove);
+                    }
+
+                    $form->bind($question);
+                    $form->setData($data);
 
                     if ($form->isValid()) {
-                        $data = $form->getData(\Zend\Form\FormInterface::VALUES_AS_ARRAY)['exam-question'];
 
                         //  Conversão para inteiro
                         $ao = $question->getAnswerOptions()->toArray();
-                        $correctAnswer = (int) ($data['correctAnswer']);
-                        $examQuestionType = (int) ($data['examQuestionType']);
+                        $correctAnswer = (int) $data['correctAnswer'];
 
-                        $alternatives = count($ao);
-                        if ($examQuestionType === ExamQuestion::QUESTION_TYPE_CLOSED &&
-                            $correctAnswer >= 0 && $correctAnswer < $alternatives &&
-                            $correctAnswer !== $aId) {
-                            // Se a resposta correta mudou mas a antiga ainda existe ela é desmarcada (isCorrect = false)
-                            if ($aId !== null && $aId < $alternatives) {
-                                $ao[$aId]->setIsCorrect(false);
-                            }
-                            $ao[$correctAnswer]->setIsCorrect(true);
+                        // Se a resposta correta antiga ainda existe ela é desmarcada (isCorrect = false)
+                        if ($aId < $numberOfOptions) {
+                            $ao[$aId]->setIsCorrect(false);
                         }
 
-                        //  Se o tipo da questão foi editado de fechada para aberta, remove todas as alternativas
-                        if ($typeBefore === ExamQuestion::QUESTION_TYPE_CLOSED &&
-                            $examQuestionType === ExamQuestion::QUESTION_TYPE_OPEN) {
-                            $ao[0]->setIsCorrect(true);
-                        }
+                        $ao[$correctAnswer]->setIsCorrect(true);
 
-                        $question->setSubject($em->getReference('SchoolManagement\Entity\Subject', $data['subjectId']));
                         $em->persist($question);
                         $em->flush();
                         return $this
                                 ->redirect()
                                 ->toRoute('school-management/school-exam', array('action' => 'question'));
                     }
+                } else {
+                    $typeBefore = $question->getExamQuestionType();
+                    $form = new ExamQuestionForm($em, $typeBefore, count($question->getAnswerOptions()->toArray()));
+
+                    $form->bind($question);
+
+                    $sId = $question->getSubject()->getSubjectId();
+                    $form
+                        ->get('exam-question')
+                        ->get('correctAnswer')
+                        ->setValue($aId);
+
+                    $form
+                        ->get('exam-question')
+                        ->get('subject')
+                        ->setValue($sId);
                 }
 
                 return new ViewModel(array(
@@ -278,38 +283,31 @@ class SchoolExamController extends AbstractEntityActionController
     {
         $em = $this->getEntityManager();
         $request = $this->getRequest();
-
-        $form = new AddExamQuestionForm($em);
         $examQuestion = new ExamQuestion();
-        $form->bind($examQuestion);
+
         if ($request->isPost()) {
-            $form->setData($request->getPost());
+            $data = $request->getPost();
+            $numberOfOptions = count($data['exam-question']['answerOptions']);
+            $type = $data['exam-question']['examQuestionType'];
+            $form = new ExamQuestionForm($em, $type, $numberOfOptions);
+            $form->bind($examQuestion);
+            $form->setData($data);
 
             if ($form->isValid()) {
-
-                $data = $form->getData(\Zend\Form\FormInterface::VALUES_AS_ARRAY)['exam-question'];
                 $ao = $examQuestion->getAnswerOptions()->toArray();
-
-                $correctAnswer = (int) ($data['correctAnswer']);
-                $examQuestionType = (int) ($data['examQuestionType']);
-                $alternatives = count($data['answerOptions']);
-
-                if ($examQuestionType === ExamQuestion::QUESTION_TYPE_CLOSED &&
-                    $correctAnswer >= 0 && $correctAnswer < $alternatives) {
-                    $ao[$correctAnswer]->setIsCorrect(true);
-                }
-                if ($examQuestionType === ExamQuestion::QUESTION_TYPE_OPEN && $alternatives > 0) {
-                    $ao[0]->setIsCorrect(true);
-                }
-                $examQuestion->setSubject($em->getReference('SchoolManagement\Entity\Subject', $data['subjectId']));
-
+                $correctAnswer = (int) $data['correctAnswer'];
+                $ao[$correctAnswer]->setIsCorrect(true);
                 $em->persist($examQuestion);
                 $em->flush();
 
                 // Se o procedimento for bem sucedido, a página é redirecionada para o banco de questões
-                $this->redirect()->toRoute('school-management/school-exam', array('action' => 'question'));
+                return $this->redirect()->toRoute('school-management/school-exam', array('action' => 'question'));
             }
+        } else {
+            $form = new ExamQuestionForm($em);
+            $form->bind($examQuestion);
         }
+
         return new ViewModel(array(
             'message' => null,
             'form' => $form,

@@ -179,6 +179,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
 
         var lastGroup;
         var sum;
+        var tmpAns = null;
 
         $.each(studentAnswers, function (key, value) {
             lastGroup = finalTemplate.groups[0];
@@ -200,8 +201,9 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
                         lastGroup = finalTemplate.answers[j].group;
                     }
 
-                    if (finalTemplate.answers[j].answer.toLowerCase() === "x"
-                            || finalTemplate.answers[j].answer === value.answers[j]) {
+                    tmpAns = finalTemplate.answers[j].answer.toUpperCase();
+
+                    if (tmpAns === "X" || tmpAns === value.answers[j]) {
                         sum++;
                     }
                 }
@@ -307,6 +309,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
         var ans = null;
         var enrollmentId;
         var partialId;
+        
         for (var i = 1; i < csvData.answers.length; i++) {
             ans = csvData.answers[i];
             enrollmentId = ans.slice(1, 6).join('');
@@ -314,7 +317,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
             studentAnswers[enrollmentId].answers = ans.slice(6);
         }
 
-        for (var i = 1; i < students.length; i++) {
+        for (var i = 0; i < students.length; i++) {
             partialId = "" + students[i].enrollmentId;
             enrollmentId = ("00000" + partialId).substring(partialId.length);
             if (typeof studentAnswers[enrollmentId] === "undefined") {

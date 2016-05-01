@@ -6,19 +6,11 @@
 
 define(['jquery'], function () {
     var edit = (function () {
-
-        /*
-         *  Impede que o conteúdo da textarea seja exibido pelo MathJax, permitindo a edição
-         */
-        initTextArea = function () {
-            $('.trumbowyg-editor').addClass('tex2jax_ignore');
-        };
-
+        
         return {
             init: function () {
                 require(['app/pages/school-management/exam/add-question'], function (QuestionModule) {
                     QuestionModule.init();
-                    initTextArea();
                 });
             }
         };
