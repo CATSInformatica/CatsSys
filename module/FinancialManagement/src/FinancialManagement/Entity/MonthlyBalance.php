@@ -86,7 +86,7 @@ class MonthlyBalance
 
     /**
      *
-     * @var CashFlow 
+     * @var Collection 
      * @ORM\OneToMany(targetEntity="CashFlow", mappedBy="monthlyBalance", fetch="EXTRA_LAZY")
      */
     private $cashFlows;
