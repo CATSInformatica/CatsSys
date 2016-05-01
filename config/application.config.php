@@ -36,6 +36,8 @@ $modules = array(
     'AdministrativeStructure',
     // Version
     'Version',
+    // FinancialManagement
+    'FinancialManagement',
 );
 
 if ($env === 'development') {

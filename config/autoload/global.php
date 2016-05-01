@@ -38,5 +38,6 @@ return array(
         'Documents' => 'application/layout',
         'AdministrativeStructure' => 'application/layout',
         'Version' => 'application/layout',
+        'FinancialManagement' => 'application/layout',
     )
 );
