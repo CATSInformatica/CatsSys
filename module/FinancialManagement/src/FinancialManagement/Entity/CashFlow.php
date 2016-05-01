@@ -8,6 +8,7 @@
 
 namespace FinancialManagement\Entity;
 
+use AdministrativeStructure\Entity\Department;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
@@ -58,7 +59,7 @@ class CashFlow
 
     /**
      *
-     * @var AdministrativeStructure\Entity\Department 
+     * @var Department 
      * @ORM\ManyToOne(targetEntity="AdministrativeStructure\Entity\Department")
      * @ORM\JoinColumn(name="department_id", referencedColumnName="department_id")
      */
@@ -127,7 +128,7 @@ class CashFlow
 
     /**
      * 
-     * @return AdministrativeStructure\Entity\Department 
+     * @return Department 
      */
     public function getDepartment()
     {
@@ -198,10 +199,10 @@ class CashFlow
 
     /**
      * 
-     * @param AdministrativeStructure\Entity\Department $department
+     * @param Department $department
      * @return CashFlow
      */
-    public function setDepartment(AdministrativeStructure\Entity\Department $department)
+    public function setDepartment(Department $department)
     {
         $this->department = $department;
         return $this;

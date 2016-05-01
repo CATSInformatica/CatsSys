@@ -9,6 +9,7 @@
 namespace FinancialManagement\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use SchoolManagement\Entity\Enrollment;
 
 /**
  * Description of MonthlyPayment
@@ -34,6 +35,14 @@ class MonthlyPayment
      * @ORM\Column(name="monthly_payment_date", type="date", nullable=false)
      */
     private $monthlyPaymentDate;
+    
+    /**
+     *
+     * @var Enrollment
+     * @ORM\ManyToOne(targetEntity="SchoolManagement\Entity\Enrollment")
+     * @ORM\JoinColumn(name="enrollment_id", referencedColumnName="enrollment_id")
+     */
+    private $enrollment;
 
     /**
      *
@@ -118,7 +127,25 @@ class MonthlyPayment
         $this->monthlyPaymentType = $monthlyPaymentType;
         return $this;
     }
+    
+    /**
+     * 
+     * @return Enrollment
+     */
+    public function getEnrollment()
+    {
+        return $this->enrollment;
+    }
 
-
-   
+    /**
+     * 
+     * @param Enrollment $enrollment
+     * @return Self
+     */
+    public function setEnrollment(Enrollment $enrollment)
+    {
+        $this->enrollment = $enrollment;
+        return $this;
+    }
+    
 }
