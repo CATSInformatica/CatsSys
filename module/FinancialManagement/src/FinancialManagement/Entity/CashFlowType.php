@@ -41,7 +41,7 @@ class CashFlowType
     /**
      *
      * @var string 
-     * @ORM\Column(name="cash_flow_type_description", type="string", nullable=false)
+     * @ORM\Column(name="cash_flow_type_description", type="string", length=1000, nullable=false)
      */
     private $cashFlowTypeDescription;
 
@@ -67,7 +67,7 @@ class CashFlowType
      * 
      * @return integer
      */
-    function getCashFlowTypeId()
+    public function getCashFlowTypeId()
     {
         return $this->cashFlowTypeId;
     }
@@ -76,7 +76,7 @@ class CashFlowType
      * 
      * @return string
      */
-    function getCashFlowTypeName()
+    public function getCashFlowTypeName()
     {
         return $this->cashFlowTypeName;
     }
@@ -85,7 +85,7 @@ class CashFlowType
      * 
      * @return string
      */
-    function getCashFlowTypeDescription()
+    public function getCashFlowTypeDescription()
     {
         return $this->cashFlowTypeDescription;
     }
@@ -94,7 +94,7 @@ class CashFlowType
      * 
      * @return integer
      */
-    function getCashFlowTypeDirection()
+    public function getCashFlowTypeDirection()
     {
         return $this->cashFlowTypeDirection;
     }
@@ -103,7 +103,7 @@ class CashFlowType
      * 
      * @return Collection
      */
-    function getCashFlows()
+    public function getCashFlows()
     {
         return $this->cashFlows;
     }
@@ -113,7 +113,7 @@ class CashFlowType
      * @param string $cashFlowTypeName
      * @return CashFlowType
      */
-    function setCashFlowTypeName($cashFlowTypeName)
+    public function setCashFlowTypeName($cashFlowTypeName)
     {
         $this->cashFlowTypeName = $cashFlowTypeName;
         return $this;
@@ -124,7 +124,7 @@ class CashFlowType
      * @param string $cashFlowTypeDescription
      * @return CashFlowType
      */
-    function setCashFlowTypeDescription($cashFlowTypeDescription)
+    public function setCashFlowTypeDescription($cashFlowTypeDescription)
     {
         $this->cashFlowTypeDescription = $cashFlowTypeDescription;
         return $this;
@@ -135,7 +135,7 @@ class CashFlowType
      * @param integer $cashFlowTypeDirection
      * @return CashFlowType
      */
-    function setCashFlowTypeDirection($cashFlowTypeDirection)
+    public function setCashFlowTypeDirection($cashFlowTypeDirection)
     {
         $this->cashFlowTypeDirection = $cashFlowTypeDirection;
         return $this;
@@ -143,14 +143,52 @@ class CashFlowType
 
     /**
      * 
-     * @param CashFlow $cashFlows
+     * @param Collection $cashFlows
      * @return CashFlowType
      */
-    function setCashFlows(CashFlow $cashFlows)
+    public function setCashFlows(Collection $cashFlows)
     {
         $this->cashFlows = $cashFlows;
         return $this;
     }
 
+    /**
+     * 
+     * @param Collection $cashFlows
+     * @return CashFlowType
+     */
+    public function addCashFlows(Collection $cashFlows) 
+    {
+        foreach ($cashFlows as $cashFlow) {
+            if (!$this->hasCashFlow($cashFlow)) {
+                $cashFlow->setCashFlowType($this);
+                $this->cashFlows->add($cashFlow);
+            }
+        }
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param Collection $cashFlows
+     * @return CashFlowType
+     */
+    public function removeCashFlows(Collection $cashFlows)
+    {
+        foreach ($cashFlows as $cashFlow) {
+            $this->cashFlows->removeElement($cashFlow);
+        }
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param CashFlow $cashFlow
+     * @return bool
+     */
+    public function hasCashFlow(CashFlow $cashFlow)
+    {
+        return $this->cashFlows->contains($cashFlow);
+    }
 
 }

@@ -45,14 +45,14 @@ class CashFlow
     /**
      *
      * @var string 
-     * @ORM\Column(name="cash_flow_description", type="string", nullable=false)
+     * @ORM\Column(name="cash_flow_description", type="string", length=1000, nullable=false)
      */
     private $cashFlowDescription;
 
     /**
      *
      * @var string 
-     * @ORM\Column(name="cash_flow_observation", type="string")
+     * @ORM\Column(name="cash_flow_observation", type="string", length=1000)
      */
     private $cashFlowObservation;
 
@@ -84,7 +84,7 @@ class CashFlow
      * 
      * @return integer
      */
-    function getCashFlowId()
+    public function getCashFlowId()
     {
         return $this->cashFlowId;
     }
@@ -93,7 +93,7 @@ class CashFlow
      * 
      * @return \DateTime
      */
-    function getCashFlowDate()
+    public function getCashFlowDate()
     {
         return $this->cashFlowDate;
     }
@@ -102,7 +102,7 @@ class CashFlow
      * 
      * @return float
      */
-    function getCashFlowAmount()
+    public function getCashFlowAmount()
     {
         return $this->cashFlowAmount;
     }
@@ -111,7 +111,7 @@ class CashFlow
      * 
      * @return string
      */
-    function getCashFlowDescription()
+    public function getCashFlowDescription()
     {
         return $this->cashFlowDescription;
     }
@@ -120,7 +120,7 @@ class CashFlow
      * 
      * @return string
      */
-    function getCashFlowObservation()
+    public function getCashFlowObservation()
     {
         return $this->cashFlowObservation;
     }
@@ -129,7 +129,7 @@ class CashFlow
      * 
      * @return AdministrativeStructure\Entity\Department 
      */
-    function getDepartment()
+    public function getDepartment()
     {
         return $this->department;
     }
@@ -138,7 +138,7 @@ class CashFlow
      * 
      * @return CashFlowType
      */
-    function getCashFlowType()
+    public function getCashFlowType()
     {
         return $this->cashFlowType;
     }
@@ -147,7 +147,7 @@ class CashFlow
      * 
      * @return MonthlyBalance
      */
-    function getMonthlyBalance()
+    public function getMonthlyBalance()
     {
         return $this->monthlyBalance;
     }
@@ -157,7 +157,7 @@ class CashFlow
      * @param \DateTime $cashFlowDate
      * @return CashFlow
      */
-    function setCashFlowDate(\DateTime $cashFlowDate)
+    public function setCashFlowDate(\DateTime $cashFlowDate)
     {
         $this->cashFlowDate = $cashFlowDate;
         return $this;
@@ -168,7 +168,7 @@ class CashFlow
      * @param float $cashFlowAmount
      * @return CashFlow
      */
-    function setCashFlowAmount($cashFlowAmount)
+    public function setCashFlowAmount($cashFlowAmount)
     {
         $this->cashFlowAmount = $cashFlowAmount;
         return $this;
@@ -179,7 +179,7 @@ class CashFlow
      * @param string $cashFlowDescription
      * @return CashFlow
      */
-    function setCashFlowDescription($cashFlowDescription)
+    public function setCashFlowDescription($cashFlowDescription)
     {
         $this->cashFlowDescription = $cashFlowDescription;
         return $this;
@@ -190,7 +190,7 @@ class CashFlow
      * @param string $cashFlowObservation
      * @return CashFlow
      */
-    function setCashFlowObservation($cashFlowObservation)
+    public function setCashFlowObservation($cashFlowObservation)
     {
         $this->cashFlowObservation = $cashFlowObservation;
         return $this;
@@ -201,7 +201,7 @@ class CashFlow
      * @param AdministrativeStructure\Entity\Department $department
      * @return CashFlow
      */
-    function setDepartment(AdministrativeStructure\Entity\Department $department)
+    public function setDepartment(AdministrativeStructure\Entity\Department $department)
     {
         $this->department = $department;
         return $this;
@@ -212,7 +212,7 @@ class CashFlow
      * @param CashFlowType $cashFlowType
      * @return CashFlow
      */
-    function setCashFlowType(CashFlowType $cashFlowType)
+    public function setCashFlowType(CashFlowType $cashFlowType)
     {
         $this->cashFlowType = $cashFlowType;
         return $this;
@@ -223,12 +223,10 @@ class CashFlow
      * @param MonthlyBalance $monthlyBalance
      * @return CashFlow
      */
-    function setMonthlyBalance(MonthlyBalance $monthlyBalance)
+    public function setMonthlyBalance(MonthlyBalance $monthlyBalance)
     {
         $this->monthlyBalance = $monthlyBalance;
         return $this;
     }
-
-
 
 }
