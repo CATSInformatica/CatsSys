@@ -5,13 +5,13 @@
  */
 
 define(['jquery', 'datatable'], function () {
-    var index = (function () {
+    var monthBalances = (function () {
 
-        var configTable = $('#config-table');
+        var monthBalanceTable = $('#month-balance-table');
 
         initDataTable = function () {
             
-            configTable.DataTable({
+            monthBalanceTable.DataTable({
                 dom: 'lftip',
                 paging: false
             });
@@ -25,9 +25,9 @@ define(['jquery', 'datatable'], function () {
                 
                 return {
                     exec: function (data) {
-                        configTable
+                        monthBalanceTable
                                 .DataTable()
-                                .row('#bg-config-' + data.bgConfigId)
+                                .row('#month-balance-' + data.monthBalanceId)
                                 .remove()
                                 .draw();
                     }
@@ -38,5 +38,5 @@ define(['jquery', 'datatable'], function () {
 
     }());    
     
-    return index;
+    return monthBalances;
 });

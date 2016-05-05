@@ -1,0 +1,42 @@
+<section class="content">
+
+    <p><?php echo $message ?></p>
+    <div class="table-responsive col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
+        <table id="cash-flow-table" class="table table-condensed table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Data</th>
+                    <th class="text-center">Tipo</th>
+                    <th class="text-center">Montante</th>
+                </tr>
+            </thead>
+            <tbody>
+                <?php if ($cashFlows): ?>
+                    <?php foreach ($this->cashFlows as $cashFlow): ?>
+                        <tr class="cats-row" data-id="<?php echo $cashFlow->getCashFlowId(); ?>" id="cash-flow-<?php echo $cashFlow->getCashFlowId(); ?>">
+                            <td class="text-center"> <?php echo $cashFlow->getCashFlowId(); ?></td>
+                            <td class="text-center"> <?php echo $cashFlow->getCashFlowDate()->format("d/m/Y"); ?></td>
+                            <td class="text-center"> <?php echo $cashFlow->getCashFlowType()->getCashFlowTypeName(); ?></td>
+                            <td class="text-center"> <?php echo $cashFlow->getCashFlowAmount(); ?></td>
+                        </tr>
+                    <?php endforeach; ?>
+
+                <?php endif; ?>
+            </tbody>
+        </table>
+    </div>
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/financial-management/cash-flow/cash-flows';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>
