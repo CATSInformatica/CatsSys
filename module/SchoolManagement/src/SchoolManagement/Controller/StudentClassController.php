@@ -136,7 +136,7 @@ class StudentClassController extends AbstractEntityActionController
                 }
             }
         } else {
-            $message = 'Nenhuma turma selecionda.';
+            $message = 'Nenhuma turma selecionada.';
         }
 
         return new JsonModel(array(

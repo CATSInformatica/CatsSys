@@ -127,7 +127,7 @@ class SchoolSubjectController extends AbstractEntityActionController
                     'Erro: ' . $ex->getMessage();
             }
         } else {
-            $message = 'Nenhuma disciplina foi selecionda.';
+            $message = 'Nenhuma disciplina foi selecionada.';
         }
         return new JsonModel(array(
             'message' => $message
@@ -180,7 +180,7 @@ class SchoolSubjectController extends AbstractEntityActionController
                     'Erro: ' . $ex->getMessage();
             }
         } else {
-            $message = 'Nenhuma disciplina foi selecionda.';
+            $message = 'Nenhuma disciplina foi selecionada.';
         }
         return new ViewModel(array(
             'message' => $message,

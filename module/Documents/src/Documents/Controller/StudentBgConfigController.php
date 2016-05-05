@@ -130,7 +130,7 @@ class StudentBgConfigController extends AbstractEntityActionController
                 ),
             ));
         } else {
-            $message = 'Nenhuma configuração selecionda.';
+            $message = 'Nenhuma configuração selecionada.';
             return new JsonModel(array(
                 'message' => $message
             ));

@@ -232,7 +232,7 @@ class SchoolExamController extends AbstractEntityActionController
                     'Erro: ' . $ex->getMessage();
             }
         } else {
-            $message = 'Nenhuma questão foi selecionda.';
+            $message = 'Nenhuma questão foi selecionada.';
         }
         return new ViewModel(array(
             'message' => $message,
@@ -267,7 +267,7 @@ class SchoolExamController extends AbstractEntityActionController
                     'Erro: ' . $ex->getMessage();
             }
         } else {
-            $message = 'Nenhuma questão foi selecionda.';
+            $message = 'Nenhuma questão foi selecionada.';
         }
         return new JsonModel(array(
             'message' => $message,

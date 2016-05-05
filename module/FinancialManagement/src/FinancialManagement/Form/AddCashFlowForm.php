@@ -10,25 +10,25 @@ namespace FinancialManagement\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use FinancialManagement\Form\Fieldset\AddExpenseFieldset;
+use FinancialManagement\Form\Fieldset\AddCashFlowFieldset;
 use Zend\Form\Form;
 
 /**
- * Description of AddExpenseForm
+ * Description of AddCashFlowForm
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class AddExpenseForm extends Form
+class AddCashFlowForm extends Form
 {
 
-    public function __construct(ObjectManager $obj, $options = null)
+    public function __construct(ObjectManager $obj)
     {
-        parent::__construct('volunteer_interview');
+        parent::__construct('add_cash_flow');
+        
         $this->setHydrator(new DoctrineHydrator($obj));
-
-        $addExpense = new AddExpenseFieldset($obj, $options);
-        $addExpense->setUseAsBaseFieldset(true);
-        $this->add($addExpense);
+        $addCashFlow = new AddCashFlowFieldset($obj);
+        $addCashFlow->setUseAsBaseFieldset(true);
+        $this->add($addCashFlow);
 
         $this->add(array(
             'name' => 'submit',
