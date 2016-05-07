@@ -6,6 +6,7 @@ return array(
     'controllers' => array(
         'factories' => array(
             'FinancialManagement\Controller\CashFlow' => Factory\Controller\CashFlowControllerFactory::class,
+            'FinancialManagement\Controller\MonthlyPayment' => Factory\Controller\MonthlyPaymentControllerFactory::class
         ),
     ),
     'router' => array(
@@ -28,6 +29,18 @@ return array(
                             'defaults' => array(
                                 'controller' => 'FinancialManagement\Controller\CashFlow',
                                 'action' => 'index',
+                            ),
+                        ),
+                    ),
+                    'monthly-payment' => array(
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/monthly-payment[/:action]',
+                            'constraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'FinancialManagement\Controller\MonthlyPayment',
                             ),
                         ),
                     ),
@@ -78,17 +91,25 @@ return array(
                         'resource' => 'FinancialManagement\Controller\CashFlow',
                         'privilege' => 'index',
                         'icon' => 'fa fa-bar-chart',
-                        //'toolbar' => array(
-                        //    array( 
-                        //        'url' => '/financial-management/cash-flow/add-expense',
-                        //        'id' => 'expense-add',
-                        //        'title' => 'Adicionar despesa',
-                        //        'description' => 'Adiciona uma despesa ao balanço financeiro do CATS',
-                        //        'class' => 'fa fa-plus bg-green',
-                        //        'fntype' => 'httpClick',
-                        //    )
-                        //),                        
+                    //'toolbar' => array(
+                    //    array( 
+                    //        'url' => '/financial-management/cash-flow/add-expense',
+                    //        'id' => 'expense-add',
+                    //        'title' => 'Adicionar despesa',
+                    //        'description' => 'Adiciona uma despesa ao balanço financeiro do CATS',
+                    //        'class' => 'fa fa-plus bg-green',
+                    //        'fntype' => 'httpClick',
+                    //    )
+                    //),                        
                     ),
+                    [
+                        'label' => 'Monthly payment',
+                        'route' => 'financial-management/monthly-payment',
+                        'action' => 'payment',
+                        'resource' => 'FinancialManagement\Controller\MonthlyPayment',
+                        'privilege' => 'payment',
+                        'icon' => 'fa fa-users',
+                    ]
                 ),
             ),
         ),
