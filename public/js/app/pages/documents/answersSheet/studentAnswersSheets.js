@@ -156,7 +156,14 @@ define(['filesaver'], function () {
             var textWidth = textElement[0].getBoundingClientRect().width;
             var xPosition = (svgWidth / 2) - (textWidth / 2);
             textElement.attr("x", xPosition);
+
             svgTemplate.find("#language-group").attr("visibility", visibility);
+            svgTemplate.find("#language-group").removeAttr("style");
+
+            if (visibility === "hidden") {
+                svgTemplate.find("#language-group").attr("style", "display:none;visibility:hidden;");
+            }
+
         };
 
         print = function (svgs) {
@@ -169,8 +176,8 @@ define(['filesaver'], function () {
                 data = (new XMLSerializer())
                         .serializeToString(svgs[i][0]);
                 blob = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
-                documentName = typeof svgs[i].data("identity") !== "undefined" 
-                ? svgs[i].data("identity") : "Modelo";
+                documentName = typeof svgs[i].data("identity") !== "undefined"
+                        ? svgs[i].data("identity") : "Modelo";
                 saveAs(blob, documentName + "-" + (new Date).getTime() +
                         ".svg");
             }
