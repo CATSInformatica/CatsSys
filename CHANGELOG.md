@@ -10,6 +10,7 @@ Todas as mudanças notáveis serão documentadas neste arquivo em ordem cronoló
 - Eventos de abertura e fechamento de balanços mensais (MonthlyBalance).
 - Possibilidade de exclusão de balanços mensais se não houverem fluxos de caixa associados.
 - CRUD para fluxos de caixa (CashFlow), com restrições quanto a edição e exclusão.
+- Gráfico em 'Expense and Revenue' mostrando as despesas e receitas dos últimos 12 meses.
 
 ### Removido
 - Nada.
