@@ -12,8 +12,7 @@ define(['jquery', 'datatable'], function () {
         initDataTable = function () {
             
             monthBalanceTable.DataTable({
-                dom: 'lftip',
-                paging: false
+                dom: 'lftip'
             });
         };
 

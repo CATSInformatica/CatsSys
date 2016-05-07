@@ -59,7 +59,7 @@ class CashFlowType
     /**
      *
      * @var CashFlow 
-     * @ORM\OneToMany(targetEntity="CashFlow", mappedBy="cashFlowType", cascade={"remove"}, fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="CashFlow", mappedBy="cashFlowType", fetch="EXTRA_LAZY")
      */
     private $cashFlows;
     

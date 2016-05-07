@@ -12,8 +12,7 @@ define(['jquery', 'datatable'], function () {
         initDataTable = function () {
             
             cashFlowTypeTable.DataTable({
-                dom: 'lftip',
-                paging: false
+                dom: 'lftip'
             });
         };
 

@@ -1,32 +1,35 @@
 <section class="content">
 
     <p><?php echo $message ?></p>
-    <div class="table-responsive col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
-        <table id="cash-flow-type-table" class="table table-condensed table-striped">
-            <thead>
-                <tr>
-                    <th class="text-center">#</th>
-                    <th class="text-center">Tipo</th>
-                    <th class="text-center">Nome</th>
-                    <th class="text-center">Descrição</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if ($cashFlowTypes): ?>
-                    <?php foreach ($this->cashFlowTypes as $cashFlowType): ?>
-                        <tr class="cats-row" data-id="<?php echo $cashFlowType->getCashFlowTypeId(); ?>" id="cash-flow-type-<?php echo $cashFlowType->getCashFlowTypeId(); ?>">
-                            <td class="text-center"> <?php echo $cashFlowType->getCashFlowTypeId(); ?></td>
-                            <td class="text-center"> <?php echo ($cashFlowType->getCashFlowTypeDirection() === 0) 
-                            ? FinancialManagement\Entity\CashFlowType::CASH_FLOW_DIRECTION_OUTFLOW_DESCRIPTION : 
-                              FinancialManagement\Entity\CashFlowType::CASH_FLOW_DIRECTION_INFLOW_DESCRIPTION; ?></td>
-                            <td class="text-center"> <?php echo $cashFlowType->getCashFlowTypeName(); ?></td>
-                            <td class="text-center"> <?php echo $cashFlowType->getCashFlowTypeDescription(); ?></td>
-                        </tr>
-                    <?php endforeach; ?>
+    <div class="row">
+        <div class="table-responsive col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
+            <table id="cash-flow-type-table" class="table table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Tipo</th>
+                        <th class="text-center">Nome</th>
+                        <th class="text-center">Descrição</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($cashFlowTypes): ?>
+                        <?php foreach ($this->cashFlowTypes as $cashFlowType): ?>
+                            <tr class="cats-row" data-id="<?php echo $cashFlowType->getCashFlowTypeId(); ?>" id="cash-flow-type-<?php echo $cashFlowType->getCashFlowTypeId(); ?>">
+                                <td class="text-center"> <?php echo $cashFlowType->getCashFlowTypeId(); ?></td>
+                                <td class="text-center"> <?php
+                                    echo ($cashFlowType->getCashFlowTypeDirection() === 0) ? FinancialManagement\Entity\CashFlowType::CASH_FLOW_DIRECTION_OUTFLOW_DESCRIPTION :
+                                            FinancialManagement\Entity\CashFlowType::CASH_FLOW_DIRECTION_INFLOW_DESCRIPTION;
+                                    ?></td>
+                                <td class="text-center"> <?php echo $cashFlowType->getCashFlowTypeName(); ?></td>
+                                <td class="text-center"> <?php echo $cashFlowType->getCashFlowTypeDescription(); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
 
-                <?php endif; ?>
-            </tbody>
-        </table>
+<?php endif; ?>
+                </tbody>
+            </table>
+        </div>
     </div>
 </section>
 

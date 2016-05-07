@@ -78,6 +78,14 @@ return array(
                         'resource' => 'FinancialManagement\Controller\CashFlow',
                         'privilege' => 'index',
                         'icon' => 'fa fa-bar-chart',
+                        'pages' => array(
+                            array(
+                                'label' => 'Get Month Balances',
+                                'route' => 'financial-management/cash-flow',
+                                'action' => 'get-month-balances',
+                                'icon' => 'fa fa-list-alt',
+                            ),
+                        ),
                     ),
                     array(
                         'label' => 'Open Month Balance',

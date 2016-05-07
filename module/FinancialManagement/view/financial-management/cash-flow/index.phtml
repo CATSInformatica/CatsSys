@@ -1,8 +1,17 @@
 <section class="content">
     <p><?php if ($message !== null) echo $message; ?></p>
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-md-8 col-md-offset-2 col-xs-12 text-center">
+                <h4 class="row">RECEITAS E DESPESAS</h4>
+                <canvas id="last-year-balance" class="col-xs-12"></canvas>
+            </div>
+        </div>
+    </div>
+</div>
 </section>
 
-<!--<script>
+<script>
 
     appConfig = (function () {
         var scriptSrc = 'app/pages/financial-management/cash-flow/index';
@@ -13,4 +22,4 @@
         };
     })();
 
-</script>-->
+</script>
