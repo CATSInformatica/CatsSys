@@ -10,6 +10,7 @@ namespace FinancialManagement\Controller;
 
 use Database\Controller\AbstractEntityActionController;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\Common\Collections\Criteria;
 use FinancialManagement\Form\AddCashFlowForm;
 use FinancialManagement\Entity\CashFlow;
 use FinancialManagement\Form\CashFlowTypeForm;
@@ -41,6 +42,61 @@ class CashFlowController extends AbstractEntityActionController
         return new ViewModel(array(
             'message' => $message,
         ));
+    }
+
+    /**
+     * Retorna um array 'monthBalances' com informações sobre os últimos 
+     * $month(int) balanços mensais
+     * 
+     * @return JSonModel
+     */
+    public function getMonthBalancesAction()
+    {
+        $months = (int) $this->params('id', false);
+
+        try {
+            $em = $this->getEntityManager();
+
+            $date = new \DateTime('now');
+            $date->modify('-' . $months . ' months');
+            $criteria = Criteria::create()
+                    ->where(Criteria::expr()->gte("monthlyBalanceOpen", $date))
+                    ->andWhere(Criteria::expr()->lt("monthlyBalanceOpen",
+                                    new \DateTime('now')))
+                    ->andWhere(Criteria::expr()->eq("monthlyBalanceIsOpen",
+                                    false))
+                    ->orderBy(array("monthlyBalanceOpen" => Criteria::ASC));
+            $monthBalances = $em
+                    ->getRepository('FinancialManagement\Entity\MonthlyBalance')
+                    ->matching($criteria);
+
+            $monthBalancesData = [];
+            foreach ($monthBalances as $monthBalance) {
+                $monthBalancesData['month'][] = (int) $monthBalance
+                                ->getMonthlyBalanceOpen()->format('m');
+                $monthBalancesData['revenue'][] = (int) $monthBalance
+                                ->getMonthlyBalanceRevenue();
+                $monthBalancesData['projectedRevenue'][] = (int) $monthBalance
+                                ->getMonthlyBalanceProjectedRevenue();
+                $monthBalancesData['expense'][] = (int) $monthBalance
+                                ->getMonthlyBalanceExpense();
+                $monthBalancesData['projectedExpense'][] = (int) $monthBalance
+                                ->getMonthlyBalanceProjectedExpense();
+            }
+            return new JSonModel(array(
+                'monthBalances' => $monthBalancesData
+            ));
+        } catch (\Exception $ex) {
+            return new JSonModel(array(
+                'monthBalances' => array(
+                    'month' => -1,
+                    'revenue' => array_fill(0, 12, -1),
+                    'projectedRevenue' => array_fill(0, 12, -1),
+                    'expense' => array_fill(0, 12, -1),
+                    'projectedExpense' => array_fill(0, 12, -1),
+                )
+            ));
+        }
     }
 
     /**
@@ -106,8 +162,7 @@ class CashFlowController extends AbstractEntityActionController
                             $data['department']);
                     $cashFlow->setDepartment($department);
                     $cashFlow->setMonthlyBalance($openMonth[0]);
-                    if ($cashFlow->getCashFlowType()->getCashFlowTypeDirection() 
-                            === CashFlowType::CASH_FLOW_DIRECTION_INFLOW) {
+                    if ($cashFlow->getCashFlowType()->getCashFlowTypeDirection() === CashFlowType::CASH_FLOW_DIRECTION_INFLOW) {
                         $openMonth[0]->setMonthlyBalanceRevenue(
                                 $openMonth[0]->getMonthlyBalanceRevenue() +
                                 $cashFlow->getCashFlowAmount());
@@ -327,6 +382,12 @@ class CashFlowController extends AbstractEntityActionController
                 $cashFlowType = $em
                         ->getReference('FinancialManagement\Entity\CashFlowType',
                         $id);
+                if (count($cashFlowType->getCashFlows()) !== 0) {
+                    return new JsonModel(array(
+                        'message' => 'Este tipo de fluxo de caixa não pôde ser removido '
+                        . 'pois possui fluxos de caixa associados a ele',
+                    ));
+                }
                 $em->remove($cashFlowType);
                 $em->flush();
                 return new JsonModel(array(
@@ -484,6 +545,15 @@ class CashFlowController extends AbstractEntityActionController
             if ($request->isPost()) {
                 $form->setData($request->getPost());
                 if ($form->isValid()) {
+                    $month = $em->getRepository('FinancialManagement\Entity\MonthlyBalance')
+                            ->findBy(array('monthlyBalanceOpen' =>
+                        $monthBalance->getMonthlyBalanceOpen()));
+                    if (count($month) !== 0) { // O mês não pode ser aberto duas vezes
+                        return new ViewModel(array(
+                            'message' => 'Esse mês não pode ser aberto, pois já foi cadastrado.',
+                            'form' => null,
+                        ));
+                    }
                     $monthBalance->setMonthlyBalanceRevenue(0);
                     $monthBalance->setMonthlyBalanceExpense(0);
                     $monthBalance->setMonthlyBalanceIsOpen(true);
