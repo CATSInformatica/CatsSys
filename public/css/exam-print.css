@@ -21,6 +21,20 @@
     margin: 0;
 }
 
+#instructions > div.text-justify {
+    margin-right: 6mm;
+}
+
+#instructions > h3 {
+    line-height: 4.5mm;
+}
+
+#instructions, ol {
+    font-size: 15px;
+    line-height: 6.2mm;
+    margin: 0;
+}
+
 .cats-logo {
     height: 14mm;
     padding-top: 1mm;

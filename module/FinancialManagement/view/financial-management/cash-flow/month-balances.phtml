@@ -1,0 +1,53 @@
+
+<section class="content">
+
+    <p><?php echo $message ?></p>
+    <div class="row">
+        <div class="table-responsive col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
+            <table id="month-balance-table" class="table table-condensed table-striped">
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Mês</th>
+                        <th class="text-center">Fechado em</th>
+                        <th class="text-center">Receita</th>
+                        <th class="text-center">Despesa</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($monthBalances): ?>
+                        <?php foreach ($this->monthBalances as $monthBalance): ?>
+                            <tr class="cats-row" data-id="<?php echo $monthBalance->getMonthlyBalanceId(); ?>" id="month-balance-<?php echo $monthBalance->getMonthlyBalanceId(); ?>">
+                                <td class="text-center"> <?php echo $monthBalance->getMonthlyBalanceId(); ?></td>
+                                <td class="text-center"> <?php echo $monthBalance->getMonthlyBalanceOpen()->format("m/Y"); ?></td>
+                                <td class="text-center"> 
+                                    <?php
+                                    echo ($monthBalance->getMonthlyBalanceClose() !== NULL) ?
+                                            $monthBalance->getMonthlyBalanceClose()->format("d/m/Y") :
+                                            '-';
+                                    ?>
+                                </td>
+                                <td class="text-center"> <?php echo $monthBalance->getMonthlyBalanceRevenue(); ?></td>
+                                <td class="text-center"> <?php echo $monthBalance->getMonthlyBalanceExpense(); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/financial-management/cash-flow/month-balances';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

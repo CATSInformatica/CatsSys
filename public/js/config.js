@@ -28,7 +28,7 @@ requirejs.config({
         trumbowyg: 'trumbowyg/dist/trumbowyg.min',
         trumbowygpt: 'trumbowyg/dist/langs/pt.min',
         trumbowygbase64: 'trumbowyg/dist/plugins/base64/trumbowyg.base64.min',
-        chart: 'AdminLTE/plugins/chartjs/Chart.min',
+        chart: 'Chart.js/dist/Chart.min',
         filesaver: 'file-saver.js/FileSaver',
         jqueryprint: 'jQuery.print/jQuery.print'
     },

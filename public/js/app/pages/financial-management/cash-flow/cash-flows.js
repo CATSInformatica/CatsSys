@@ -5,15 +5,14 @@
  */
 
 define(['jquery', 'datatable'], function () {
-    var index = (function () {
+    var cashFlows = (function () {
 
-        var configTable = $('#config-table');
+        var cashFlowTable = $('#cash-flow-table');
 
         initDataTable = function () {
             
-            configTable.DataTable({
-                dom: 'lftip',
-                paging: false
+            cashFlowTable.DataTable({
+                dom: 'lftip'
             });
         };
 
@@ -25,9 +24,9 @@ define(['jquery', 'datatable'], function () {
                 
                 return {
                     exec: function (data) {
-                        configTable
+                        cashFlowTable
                                 .DataTable()
-                                .row('#bg-config-' + data.bgConfigId)
+                                .row('#cash-flow-' + data.cashFlowId)
                                 .remove()
                                 .draw();
                     }
@@ -38,5 +37,5 @@ define(['jquery', 'datatable'], function () {
 
     }());    
     
-    return index;
+    return cashFlows;
 });

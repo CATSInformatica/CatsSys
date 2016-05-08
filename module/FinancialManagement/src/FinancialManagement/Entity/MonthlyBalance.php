@@ -40,7 +40,7 @@ class MonthlyBalance
     /**
      *
      * @var \DateTime 
-     * @ORM\Column(name="monthly_balance_close", type="date", nullable=false)
+     * @ORM\Column(name="monthly_balance_close", type="date", nullable=true)
      */
     private $monthlyBalanceClose;
 
@@ -82,14 +82,14 @@ class MonthlyBalance
     /**
      *
      * @var string 
-     * @ORM\Column(name="monthly_balance_observation", type="string", length=1000)
+     * @ORM\Column(name="monthly_balance_observation", type="string", length=1000, nullable=true)
      */
     private $monthlyBalanceObservation;
 
     /**
      *
      * @var Collection 
-     * @ORM\OneToMany(targetEntity="CashFlow", mappedBy="monthlyBalance", fetch="EXTRA_LAZY")
+     * @ORM\OneToMany(targetEntity="CashFlow", mappedBy="monthlyBalance", cascade={"remove"}, fetch="EXTRA_LAZY")
      */
     private $cashFlows;
     

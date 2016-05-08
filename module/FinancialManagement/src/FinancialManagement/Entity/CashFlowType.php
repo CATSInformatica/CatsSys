@@ -23,6 +23,8 @@ class CashFlowType
 {
     const CASH_FLOW_DIRECTION_OUTFLOW = 0;
     const CASH_FLOW_DIRECTION_INFLOW = 1;
+    const CASH_FLOW_DIRECTION_OUTFLOW_DESCRIPTION = "Despesa";
+    const CASH_FLOW_DIRECTION_INFLOW_DESCRIPTION = "Receita";
     
     /**
      *
