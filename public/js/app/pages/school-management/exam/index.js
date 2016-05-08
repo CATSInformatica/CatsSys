@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
+define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'datetimepicker'], function () {
     var index = (function () {
 
         //  Array de objetos com as questões carregadas por ajax
@@ -89,21 +89,103 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
              * Mostra o diálogo de impressão do simulado
              */
             $('#print-exam').click(function () {
+                var pageNumber = 1;
 
-                var firstPage = null;
+                var firstPage = jQuery();
+                var instructionsPage = '';
+                var wordingPage = '';
+
+                if ($('#exam-instructions').is(":checked")) {
+                    var examName = $('#exam-name-input').val();
+                    var examDate = $('#exam-day').val();
+                    var examBeginTime = $('#exam-begin-time').val();
+                    var examEndTime = $('#exam-end-time').val();
+                    if (examName === '') {
+                        examName = "SIMULADO CATS";
+                    }
+                    var currentDate = new Date();
+                    if (examDate === '') {
+                        examDate = currentDate.getDate() + '/' 
+                                + (currentDate.getMonth() + 1) + '/' 
+                                + currentDate.getFullYear();
+                    }
+                    if (examBeginTime === '') {
+                        examBeginTime = '13:30';
+                    }
+                    if (examEndTime === '') {
+                        examEndTime = '17:30';
+                    }
+                    
+                    var instructions = '<div id="instructions"><div class="text-center"><h3>'
+                            + '<strong>' + examName + '</strong></h3>'
+                            + examDate +' - ' + examBeginTime 
+                            + 'h às ' + examEndTime + 'h'
+                            + '<div class="text-uppercase"><br><h4>Instruções gerais '
+                            + 'para a realização da prova</h4></div><h4><br><strong>'
+                            + 'Antes de iniciar a resolução da prova, verifique '
+                            + 'se as regras abaixo estão sendo cumpridas.'
+                            + '</strong></h4></div><br>'
+                            + '<div class="text-justify"><ol> <li>Não abra a prova até que o fiscal lhe conceda '
+                            + 'autorização</li><li>Em sua mesa de prova <strong>não '
+                            + 'deve constar nada além de lápis, borracha e caneta.</strong></li>'
+                            + '<li>Quaisquer materiais que não sejam os descritos acima'
+                            + ' devem ser deixados à sua direita, no chão.</li>'
+                            + '<li><strong>O candidato</strong> que precisar usar o banheiro'
+                            + ' ou que, por ventura, <strong> venha a se sentir mal, deve'
+                            + ' chamar o fiscal</strong> à sua mesa. <strong>Não</strong>'
+                            + ' se levante da mesa sem comunicar o fiscal.</li>'
+                            + '<li>Não haverá correção de erros nas questões. Caso '
+                            + 'esses existam e comprometam o resultado das mesmas, '
+                            + 'as questões erradas serão anuladas posteriormente.</li>'
+                            + '<li>A prova tem duração máxima de 4 (quatro) horas. '
+                            + 'O tempo mínimo de permanência na sala é de 2<strong> (duas)'
+                            + '</strong> horas. Após este período, você receberá uma '
+                            + 'folha de respostas, onde deverá marcar as repostas de '
+                            + '<strong>caneta azul ou preta.</strong> Marque somente '
+                            + 'uma resposta para cada questão, caso contrário, '
+                            + 'tal questão será considerada anulada em sua prova. Logo abaixo'
+                            + ', você pode verificar como deve ser marcada a resposta '
+                            + 'que você julgar correta.</li>'
+                            + '<div class="text-center" style="font-size:48px; vertical-align: middle;">'
+                            + '&#9398 &#9399 &#9400 <svg style="vertical-align: middle" '
+                            + 'height="65" width="48"><circle cx="24" cy="25" r="24" '
+                            + 'stroke-width="0" fill="black" /></svg> &#9402</div>'
+                            + '<li>Caso exista uma questão que você julgue estar sem '
+                            + 'sentido, sem resposta correta, mais de uma resposta '
+                            + 'correta, ilegível ou algo do gênero, escreva atrás do '
+                            + 'gabarito o número da questão e o erro encontrado.</li>'
+                            + '<li>É recomendável que se deixem pelo menos 15 (quinze) '
+                            + 'minutos para o preenchimento da folha de resposta. Em '
+                            + 'hipótese alguma o fiscal irá trocá-la e somente ela '
+                            + 'deverá ser entregue ao fiscal no fim de sua prova. '
+                            + 'Não se esqueça de escrever o número de matrícula na '
+                            + 'folha de resposta. O caderno de questões ficará com '
+                            + 'você.</li><li>Antes de iniciar sua prova, espere autorização '
+                            + 'do fiscal para conferir se todas as páginas estão em seu '
+                            + 'caderno e se todas estão legíveis.</li><li>Inicie a prova '
+                            + 'quando houver autorização do fiscal.</li>'
+                            + '</ol></div></div>';
+
+                    instructionsPage = $(".exam-page").first().clone().addClass("page")
+                            .css("display", "block");
+                    instructionsPage.find('.exam-content').html(instructions);
+                    instructionsPage.find('.page-number').html(pageNumber);
+                    ++pageNumber;
+                }
                 if ($('.exam-questions .wording-block').length !== 0) {
-                    firstPage = $(".exam-page").first().clone().addClass("page")
+                    wordingPage = $(".exam-page").first().clone().addClass("page")
                             .css("display", "block");
                     var wordingBlock = $('.exam-questions .wording-block').clone();
                     wordingBlock.find('do-not-print').each(function () {
                         $(this).remove();
                     });
-                    firstPage.find('.exam-content').html(wordingBlock.html());
-                    firstPage.find('.page-number').html('1');
+                    wordingPage.find('.exam-content').html(wordingBlock.html());
+                    wordingPage.find('.page-number').html(pageNumber);
+                    ++pageNumber;
                 }
 
                 //  Prepara a div #print-page (columnizer)
-                generateExam();
+                generateExam(pageNumber);
 
                 MathJax.Hub.Queue(["Typeset", MathJax.Hub, 'print-page'], function () {
                     //  Abre o diálogo de impressão da div #print-page usando jqueryprint
@@ -114,7 +196,7 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
                         noPrintSelector: null,
                         iframe: true,
                         append: null,
-                        prepend: firstPage,
+                        prepend: (firstPage.add(instructionsPage)).add(wordingPage),
                         manuallyCopyFormValues: true,
                         deferred: $.Deferred(),
                         timeout: 250,
@@ -164,6 +246,23 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
              */
             $('#exam-name-input').on('keyup', function () {
                 $('.exam-name').html($('#exam-name-input').val());
+            });
+
+            /*
+             * Habilita/Desabilita os datepickers de dia e hora, que são necessários
+             * somente se o simulado possuir o cabeçalho com instruções
+             * 
+             */
+            $('#exam-instructions').on('change', function () {
+                if ($('#exam-instructions').is(":checked")) {
+                    $('#exam-day').prop('disabled', false);
+                    $('#exam-begin-time').prop('disabled', false);
+                    $('#exam-end-time').prop('disabled', false);
+                } else {
+                    $('#exam-day').prop('disabled', true);
+                    $('#exam-begin-time').prop('disabled', true);
+                    $('#exam-end-time').prop('disabled', true);
+                }
             });
         };
 
@@ -242,15 +341,14 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
         };
 
         /*
-         * Configura (cabeçalho, duas colunas, rodapé) e gera a versão de impressão na div #print-page
+         * Configura (cabeçalho, duas colunas, rodapé) e gera a versão de impressão 
+         * na div #print-page
+         * @param {int} pageNumber - número da primeira página de prova
          */
-        generateExam = function () {
+        generateExam = function (pageNumber) {
 
-            var content_height = 900;
-            var page = 1;   // Número da primeira página
-            if ($('.exam-questions .wording-block').length !== 0) {
-                page = 2; // Página 1 - Redação
-            }
+            var content_height = 884.88;
+            var page = pageNumber;
 
             $('#exam-part-1').append('<div id="exam-temp"></div>');
             $('#exam-temp').html($("#preview-page").first().html());
@@ -382,11 +480,11 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
 
                     for (var i = 0; i < examQuestions[qId]['alternatives'].length; ++i) {
                         var alternative = examQuestions[qId]['alternatives'][i]
-                                .replace(/(<div.*?>)/,  '$1<span class="push-left">' 
-                                + '&#' + (9398 + i) + ';  </span>');
+                                .replace(/(<div.*?>)/, '$1<span class="push-left">'
+                                        + '&#' + (9398 + i) + ';  </span>');
                         if (alternative === examQuestions[qId]['alternatives'][i]) {
-                            alternative = '<span class="push-left">' 
-                                    + '&#' + (9398 + i) + ';  </span>' 
+                            alternative = '<span class="push-left">'
+                                    + '&#' + (9398 + i) + ';  </span>'
                                     + alternative;
                         }
                         q += '<div>' + alternative + '</div>';
@@ -453,11 +551,36 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], fu
             reenumerateQuestions();
         };
 
+        /*
+         * Inicializa os  os datepickers de dia e hora, utilizados se o simulado 
+         * possuir o cabeçalho com instruções
+         * 
+         */
+        initDatepicker = function () {
+            $('#exam-day').closest('.input-group').datetimepicker({
+                format: 'DD/MM/YYYY',
+                useCurrent: false,
+                locale: 'pt-br',
+                viewMode: 'months'
+            });
+            $('#exam-begin-time').closest('.input-group').datetimepicker({
+                format: 'HH:mm',
+                useCurrent: false,
+                locale: 'pt-br'
+            });
+            $('#exam-end-time').closest('.input-group').datetimepicker({
+                format: 'HH:mm',
+                useCurrent: false,
+                locale: 'pt-br'
+            });
+        };
+
         return {
             init: function () {
                 setListeners();
                 initDataTable();
                 initQuestionAmount();
+                initDatepicker();
             }
         };
 
