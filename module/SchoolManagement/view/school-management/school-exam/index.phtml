@@ -2,31 +2,77 @@
     <?php
     $this->headLink()->appendStylesheet('/css/exam-print.css', 'all');
     $this->headTitle()->append('Gerar Simulado')
-        ->setSeparator(' - ');
+            ->setSeparator(' - ');
     ?>
     <p><?php echo $this->message; ?></p>
     <div class="row">
         <div class="col-md-10 col-md-offset-1 col-xs-12">
-            <div class="box box-primary collapsed-box color-palette-box">
+            <div class="box box-primary color-palette-box">
                 <div class="box-header with-border">
                     <h3 class="box-title text-uppercase"><i class="fa fa-balance-scale"></i> CONFIGURAÇÃO DO SIMULADO</h3>
                     <div class="box-tools pull-right">
-                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div><!-- /.box-tools -->
                 </div>
                 <div class="box-body">
                     <div class="form-group col-xs-12">
                         <label for="exam-name-input">Nome do Simulado</label>
-                        <input type="text" class="form-control" id="exam-name-input" placeholder="Ex: 1º Simulado Oficial do CATS">
+                        <input type="text" class="form-control" id="exam-name-input" placeholder="Ex: 1º Simulado Oficial do CATS - 2016">
                     </div>
-                    <div class="row">
+                    <div class="col-xs-12">
+                        <div class="form-group ">
+                            <label class="">Incluir Cabeçalho com Instruções</label>
+                            <div class="input-group push-left">
+                                <input id="exam-instructions" type="checkbox" class=" push-right checkbox">
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-12 no-padding">
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group ">
+                                <label>Data do Simulado</label>
+                                <div class="input-group ">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-calendar"></i>
+                                    </span>
+                                    <input id="exam-day" type="text" class="form-control datepicker text-center" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group ">
+                                <label>Hora de Início</label>
+                                <div class="input-group ">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-calendar"></i>
+                                    </span>
+                                    <input id="exam-begin-time" type="text" class="form-control datepicker text-center" disabled>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-4">
+                            <div class="form-group ">
+                                <label>Hora de Término</label>
+                                <div class="input-group ">
+                                    <span class="input-group-addon">
+                                        <i class="glyphicon glyphicon-calendar"></i>
+                                    </span>
+                                    <input id="exam-end-time" type="text" class="form-control datepicker text-center" disabled>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                    <div class="col-xs-12 no-padding">
                         <table class="table table-bordered">
                             <tr>
                                 <?php foreach ($this->baseSubjects as $baseSubject) : ?>
-                                    <?php if ($baseSubject->getSubjectName() === "REDAÇÃO"):
+                                    <?php
+                                    if ($baseSubject->getSubjectName() === "REDAÇÃO"):
                                         continue;
-                                    endif; ?>
-                                    
+                                    endif;
+                                    ?>
+
                                     <th>
                                         <h4 class="text-uppercase"><?php echo $baseSubject->getSubjectName(); ?></h4>
                                     </th>
@@ -34,16 +80,18 @@
                             </tr>
                             <tr>
                                 <?php foreach ($this->baseSubjects as $baseSubject) : ?>
-                                    <?php if ($baseSubject->getSubjectName() === "REDAÇÃO"):
+                                    <?php
+                                    if ($baseSubject->getSubjectName() === "REDAÇÃO"):
                                         continue;
-                                    endif; ?>
+                                    endif;
+                                    ?>
                                     <td>
                                         <div class="container-fluid">
                                             <?php foreach ($baseSubject->getChildren() as $subject) : ?>
                                                 <div class="row">
                                                     <?php echo $subject->getSubjectName(); ?>
                                                     <input type="number" class="col-md-5 col-xs-12 pull-right amount-input" 
-                                                           value="<?php echo (int)(45 / count($baseSubject->getChildren())) ?>"
+                                                           value="<?php echo (int) (45 / count($baseSubject->getChildren())) ?>"
                                                            data-s-id="<?php echo $subject->getSubjectId(); ?>" 
                                                            data-old-value="" min="0">
                                                 </div>
@@ -74,59 +122,60 @@
                     <div class="col-md-4 col-sm-12" id="subjects">
                         <dl class="col-xs-12 no-padding">
                             <?php foreach ($this->baseSubjects as $baseSubject) : ?>
-                            <div class="base-subject-info no-margin no-padding" 
-                                 data-name="<?php echo $baseSubject->getSubjectName(); ?>"
-                                 data-id="<?php echo $baseSubject->getSubjectId(); ?>">
-                                
-                                <?php foreach ($baseSubject->getChildren() as $subject) : ?>
-                                    <dt id="select-<?php echo $subject->getSubjectId(); ?>"
-                                        data-name="<?php echo $subject->getSubjectName(); ?>">
-                                        <?php echo $subject->getSubjectName(); ?>
-                                        <span class="pull-right">
-                                            <span class="q-added text-green">0</span>
-                                            <?php if ($baseSubject->getSubjectName() !== "REDAÇÃO"): ?>
-                                                /
-                                                <span class="q-amount text-blue"></span>
-                                            <?php endif; ?>
-                                        </span>
-                                    </dt>
-                                    <dd class="col-xs-12" id="subject-<?php echo $subject->getSubjectId() ?>">
-                                        <select name="subject" class="col-xs-12 no-padding no-border" multiple>
-                                            
-                                            <?php 
-                                            foreach ($subject->getChildren() as $topic) :
-                                                
-                                                //  DFS para imprimir a arvore de disciplinas
-                                                $visited = [];
-                                                $stack = new SplStack();
-                                                $stack->push($topic);
-                                                while (!$stack->isEmpty()) :
-                                                    $current = $stack->pop();
-                                                    if (isset($visited[$current->getSubjectId()])) :
-                                                        continue;
-                                                    endif;
-                                                    $visited[$current->getSubjectId()] = true;
-                                                    if (empty($current->getChildren()->toArray())) :
-                                                        ?>
-                                                        <option value="<?php echo $current->getSubjectId(); ?>">
-                                                            <?php echo $current->getSubjectName(); ?>
-                                                        </option>
-                                                        <?php
-                                                    endif;
-                                                    
-                                                    foreach ($current->getChildren()->toArray() as $child) :
-                                                        $stack->push($child);
-                                                    endforeach;
-                                                endwhile;
-                                                
-                                            endforeach;
-                                            ?>    
-                                            <option value="<?php echo $subject->getSubjectId(); ?>">SEM TÓPICO DEFINIDO</option>
-                                            
-                                        </select>
-                                    </dd>
-                                <?php endforeach; ?>
-                            </div>
+                                <div class="base-subject-info no-margin no-padding" 
+                                     data-name="<?php echo $baseSubject->getSubjectName(); ?>"
+                                     data-id="<?php echo $baseSubject->getSubjectId(); ?>">
+
+                                    <?php foreach ($baseSubject->getChildren() as $subject) : ?>
+                                        <dt id="select-<?php echo $subject->getSubjectId(); ?>"
+                                            data-name="<?php echo $subject->getSubjectName(); ?>">
+                                                <?php echo $subject->getSubjectName(); ?>
+                                            <span class="pull-right">
+                                                <span class="q-added text-green">0</span>
+                                                <?php if ($baseSubject->getSubjectName() !== "REDAÇÃO"): ?>
+                                                    /
+                                                    <span class="q-amount text-blue"></span>
+                                                <?php endif; ?>
+                                            </span>
+                                        </dt>
+                                        <dd class="col-xs-12" id="subject-<?php echo $subject->getSubjectId() ?>">
+                                            <select name="subject" class="col-xs-12 no-padding no-border" multiple>
+
+                                                <?php
+                                                foreach ($subject->getChildren() as $topic) :
+
+                                                    //  DFS para imprimir a arvore de disciplinas
+                                                    $visited = [];
+                                                    $stack = new SplStack();
+                                                    $stack->push($topic);
+                                                    while (!$stack->isEmpty()) :
+                                                        $current = $stack->pop();
+                                                        if (isset($visited[$current->getSubjectId()])) :
+                                                            continue;
+                                                        endif;
+                                                        $visited[$current->getSubjectId()]
+                                                                = true;
+                                                        if (empty($current->getChildren()->toArray())) :
+                                                            ?>
+                                                            <option value="<?php echo $current->getSubjectId(); ?>">
+                                                                <?php echo $current->getSubjectName(); ?>
+                                                            </option>
+                                                            <?php
+                                                        endif;
+
+                                                        foreach ($current->getChildren()->toArray() as $child) :
+                                                            $stack->push($child);
+                                                        endforeach;
+                                                    endwhile;
+
+                                                endforeach;
+                                                ?>    
+                                                <option value="<?php echo $subject->getSubjectId(); ?>">SEM TÓPICO DEFINIDO</option>
+
+                                            </select>
+                                        </dd>
+                                    <?php endforeach; ?>
+                                </div>
                             <?php endforeach; ?>
                         </dl>
                     </div>
