@@ -109,6 +109,24 @@ return array(
                         'resource' => 'FinancialManagement\Controller\MonthlyPayment',
                         'privilege' => 'payment',
                         'icon' => 'fa fa-users',
+                        'toolbar' => [
+                            [
+                                'url' => '/financial-management/monthly-payment/savePayments',
+                                'id' => 'save-payments',
+                                'title' => 'Salvar',
+                                'description' => 'Salva as mensalidades selecionadas',
+                                'class' => 'fa fa-hdd-o bg-green',
+                                'fntype' => 'ajaxPostClick',
+                            ],
+                            [
+                                'url' => '/financial-management/monthly-payment/deletePayments',
+                                'id' => 'delete-payments',
+                                'title' => 'Remover',
+                                'description' => 'Remove as mensalidades selecionadas',
+                                'class' => 'fa fa-trash bg-red',
+                                'fntype' => 'ajaxPostClick',
+                            ]
+                        ],
                     ]
                 ),
             ),

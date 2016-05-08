@@ -166,12 +166,7 @@ class MonthlyPayment
      */
     public function setMonthlyPaymentType($monthlyPaymentType)
     {
-        if (!in_array($monthlyPaymentType,
-                [
-                self::PAYMENT_TYPE_TOTAL,
-                self::PAYMENT_TYPE_PARTIAL,
-                self::PAYMENT_TYPE_FREE,
-            ])) {
+        if (!self::isPaymentTypeValid($monthlyPaymentType)) {
             throw new \InvalidArgumentException('O tipo de pagamento informado não é válido.');
         }
         $this->monthlyPaymentType = $monthlyPaymentType;
@@ -216,23 +211,10 @@ class MonthlyPayment
      */
     public function setMonthlyPaymentMonth($monthlyPaymentMonth)
     {
-        if (!in_array($monthlyPaymentMonth,
-                [
-                self::MONTH_JANUARY,
-                self::MONTH_FEBRUARY,
-                self::MONTH_MARCH,
-                self::MONTH_APRIL,
-                self::MONTH_MAY,
-                self::MONTH_JUNE,
-                self::MONTH_JULY,
-                self::MONTH_AUGUST,
-                self::MONTH_SEPTEMBER,
-                self::MONTH_OCTOBER,
-                self::MONTH_NOVEMBER,
-                self::MONTH_DECEMBER
-            ])) {
+        if (!self::isMonthValid($monthlyPaymentMonth)) {
             throw new \InvalidArgumentException('A mês de pagamento deve ser um inteiro entre 1 e 12.');
         }
+
         $this->monthlyPaymentMonth = $monthlyPaymentMonth;
 
         return $this;
@@ -258,6 +240,53 @@ class MonthlyPayment
     {
         $this->monthlyPaymentValue = $monthlyPaymentValue;
         return $this;
+    }
+
+    /**
+     * Verifica se o tipo de pagamento é válido.
+     * 
+     * @param int $monthlyPaymentType
+     * @return boolean
+     */
+    public static function isPaymentTypeValid($monthlyPaymentType)
+    {
+        if (in_array($monthlyPaymentType,
+                [
+                self::PAYMENT_TYPE_TOTAL,
+                self::PAYMENT_TYPE_PARTIAL,
+                self::PAYMENT_TYPE_FREE,
+            ])) {
+            return true;
+        }
+        return false;
+    }
+
+    /**
+     * Verifica se o mês de pagamento é válido.
+     * 
+     * @param int $monthlyPaymentMonth
+     * @return boolean
+     */
+    public static function isMonthValid($monthlyPaymentMonth)
+    {
+        if (in_array($monthlyPaymentMonth,
+                [
+                self::MONTH_JANUARY,
+                self::MONTH_FEBRUARY,
+                self::MONTH_MARCH,
+                self::MONTH_APRIL,
+                self::MONTH_MAY,
+                self::MONTH_JUNE,
+                self::MONTH_JULY,
+                self::MONTH_AUGUST,
+                self::MONTH_SEPTEMBER,
+                self::MONTH_OCTOBER,
+                self::MONTH_NOVEMBER,
+                self::MONTH_DECEMBER
+            ])) {
+            return true;
+        }
+        return false;
     }
 
 }

@@ -1,0 +1,47 @@
+<section class="content">
+    <div class="row">
+        <div class="col-md-6 col-sm-6 col-xs-6">
+            <label> Turma</label>
+            <select id="sclass" class="form-control">
+                <?php foreach ($classes as $cl): ?>
+                    <option value="<?php echo $cl->getClassId(); ?>"><?php echo $cl->getClassName(); ?></option>
+                <?php endforeach; ?>
+            </select>
+        </div>
+        <div class="col-md-6 col-sm-6 col-xs-6">
+            <label> Valor Padrão</label>
+            <input id="defaultValue" class="form-control" value="30">
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <br>
+            <div id="paymentMonth">
+            </div>
+        </div>
+    </div>
+    <div class="row">
+        <div class="col-md-12">
+            <br>
+            <div class="nav-tabs-custom" id="paymentMonthTables">
+                <ul class="nav nav-tabs">
+                </ul>
+                <div class="tab-content">
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/financial-management/monthly-payment/payment';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>
