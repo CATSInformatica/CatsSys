@@ -11,7 +11,7 @@ Todas as mudanças notáveis serão documentadas neste arquivo em ordem cronoló
 - Possibilidade de exclusão de balanços mensais se não houverem fluxos de caixa associados.
 - CRUD para fluxos de caixa (CashFlow), com restrições quanto a edição e exclusão.
 - Gráfico em 'Expense and Revenue' mostrando as despesas e receitas dos últimos 12 meses.
-- Adicionada funcionalidade de inserção, autualização e remoção de mensalidades e integração com o fluxos de caixa.
+- Adicionada funcionalidade de inserção, atualização e remoção de mensalidades e integração com os fluxos de caixa.
 - Exibição do quadro de alunos de uma turma selecionada.
 
 ### Removido
