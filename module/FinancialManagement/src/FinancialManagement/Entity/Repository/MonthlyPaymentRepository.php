@@ -68,11 +68,14 @@ class MonthlyPaymentRepository extends EntityRepository
     /**
      * Salva as mensalidades recebidas.
      * 
-     * @param Connection $conn  Database Abstraction Layer connection
-     * @param array $payments lista de mensalidades a serem salvas/atualizadas
+     * @todo buscar o valor a ser atualizado para salvar como entrada negativa.
+     *
+     * @param Connection $conn  Database Abstraction Layer connection.
+     * @param array $payments lista de mensalidades a serem salvas/atualizadas.
+     * @param int $openedMonth Identificador do mês aberto.
      * @throws Exception
      */
-    public static function savePayments(Connection $conn, array $payments)
+    public static function savePayments(Connection $conn, array $payments, $openedMonth)
     {
         $conn->beginTransaction();
         try {
@@ -98,8 +101,42 @@ class MonthlyPaymentRepository extends EntityRepository
                         'monthly_payment_value' => $payment['value'],
                         ]
                     );
+
+                    // não é mensalidade do tipo isento
+                    if ($payment['value'] > 0) {
+                        CashFlowRepository::insertMonthlyPaymentCashFlowType(
+                            $conn, $openedMonth, $payment['value']
+                        );
+                    }
                 } else {
                     // update
+
+                    $paidBefore = self::getPaymentOf($conn, $payment['id']);
+
+                    if ($paidBefore['enrollment_id'] != $payment['enrollment'] || $paidBefore['monthly_payment_month'] != $payment['month']) {
+                        throw new Exception('Não é possível atualizar a mensalidade do aluno ' . $payment['enrollment']
+                        . ' para o mês ' . $payment['month'] . ' as informações não correspondem com os valores salvos'
+                        . ' no banco de dados.');
+                    }
+
+                    // se os valores de pagamento são distintos faz o ajuste de entradas
+                    if ($payment['value'] != $paidBefore['monthly_payment_value']) {
+
+                        // não é mensalidade do tipo isento
+                        if ($paidBefore['monthly_payment_value'] > 0) {
+                            CashFlowRepository::insertMonthlyPaymentCashFlowType(
+                                $conn, $openedMonth, -$paidBefore['monthly_payment_value']
+                            );
+                        }
+
+                        // não é mensalidade do tipo isento
+                        if ($payment['value'] > 0) {
+                            CashFlowRepository::insertMonthlyPaymentCashFlowType(
+                                $conn, $openedMonth, $payment['value']
+                            );
+                        }
+                    }
+
                     $conn->update('monthly_payment',
                         [
                         'enrollment_id' => $payment['enrollment'],
@@ -125,11 +162,14 @@ class MonthlyPaymentRepository extends EntityRepository
     /**
      * Remove as mensalidades recebidas.
      * 
-     * @param Connection $conn  Database Abstraction Layer connection
-     * @param array $payments lista de mensalidades a serem removidas
+     * @todo buscar o valor a ser atualizado para salvar como entrada negativa.
+     *
+     * @param Connection $conn Database Abstraction Layer connection.
+     * @param array $payments lista de mensalidades a serem removidas.
+     * @param int $openedMonth Identificador do mês aberto.
      * @throws Exception
      */
-    public static function deletePayments(Connection $conn, array $payments)
+    public static function deletePayments(Connection $conn, array $payments, $openedMonth)
     {
         $conn->beginTransaction();
         try {
@@ -140,7 +180,24 @@ class MonthlyPaymentRepository extends EntityRepository
                     throw new Exception("Não foi possível remover um dos pagamentos. "
                     . "O aluno " . $payment['enrollment'] . " não possui pagamento no mês " . $payment['month']);
                 }
+
                 // delete
+
+                $paidBefore = self::getPaymentOf($conn, $payment['id']);
+
+                if ($paidBefore['enrollment_id'] != $payment['enrollment'] || $paidBefore['monthly_payment_month'] != $payment['month']) {
+                    throw new Exception('Não é possível remover a mensalidade do aluno ' . $payment['enrollment']
+                    . ' para o mês ' . $payment['month'] . ' as informações não correspondem com os valores salvos'
+                    . ' no banco de dados.');
+                }
+
+                // não é mensalidade do tipo isento
+                if ($paidBefore['monthly_payment_value'] > 0) {
+                    CashFlowRepository::insertMonthlyPaymentCashFlowType(
+                        $conn, $openedMonth, -$paidBefore['monthly_payment_value']
+                    );
+                }
+
                 $conn->delete('monthly_payment',
                     [
                     'monthly_payment_id' => (int) $payment['id']
@@ -153,6 +210,32 @@ class MonthlyPaymentRepository extends EntityRepository
             $conn->rollBack();
             throw $ex;
         }
+    }
+
+    /**
+     * Busca as informações da mensalidade cujo identificador é $id.
+     * 
+     * @param Connection $conn
+     * @param type $id Identificador da mensalidade.
+     * @return boolean|array
+     */
+    public static function getPaymentOf(Connection $conn, $id)
+    {
+        $query = $conn->createQueryBuilder();
+        $sth = $query
+            ->select('mp.*')
+            ->from('monthly_payment', 'mp')
+            ->where('mp.monthly_payment_id = :id')
+            ->setParameter('id', $id)
+            ->execute();
+
+        $openedMonth = $sth->fetchAll();
+
+        if (!empty($openedMonth)) {
+            return $openedMonth[0];
+        }
+
+        return false;
     }
 
 }

@@ -31,7 +31,10 @@ UNLOCK TABLES;
 
 LOCK TABLES `cash_flow_type` WRITE;
 /*!40000 ALTER TABLE `cash_flow_type` DISABLE KEYS */;
-INSERT INTO `cash_flow_type` VALUES (1,'COMIDA','COMIDA',0),(2,'DOAÇÃO','COMIDA',1);
+INSERT INTO `cash_flow_type` VALUES 
+(1,'COMIDA','COMIDA',0),
+(0, 'MENSALIDADE','Valor de entrada relativo à mensalidade paga por um aluno. Quando o valor for negativo indica que a mensalidade foi alterada ou removida. Este tipo de receita é inserida automaticamente por meio da funcionalidade de manipulação de mensalidades.', 1),
+(2,'DOAÇÃO','COMIDA',1);
 /*!40000 ALTER TABLE `cash_flow_type` ENABLE KEYS */;
 UNLOCK TABLES;
 

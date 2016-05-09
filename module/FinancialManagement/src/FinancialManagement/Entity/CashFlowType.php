@@ -21,6 +21,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CashFlowType
 {
+    const CASH_FLOW_TYPE_MONTHLY_PAYMENT = 0;
     const CASH_FLOW_DIRECTION_OUTFLOW = 0;
     const CASH_FLOW_DIRECTION_INFLOW = 1;
     const CASH_FLOW_DIRECTION_OUTFLOW_DESCRIPTION = "Despesa";

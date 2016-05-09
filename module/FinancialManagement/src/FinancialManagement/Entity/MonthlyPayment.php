@@ -16,7 +16,15 @@ use SchoolManagement\Entity\Enrollment;
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  * @author Márcio Dias <marciojr91@gmail.com>
- * @ORM\Table(name="monthly_payment")
+ * @ORM\Table(name="monthly_payment",
+ *      uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="monthly_payment_unique_idx", 
+ *              columns={"enrollment_id", "monthly_payment_month"})
+ *      },
+ *      indexes={
+ *          @ORM\Index(name="monthly_payment_type_idx", columns={"monthly_payment_type"})
+ *      }
+ * )
  * @ORM\Entity
  */
 class MonthlyPayment

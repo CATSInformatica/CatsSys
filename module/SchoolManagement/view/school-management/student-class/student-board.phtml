@@ -1,0 +1,44 @@
+<section class="content">
+
+    <p><?php echo $this->message; ?></p>
+
+    <div class="row">
+        <div class="table-responsive">
+            <table>
+                <tbody>
+                    <?php
+
+                    $numberOfStudents = count($students);
+                    ?>
+                    <?php for ($i = 0; $i < $numberOfStudents; $i++): ?>
+                        <tr>
+                            <?php for ($j = 0; ($j < 10 && $i < $numberOfStudents); $i++, $j++):
+                                ?>
+                                <td>
+                                    <p class="text-center"> 
+                                        <?php echo $students[$i]['personFullName']; ?>
+                                    </p>
+                                    <br>
+                                    <img src="/recruitment/registration/photo/<?php echo $students[$i]['personId']; ?>" width="96">
+                                </td>
+                            <?php endfor; ?>
+                        </tr>
+                    <?php endfor; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+
+</section>
+
+
+<style>
+    table {
+        border-spacing: 5px; border-collapse: separate;
+    }
+
+    td {
+        min-width: 350px; min-height: 130px; padding: 1px; border: thin solid black;
+    }
+
+</style>

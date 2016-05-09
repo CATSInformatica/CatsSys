@@ -22,6 +22,7 @@ namespace FinancialManagement\Controller;
 use Database\Controller\AbstractDbalAndEntityActionController;
 use DateTime;
 use Exception;
+use FinancialManagement\Entity\Repository\MonthlyBalanceRepository;
 use FinancialManagement\Entity\Repository\MonthlyPaymentRepository;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -105,7 +106,17 @@ class MonthlyPaymentController extends AbstractDbalAndEntityActionController
 
             try {
                 $conn = $this->getDbalConnection();
-                MonthlyPaymentRepository::savePayments($conn, $data['payments']);
+
+                //busca o mês aberto
+
+                $openedMonth = MonthlyBalanceRepository::getOpenedMonth($conn);
+
+                if ($openedMonth === false) {
+                    throw new Exception('Mensalidades são tratadas como receitas. '
+                        . 'Para cadastrar receitas é necessário abrir um mês contábil.');
+                }
+
+                MonthlyPaymentRepository::savePayments($conn, $data['payments'], $openedMonth);
 
                 return new JsonModel([
                     'message' => 'Pagamentos salvos com sucesso',
@@ -137,7 +148,16 @@ class MonthlyPaymentController extends AbstractDbalAndEntityActionController
 
             try {
                 $conn = $this->getDbalConnection();
-                MonthlyPaymentRepository::deletePayments($conn, $data['payments']);
+
+                //busca o mês aberto
+                $openedMonth = MonthlyBalanceRepository::getOpenedMonth($conn);
+
+                if ($openedMonth === false) {
+                    throw new Exception('Mensalidades são tratadas como receitas. '
+                        . 'Para cadastrar receitas é necessário abrir um mês contábil.');
+                }
+
+                MonthlyPaymentRepository::deletePayments($conn, $data['payments'], $openedMonth);
 
                 return new JsonModel([
                     'message' => 'Pagamentos removidos com sucesso',

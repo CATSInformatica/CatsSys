@@ -29,7 +29,8 @@ class EnrollmentRepository extends EntityRepository
     public function findByClass($classId)
     {
         return $this->_em
-                ->createQuery('SELECT e.enrollmentId, CONCAT(CONCAT(p.personFirstName, \' \'), p.personLastName) as '
+                ->createQuery('SELECT p.personId, e.enrollmentId, '
+                    . 'CONCAT(CONCAT(p.personFirstName, \' \'), p.personLastName) as '
                     . 'personFullName, p.personGender, p.personCpf, p.personEmail, p.personPhone, p.personSocialMedia, '
                     . 'p.personBirthday, p.personRg '
                     . 'FROM SchoolManagement\Entity\Enrollment e '

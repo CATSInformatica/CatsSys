@@ -212,4 +212,38 @@ class StudentClassController extends AbstractEntityActionController
         ]);
     }
 
+    /**
+     * Exibe os alunos matriculados na turma selecionada em forma de um quadro com as fotos.
+     * 
+     * @return JsonModel|ViewModel
+     */
+    public function studentBoardAction()
+    {
+        $id = $this->params('id', false);
+
+        if ($id) {
+            try {
+
+                $em = $this->getEntityManager();
+
+                $students = $em->getRepository('SchoolManagement\Entity\Enrollment')->findByClass($id);
+
+                return new ViewModel([
+                    'message' => null,
+                    'students' => $students,
+                ]);
+            } catch (\Exception $ex) {
+                return new ViewModel([
+                    'message' => $ex->getMessage(),
+                    'students' => null,
+                ]);
+            }
+        }
+
+        return new ViewModel([
+            'message' => 'Nenhuma turma selecionada',
+            'students' => null,
+        ]);
+    }
+
 }
