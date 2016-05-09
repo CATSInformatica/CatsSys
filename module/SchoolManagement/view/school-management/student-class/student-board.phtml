@@ -7,12 +7,12 @@
             <table>
                 <tbody>
                     <?php
-
                     $numberOfStudents = count($students);
                     ?>
                     <?php for ($i = 0; $i < $numberOfStudents; $i++): ?>
                         <tr>
-                            <?php for ($j = 0; ($j < 10 && $i < $numberOfStudents); $i++, $j++):
+                            <?php
+                            for ($j = 0; ($j < 10 && $i < $numberOfStudents); $i++, $j++):
                                 ?>
                                 <td>
                                     <p class="text-center"> 
@@ -21,9 +21,12 @@
                                     <br>
                                     <img src="/recruitment/registration/photo/<?php echo $students[$i]['personId']; ?>" width="96">
                                 </td>
-                            <?php endfor; ?>
+                                <?php
+                            endfor;
+                            $i--;
+                            ?>
                         </tr>
-                    <?php endfor; ?>
+<?php endfor; ?>
                 </tbody>
             </table>
         </div>
