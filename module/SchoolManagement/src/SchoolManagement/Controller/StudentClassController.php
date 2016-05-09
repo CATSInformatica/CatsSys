@@ -40,7 +40,7 @@ class StudentClassController extends AbstractEntityActionController
             $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')->findAll();
             $message = null;
         } catch (Exception $ex) {
-            $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
+            $message = 'Erro inesperado. Entre com contato com o administrador do sistema. ' .
                 'Erro: ' . $ex->getMessage();
             $classes = null;
         }
@@ -225,8 +225,7 @@ class StudentClassController extends AbstractEntityActionController
             try {
 
                 $em = $this->getEntityManager();
-
-                $students = $em->getRepository('SchoolManagement\Entity\Enrollment')->findByClass($id);
+                $students = $em->getRepository('SchoolManagement\Entity\Enrollment')->findByClass($id, true);
 
                 return new ViewModel([
                     'message' => null,

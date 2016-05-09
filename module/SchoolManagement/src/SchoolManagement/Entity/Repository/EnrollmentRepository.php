@@ -26,8 +26,18 @@ class EnrollmentRepository extends EntityRepository
                 ->getResult();
     }
 
-    public function findByClass($classId)
+    /**
+     * Busca todos os alunos atualmente matriculados na turma.
+     * 
+     * @param int $classId
+     * @param bool $sortByName Se true faz a ordenação por nome, se false ordena por número de matrícula.
+     * @return array
+     */
+    public function findByClass($classId, $sortByName = false)
     {
+
+        $orderBy = !$sortByName ? 'e.enrollmentId' : 'p.personFirstName asc, p.personLastName asc';
+
         return $this->_em
                 ->createQuery('SELECT p.personId, e.enrollmentId, '
                     . 'CONCAT(CONCAT(p.personFirstName, \' \'), p.personLastName) as '
@@ -37,7 +47,7 @@ class EnrollmentRepository extends EntityRepository
                     . 'JOIN e.registration r '
                     . 'JOIN r.person p '
                     . 'WHERE e.class = :class AND e.enrollmentEndDate IS NULL '
-                    . 'ORDER BY e.enrollmentId'
+                    . 'ORDER BY ' . $orderBy
                 )
                 ->setParameter('class', $classId)
                 ->getResult();
