@@ -77,6 +77,13 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
             });
 
             /*
+             * Carrega as questões da disciplina selecionada no DataTable
+             */
+            $('#exam-numbering-start').change(function () {
+                numberQuestions();
+            });
+
+            /*
              * Adiciona todas as questões selecionadas (checkbox)
              */
             $('#add-exam-question').click(function () {
@@ -100,20 +107,9 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                     var examDate = $('#exam-day').val();
                     var examBeginTime = $('#exam-begin-time').val();
                     var examEndTime = $('#exam-end-time').val();
+                    
                     if (examName === '') {
                         examName = "SIMULADO CATS";
-                    }
-                    var currentDate = new Date();
-                    if (examDate === '') {
-                        examDate = currentDate.getDate() + '/' 
-                                + (currentDate.getMonth() + 1) + '/' 
-                                + currentDate.getFullYear();
-                    }
-                    if (examBeginTime === '') {
-                        examBeginTime = '13:30';
-                    }
-                    if (examEndTime === '') {
-                        examEndTime = '17:30';
                     }
                     
                     var instructions = '<div id="instructions"><div class="text-center"><h3>'
@@ -359,6 +355,12 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
 
             function buildExamLayout() {
                 if ($('#exam-temp > .exam-questions').contents().length > 0) {
+                    // Impede que uma página vazia seja gerada no fim do simulado
+                    if ($('#exam-temp > .exam-questions > div').length === 1 &&
+                            $('#exam-temp > .exam-questions > div > div').length === 1 &&
+                            $('#exam-temp > .exam-questions > div > div').html() === '<hr class="q-divider">') {
+                        return;
+                    }
                     $page = $(".exam-page").first().clone().addClass("page")
                             .css("display", "block");
 
@@ -493,20 +495,20 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                     q += '<hr class="q-divider"></div>';
                 }
                 $('#s-' + baseSubjectId).append(q);
-                reenumerateQuestions();
+                numberQuestions();
             }
         };
 
         /*
-         * Reenumera as questões 
+         * Numera as questões 
          */
-        reenumerateQuestions = function () {
+        numberQuestions = function () {
             var questions = $('.exam-questions > div');
-            var number = 1;
+            var number = $('#exam-numbering-start').val();
 
             questions.each(function () {
                 if ($(this).hasClass('spanish-block')) {
-                    number = 1;
+                    number = $('#exam-numbering-start').val();
                 }
                 $(this).find('.question-block .q-number').each(function () {
                     $(this).html(number++);
@@ -548,7 +550,7 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
             if (parent.find('.question-block').length === 0) {
                 parent.remove();
             }
-            reenumerateQuestions();
+            numberQuestions();
         };
 
         /*
@@ -559,18 +561,18 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
         initDatepicker = function () {
             $('#exam-day').closest('.input-group').datetimepicker({
                 format: 'DD/MM/YYYY',
-                useCurrent: false,
+                defaultDate: new Date(),
                 locale: 'pt-br',
                 viewMode: 'months'
             });
             $('#exam-begin-time').closest('.input-group').datetimepicker({
                 format: 'HH:mm',
-                useCurrent: false,
+                defaultDate: '2015-10-21 13:30:00',
                 locale: 'pt-br'
             });
             $('#exam-end-time').closest('.input-group').datetimepicker({
                 format: 'HH:mm',
-                useCurrent: false,
+                defaultDate: '2015-10-21 17:30:00',
                 locale: 'pt-br'
             });
         };
