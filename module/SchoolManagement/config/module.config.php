@@ -213,6 +213,13 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                             ),
+                            [
+                                'url' => '/school-management/student-class/student-board/$id',
+                                'title' => 'Quadro de alunos',
+                                'description' => 'Exibe os alunos matriculados (e suas fotos) na turma',
+                                'class' => 'fa fa-odnoklassniki-square bg-blue',
+                                'fntype' => 'selectedHttpClick',
+                            ],
                         ),
                         'pages' => array(
                             array(
@@ -227,6 +234,12 @@ return array(
                                 'action' => 'show-students-by-class',
                                 'icon' => 'fa fa-users',
                             ),
+                            [
+                                'label' => 'Student board',
+                                'route' => 'school-management/student-class',
+                                'action' => 'student-board',
+                                'icon' => 'fa fa-odnoklassniki-square',
+                            ],
                         ),
                     ),
                     array(

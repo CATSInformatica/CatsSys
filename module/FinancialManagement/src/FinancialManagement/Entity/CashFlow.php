@@ -20,6 +20,7 @@ use Doctrine\ORM\Mapping as ORM;
  */
 class CashFlow
 {
+
     /**
      *
      * @var integer 
@@ -53,7 +54,7 @@ class CashFlow
     /**
      *
      * @var string 
-     * @ORM\Column(name="cash_flow_observation", type="string", length=1000)
+     * @ORM\Column(name="cash_flow_observation", type="string", length=1000, nullable=true)
      */
     private $cashFlowObservation;
 
@@ -80,7 +81,7 @@ class CashFlow
      * @ORM\JoinColumn(name="monthly_balance_id", referencedColumnName="monthly_balance_id")
      */
     private $monthlyBalance;
-    
+
     /**
      * 
      * @return integer
@@ -143,7 +144,7 @@ class CashFlow
     {
         return $this->cashFlowType;
     }
-    
+
     /**
      * 
      * @return MonthlyBalance
@@ -152,7 +153,7 @@ class CashFlow
     {
         return $this->monthlyBalance;
     }
-    
+
     /**
      * 
      * @param \DateTime $cashFlowDate
