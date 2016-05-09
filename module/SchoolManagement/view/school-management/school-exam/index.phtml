@@ -7,30 +7,68 @@
     <p><?php echo $this->message; ?></p>
     <div class="row">
         <div class="col-md-10 col-md-offset-1 col-xs-12">
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><span class="fa fa-book"></span> Instruções</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div id="s-43" class="split">
+                        <div id="q-29" class="question-block split" data-id="29" data-subject-id="49">
+                            <hr class="q-divider">
+                        </div>
+                    </div>
+                        <ul>
+                            <li>
+                                É recomendada a utilização do navegador 
+                                <a href="https://www.google.com/chrome/" target="_blank">
+                                    <strong>Chrome</strong>
+                                </a>
+                                (ou Chromium) para geração de simulados.
+                            </li>
+                            <li>
+                                A ferramenta de geração automática de simulados ainda está sendo aprimorada, é possível que não haja o melhor aproveitamento de espaço em algumas páginas ou que questões extravasem o limite entre as questões e o rodapé. Uma maneira de tentar solucionar o eventual problema é rearranjando as questões.
+                            </li>
+                            <li>
+                                Para salvar/imprimir corretamente o simulado gerado é necessário remover as margens de impressão do navegador. A imagem abaixo mostra as configurações da janela de impressão do Chrome, em "Margens" deve-se escolher "Nenhum".                                
+                            </li>
+                            <div class="text-center"><img src="https://lh3.googleusercontent.com/-61Dl5lDiEhc/U8v-4TQWyDI/AAAAAAAAD64/3Vm5N-tkO2k/s400/impress%C3%A3o_personalizado.png"></div>
+                        </ul>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
             <div class="box box-primary color-palette-box">
                 <div class="box-header with-border">
-                    <h3 class="box-title text-uppercase"><i class="fa fa-balance-scale"></i> CONFIGURAÇÃO DO SIMULADO</h3>
+                    <h3 class="box-title text-uppercase"><i class="fa fa-cogs"></i> CONFIGURAÇÃO DO SIMULADO</h3>
                     <div class="box-tools pull-right">
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div><!-- /.box-tools -->
                 </div>
                 <div class="box-body">
-                    <div class="form-group col-xs-12">
-                        <label for="exam-name-input">Nome do Simulado</label>
-                        <input type="text" class="form-control" id="exam-name-input" placeholder="Ex: 1º Simulado Oficial do CATS - 2016">
-                    </div>
-                    <div class="col-xs-12">
-                        <div class="form-group ">
-                            <label class="">Incluir Cabeçalho com Instruções</label>
-                            <div class="input-group push-left">
-                                <input id="exam-instructions" type="checkbox" class=" push-right checkbox">
-                            </div>
+                    <div class="col-xs-12 no-padding">
+                        <div class="col-xs-12 col-md-8">
+                            <label for="exam-name-input">Nome do simulado</label>
+                            <input type="text" class="form-control" id="exam-name-input" placeholder="Ex: 1º Simulado Oficial do CATS - 2016">
                         </div>
+                        <div class="col-xs-12 col-md-4">
+                            <label for="exam-numbering-start">Numerar questões a partir de</label>
+                            <input type="number" min="0" class="form-control" id="exam-numbering-start" value="1">
+                        </div>
+                    </div>
+                    <div class="col-xs-12 checkbox">
+                        <label><input type="checkbox" id="exam-instructions"> Incluir cabeçalho com instruções</label>
                     </div>
                     <div class="col-xs-12 no-padding">
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group ">
-                                <label>Data do Simulado</label>
+                                <label>Data do simulado</label>
                                 <div class="input-group ">
                                     <span class="input-group-addon">
                                         <i class="glyphicon glyphicon-calendar"></i>
@@ -41,7 +79,7 @@
                         </div>
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group ">
-                                <label>Hora de Início</label>
+                                <label>Hora de início</label>
                                 <div class="input-group ">
                                     <span class="input-group-addon">
                                         <i class="glyphicon glyphicon-calendar"></i>
@@ -52,7 +90,7 @@
                         </div>
                         <div class="col-xs-12 col-md-4">
                             <div class="form-group ">
-                                <label>Hora de Término</label>
+                                <label>Hora de término</label>
                                 <div class="input-group ">
                                     <span class="input-group-addon">
                                         <i class="glyphicon glyphicon-calendar"></i>
