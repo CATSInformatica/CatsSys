@@ -9,10 +9,10 @@ define(['jquery', 'datetimepicker'], function () {
 
         initDatepicker = function () {
             $('.datepicker').closest('.input-group').datetimepicker({
-                format: 'MM/YYYY',
+                format: 'DD/MM/YYYY',
                 useCurrent: false,
                 locale: 'pt-br',
-                viewMode: 'months'
+                viewMode: 'days'
             });
         };
 
