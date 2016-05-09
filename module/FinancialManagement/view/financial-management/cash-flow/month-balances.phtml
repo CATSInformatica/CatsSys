@@ -19,7 +19,7 @@
                         <?php foreach ($this->monthBalances as $monthBalance): ?>
                             <tr class="cats-row" data-id="<?php echo $monthBalance->getMonthlyBalanceId(); ?>" id="month-balance-<?php echo $monthBalance->getMonthlyBalanceId(); ?>">
                                 <td class="text-center"> <?php echo $monthBalance->getMonthlyBalanceId(); ?></td>
-                                <td class="text-center"> <?php echo $monthBalance->getMonthlyBalanceOpen()->format("m/Y"); ?></td>
+                                <td class="text-center"> <?php echo $monthBalance->getMonthlyBalanceOpen()->format("d/m/Y"); ?></td>
                                 <td class="text-center"> 
                                     <?php
                                     echo ($monthBalance->getMonthlyBalanceClose() !== NULL) ?

@@ -68,8 +68,8 @@ class OpenMonthBalanceFieldset extends Fieldset implements InputFilterProviderIn
                     array(
                         'name' => 'Recruitment\Filter\DateToFormat',
                         'options' => array(
-                            'inputFormat' => 'm/Y',
-                            'outputFormat' => 'Y-m'
+                            'inputFormat' => 'd/m/Y',
+                            'outputFormat' => 'Y-m-d'
                         ),
                     ),
                 ),
@@ -77,7 +77,7 @@ class OpenMonthBalanceFieldset extends Fieldset implements InputFilterProviderIn
                     array(
                         'name' => 'Zend\Validator\Date',
                         'options' => array(
-                            'format' => 'Y-m',
+                            'format' => 'Y-m-d',
                         ),
                     ),
                 ),
