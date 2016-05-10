@@ -11,6 +11,7 @@ namespace FinancialManagement\Form\Fieldset;
 use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use FinancialManagement\Entity\CashFlow;
+use FinancialManagement\Entity\CashFlowType;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
 
@@ -54,7 +55,7 @@ class AddCashFlowFieldset extends Fieldset implements InputFilterProviderInterfa
                     'name' => 'cashFlowAmount',
                     'type' => 'text',
                     'options' => array(
-                        'label' => 'Montante',
+                        'label' => 'Valor',
                     ),
                 ))
                 ->add(array(
@@ -101,6 +102,7 @@ class AddCashFlowFieldset extends Fieldset implements InputFilterProviderInterfa
         $activeDepartments = $obj->getRepository('AdministrativeStructure\Entity\Department')
                 ->findBy(array('isActive' => true));
         $activeDepartmentsNames = [];
+        $activeDepartmentsNames[0] = '';
         foreach ($activeDepartments as $department) {
             $activeDepartmentsNames[$department->getDepartmentId()] = $department->getDepartmentName();
         }
@@ -113,7 +115,9 @@ class AddCashFlowFieldset extends Fieldset implements InputFilterProviderInterfa
                 ->findAll();
         $cashFlowTypesNames = [];
         foreach ($cashFlowTypes as $cashFlowType) {
-            $cashFlowTypesNames[$cashFlowType->getCashFlowTypeId()] = $cashFlowType->getCashFlowTypeName();
+            if ($cashFlowType->getCashFlowTypeId() !== CashFlowType::CASH_FLOW_TYPE_MONTHLY_PAYMENT) {
+                $cashFlowTypesNames[$cashFlowType->getCashFlowTypeId()] = $cashFlowType->getCashFlowTypeName();
+            }
         }
         return $cashFlowTypesNames;
     }
@@ -192,9 +196,6 @@ class AddCashFlowFieldset extends Fieldset implements InputFilterProviderInterfa
                         ),
                     ),
                 ),
-            ),
-            'department' => array(
-                'required' => true,
             ),
             'monthlyBalance' => array(
                 'required' => true,
