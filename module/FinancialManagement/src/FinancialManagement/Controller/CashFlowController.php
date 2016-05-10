@@ -160,7 +160,9 @@ class CashFlowController extends AbstractEntityActionController
                     $cashFlow->setCashFlowType($cashFlowType);
                     $department = $em->find('AdministrativeStructure\Entity\Department',
                             $data['department']);
-                    $cashFlow->setDepartment($department);
+                    if ($department !== null) {
+                        $cashFlow->setDepartment($department);
+                    }
                     $cashFlow->setMonthlyBalance($openMonth[0]);
                     if ($cashFlow->getCashFlowType()->getCashFlowTypeDirection() === CashFlowType::CASH_FLOW_DIRECTION_INFLOW) {
                         $openMonth[0]->setMonthlyBalanceRevenue(
@@ -545,9 +547,25 @@ class CashFlowController extends AbstractEntityActionController
             if ($request->isPost()) {
                 $form->setData($request->getPost());
                 if ($form->isValid()) {
-                    $month = $em->getRepository('FinancialManagement\Entity\MonthlyBalance')
-                            ->findBy(array('monthlyBalanceOpen' =>
-                        $monthBalance->getMonthlyBalanceOpen()));
+                    $beginDate = new \DateTime();
+                    $beginDate->setDate($monthBalance->getMonthlyBalanceOpen()
+                                    ->format('Y'),
+                            $monthBalance->getMonthlyBalanceOpen()
+                                    ->format('m'), 01);
+                    $endDate = new \DateTime();
+                    $endDate->setDate($monthBalance->getMonthlyBalanceOpen()
+                                    ->format('Y'),
+                            $monthBalance->getMonthlyBalanceOpen()
+                                    ->format('m'), 01)->modify('+1 month');
+                    $criteria = Criteria::create()
+                            ->where(Criteria::expr()->gte("monthlyBalanceOpen",
+                                            $beginDate))
+                            ->andWhere(Criteria::expr()->lt("monthlyBalanceOpen",
+                                    $endDate));
+                    
+                    $month = $em
+                            ->getRepository('FinancialManagement\Entity\MonthlyBalance')
+                            ->matching($criteria);
                     if (count($month) !== 0) { // O mês não pode ser aberto duas vezes
                         return new ViewModel(array(
                             'message' => 'Esse mês não pode ser aberto, pois já foi cadastrado.',
