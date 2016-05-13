@@ -18,15 +18,15 @@ use fpdf\FPDF;
 class DefaultPdf extends FPDF
 {
 
-    const BASE_PATH = __DIR__ . '/../../..';
+    const BASE_PATH = __DIR__;
     
     public function Header()
     {
         $this->SetXY(5, 5);
         // Logo
-        $this->Image(self::BASE_PATH . '/../../public/img'
+        $this->Image(self::BASE_PATH . '/../../../../../public/img'
                 . '/logo_prova.png', 10, 5, 28);
-        // Arial bold 10
+        // Arial bold 12
         $this->SetFont('Arial', 'B', 12);
         // Move to the right
         $this->Cell(40);
@@ -54,7 +54,7 @@ class DefaultPdf extends FPDF
     {
         // Position at 1.5 cm from bottom
         $this->SetY(-15);
-        // Arial italic 8
+        // Arial 12
         $this->SetFont('Arial', '', 12);
         // Page number
         $this->Cell(0, 10, $this->PageNo(), 0, 0, 'R');
