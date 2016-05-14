@@ -177,8 +177,8 @@ class RegistrationController extends AbstractEntityActionController
                     if ($type == Recruitment::STUDENT_RECRUITMENT_TYPE) {
                         $message = 'Inscrição para o processo seletivo de alunos efetuada com sucesso.';
                     } else {
-                        $message = 'Inscrição efetuada com sucesso. Um de nossos voluntários entrará em contato com você'
-                            . ' para agendar uma entrevista.';
+                        $message = 'Inscrição efetuada com sucesso. Um de nossos voluntários entrará em contato com você '
+                            . '(no período especificado no edital) para agendar uma entrevista.';
                     }
 
                     return new ViewModel(array(
@@ -227,7 +227,7 @@ class RegistrationController extends AbstractEntityActionController
                 $em = $this->getEntityManager();
                 $form = new SearchRegistrationsForm($em);
                 $form->setData($request->getPost());
-                
+
                 if ($form->isValid()) {
 
                     $data = $form->getData();

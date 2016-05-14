@@ -31,6 +31,16 @@ hr {
     color: white;
 }
 
+.catssys-bg-beauty-blue {
+    background-color: #1565C0;
+    color: white;
+}
+
+.catssys-bg-teal a, .catssys-bg-beauty-blue a {
+    color: white;
+    text-decoration: underline;
+}
+
 .catssys-header {
     background: url('../img/header-bg.jpg') center fixed;
     background-position: center;
