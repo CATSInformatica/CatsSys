@@ -19,6 +19,13 @@ class RecruitmentRepository extends EntityRepository
 {
 
     /**
+     * Indica a quantidade de dias de antecedência na qual o processo seletivo poderá ser divulgado publicamente.
+     * 
+     * Ex: Divulgar automaticamente no site.
+     */
+    const RECRUITMENT_DAYOFFSET = 5;
+
+    /**
      * Busca um processo seletivo aberto do tipo $type na data especificada $date
      * 
      * $type é um dos valores:
@@ -34,15 +41,44 @@ class RecruitmentRepository extends EntityRepository
     public function findByTypeAndBetweenBeginAndEndDates($type, \DateTime $date)
     {
         return $this->_em
-                        ->createQuery('SELECT r FROM Recruitment\Entity\Recruitment r '
-                                . 'WHERE r.recruitmentType = :type AND '
-                                . ':date BETWEEN r.recruitmentBeginDate and r.recruitmentEndDate'
-                        )
-                        ->setParameters(array(
-                            'type' => $type,
-                            'date' => $date,
-                        ))
-                        ->getOneOrNullResult();
+                ->createQuery('SELECT r FROM Recruitment\Entity\Recruitment r '
+                    . 'WHERE r.recruitmentType = :type AND '
+                    . ':date BETWEEN r.recruitmentBeginDate and r.recruitmentEndDate'
+                )
+                ->setParameters(array(
+                    'type' => $type,
+                    'date' => $date,
+                ))
+                ->getOneOrNullResult();
+    }
+
+    /**
+     * Busca um processo seletivo aberto do tipo $type na data especificada $date.
+     * 
+     * $type é um dos valores:
+     *  - Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE
+     *  - Recruitment\Entity\Recruitment::VOLUNTEER_RECRUITMENT_TYPE
+     * 
+     * @param integer $type é um dos seguintes valores:
+     *  - Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE
+     *  - Recruitment\Entity\Recruitment::VOLUNTEER_RECRUITMENT_TYPE
+     * @param \DateTime $date
+     * @return array|null
+     */
+    public function findByTypeAndBetweenBeginAndEndDatesAsArray($type, \DateTime $date)
+    {
+        return $this->_em
+                ->createQuery('SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
+                    . 'r.recruitmentEndDate, r.recruitmentPublicNotice '
+                    . 'FROM Recruitment\Entity\Recruitment r '
+                    . 'WHERE r.recruitmentType = :type AND '
+                    . ':date BETWEEN r.recruitmentBeginDate and r.recruitmentEndDate'
+                )
+                ->setParameters(array(
+                    'type' => $type,
+                    'date' => $date,
+                ))
+                ->getOneOrNullResult();
     }
 
 }

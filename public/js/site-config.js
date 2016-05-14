@@ -11,6 +11,7 @@ requirejs.config({
         jquery: 'AdminLTE/plugins/jQuery/jQuery-2.2.0.min',
         bootstrap: 'bootstrap/dist/js/bootstrap.min',
         smoothscroll: 'smooth-scroll/dist/js/smooth-scroll.min',
+        moment: 'moment/min/moment-with-locales.min',
         app: '/js/app'
     },
     shim: {
@@ -42,7 +43,6 @@ define(['smoothscroll', 'jquery', 'bootstrap'], function (smoothScroll) {
              */
             var numberOfAjaxCallsAtLoad = 1;
             $(document).ajaxStop(function () {
-                console.log(numberOfAjaxCallsAtLoad);
                 numberOfAjaxCallsAtLoad--;
                 if (numberOfAjaxCallsAtLoad === 0) {
                     smoothScroll.init();

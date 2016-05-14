@@ -4,8 +4,12 @@
  * and open the template in the editor.
  */
 
-define(['app/pages/administrative-structure/department/departments'], function (departments) {
+define(['app/pages/administrative-structure/department/departments', 'moment'], function (departments, moment) {
 
+    var recruitmentTypes = {
+        VOLUNTEER: 2,
+        STUDENT: 1
+    };
     var Site = (function () {
 
         pastExamsAjax = function () {
@@ -30,14 +34,125 @@ define(['app/pages/administrative-structure/department/departments'], function (
                 }
             });
         };
+        /**
+         * Busca por processos seletivos abertos ou que estão por abrir nos
+         * próximos 5 dias.
+         * @returns {undefined}
+         */
+        recruitmentFinder = function () {
 
+            $.ajax({
+                type: "GET",
+                url: "/recruitment/recruitment/get-last-opened",
+                success: function (data) {
+
+                    console.log(data);
+                    if (data.recruitments !== null) {
+
+                        var studentData = data.recruitments.student;
+                        var volunteerData = data.recruitments.volunteer;
+                        // define a forma como os processos seletivos serão
+                        // organizados na tela
+                        var studentWrapper = null;
+                        var volunteerWrapper = null;
+                        var type = 0;
+                        if (studentData.content !== null) {
+                            studentWrapper = $("#student-recruitment");
+
+                            studentWrapper
+                                    .find(".recruitment-period")
+                                    .prepend("<b>Inscrições abertas de <br>" +
+                                            moment(studentData.content.recruitmentBeginDate.date, "YYYY-MM-DD").format("LL")
+                                            + " a " +
+                                            moment(studentData.content.recruitmentEndDate.date, "YYYY-MM-DD").format("LL")
+                                            + "</b>");
+
+                            studentWrapper
+                                    .find(".recruitment-public-notice")
+                                    .attr("href", "/recruitment/recruitment/public-notice/" + studentData.content.recruitmentId)
+                                    .html(studentData.content.recruitmentNumber + "º " +
+                                            "Processo Seletivo de Alunos " + studentData.content.recruitmentYear + " (<i class='fa fa-file-pdf-o'></i>)");
+                            studentWrapper
+                                    .find(".recruitment-form-wrapper-closed")
+                                    .html("O formulário de inscrição estará disponível no período de " +
+                                            moment(studentData.content.recruitmentBeginDate.date, "YYYY-MM-DD").format("L") + " a " +
+                                            moment(studentData.content.recruitmentEndDate.date, "YYYY-MM-DD").format("L")
+                                            );
+                            if (studentData.offset) {
+                                studentWrapper
+                                        .find(".recruitment-form-wrapper-closed").show();
+                            } else {
+                                studentWrapper
+                                        .find(".recruitment-form-wrapper-opened").show();
+                            }
+
+                            type += recruitmentTypes.STUDENT;
+                        }
+
+                        if (volunteerData.content !== null) {
+                            volunteerWrapper = $("#volunteer-recruitment");
+
+                            volunteerWrapper
+                                    .find(".recruitment-period")
+                                    .prepend("<b>Inscrições abertas de <br>" +
+                                            moment(volunteerData.content.recruitmentBeginDate.date, "YYYY-MM-DD").format("LL")
+                                            + " a " +
+                                            moment(volunteerData.content.recruitmentEndDate.date, "YYYY-MM-DD").format("LL")
+                                            + "</b>");
+
+
+                            volunteerWrapper
+                                    .find(".recruitment-public-notice")
+                                    .attr("href", "/recruitment/recruitment/public-notice/" + volunteerData.content.recruitmentId)
+                                    .html(volunteerData.content.recruitmentNumber + "º " +
+                                            "Processo Seletivo de Voluntários " + volunteerData.content.recruitmentYear + " (<i class='fa fa-file-pdf-o'></i>)");
+                            volunteerWrapper
+                                    .find(".recruitment-form-wrapper-closed")
+                                    .html("O formulário de inscrição estará disponível no período de " +
+                                            moment(volunteerData.content.recruitmentBeginDate.date, "YYYY-MM-DD").format("L") + " a " +
+                                            moment(volunteerData.content.recruitmentEndDate.date, "YYYY-MM-DD").format("L")
+                                            );
+                            if (volunteerData.offset) {
+                                volunteerWrapper
+                                        .find(".recruitment-form-wrapper-closed").show();
+                            } else {
+                                volunteerWrapper
+                                        .find(".recruitment-form-wrapper-opened").show();
+                            }
+
+                            type += recruitmentTypes.VOLUNTEER;
+                        }
+
+                        switch (type) {
+                            case 1:
+                                studentWrapper.addClass("col-lg-12 col-md-12 col-sm-12 col-xs-12");
+                                studentWrapper.show();
+                                break;
+                            case 2:
+                                volunteerWrapper.addClass("col-lg-12 col-md-12 col-sm-12 col-xs-12");
+                                volunteerWrapper.show();
+                                break;
+                            case 3:
+                                studentWrapper.addClass("col-lg-6 col-md-6 col-md-push-6 col-sm-12 col-xs-12");
+                                volunteerWrapper.addClass("col-lg-6 col-md-6 col-md-pull-6 col-sm-12 col-xs-12");
+                                studentWrapper.show();
+                                volunteerWrapper.show();
+                                break;
+                        }
+
+                        $("#recruitments").slideDown();
+                    }
+                }
+            });
+        };
         return {
             init: function () {
+                moment.locale("pt-br");
                 pastExamsAjax();
                 departments.init();
+                recruitmentFinder();
             }
         };
     }());
-
     return Site;
 });
