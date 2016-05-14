@@ -13,13 +13,16 @@ Todas as mudanças notáveis serão documentadas neste arquivo em ordem cronoló
 - Gráfico em 'Expense and Revenue' mostrando as despesas e receitas dos últimos 12 meses.
 - Adicionada funcionalidade de inserção, atualização e remoção de mensalidades e integração com os fluxos de caixa.
 - Exibição do quadro de alunos de uma turma selecionada.
+- Exibição de aviso sobre a abertura de processos seletivos no site.
 
 ### Removido
 - Nada.
+- *Action* edital do controller Recruitment foi renomeada para *publicNotice* sendo necessário alterar o privilégio do *guest* de *edital* para *publicNotice*
 
 ### Corrigido
 - Corrigido erro que impedia a remoção da opção de idiomas ao imprimir os cartões de respostas.
 - Pequenos erros de digitação em mensagens de erro.
+- Erro na lista de presença ao utilizar a versão 5.5 do php
 
 ## 2.0.0-alpha.1 - 2015-07-25
 - Primeiro *commit*
