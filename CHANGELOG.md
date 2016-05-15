@@ -17,7 +17,7 @@ Todas as mudanças notáveis serão documentadas neste arquivo em ordem cronoló
 - Melhorias na manipulação de mensalidades.
 
 ### Removido
-- *Action* edital do controller Recruitment foi renomeada para *publicNotice* sendo necessário alterar o privilégio do *guest* de *edital* para *publicNotice*
+- *Action* edital do controller Recruitment foi renomeada para *publicNotice* sendo necessário alterar o privilégio do *guest* de `edital` para `public-notice`
 
 ### Corrigido
 - Corrigido erro que impedia a remoção da opção de idiomas ao imprimir os cartões de respostas.
