@@ -133,9 +133,8 @@ define(['filesaver'], function () {
                         .attr("style", "fill:#000000;fill-opacity:1;" +
                                 "stroke:#000000;stroke-width:0.75569242;" +
                                 "stroke-miterlimit:4;stroke-dasharray:none;" +
-                                "stroke-opacity:1")
-                        .next("text")
-                        .remove();
+                                "stroke-opacity:1");
+                        
                 svg.find("#student-name > tspan").text(name);
                 svg.find("#student-id-number > tspan").text(idNumber.join(""));
             }

@@ -102,7 +102,13 @@ class MonthlyPaymentController extends AbstractDbalAndEntityActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
 
-            $data = $request->getPost();
+            $payments = (array) $request->getPost()['payments'];
+            
+            if (empty($payments)) {
+                return new JsonModel([
+                    'message' => 'Nenhum pagamento foi selecionado',
+                ]);
+            }
 
             try {
                 $conn = $this->getDbalConnection();
@@ -113,14 +119,14 @@ class MonthlyPaymentController extends AbstractDbalAndEntityActionController
 
                 if ($openedMonth === false) {
                     throw new Exception('Mensalidades são tratadas como receitas. '
-                        . 'Para cadastrar receitas é necessário abrir um mês contábil.');
+                    . 'Para cadastrar receitas é necessário abrir um mês contábil.');
                 }
 
-                MonthlyPaymentRepository::savePayments($conn, $data['payments'], $openedMonth);
+                MonthlyPaymentRepository::savePayments($conn, $payments, $openedMonth);
 
                 return new JsonModel([
                     'message' => 'Pagamentos salvos com sucesso',
-                    'callback' => $data
+                    'callback' => $payments
                 ]);
             } catch (Exception $ex) {
                 return new JsonModel([
@@ -144,7 +150,13 @@ class MonthlyPaymentController extends AbstractDbalAndEntityActionController
         $request = $this->getRequest();
         if ($request->isPost()) {
 
-            $data = $request->getPost();
+            $payments = (array) $request->getPost()['payments'];
+
+            if (empty($payments)) {
+                return new JsonModel([
+                    'message' => 'Nenhum pagamento foi selecionado',
+                ]);
+            }
 
             try {
                 $conn = $this->getDbalConnection();
@@ -154,14 +166,14 @@ class MonthlyPaymentController extends AbstractDbalAndEntityActionController
 
                 if ($openedMonth === false) {
                     throw new Exception('Mensalidades são tratadas como receitas. '
-                        . 'Para cadastrar receitas é necessário abrir um mês contábil.');
+                    . 'Para cadastrar receitas é necessário abrir um mês contábil.');
                 }
 
-                MonthlyPaymentRepository::deletePayments($conn, $data['payments'], $openedMonth);
+                MonthlyPaymentRepository::deletePayments($conn, $payments, $openedMonth);
 
                 return new JsonModel([
                     'message' => 'Pagamentos removidos com sucesso',
-                    'callback' => $data
+                    'callback' => $payments
                 ]);
             } catch (Exception $ex) {
                 return new JsonModel([
