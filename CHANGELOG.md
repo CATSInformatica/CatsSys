@@ -14,15 +14,16 @@ Todas as mudanças notáveis serão documentadas neste arquivo em ordem cronoló
 - Adicionada funcionalidade de inserção, atualização e remoção de mensalidades e integração com os fluxos de caixa.
 - Exibição do quadro de alunos de uma turma selecionada.
 - Exibição de aviso sobre a abertura de processos seletivos no site.
+- Melhorias na manipulação de mensalidades.
 
 ### Removido
-- Nada.
-- *Action* edital do controller Recruitment foi renomeada para *publicNotice* sendo necessário alterar o privilégio do *guest* de *edital* para *publicNotice*
+- *Action* edital do controller Recruitment foi renomeada para *publicNotice* sendo necessário alterar o privilégio do *guest* de `edital` para `public-notice`
 
 ### Corrigido
 - Corrigido erro que impedia a remoção da opção de idiomas ao imprimir os cartões de respostas.
 - Pequenos erros de digitação em mensagens de erro.
 - Erro na lista de presença ao utilizar a versão 5.5 do php
+- [#78](https://github.com/CATSInformatica/CatsSys/issues/78) ajustes nas alternativas do cartão de respostas para evitar detecção automática indevida.
 
 ## 2.0.0-alpha.1 - 2015-07-25
 - Primeiro *commit*

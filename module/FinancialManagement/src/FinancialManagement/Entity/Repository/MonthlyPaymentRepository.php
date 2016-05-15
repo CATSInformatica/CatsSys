@@ -34,6 +34,8 @@ use FinancialManagement\Entity\MonthlyPayment;
 class MonthlyPaymentRepository extends EntityRepository
 {
 
+    const NO_PAYMENT_ID = -1;
+
     /**
      * Retorna todos os pagamentos da turma $sclass no mês $month.
      * 
@@ -75,12 +77,12 @@ class MonthlyPaymentRepository extends EntityRepository
      * @param int $openedMonth Identificador do mês aberto.
      * @throws Exception
      */
-    public static function savePayments(Connection $conn, array $payments, $openedMonth)
+    public static function savePayments(Connection $conn, array &$payments, $openedMonth)
     {
         $conn->beginTransaction();
         try {
 
-            foreach ($payments as $payment) {
+            foreach ($payments as &$payment) {
 
                 if (!MonthlyPayment::isPaymentTypeValid($payment['type'])) {
                     throw new Exception('O tipo de pagamento informado não é válido');
@@ -89,7 +91,12 @@ class MonthlyPaymentRepository extends EntityRepository
                     throw new Exception('O mês informado não é válido');
                 }
 
-                if ($payment['id'] === "") {
+                if ($payment['type'] === MonthlyPayment::PAYMENT_TYPE_FREE) {
+                    $payment['value'] = 0;
+                }
+
+                if (self::NO_PAYMENT_ID === (int) $payment['id']) {
+
                     // insert
                     $conn->insert('monthly_payment',
                         [
@@ -101,6 +108,8 @@ class MonthlyPaymentRepository extends EntityRepository
                         'monthly_payment_value' => $payment['value'],
                         ]
                     );
+
+                    $payment['id'] = $conn->lastInsertId();
 
                     // não é mensalidade do tipo isento
                     if ($payment['value'] > 0) {
@@ -169,14 +178,14 @@ class MonthlyPaymentRepository extends EntityRepository
      * @param int $openedMonth Identificador do mês aberto.
      * @throws Exception
      */
-    public static function deletePayments(Connection $conn, array $payments, $openedMonth)
+    public static function deletePayments(Connection $conn, array &$payments, $openedMonth)
     {
         $conn->beginTransaction();
         try {
 
-            foreach ($payments as $payment) {
+            foreach ($payments as &$payment) {
 
-                if ($payment['id'] === "") {
+                if (self::NO_PAYMENT_ID === (int) $payment['id']) {
                     throw new Exception("Não foi possível remover um dos pagamentos. "
                     . "O aluno " . $payment['enrollment'] . " não possui pagamento no mês " . $payment['month']);
                 }
@@ -203,6 +212,8 @@ class MonthlyPaymentRepository extends EntityRepository
                     'monthly_payment_id' => (int) $payment['id']
                     ]
                 );
+
+                $payment['id'] = self::NO_PAYMENT_ID;
             }
 
             $conn->commit();
