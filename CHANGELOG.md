@@ -15,6 +15,7 @@ Todas as mudanças notáveis serão documentadas neste arquivo em ordem cronoló
 - Exibição do quadro de alunos de uma turma selecionada.
 - Exibição de aviso sobre a abertura de processos seletivos no site.
 - Melhorias na manipulação de mensalidades.
+- [#78](https://github.com/CATSInformatica/CatsSys/issues/67) adição de escolha da quantidade de questões e numeração (escolha do número incial).
 
 ### Removido
 - *Action* edital do controller Recruitment foi renomeada para *publicNotice* sendo necessário alterar o privilégio do *guest* de `edital` para `public-notice`
