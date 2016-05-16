@@ -14,9 +14,9 @@
         <div class="box-body">
 
             <ul>
-                <li>Em <b><i class="fa fa-wrench"></i> Configurações</b>, escolha a turma, o subtítulo do cartão de respostas e se haverá ou não marcadores para idiomas.</li>
-                <li>Em <b><i class="fa fa-stack-overflow"></i> Resultados</b>, na aba <b>Modelo</b> pressione <b>Processar</b> e verifique se o modelo de gabarito está atentendo as 
-                    suas nessidades. Se desejar imprimir gabaritos sem qualquer preenchimento adicional pressione 
+                <li>Em <b><i class="fa fa-wrench"></i> Configurações</b>, escolha a turma, o subtítulo do cartão de respostas, 
+                    se haverá ou não marcadores para idiomas, o número de questões e o número da primeira questão.</li>
+                <li>Em <b><i class="fa fa-stack-overflow"></i> Resultados</b>, na aba <b>Modelo</b> pressione <b>Processar</b> e verifique se o modelo de gabarito está atendendo as suas nessidades. Se desejar imprimir gabaritos sem qualquer preenchimento adicional pressione 
                     imprimir nessa mesma aba.</li>
                 <li>Se quiser que os gabaritos venham com o número de matrícula e nome dos alunos já preenchidos 
                     pressione <b>Processar</b> na aba <b>Folhas de Resposta</b>. Observação: O processamento dos 
@@ -55,9 +55,9 @@
                                 mv cartoes-de-resposta cartoes-de-resposta.pdf;<br>
                             </code>
                             <hr>
-                            <br> Na sequência salve o arquivo e feche o editor de texto.
+                            <br> Na sequência, salve o arquivo e feche o editor de texto.
                         </li>
-                        <li>De volta ao terminal digite o comando: <code>sh svgToPdf.sh</code> e aguarde o processamento terminar. Será criado um arquivo chamado <b>cartoes-de-resposta.pdf</b> que contém cada cartao de resposta em uma página A4. Neste ponto, verifique se todos os cartões estão no pdf e mande imprimir o arquivo.</li>
+                        <li>De volta ao terminal digite o comando: <code>sh svgToPdf.sh</code> e aguarde o processamento terminar. Será criado um arquivo chamado <b>cartoes-de-resposta.pdf</b> que contém cada cartão de resposta em uma página A4. Neste ponto, verifique se todos os cartões estão no pdf e mande imprimir o arquivo.</li>
                     </ol>
                 </li>
             </ul>
@@ -93,15 +93,35 @@
                     <input type="text" id="input-subtitle" class="form-control">
                 </div>
             </div>
-            <div class="col-md-12 col-xs-12">
+            <div class="col-md-4 col-xs-12">
                 <div class="form-group">
-                    <label> Incluir Idioma </label>
-                    <div class="radio">
-                        <label><input type="radio" name="input-language" value="hidden">Não</label>
+                    <label> Incluir Idioma </label><br>
+                    <label class="radio-inline"><input type="radio" name="input-language" value="hidden">Não</label>
+                    <label class="radio-inline"><input type="radio" name="input-language" value="visible" checked>Sim</label>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <div class="form-group">
+                    <label> Número de Perguntas </label><br>
+                    <div>
+                        <label class="radio-inline"><input type="radio" name="numberof-questions" value="10">10</label>
+                        <label class="radio-inline"><input type="radio" name="numberof-questions" value="20">20</label>
+                        <label class="radio-inline"><input type="radio" name="numberof-questions" value="30">30</label>
+                        <label class="radio-inline"><input type="radio" name="numberof-questions" value="40">40</label>
+                        <label class="radio-inline"><input type="radio" name="numberof-questions" value="50">50</label>
                     </div>
-                    <div class="radio">
-                        <label><input type="radio" name="input-language" value="visible" checked>Sim</label>
+                    <div>
+                        <label class="radio-inline"><input type="radio" name="numberof-questions" value="60">60</label>
+                        <label class="radio-inline"><input type="radio" name="numberof-questions" value="70">70</label>
+                        <label class="radio-inline"><input type="radio" name="numberof-questions" value="80">80</label>
+                        <label class="radio-inline"><input type="radio" name="numberof-questions" value="90" checked>90</label>
                     </div>
+                </div>
+            </div>
+            <div class="col-md-4 col-xs-12">
+                <div class="form-group">
+                    <label> Perguntas inciam em </label><br>
+                    <input type="number" step="1" id="input-start-number" value="1" class="form-control">
                 </div>
             </div>
         </div>
