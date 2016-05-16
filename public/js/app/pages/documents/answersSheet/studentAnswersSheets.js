@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(['filesaver'], function () {
+define(['jszip', 'filesaver'], function (JSZip) {
 
     var svgTemplate = null;
     var svgStudents = [];
@@ -203,9 +203,10 @@ define(['filesaver'], function () {
             partialNumber = "" + (startNumber);
             number = ("000" + partialNumber).substring(partialNumber.length);
             group1.find("tspan").text(number);
-            partialNumber = "" + (halfNumberOfQuestions);
+            partialNumber = "" + (startNumber + halfNumberOfQuestions);
             number = ("000" + partialNumber).substring(partialNumber.length);
             group2.find("tspan").text(number);
+
             for (var i = 1; i < halfNumberOfQuestions; i++) {
 
                 partialNumber = "" + (startNumber + i);
@@ -224,22 +225,44 @@ define(['filesaver'], function () {
 
         };
 
+        /**
+         * 
+         * jsPDF
+         * 
+         * var doc = new jsPDF();
+         * doc.text(20, 20, 'Hello world!');
+         * doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
+         * doc.addPage();
+         * doc.text(20, 20, 'Do you like that?');
+         * doc.save()
+         * 
+         * 
+         * @param {type} svgs
+         * @returns {undefined}
+         */
         print = function (svgs) {
 
-            var blob = null;
-            var data = null;
-            var documentName = "";
+            var blob;
+            var data;
+            var documentName;
+
+            var zip = new JSZip();
+            var sas = zip.folder("Cartões de Resposta");
 
             for (var i = 0; i < svgs.length; i++) {
                 data = (new XMLSerializer())
                         .serializeToString(svgs[i][0]);
                 blob = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
                 documentName = typeof svgs[i].data("identity") !== "undefined"
-                        ? svgs[i].data("identity") : "Modelo";
-                saveAs(blob, documentName + "-" + (new Date).getTime() +
-                        ".svg");
+                        ? (svgs[i].data("identity") + ".svg") : "Modelo.svg";
+
+                sas.file(documentName, blob, {type: "blob"});
             }
 
+            zip.generateAsync({type: "blob"})
+                    .then(function (content) {
+                        saveAs(content, "Cartões-de-Resposta.zip");
+                    });
         };
 
         /**

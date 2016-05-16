@@ -30,7 +30,8 @@ requirejs.config({
         trumbowygbase64: 'trumbowyg/dist/plugins/base64/trumbowyg.base64.min',
         chart: 'Chart.js/dist/Chart.min',
         filesaver: 'file-saver.js/FileSaver',
-        jqueryprint: 'jQuery.print/jQuery.print'
+        jqueryprint: 'jQuery.print/jQuery.print',
+        jszip: 'jszip/dist/jszip.min'
     },
     shim: {
         bootstrap: {
