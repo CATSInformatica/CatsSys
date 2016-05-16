@@ -26,6 +26,7 @@
     "trumbowyg": "~1.1.7",
     "jquery.columnizer": "^1.6.2",
     "file-saver.js": "~1.20150507.2",
-    "Chart.js": "^2.1.0"
+    "Chart.js": "^2.1.0",
+    "jszip": "Stuk/jszip#~3.0.0"
   }
 }
