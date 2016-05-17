@@ -142,10 +142,8 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                             + 'tal questão será considerada anulada em sua prova. Logo abaixo'
                             + ', você pode verificar como deve ser marcada a resposta '
                             + 'que você julgar correta.</li>'
-                            + '<div class="text-center" style="font-size:48px; vertical-align: middle;">'
-                            + '&#9398 &#9399 &#9400 <svg style="vertical-align: middle" '
-                            + 'height="65" width="48"><circle cx="24" cy="25" r="24" '
-                            + 'stroke-width="0" fill="black" /></svg> &#9402</div>'
+                            + '<div class="text-center" style="line-height: 15mm; font-size: 30pt;">'
+                            + '&#9398 &#9399 &#9400 &#11044 &#9402</div>'
                             + '<li>Caso exista uma questão que você julgue estar sem '
                             + 'sentido, sem resposta correta, mais de uma resposta '
                             + 'correta, ilegível ou algo do gênero, escreva atrás do '
@@ -171,8 +169,9 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                 if ($('.exam-questions .wording-block').length !== 0) {
                     wordingPage = $(".exam-page").first().clone().addClass("page")
                             .css("display", "block");
-                    var wordingBlock = $('.exam-questions .wording-block').clone();
-                    wordingBlock.find('do-not-print').each(function () {
+                    var wordingBlock = $('.exam-questions .wording-block').clone();                 
+                    wordingBlock.find('.question-block *').css('text-align', 'justify');                    
+                    wordingBlock.find('.do-not-print').each(function () {
                         $(this).remove();
                     });
                     wordingPage.find('.exam-content').html(wordingBlock.html());
