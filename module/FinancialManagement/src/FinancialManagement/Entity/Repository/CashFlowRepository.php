@@ -45,12 +45,12 @@ class CashFlowRepository extends EntityRepository
      * 
      * @see MonthlyPaymentRepository
      * 
+     * @param Connection $conn
      * @param int $monthBalance
-     * @param int $value
+     * @param float $value
      */
-    public static function insertMonthlyPaymentCashFlowType(Connection $conn, $monthBalance, $value)
+    public static function insertMonthlyPayment(Connection $conn, $monthBalance, $value)
     {
-
         $date = date('Y-m-d');
 
         $description = $value > 0 ? self::MONTHLY_PAYMENT_DESCRIPTION_POSITIVE : self::MONTHLY_PAYMENT_DESCRIPTION_NEGATIVE;
@@ -64,6 +64,8 @@ class CashFlowRepository extends EntityRepository
             'cash_flow_description' => $description,
             ]
         );
+
+        MonthlyBalanceRepository::updateMonthlyBalanceRevenue($conn, $monthBalance, $value);
     }
 
 }

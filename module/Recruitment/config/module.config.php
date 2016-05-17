@@ -198,7 +198,7 @@ return array(
                         'icon' => 'fa fa-users',
                         'toolbar' => array(
                             array(
-                                'url' => '/recruitment/recruitment/edital/$id',
+                                'url' => '/recruitment/recruitment/public-notice/$id',
                                 'title' => 'Edital',
                                 'description' => 'Ler edital',
                                 'class' => 'fa fa-file-pdf-o bg-green',

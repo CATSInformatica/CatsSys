@@ -57,4 +57,23 @@ class MonthlyBalanceRepository extends EntityRepository
         return false;
     }
 
+    /**
+     * Atualiza a receita real do mês para entradas do tipo mensalidade (futuramente outros tipos?).
+     * 
+     * Este método é utilzado em conjunto com o método que insere entradas via Dbal
+     *  - CashFlowRepository::insertMonthlyPaymentCashFlowType
+     * 
+     * @param Connection $conn  Database Abstraction Layer connection
+     * @param int $monthBalance Identificador do mês aberto
+     * @param float $value Valor a ser adicionado à receita real do mês
+     */
+    public static function updateMonthlyBalanceRevenue(Connection $conn, $monthBalance, $value)
+    {
+        $conn->executeUpdate("UPDATE monthly_balance SET monthly_balance_revenue = monthly_balance_revenue + ?"
+            . " WHERE monthly_balance_id = ?", [
+            $value,
+            $monthBalance
+        ]);
+    }
+
 }

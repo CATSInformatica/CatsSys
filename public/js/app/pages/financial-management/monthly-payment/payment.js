@@ -22,6 +22,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
         var PAYMENT_TYPE_TOTAL = 'TOTAL';
         var PAYMENT_TYPE_PARTIAL = 'PARCIAL';
         var PAYMENT_TYPE_FREE = 'ISENTO';
+        var NO_PAYMENT = -1;
         var paymentMonth = $("#paymentMonth");
         var students = null;
         var payments = {};
@@ -151,7 +152,6 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                     payments[students[i].enrollmentId].months[month] = createNewPaymentObject(null);
                 }
             }
-            console.log(payments);
             showOrReplaceMonthTable(month);
         };
         /**
@@ -165,8 +165,8 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             var table = "<table class='table table-bordered table-condensed table-hover table-striped'><thead><tr>" +
                     "<th class='text-center'>Mat.</th>" +
                     "<th class='text-center'>Aluno</th>" +
-                    "<th style='width:50%' class='text-center'>Pagamento</th>" +
-                    "<th> Situação </th>" +
+                    "<th class='text-center'> Situação </th>" +
+                    "<th style='width:60%' class='text-center'>Pagamento</th>" +
                     "</tr></thead></tbody>";
             $("#paymentMonthTables")
                     .find("ul.nav-tabs")
@@ -181,12 +181,12 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                     .find("div.tab-content")
                     .find("#month-" + month + "-content")
                     .remove();
-            var partial;
+            
+            var partial;            
             for (var i in payments) {
-
                 partial = "" + i;
                 table += "<tr>" +
-                        "<td style='vertical-align:middle;'>" +
+                        "<td style='vertical-align:middle;' class='text-center'>" +
                         '<div class="checkbox">' +
                         '<label><input type="checkbox" name="student-payments[]" value="' + partial +
                         '" data-month="' + month +
@@ -197,60 +197,19 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                         "<td style='vertical-align:middle;' class='text-center'>" +
                         payments[i].name
                         + "</td>" +
+                        "<td style='vertical-align:middle;' class='text-center payment-status'>" +
+                        (payments[i].months[month].monthly_payment_id === NO_PAYMENT ? WAITING_PAYMENT : PAID)
+                        + "</td>" +
                         "<td>" +
-                        // col-sm-6
                         "<div class='col-sm-6'>" +
-                        '<label>Observação</label><br>' +
-                        '<div class="input-group col-sm-12">' +
-                        '<span class="input-group-addon"><i class="fa fa-font"></i></span>' +
-                        '<textarea class="form-control monthly-payment-observation" rows="4" cols="25">' +
-                        (payments[i].months[month].monthly_payment_observation === null ? '' : payments[i].months[month].monthly_payment_observation)
-                        + '</textarea>' +
+                        createPaymentDateInput(month, payments[i].months[month].monthly_payment_date.format("DD/MM/YYYY")) +
+                        createPaymentTypeSelect(payments[i].months[month].monthly_payment_type) +
+                        createPaymentValueInput(payments[i].months[month].monthly_payment_id, payments[i].months[month].monthly_payment_value) +
+                        '</div>' +
+                        "<div class='col-sm-5'>" +
+                        createObservationTextarea(payments[i].months[month].monthly_payment_observation) +
                         "</div>" +
-                        // /col-sm-6
-                        // col-sm-6
-                        "</div><div class='col-sm-6'>" +
-                        '<label>Data</label><br>' +
-                        '<div class="input-group col-sm-12 datepicker-month-' + month + '">' +
-                        '<span class="input-group-addon"><i class="fa fa-calendar-check-o"></i> </span>' +
-                        '<input class="text-center form-control monthly-payment-date" type="text" value="' +
-                        payments[i].months[month].monthly_payment_date.format("DD/MM/YYYY")
-                        + '"></div>' +
-                        // col-sm-7   
-                        "<div class='col-sm-6'>" +
-                        '<label>Tipo</label><br>' +
-                        '<div class="input-group col-sm-12">' +
-                        '<span class="input-group-addon"><i class="fa fa-bars"></i> </span>' +
-                        "<select class='form-control monthly-payment-type'>" +
-                        "<option value='" + PAYMENT_TYPE_TOTAL + "'" +
-                        (payments[i].months[month].monthly_payment_type === PAYMENT_TYPE_TOTAL ? ' selected' : '') + ">" +
-                        PAYMENT_TYPE_TOTAL +
-                        "</option>" +
-                        "<option value='" + PAYMENT_TYPE_PARTIAL + "'" +
-                        (payments[i].months[month].monthly_payment_type === PAYMENT_TYPE_PARTIAL ? ' selected' : '') + ">" +
-                        PAYMENT_TYPE_PARTIAL +
-                        "</option>" +
-                        "<option value='" + PAYMENT_TYPE_FREE + "'" +
-                        (payments[i].months[month].monthly_payment_type === PAYMENT_TYPE_FREE ? ' selected' : '') + ">" +
-                        PAYMENT_TYPE_FREE +
-                        "</option>" +
-                        "</select>" +
-                        "</div>" +
-                        // /col-sm-6
-                        // col-sm-6
-                        "</div><div class='col-sm-6'>" +
-                        '<label>Valor</label><br>' +
-                        '<div class="input-group col-sm-12">' +
-                        '<span class="input-group-addon">R$</span>' +
-                        '<input class="text-center form-control monthly-payment-value" type="number" step="any" value="' +
-                        (payments[i].months[month].monthly_payment_value === null ? defaultValue : payments[i].months[month].monthly_payment_value)
-                        + '"></div>'
-                        // /col-sm-6
-                        + "</div>"
-                        + "</td>" +
-                        "<td style='vertical-align:middle;' class='text-center'>" +
-                        (payments[i].months[month].monthly_payment_id === null ? WAITING_PAYMENT : PAID)
-                        + "</td>" +
+                        "</td>" +
                         "</tr>";
             }
 
@@ -266,7 +225,32 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                     .find("table").DataTable({
                 dom: 'flript',
                 paging: false,
+                bFilter: false,
+                bInfo: false,
                 order: [[3, 'asc'], [1, 'asc']]
+            });
+
+            // adiciona o listener que altera o valor do pagamento
+            // ao modificar o tipo de pagamento.
+            $("#paymentMonthTables").on("change", "#month-" + month + "-content .monthly-payment-type", function () {
+
+                var type = $(this).val();
+                var element = $(this).closest("td").find(".monthly-payment-value");
+                var value = element.val();
+
+                switch (type) {
+                    case PAYMENT_TYPE_TOTAL:
+                        element.val(defaultValue);
+                        break;
+                    case PAYMENT_TYPE_PARTIAL:
+                        if (value == 0 || value == defaultValue) {
+                            element.val(defaultValue / 2);
+                        }
+                        break;
+                    case PAYMENT_TYPE_FREE:
+                        element.val(0);
+                        break;
+                }
             });
 
             $(".datepicker-month-" + month).datetimepicker({
@@ -280,7 +264,6 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             $("#nav_" + month).tab("show");
         };
 
-
         getSelectedMonthlyPayments = function () {
             var selectedPayments = [];
 
@@ -288,7 +271,8 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
 
                 var tr = $(this).closest("tr");
                 var enrollment = $(this).val();
-                var id = $(this).data('id');
+                var id = $(this).attr('data-id');
+
                 var month = $(this).data('month');
                 var observation = tr.find(".monthly-payment-observation").val();
                 var type = tr.find(".monthly-payment-type").val();
@@ -309,8 +293,54 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             return selectedPayments;
         };
 
+        createObservationTextarea = function (observation) {
 
+            return '<label>Observação</label><br>' +
+                    '<div class="input-group col-sm-12">' +
+                    '<span class="input-group-addon"><i class="fa fa-font"></i></span>' +
+                    '<textarea class="form-control monthly-payment-observation" rows="7" cols="25">' +
+                    (observation === null ? '' : observation) +
+                    '</textarea>' +
+                    "</div>";
+        };
 
+        createPaymentValueInput = function (id, value) {
+            return '<label>Valor</label><br>' +
+                    '<div class="input-group col-sm-12">' +
+                    '<span class="input-group-addon">R$</span>' +
+                    '<input class="text-center form-control monthly-payment-value" type="number" step="any" value="' +
+                    (id === NO_PAYMENT ? defaultValue : value)
+                    + '"></div>';
+        };
+
+        createPaymentTypeSelect = function (type) {
+            return '<label>Tipo</label><br>' +
+                    '<div class="input-group col-sm-12">' +
+                    '<span class="input-group-addon"><i class="fa fa-bars"></i> </span>' +
+                    "<select class='form-control monthly-payment-type'>" +
+                    "<option value='" + PAYMENT_TYPE_TOTAL + "'" +
+                    (type === PAYMENT_TYPE_TOTAL ? ' selected' : '') + ">" +
+                    PAYMENT_TYPE_TOTAL +
+                    "</option>" +
+                    "<option value='" + PAYMENT_TYPE_PARTIAL + "'" +
+                    (type === PAYMENT_TYPE_PARTIAL ? ' selected' : '') + ">" +
+                    PAYMENT_TYPE_PARTIAL +
+                    "</option>" +
+                    "<option value='" + PAYMENT_TYPE_FREE + "'" +
+                    (type === PAYMENT_TYPE_FREE ? ' selected' : '') + ">" +
+                    PAYMENT_TYPE_FREE +
+                    "</option>" +
+                    "</select>" +
+                    "</div>";
+        };
+
+        createPaymentDateInput = function (month, date) {
+            return '<label>Data</label><br>' +
+                    '<div class="input-group col-sm-12 datepicker-month-' + month + '">' +
+                    '<span class="input-group-addon"><i class="fa fa-calendar-check-o"></i> </span>' +
+                    '<input class="text-center form-control monthly-payment-date" type="text" value="' + date
+                    + '"></div>';
+        };
 
         /**
          * Cria uma instância do objeto de pagamento.
@@ -322,7 +352,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
 
             if (data === null) {
                 return {
-                    monthly_payment_id: null,
+                    monthly_payment_id: NO_PAYMENT,
                     monthly_payment_date: moment(),
                     monthly_payment_month: moment(),
                     monthly_payment_value: 0,
@@ -332,7 +362,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             }
 
             return {
-                monthly_payment_id: data.monthly_payment_id,
+                monthly_payment_id: data.monthly_payment_id !== null ? data.monthly_payment_id : NO_PAYMENT,
                 monthly_payment_date: data.monthly_payment_date === null ? moment() : moment(data.monthly_payment_date, "YYYY-MM-DD"),
                 monthly_payment_month: data.monthly_payment_month === null ? moment() : moment(data.monthly_payment_month, "YYYY-MM-DD"),
                 monthly_payment_value: data.monthly_payment_value,
@@ -340,6 +370,39 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                 monthly_payment_type: data.monthly_payment_type
             };
         };
+
+
+        /**
+         * Callback update
+         * 
+         * Altera 
+         *  - atributo data-id dos checkboxes utilizados
+         *  - status do pagamento
+         *  - valor pago
+         * 
+         * @param {type} paymts
+         * @param {type} status
+         * @returns {undefined}
+         */
+        updatePayments = function (paymts, status) {
+
+            var input = null;
+            var tr = null;
+
+            for (var i = 0; i < paymts.length; i++) {
+                input = $("input[name='student-payments[]'][data-month='" +
+                        paymts[i].month + "'][value='" +
+                        paymts[i].enrollment + "']");
+
+                input.attr("data-id", paymts[i].id);
+                tr = input.closest("tr");
+                tr.find(".monthly-payment-value").val(paymts[i].value);
+                tr.find(".payment-status").text(status);
+            }
+
+            $("input[name='student-payments[]']").prop("checked", false);
+        };
+
         return {
             init: function () {
                 moment.locale("pt-br");
@@ -351,7 +414,6 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             getDataOf: function (selectedItemId) {
 
                 var payments = getSelectedMonthlyPayments();
-                console.log(payments);
 
                 switch (selectedItemId) {
                     case 'save-payments':
@@ -366,24 +428,23 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             },
             getCallbackOf: function (selectedItemId) {
                 // implementar modificações nas tabelas para alterar o status
-                // de pagamento
+                // de pagamento e remover seleção do checkbox
+                // foreach checkbox:checked atualizar data-* e uncheck
 
                 switch (selectedItemId) {
                     case 'save-payments':
                         return {
-                            exec: function (param) {
-                                console.log(param);
+                            exec: function (paymts) {
+                                updatePayments(paymts, PAID);
                             }
                         };
                     case 'delete-payments':
                         return {
-                            exec: function (param) {
-                                console.log(param);
+                            exec: function (paymts) {
+                                updatePayments(paymts, WAITING_PAYMENT);
                             }
                         };
                 }
-
-
             }
         };
     }());

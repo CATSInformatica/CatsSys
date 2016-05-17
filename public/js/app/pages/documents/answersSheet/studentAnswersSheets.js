@@ -15,12 +15,13 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(['filesaver'], function () {
+define(['jszip', 'filesaver'], function (JSZip) {
 
     var svgTemplate = null;
     var svgStudents = [];
     var students = [];
     var lastSClass = null;
+    var QUESTION_TRANSLATEOFFSET_Y = 17.7;
 
     var asModule = (function () {
 
@@ -133,9 +134,8 @@ define(['filesaver'], function () {
                         .attr("style", "fill:#000000;fill-opacity:1;" +
                                 "stroke:#000000;stroke-width:0.75569242;" +
                                 "stroke-miterlimit:4;stroke-dasharray:none;" +
-                                "stroke-opacity:1")
-                        .next("text")
-                        .remove();
+                                "stroke-opacity:1");
+
                 svg.find("#student-name > tspan").text(name);
                 svg.find("#student-id-number > tspan").text(idNumber.join(""));
             }
@@ -147,16 +147,31 @@ define(['filesaver'], function () {
             return ("00000" + partial).substring(partial.length).split("");
         };
 
+        /**
+         * Cria o modelo de cartões de resposta com base nas opções de
+         * configuração
+         * 
+         * @returns {undefined}
+         */
         formatTemplate = function () {
+
+            // buscar valores de configurações
             var subtitle = $("#input-subtitle").val();
             var visibility = $("input[name=input-language]:checked").val();
+            var halfNumberOfQuestions = $("input[name=numberof-questions]:checked").val() / 2;
+            var startNumber = parseInt($("#input-start-number").val());
+
+            // ajusta o subtítulo
             var svgWidth = svgTemplate[0].getAttribute("viewBox").split(" ")[2];
             var textElement = svgTemplate.find("#subtitle > tspan");
             textElement.text(subtitle);
+
+            // centralizar
             var textWidth = textElement[0].getBoundingClientRect().width;
             var xPosition = (svgWidth / 2) - (textWidth / 2);
             textElement.attr("x", xPosition);
 
+            // ocultar/mostrar opção de idiomas
             svgTemplate.find("#language-group").attr("visibility", visibility);
             svgTemplate.find("#language-group").removeAttr("style");
 
@@ -164,24 +179,90 @@ define(['filesaver'], function () {
                 svgTemplate.find("#language-group").attr("style", "display:none;visibility:hidden;");
             }
 
+
+            // remover todas as questões enumeradas anteriormente (se existirem)
+            svgTemplate.find(".questions").remove();
+
+            // criar buscar os grupos e configurar os templates
+            var group1 = svgTemplate.find("#question-group1");
+            var group2 = svgTemplate.find("#question-group2");
+            var questionGroup1 = group1.clone();
+            var questionGroup2 = group2.clone();
+            var partialNumber;
+            var number;
+
+            questionGroup1
+                    .removeAttr("id")
+                    .addClass("questions");
+            questionGroup2
+                    .removeAttr("id")
+                    .addClass("questions");
+
+
+            // gerar questões a partir do número escolhido
+            partialNumber = "" + (startNumber);
+            number = ("000" + partialNumber).substring(partialNumber.length);
+            group1.find("tspan").text(number);
+            partialNumber = "" + (startNumber + halfNumberOfQuestions);
+            number = ("000" + partialNumber).substring(partialNumber.length);
+            group2.find("tspan").text(number);
+
+            for (var i = 1; i < halfNumberOfQuestions; i++) {
+
+                partialNumber = "" + (startNumber + i);
+                number = ("000" + partialNumber).substring(partialNumber.length);
+                questionGroup1
+                        .attr("transform", "translate(0," + i * QUESTION_TRANSLATEOFFSET_Y + ")")
+                        .find("tspan").text(number);
+                partialNumber = "" + (startNumber + halfNumberOfQuestions + i);
+                number = ("000" + partialNumber).substring(partialNumber.length);
+                questionGroup2
+                        .attr("transform", "translate(0," + i * QUESTION_TRANSLATEOFFSET_Y + ")")
+                        .find("tspan").text(number);
+                group1.after(questionGroup1.clone());
+                group2.after(questionGroup2.clone());
+            }
+
         };
 
+        /**
+         * 
+         * jsPDF
+         * 
+         * var doc = new jsPDF();
+         * doc.text(20, 20, 'Hello world!');
+         * doc.text(20, 30, 'This is client-side Javascript, pumping out a PDF.');
+         * doc.addPage();
+         * doc.text(20, 20, 'Do you like that?');
+         * doc.save()
+         * 
+         * 
+         * @param {type} svgs
+         * @returns {undefined}
+         */
         print = function (svgs) {
 
-            var blob = null;
-            var data = null;
-            var documentName = "";
+            var blob;
+            var data;
+            var documentName;
+
+            var zip = new JSZip();
+            var sas = zip.folder("Cartões de Resposta");
 
             for (var i = 0; i < svgs.length; i++) {
                 data = (new XMLSerializer())
                         .serializeToString(svgs[i][0]);
                 blob = new Blob([data], {type: "image/svg+xml;charset=utf-8"});
                 documentName = typeof svgs[i].data("identity") !== "undefined"
-                        ? svgs[i].data("identity") : "Modelo";
-                saveAs(blob, documentName + "-" + (new Date).getTime() +
-                        ".svg");
+                        ? (svgs[i].data("identity") + ".svg") : "Modelo.svg";
+
+                sas.file(documentName, blob, {type: "blob"});
             }
 
+            zip.generateAsync({type: "blob"})
+                    .then(function (content) {
+                        saveAs(content, "Cartões-de-Resposta.zip");
+                    });
         };
 
         /**

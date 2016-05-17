@@ -9,10 +9,12 @@
 namespace Recruitment\Controller;
 
 use Database\Controller\AbstractEntityActionController;
+use DateInterval;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use Recruitment\Entity\Recruitment;
+use Recruitment\Entity\Repository\RecruitmentRepository;
 use Recruitment\Form\RecruitmentFilter;
 use Recruitment\Form\RecruitmentForm;
 use RuntimeException;
@@ -41,7 +43,7 @@ class RecruitmentController extends AbstractEntityActionController
         ));
     }
 
-    public function editalAction()
+    public function publicNoticeAction()
     {
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', 'application/pdf');
@@ -152,6 +154,11 @@ class RecruitmentController extends AbstractEntityActionController
         ));
     }
 
+    /**
+     * Remove um processo seletivo cadastrado se ele ainda não tiver iniciado.
+     * 
+     * @return JsonModel
+     */
     public function deleteAction()
     {
         $id = $this->params('id', false);
@@ -185,6 +192,75 @@ class RecruitmentController extends AbstractEntityActionController
         return new JsonModel(array(
             'message' => 'Nenhum processo seletivo escolhido.'
         ));
+    }
+
+    /**
+     * Busca por processos seletivos abertos ou que estão para abrir no intervalo dado por 
+     * RecruitmentRepository::RECRUITMENT_DAYOFFSET a partir da data atual.
+     * 
+     * @return JsonModel
+     */
+    public function getLastOpenedAction()
+    {
+        try {
+
+            $em = $this->getEntityManager();
+
+            $date = new \DateTime();
+            $interval = new DateInterval('P' . RecruitmentRepository::RECRUITMENT_DAYOFFSET . 'D');
+
+            $studentRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
+                ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::STUDENT_RECRUITMENT_TYPE, $date);
+            $srHasOffset = false;
+
+            $volunteerRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
+                ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::VOLUNTEER_RECRUITMENT_TYPE, $date);
+            $vrHasOffiset = false;
+
+            // nenhum processo seletivo de alunos aberto, buscar por processos seletivos de alunos 
+            // abertos dentro dos próximos dias
+            if ($studentRecruitment === null) {
+                $date->add($interval);
+
+                $studentRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
+                    ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::STUDENT_RECRUITMENT_TYPE, $date);
+                $srHasOffset = true;
+            }
+
+            // nenhum processo seletivo de voluntários aberto, buscar por processos seletivos de voluntários 
+            // abertos dentro dos próximos dias
+            if ($volunteerRecruitment === null) {
+                $date->add($interval);
+
+                $volunteerRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
+                    ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::VOLUNTEER_RECRUITMENT_TYPE, $date);
+                $vrHasOffiset = true;
+            }
+
+            if ($studentRecruitment === null && $volunteerRecruitment == null) {
+                return JsonModel([
+                    'recruitments' => null,
+                ]);
+            }
+
+            return new JsonModel([
+                'recruitments' => [
+                    'student' => [
+                        'content' => $studentRecruitment,
+                        'offset' => $vrHasOffiset,
+                    ],
+                    'volunteer' => [
+                        'content' => $volunteerRecruitment,
+                        'offset' => $vrHasOffiset,
+                    ],
+                ]
+            ]);
+        } catch (Exception $ex) {
+            return new JsonModel([
+                'recruitments' => null,
+                'error' => $ex->getMessage(),
+            ]);
+        }
     }
 
 }
