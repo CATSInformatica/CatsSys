@@ -26,6 +26,7 @@ Todas as mudanças notáveis serão documentadas neste arquivo em ordem cronoló
 - Pequenos erros de digitação em mensagens de erro.
 - Erro na lista de presença ao utilizar a versão 5.5 do php
 - [#78](https://github.com/CATSInformatica/CatsSys/issues/78) ajustes nas alternativas do cartão de respostas para evitar detecção automática indevida.
+- O valor adicionado como mensalidade passa a ser contabilizado na receita do mês.
 
 ## 2.0.0-alpha.1 - 2015-07-25
 - Primeiro *commit*

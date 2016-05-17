@@ -72,7 +72,7 @@ class MonthlyPaymentRepository extends EntityRepository
      * 
      * @todo buscar o valor a ser atualizado para salvar como entrada negativa.
      *
-     * @param Connection $conn  Database Abstraction Layer connection.
+     * @param Connection $conn Database Abstraction Layer connection.
      * @param array $payments lista de mensalidades a serem salvas/atualizadas.
      * @param int $openedMonth Identificador do mês aberto.
      * @throws Exception
@@ -96,7 +96,6 @@ class MonthlyPaymentRepository extends EntityRepository
                 }
 
                 if (self::NO_PAYMENT_ID === (int) $payment['id']) {
-
                     // insert
                     $conn->insert('monthly_payment',
                         [
@@ -113,15 +112,14 @@ class MonthlyPaymentRepository extends EntityRepository
 
                     // não é mensalidade do tipo isento
                     if ($payment['value'] > 0) {
-                        CashFlowRepository::insertMonthlyPaymentCashFlowType(
+                        CashFlowRepository::insertMonthlyPayment(
                             $conn, $openedMonth, $payment['value']
                         );
                     }
                 } else {
                     // update
-
                     $paidBefore = self::getPaymentOf($conn, $payment['id']);
-
+                    
                     if ($paidBefore['enrollment_id'] != $payment['enrollment'] || $paidBefore['monthly_payment_month'] != $payment['month']) {
                         throw new Exception('Não é possível atualizar a mensalidade do aluno ' . $payment['enrollment']
                         . ' para o mês ' . $payment['month'] . ' as informações não correspondem com os valores salvos'
@@ -133,14 +131,14 @@ class MonthlyPaymentRepository extends EntityRepository
 
                         // não é mensalidade do tipo isento
                         if ($paidBefore['monthly_payment_value'] > 0) {
-                            CashFlowRepository::insertMonthlyPaymentCashFlowType(
+                            CashFlowRepository::insertMonthlyPayment(
                                 $conn, $openedMonth, -$paidBefore['monthly_payment_value']
                             );
                         }
-
+                        
                         // não é mensalidade do tipo isento
                         if ($payment['value'] > 0) {
-                            CashFlowRepository::insertMonthlyPaymentCashFlowType(
+                            CashFlowRepository::insertMonthlyPayment(
                                 $conn, $openedMonth, $payment['value']
                             );
                         }
@@ -190,8 +188,6 @@ class MonthlyPaymentRepository extends EntityRepository
                     . "O aluno " . $payment['enrollment'] . " não possui pagamento no mês " . $payment['month']);
                 }
 
-                // delete
-
                 $paidBefore = self::getPaymentOf($conn, $payment['id']);
 
                 if ($paidBefore['enrollment_id'] != $payment['enrollment'] || $paidBefore['monthly_payment_month'] != $payment['month']) {
@@ -202,7 +198,7 @@ class MonthlyPaymentRepository extends EntityRepository
 
                 // não é mensalidade do tipo isento
                 if ($paidBefore['monthly_payment_value'] > 0) {
-                    CashFlowRepository::insertMonthlyPaymentCashFlowType(
+                    CashFlowRepository::insertMonthlyPayment(
                         $conn, $openedMonth, -$paidBefore['monthly_payment_value']
                     );
                 }
@@ -226,9 +222,9 @@ class MonthlyPaymentRepository extends EntityRepository
     /**
      * Busca as informações da mensalidade cujo identificador é $id.
      * 
-     * @param Connection $conn
+     * @param Connection $conn Database Abstraction Layer connection.
      * @param type $id Identificador da mensalidade.
-     * @return boolean|array
+     * @return boolean|array Dados do pagamentod a mensalidade cujo identificador é $id
      */
     public static function getPaymentOf(Connection $conn, $id)
     {
@@ -240,10 +236,10 @@ class MonthlyPaymentRepository extends EntityRepository
             ->setParameter('id', $id)
             ->execute();
 
-        $openedMonth = $sth->fetchAll();
+        $payments = $sth->fetchAll();
 
-        if (!empty($openedMonth)) {
-            return $openedMonth[0];
+        if (!empty($payments)) {
+            return $payments[0];
         }
 
         return false;
