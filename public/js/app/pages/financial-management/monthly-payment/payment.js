@@ -181,9 +181,9 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                     .find("div.tab-content")
                     .find("#month-" + month + "-content")
                     .remove();
-            var partial;
+            
+            var partial;            
             for (var i in payments) {
-
                 partial = "" + i;
                 table += "<tr>" +
                         "<td style='vertical-align:middle;' class='text-center'>" +
@@ -362,7 +362,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             }
 
             return {
-                monthly_payment_id: data.monthly_payment_id,
+                monthly_payment_id: data.monthly_payment_id !== null ? data.monthly_payment_id : NO_PAYMENT,
                 monthly_payment_date: data.monthly_payment_date === null ? moment() : moment(data.monthly_payment_date, "YYYY-MM-DD"),
                 monthly_payment_month: data.monthly_payment_month === null ? moment() : moment(data.monthly_payment_month, "YYYY-MM-DD"),
                 monthly_payment_value: data.monthly_payment_value,
@@ -385,7 +385,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
          * @returns {undefined}
          */
         updatePayments = function (paymts, status) {
-            
+
             var input = null;
             var tr = null;
 
