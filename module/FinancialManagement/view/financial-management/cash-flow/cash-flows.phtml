@@ -9,6 +9,7 @@
                         <th class="text-center">#</th>
                         <th class="text-center">Data</th>
                         <th class="text-center">Tipo</th>
+                        <th class="text-center">Fluxo</th>
                         <th class="text-center">Valor</th>
                     </tr>
                 </thead>
@@ -19,6 +20,10 @@
                                 <td class="text-center"> <?php echo $cashFlow->getCashFlowId(); ?></td>
                                 <td class="text-center"> <?php echo $cashFlow->getCashFlowDate()->format("d/m/Y"); ?></td>
                                 <td class="text-center"> <?php echo $cashFlow->getCashFlowType()->getCashFlowTypeName(); ?></td>
+                                <td class="text-center"> <?php
+                                    echo ($cashFlow->getCashFlowType()->getCashFlowTypeDirection()) 
+                                ? FinancialManagement\Entity\CashFlowType::CASH_FLOW_DIRECTION_INFLOW_DESCRIPTION 
+                                : FinancialManagement\Entity\CashFlowType::CASH_FLOW_DIRECTION_OUTFLOW_DESCRIPTION; ?></td>
                                 <td class="text-center"> <?php echo $cashFlow->getCashFlowAmount(); ?></td>
                             </tr>
                         <?php endforeach; ?>

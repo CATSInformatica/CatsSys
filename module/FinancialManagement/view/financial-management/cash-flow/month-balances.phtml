@@ -10,8 +10,10 @@
                         <th class="text-center">#</th>
                         <th class="text-center">Mês</th>
                         <th class="text-center">Fechado em</th>
-                        <th class="text-center">Receita</th>
-                        <th class="text-center">Despesa</th>
+                        <th class="text-center">Receita prevista</th>
+                        <th class="text-center">Receita real</th>
+                        <th class="text-center">Despesa prevista</th>
+                        <th class="text-center">Despesa real</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -27,7 +29,9 @@
                                             '-';
                                     ?>
                                 </td>
+                                <td class="text-center"> <?php echo $monthBalance->getMonthlyBalanceProjectedRevenue(); ?></td>
                                 <td class="text-center"> <?php echo $monthBalance->getMonthlyBalanceRevenue(); ?></td>
+                                <td class="text-center"> <?php echo $monthBalance->getMonthlyBalanceProjectedExpense(); ?></td>
                                 <td class="text-center"> <?php echo $monthBalance->getMonthlyBalanceExpense(); ?></td>
                             </tr>
                         <?php endforeach; ?>

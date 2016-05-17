@@ -16,16 +16,16 @@ use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
- * Description of AddCashFlowFieldset
+ * Description of CashFlowFieldset
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class AddCashFlowFieldset extends Fieldset implements InputFilterProviderInterface
+class CashFlowFieldset extends Fieldset implements InputFilterProviderInterface
 {
 
     public function __construct(ObjectManager $obj)
     {
-        parent::__construct('add_cash_flow_fieldset');
+        parent::__construct('cash_flow_fieldset');
 
         $this->setHydrator(new DoctrineHydrator($obj))
                 ->setObject(new CashFlow());
@@ -113,13 +113,16 @@ class AddCashFlowFieldset extends Fieldset implements InputFilterProviderInterfa
     {
         $cashFlowTypes = $obj->getRepository('FinancialManagement\Entity\CashFlowType')
                 ->findAll();
-        $cashFlowTypesNames = [];
+        $cashFlowTypeNames = [];
+        $cashFlowDirectionDescription = [CashFlowType::CASH_FLOW_DIRECTION_OUTFLOW_DESCRIPTION,
+            CashFlowType::CASH_FLOW_DIRECTION_INFLOW_DESCRIPTION];
         foreach ($cashFlowTypes as $cashFlowType) {
             if ($cashFlowType->getCashFlowTypeId() !== CashFlowType::CASH_FLOW_TYPE_MONTHLY_PAYMENT) {
-                $cashFlowTypesNames[$cashFlowType->getCashFlowTypeId()] = $cashFlowType->getCashFlowTypeName();
+                $cashFlowTypeNames[$cashFlowType->getCashFlowTypeId()] = $cashFlowType->getCashFlowTypeName()
+                        . ' [' . $cashFlowDirectionDescription[$cashFlowType->getCashFlowTypeDirection()] . ']';
             }
         }
-        return $cashFlowTypesNames;
+        return $cashFlowTypeNames;
     }
 
     private function getMonthlyBalances($obj)
