@@ -85,7 +85,7 @@ return array(
                 'order' => 11,
                 'pages' => array(
                     array(
-                        'label' => 'Expense and Revenue',
+                        'label' => 'Exp. and rev. analysis',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'index',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
@@ -101,7 +101,7 @@ return array(
                         ),
                     ),
                     array(
-                        'label' => 'Open Month Balance',
+                        'label' => 'Open month balance',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'open-month-balance',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
@@ -109,7 +109,7 @@ return array(
                         'icon' => 'fa fa-calendar-plus-o',
                     ),
                     array(
-                        'label' => 'Close Month Balance',
+                        'label' => 'Close month balance',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'close-month-balance',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
@@ -117,7 +117,7 @@ return array(
                         'icon' => 'fa fa-calendar-times-o',
                     ),
                     array(
-                        'label' => 'Show Month Balances',
+                        'label' => 'Show month balances',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'month-balances',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
@@ -136,7 +136,7 @@ return array(
                         ),
                     ),
                     array(
-                        'label' => 'Add Cash Flow',
+                        'label' => 'Add exp. and rev.',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'add-cash-flow',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
@@ -144,7 +144,7 @@ return array(
                         'icon' => 'fa fa-usd',
                     ),
                     array(
-                        'label' => 'Show Cash Flows',
+                        'label' => 'Show exp. and rev.',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'cash-flows',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
@@ -171,7 +171,7 @@ return array(
                         ),
                         'pages' => array(
                             array(
-                                'label' => 'Edit Cash Flow',
+                                'label' => 'Edit cash flow',
                                 'route' => 'school-management/cash-flow',
                                 'action' => 'edit-cash-flow',
                                 'icon' => 'fa fa-pencil-square-o bg-blue',
@@ -179,7 +179,7 @@ return array(
                         ),
                     ),
                     array(
-                        'label' => 'Create Cash Flow Type',
+                        'label' => 'Create exp. and rev. types',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'create-cash-flow-type',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
@@ -187,7 +187,7 @@ return array(
                         'icon' => 'fa fa-plus',
                     ),
                     array(
-                        'label' => 'Show Cash Flow Types',
+                        'label' => 'Show exp. and rev. types',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'cash-flow-types',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
@@ -214,7 +214,7 @@ return array(
                         ),
                         'pages' => array(
                             array(
-                                'label' => 'Edit Cash Flow Type',
+                                'label' => 'Edit cash flow type',
                                 'route' => 'school-management/cash-flow',
                                 'action' => 'edit-cash-flow-type',
                                 'icon' => 'fa fa-pencil-square-o bg-blue',

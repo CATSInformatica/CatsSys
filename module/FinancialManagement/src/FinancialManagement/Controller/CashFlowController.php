@@ -11,7 +11,7 @@ namespace FinancialManagement\Controller;
 use Database\Controller\AbstractEntityActionController;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Doctrine\Common\Collections\Criteria;
-use FinancialManagement\Form\AddCashFlowForm;
+use FinancialManagement\Form\CashFlowForm;
 use FinancialManagement\Entity\CashFlow;
 use FinancialManagement\Form\CashFlowTypeForm;
 use FinancialManagement\Entity\CashFlowType;
@@ -148,13 +148,13 @@ class CashFlowController extends AbstractEntityActionController
                 ));
             }
 
-            $form = new AddCashFlowForm($em);
+            $form = new CashFlowForm($em);
             $cashFlow = new CashFlow();
             $form->bind($cashFlow);
             if ($request->isPost()) {
                 $form->setData($request->getPost());
                 if ($form->isValid()) {
-                    $data = $form->getData(FormInterface::VALUES_AS_ARRAY)['add_cash_flow_fieldset'];
+                    $data = $form->getData(FormInterface::VALUES_AS_ARRAY)['cash_flow_fieldset'];
                     $cashFlowType = $em->find('FinancialManagement\Entity\CashFlowType',
                             $data['cashFlowType']);
                     $cashFlow->setCashFlowType($cashFlowType);
@@ -217,7 +217,7 @@ class CashFlowController extends AbstractEntityActionController
                         'form' => null,
                     ));
                 }
-                $form = new AddCashFlowForm($em);
+                $form = new CashFlowForm($em);
                 $form->get('submit')->setAttribute('value', 'Editar');
                 $form->bind($cashFlow);
                 $initialDirection = $cashFlow->getCashFlowType()->getCashFlowTypeDirection();
@@ -238,7 +238,7 @@ class CashFlowController extends AbstractEntityActionController
                                     $initialAmount);
                         }
 
-                        $data = $form->getData(FormInterface::VALUES_AS_ARRAY)['add_cash_flow_fieldset'];
+                        $data = $form->getData(FormInterface::VALUES_AS_ARRAY)['cash_flow_fieldset'];
                         $cashFlowType = $em->find('FinancialManagement\Entity\CashFlowType',
                                 $data['cashFlowType']);
                         $cashFlow->setCashFlowType($cashFlowType);
@@ -262,11 +262,11 @@ class CashFlowController extends AbstractEntityActionController
                     }
                 } else {
                     $form
-                            ->get('add_cash_flow_fieldset')
+                            ->get('cash_flow_fieldset')
                             ->get('cashFlowType')
                             ->setValue($cashFlow->getCashFlowType()->getCashFlowTypeId());
                     $form
-                            ->get('add_cash_flow_fieldset')
+                            ->get('cash_flow_fieldset')
                             ->get('department')
                             ->setValue($cashFlow->getDepartment()->getDepartmentId());
                 }
