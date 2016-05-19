@@ -100,7 +100,6 @@ class DepartmentFieldset extends Fieldset implements InputFilterProviderInterfac
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StringTrim'),
-                    array('name' => 'StripTags'),
                     array('name' => 'StringToUpper'),
                 ),
                 'validators' => array(
@@ -120,7 +119,6 @@ class DepartmentFieldset extends Fieldset implements InputFilterProviderInterfac
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StringTrim'),
-                    array('name' => 'StripTags'),
                 ),
                 'validators' => array(
                     array(
