@@ -100,7 +100,13 @@ class DepartmentFieldset extends Fieldset implements InputFilterProviderInterfac
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StringTrim'),
-                    array('name' => 'StringToUpper'),
+                    array('name' => 'StripTags'),
+                    array(
+                        'name' => 'StringToUpper',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                        ],
+                    ),
                 ),
                 'validators' => array(
                     array(
