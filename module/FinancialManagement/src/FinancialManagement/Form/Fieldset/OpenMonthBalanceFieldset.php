@@ -44,16 +44,22 @@ class OpenMonthBalanceFieldset extends Fieldset implements InputFilterProviderIn
                 ))
                 ->add(array(
                     'name' => 'monthlyBalanceProjectedRevenue',
-                    'type' => 'text',
+                    'type' => 'number',
                     'options' => array(
                         'label' => 'Receita Prevista',
+                    ),
+                    'attributes' => array(
+                        'step' => 'any',
                     ),
                 ))
                 ->add(array(
                     'name' => 'monthlyBalanceProjectedExpense',
-                    'type' => 'text',
+                    'type' => 'number',
                     'options' => array(
                         'label' => 'Despesa Prevista',
+                    ),
+                    'attributes' => array(
+                        'step' => 'any',
                     ),
                 ))
         ;

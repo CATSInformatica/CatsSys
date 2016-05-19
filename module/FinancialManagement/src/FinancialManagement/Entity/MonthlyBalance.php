@@ -47,28 +47,28 @@ class MonthlyBalance
     /**
      *
      * @var float 
-     * @ORM\Column(name="monthly_balance_projected_revenue", type="decimal", nullable=false)
+     * @ORM\Column(name="monthly_balance_projected_revenue", type="float", nullable=false)
      */
     private $monthlyBalanceProjectedRevenue;
 
     /**
      *
      * @var float 
-     * @ORM\Column(name="monthly_balance_projected_expense", type="decimal", nullable=false)
+     * @ORM\Column(name="monthly_balance_projected_expense", type="float", nullable=false)
      */
     private $monthlyBalanceProjectedExpense;
 
     /**
      *
      * @var float 
-     * @ORM\Column(name="monthly_balance_revenue", type="decimal", nullable=false)
+     * @ORM\Column(name="monthly_balance_revenue", type="float", nullable=false)
      */
     private $monthlyBalanceRevenue;
 
     /**
      *
      * @var float 
-     * @ORM\Column(name="monthly_balance_expense", type="decimal", nullable=false)
+     * @ORM\Column(name="monthly_balance_expense", type="float", nullable=false)
      */
     private $monthlyBalanceExpense;
 

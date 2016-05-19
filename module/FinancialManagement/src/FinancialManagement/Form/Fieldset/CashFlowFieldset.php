@@ -53,9 +53,12 @@ class CashFlowFieldset extends Fieldset implements InputFilterProviderInterface
                 ))
                 ->add(array(
                     'name' => 'cashFlowAmount',
-                    'type' => 'text',
+                    'type' => 'number',
                     'options' => array(
                         'label' => 'Valor',
+                    ),
+                    'attributes' => array(
+                        'step' => 'any',
                     ),
                 ))
                 ->add(array(

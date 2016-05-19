@@ -40,7 +40,7 @@ class CashFlow
     /**
      *
      * @var float 
-     * @ORM\Column(name="cash_flow_amount", type="decimal", nullable=false)
+     * @ORM\Column(name="cash_flow_amount", type="float", nullable=false)
      */
     private $cashFlowAmount;
 
