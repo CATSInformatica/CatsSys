@@ -244,7 +244,9 @@ class CashFlowController extends AbstractEntityActionController
                         $cashFlow->setCashFlowType($cashFlowType);
                         $department = $em->find('AdministrativeStructure\Entity\Department',
                                 $data['department']);
-                        $cashFlow->setDepartment($department);
+                        if ($department !== null) {
+                            $cashFlow->setDepartment($department);
+                        }
                         if ($cashFlow->getCashFlowType()->getCashFlowTypeDirection() === CashFlowType::CASH_FLOW_DIRECTION_INFLOW) {
                             $monthBalance->setMonthlyBalanceRevenue(
                                     $monthBalance->getMonthlyBalanceRevenue() +
@@ -265,10 +267,12 @@ class CashFlowController extends AbstractEntityActionController
                             ->get('cash_flow_fieldset')
                             ->get('cashFlowType')
                             ->setValue($cashFlow->getCashFlowType()->getCashFlowTypeId());
-                    $form
-                            ->get('cash_flow_fieldset')
-                            ->get('department')
-                            ->setValue($cashFlow->getDepartment()->getDepartmentId());
+                    if ($cashFlow->getDepartment() !== null) {
+                        $form
+                                ->get('cash_flow_fieldset')
+                                ->get('department')
+                                ->setValue($cashFlow->getDepartment()->getDepartmentId());
+                    }
                 }
                 return new ViewModel(array(
                     'message' => null,
@@ -562,7 +566,7 @@ class CashFlowController extends AbstractEntityActionController
                                             $beginDate))
                             ->andWhere(Criteria::expr()->lt("monthlyBalanceOpen",
                                     $endDate));
-                    
+
                     $month = $em
                             ->getRepository('FinancialManagement\Entity\MonthlyBalance')
                             ->matching($criteria);
