@@ -12,7 +12,10 @@ define(['jquery', 'datatable'], function () {
         initDataTable = function () {
             
             cashFlowTable.DataTable({
-                dom: 'lftip'
+                dom: 'lftip',
+                pageLength: 50,
+                lengthMenu: [ [10, 25, 50, 100, -1], [10, 25, 50, 100, "Todos"] ],
+                order: [[ 0, 'desc' ]]
             });
         };
 
