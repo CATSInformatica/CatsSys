@@ -20,7 +20,7 @@ use Zend\View\Model\ViewModel;
  */
 class DepartmentController extends AbstractEntityActionController
 {
-    
+
     public function indexAction()
     {
         return new ViewModel([]);
@@ -52,7 +52,7 @@ class DepartmentController extends AbstractEntityActionController
             }
         } catch (Exception $ex) {
             if ($ex instanceof UniqueConstraintViolationException) {
-                $message = 'Não é possivel cadastrar mais de um departamento com o mesmo nome: ' . $ex->getMessage();
+                $message = 'Não é possivel cadastrar mais de um departamento com o mesmo nome.';
             } else {
                 $message = 'Erro inesperado: ' . $ex->getMessage();
             }
@@ -60,7 +60,7 @@ class DepartmentController extends AbstractEntityActionController
 
         $view = new ViewModel([
             'form' => isset($form) ? $form : null,
-            'message' => isset($message) ? : null,
+            'message' => isset($message) ? $message : null,
         ]);
 
         $view->setTemplate('administrative-structure/department/department-form.phtml');
@@ -151,7 +151,7 @@ class DepartmentController extends AbstractEntityActionController
             }
         } catch (Exception $ex) {
             if ($ex instanceof UniqueConstraintViolationException) {
-                $message = 'Não é possivel cadastrar mais de um departamento com o mesmo nome: ' . $ex->getMessage();
+                $message = 'Não é possivel cadastrar mais de um departamento com o mesmo nome.';
             } else {
                 $message = 'Erro inesperado: ' . $ex->getMessage();
             }
@@ -159,7 +159,7 @@ class DepartmentController extends AbstractEntityActionController
 
         $view = new ViewModel([
             'form' => isset($form) ? $form : null,
-            'message' => isset($message) ? : null,
+            'message' => isset($message) ? $message : null,
         ]);
 
         $view->setTemplate('administrative-structure/department/department-form.phtml');
@@ -194,12 +194,8 @@ class DepartmentController extends AbstractEntityActionController
                     ],
                 ]);
             } catch (Exception $ex) {
-
                 if ($ex instanceof ConstraintViolationException) {
-
-                    $message = 'Este departamento possui departamentos filhos. '
-                        . 'Se realmente deseja remove-lo, por favor,'
-                        . ' realoque os departamentos filhos para outro(s) departamento(s)';
+                    $message = 'Este departamento possui departamentos filhos ou cargos ou depesas ou receitas associadas.';
                 } else {
                     $message = 'Erro inesperado: ' . $ex->getMessage();
                 }
