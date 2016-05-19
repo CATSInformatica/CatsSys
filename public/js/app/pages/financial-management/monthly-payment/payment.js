@@ -163,10 +163,10 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
         showOrReplaceMonthTable = function (month) {
 
             var table = "<table class='table table-bordered table-condensed table-hover table-striped'><thead><tr>" +
-                    "<th class='text-center'>Mat.</th>" +
-                    "<th class='text-center'>Aluno</th>" +
-                    "<th class='text-center'> Situação </th>" +
-                    "<th style='width:60%' class='text-center'>Pagamento</th>" +
+                    "<th class='text-center' style='border-bottom: thin solid #777777;'>Mat.</th>" +
+                    "<th class='text-center' style='border-bottom: thin solid #777777;'>Aluno</th>" +
+                    "<th class='text-center' style='border-bottom: thin solid #777777;'> Situação </th>" +
+                    "<th style='width:60%; border-bottom: thin solid #777777;' class='text-center'>Pagamento</th>" +
                     "</tr></thead></tbody>";
             $("#paymentMonthTables")
                     .find("ul.nav-tabs")
@@ -186,7 +186,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             for (var i in payments) {
                 partial = "" + i;
                 table += "<tr>" +
-                        "<td style='vertical-align:middle;' class='text-center'>" +
+                        "<td style='vertical-align:middle; border-bottom: thin solid #777777;' class='text-center'>" +
                         '<div class="checkbox">' +
                         '<label><input type="checkbox" name="student-payments[]" value="' + partial +
                         '" data-month="' + month +
@@ -194,13 +194,13 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                         ("0000" + partial).substring(partial.length) + '</label>' +
                         '</div>'
                         + "</td>" +
-                        "<td style='vertical-align:middle;' class='text-center'>" +
+                        "<td style='vertical-align:middle; border-bottom: thin solid #777777; class='text-center'>" +
                         payments[i].name
                         + "</td>" +
-                        "<td style='vertical-align:middle;' class='text-center payment-status'>" +
+                        "<td style='vertical-align:middle; border-bottom: thin solid #777777;' class='text-center payment-status'>" +
                         (payments[i].months[month].monthly_payment_id === NO_PAYMENT ? WAITING_PAYMENT : PAID)
                         + "</td>" +
-                        "<td>" +
+                        "<td style='border-bottom: thin solid #777777;'>" +
                         "<div class='col-sm-6'>" +
                         createPaymentDateInput(month, payments[i].months[month].monthly_payment_date.format("DD/MM/YYYY")) +
                         createPaymentTypeSelect(payments[i].months[month].monthly_payment_type) +
