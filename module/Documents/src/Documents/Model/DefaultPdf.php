@@ -41,7 +41,7 @@ class DefaultPdf extends FPDF
                 . '- MG'), 0, 1);
         // Move to the right
         $this->Cell(35);
-        $this->Cell(100, 6, utf8_decode('Tel.: (35) 8856-1340 | '
+        $this->Cell(100, 6, utf8_decode('Tel.: (35) 98856-1340 | '
                 . 'E-mail: catsensino@gmail.com | '
                 . 'Site: http://www.familiacats.com.br'), 0, 1);
         // Line break
