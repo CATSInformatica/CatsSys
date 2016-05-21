@@ -208,7 +208,7 @@ footer hr {
     border-top: 4px solid transparent;
     cursor: pointer;
 }
-.catssys-admin-structure > a {
+.catssys-admin-structure > div {
     color: inherit;
     height: 290px;
 }

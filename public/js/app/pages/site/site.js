@@ -46,7 +46,6 @@ define(['app/pages/administrative-structure/department/departments', 'moment'], 
                 url: "/recruitment/recruitment/get-last-opened",
                 success: function (data) {
 
-                    console.log(data);
                     if (data.recruitments !== null) {
 
                         var studentData = data.recruitments.student;
