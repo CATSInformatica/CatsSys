@@ -264,7 +264,12 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
             'preInterviewHighSchool' => array(
                 'required' => true,
                 'filters' => array(
-                    array('name' => 'StringToUpper'),
+                    array(
+                        'name' => 'StringToUpper',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                        ),
+                    ),
                 ),
                 'validators' => array(
                     array(

@@ -26,7 +26,12 @@ class StudentWarningFilter extends InputFilter
                     'filters' => array(
                         array('name' => 'StringTrim'),
                         array('name' => 'StripTags'),
-                        array('name' => 'StringToUpper'),
+                        array(
+                            'name' => 'StringToUpper',
+                            'options' => array(
+                                'encoding' => 'UTF-8',
+                            ),
+                        ),
                     ),
                     'validators' => array(
                         array(
