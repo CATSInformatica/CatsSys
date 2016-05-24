@@ -30,16 +30,16 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
      * @throws \InvalidArgumentException
      */
     public function __construct(ObjectManager $obj,
-        $options = array(
+            $options = array(
         'relative' => false,
         'address' => false,
         'social_media' => false,
     ), $name = 'person')
     {
         if (is_array($options) &&
-            (!array_key_exists('relative', $options) ||
-            !array_key_exists('address', $options) ||
-            !array_key_exists('social_media', $options))) {
+                (!array_key_exists('relative', $options) ||
+                !array_key_exists('address', $options) ||
+                !array_key_exists('social_media', $options))) {
             throw new \InvalidArgumentException('`options` array must contain the keys `relative`, `address`'
             . ' and `social_media`');
         }
@@ -47,7 +47,7 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
         parent::__construct($name);
 
         $this->setHydrator(new DoctrineHydrator($obj))
-            ->setObject(new Person());
+                ->setObject(new Person());
 
         if ($options['relative']) {
             $relativeFieldset = new RelativeFieldset($obj);
@@ -198,7 +198,12 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
-                    array('name' => 'StringToUpper'),
+                    array(
+                        'name' => 'StringToUpper',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                        ),
+                    ),
                 ),
                 'validators' => array(
                     array(
@@ -214,7 +219,12 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
-                    array('name' => 'StringToUpper'),
+                    array(
+                        'name' => 'StringToUpper',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                        ],
+                    ),
                 ),
                 'validators' => array(
                     array(
@@ -264,7 +274,12 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StringTrim'),
-                    array('name' => 'StringToUpper'),
+                    array(
+                        'name' => 'StringToUpper',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                        ],
+                    ),
                 ),
                 'validadors' => array(
                     array(
@@ -294,7 +309,12 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
             'personEmail' => array(
                 'required' => true,
                 'filters' => [
-                    ['name' => 'StringToLower']
+                    [
+                        'name' => 'StringToLower',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                        ],
+                    ],
                 ],
                 'validators' => array(
                     array(

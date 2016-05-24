@@ -26,7 +26,12 @@ class ContactFilter extends InputFilter
                     'filters' => array(
                         array('name' => 'StringTrim'),
                         array('name' => 'StripTags'),
-                        array('name' => 'StringToUpper'),
+                        array(
+                            'name' => 'StringToUpper',
+                            'options' => array(
+                                'encoding' => 'UTF-8',
+                            ),
+                        ),
                     ),
                     'validators' => array(
                         array(
@@ -60,7 +65,12 @@ class ContactFilter extends InputFilter
                     'filters' => array(
                         array('name' => 'StringTrim'),
                         array('name' => 'StripTags'),
-                        array('name' => 'StringToUpper'),
+                        array(
+                            'name' => 'StringToUpper',
+                            'options' => [
+                                'encoding' => 'UTF-8',
+                            ],
+                        ),
                     ),
                     'validators' => array(
                         array(
@@ -78,7 +88,12 @@ class ContactFilter extends InputFilter
                     'filters' => array(
                         array('name' => 'StringTrim'),
                         array('name' => 'StripTags'),
-                        array('name' => 'StringToUpper'),
+                        array(
+                            'name' => 'StringToUpper',
+                            'options' => [
+                                'encoding' => 'UTF-8',
+                            ],
+                        ),
                     ),
                     'validators' => array(
                         array(
