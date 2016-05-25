@@ -37,16 +37,31 @@ class CashFlowController extends AbstractEntityActionController
      */
     public function indexAction()
     {
-        $message = null;
+        try {
+            $em = $this->getEntityManager();
+            $cashFlowTypes = $em->getRepository('FinancialManagement\Entity\CashFlowType')
+                    ->findAll();
+            $departments = $em->getRepository('AdministrativeStructure\Entity\Department')
+                    ->findAll();
 
-        return new ViewModel(array(
-            'message' => $message,
-        ));
+            return new ViewModel(array(
+                'cashFlowTypes' => $cashFlowTypes,
+                'departments' => $departments,
+                'message' => null,
+            ));
+        } catch (\Exception $ex) {
+            return new ViewModel(array(
+                'cashFlowTypes' => null,
+                'departments' => null,
+                'message' => 'Erro inesperado. Entre com contato com o administrador '
+                . 'do sistema.<br>' . 'Erro: ' . $ex->getMessage(),
+            ));
+        }
     }
 
     /**
-     * Retorna um array 'monthBalances' com informações sobre os últimos 
-     * $month(int) balanços mensais
+     * Retorna um array 'monthBalances' com informações sobre os balanços mensais
+     * dos últimos $month(int) meses
      * 
      * @return JSonModel
      */
@@ -58,11 +73,15 @@ class CashFlowController extends AbstractEntityActionController
             $em = $this->getEntityManager();
 
             $date = new \DateTime('now');
-            $date->modify('-' . $months . ' months');
+            $date->modify('-' . ((int) $date->format('d') - 1) . ' days') // dia 1
+                    ->modify('-' . $months . ' months');
+            $thisMonth = new \DateTime('now');
+            $thisMonth->modify('-' . ((int) $thisMonth->format('d') - 1) . ' days'); // dia 1   
+
             $criteria = Criteria::create()
                     ->where(Criteria::expr()->gte("monthlyBalanceOpen", $date))
                     ->andWhere(Criteria::expr()->lt("monthlyBalanceOpen",
-                                    new \DateTime('now')))
+                                    $thisMonth))
                     ->andWhere(Criteria::expr()->eq("monthlyBalanceIsOpen",
                                     false))
                     ->orderBy(array("monthlyBalanceOpen" => Criteria::ASC));
@@ -100,6 +119,88 @@ class CashFlowController extends AbstractEntityActionController
     }
 
     /**
+     * Retorna um array '$cashFlows' com as despesas/receitas específicas a:
+     *  - $filter['cashFlowType']:   Um tipo de fluxo de caixa
+     *  - $filter['department']:     Um departamento
+     *  - $filter['timePeriod']:     Um período de tempo (em meses)
+     * 
+     * @return JSonModel
+     */
+    public function getFilteredCashFlowsAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isXmlHttpRequest()) {
+            $filter = $request->getPost();
+            try {
+                $em = $this->getEntityManager();
+
+                $date = new \DateTime('now');
+                $date->modify('-' . ((int) $date->format('d') - 1) . ' days') // dia 1
+                        ->modify('-' . $filter['timePeriod'] . ' months');
+
+                $thisMonth = new \DateTime('now');
+                $thisMonth->modify('-' . ((int) $thisMonth->format('d') - 1) . ' days'); // dia 1
+
+                $criteria = Criteria::create()
+                        ->where(Criteria::expr()->gte("cashFlowDate", $date))
+                        ->andWhere(Criteria::expr()
+                                ->lt("cashFlowDate", $thisMonth))
+                                ->orderBy(array("cashFlowDate" => Criteria::ASC));
+                if ($filter['cashFlowType'] === '-1') { // Todas receitas
+                    $revenueCashFlowTypes = $em
+                            ->getRepository('FinancialManagement\Entity\CashFlowType')
+                            ->findBy(array('cashFlowTypeDirection' 
+                                => CashFlowType::CASH_FLOW_DIRECTION_INFLOW));
+                    $criteria->andWhere(Criteria::expr()
+                            ->in("cashFlowType", $revenueCashFlowTypes));
+                } else if ($filter['cashFlowType'] === '-2') { // Todas despesas
+                    $expenseCashFlowTypes = $em
+                            ->getRepository('FinancialManagement\Entity\CashFlowType')
+                            ->findBy(array('cashFlowTypeDirection' 
+                                => CashFlowType::CASH_FLOW_DIRECTION_OUTFLOW));
+                    $criteria->andWhere(Criteria::expr()
+                            ->in("cashFlowType", $expenseCashFlowTypes));
+                } else {
+                    $cashFlowType = $em->find('FinancialManagement\Entity\CashFlowType',
+                            $filter['cashFlowType']);
+                    $criteria->andWhere(Criteria::expr()
+                            ->eq("cashFlowType", $cashFlowType));
+                }
+                if ($filter['department'] !== '-1') {
+                    $department = $em->find('AdministrativeStructure\Entity\Department',
+                            $filter['department']);
+                    $criteria->andWhere(Criteria::expr()
+                            ->eq("department", $department));
+                }
+
+                $cashFlows = $em->getRepository('FinancialManagement\Entity\CashFlow')
+                        ->matching($criteria);
+
+                $cashFlowsData = array_fill(0, 12, 0);
+                foreach ($cashFlows as $cashFlow) {
+                    $month = (int) $cashFlow->getCashFlowDate()->format('m');
+                    if (!array_key_exists($month, $cashFlowsData)) {
+                        $cashFlowsData[$month] = 0;
+                    }
+                    $cashFlowsData[$month] += $cashFlow->getCashFlowAmount();
+                }
+                return new JSonModel(array(
+                    'cashFlows' => $cashFlowsData,
+                    'beginAt' => (int) $thisMonth->format('m')
+                ));
+            } catch (\Exception $ex) {
+                return new JSonModel(array(
+                    'cashFlows' => [],
+                ));
+            }
+        }
+        return new JSonModel(array(
+            'cashFlows' => [],
+        ));
+    }
+
+    /**
      * Exibe uma tabela com todos os fluxos de caixa
      * 
      * @return ViewModel
@@ -114,10 +215,10 @@ class CashFlowController extends AbstractEntityActionController
                 'message' => null,
                 'cashFlows' => $cashFlows,
             ));
-        } catch (\Exception $e) {
+        } catch (\Exception $ex) {
             return new ViewModel(array(
                 'message' => 'Erro inesperado. Entre com contato com o administrador '
-                . 'do sistema.<br>' . 'Erro: ' . $e->getMessage(),
+                . 'do sistema.<br>' . 'Erro: ' . $ex->getMessage(),
                 'cashFlows' => null,
             ));
         }
@@ -180,9 +281,9 @@ class CashFlowController extends AbstractEntityActionController
                             array('action' => 'cash-flows'));
                 }
             }
-        } catch (\Exception $e) {
+        } catch (\Exception $ex) {
             $message = 'Erro inesperado. Entre com contato com o administrador '
-                    . 'do sistema.<br>' . 'Erro: ' . $e->getMessage();
+                    . 'do sistema.<br>' . 'Erro: ' . $ex->getMessage();
         }
 
         return new ViewModel(array(
@@ -443,7 +544,7 @@ class CashFlowController extends AbstractEntityActionController
             $message = 'Esse tipo de fluxo de caixa já existe.';
         } catch (\Exception $e) {
             $message = 'Erro inesperado. Entre com contato com o administrador '
-                    . 'do sistema.<br>' . 'Erro: ' . $e->getMessage();
+                    . 'do sistema.<br>' . 'Erro: ' . $ex->getMessage();
         }
 
         return new ViewModel(array(

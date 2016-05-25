@@ -24,8 +24,8 @@ class CashFlowType
     const CASH_FLOW_TYPE_MONTHLY_PAYMENT = 0;
     const CASH_FLOW_DIRECTION_OUTFLOW = 0;
     const CASH_FLOW_DIRECTION_INFLOW = 1;
-    const CASH_FLOW_DIRECTION_OUTFLOW_DESCRIPTION = "Despesa";
-    const CASH_FLOW_DIRECTION_INFLOW_DESCRIPTION = "Receita";
+    const CASH_FLOW_DIRECTION_OUTFLOW_DESCRIPTION = "DESPESA";
+    const CASH_FLOW_DIRECTION_INFLOW_DESCRIPTION = "RECEITA";
     
     /**
      *
@@ -111,6 +111,20 @@ class CashFlowType
     public function getCashFlows()
     {
         return $this->cashFlows;
+    }
+
+    /**
+     * 
+     * @param int $cashFlowTypeDirection
+     * @return string
+     */
+    public static function getCashFlowTypeDirectionDescription($cashFlowTypeDirection)
+    {
+        if ($cashFlowTypeDirection === self::CASH_FLOW_DIRECTION_OUTFLOW) {
+            return self::CASH_FLOW_DIRECTION_OUTFLOW_DESCRIPTION;
+        } else {
+            return self::CASH_FLOW_DIRECTION_INFLOW_DESCRIPTION;            
+        }
     }
 
     /**
