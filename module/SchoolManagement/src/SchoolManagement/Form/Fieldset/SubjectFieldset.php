@@ -85,7 +85,12 @@ class SubjectFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
-                    array('name' => 'StringToUpper'),
+                    array(
+                        'name' => 'StringToUpper',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                        ),
+                    ),
                 ),
                 'validators' => array(
                     array(

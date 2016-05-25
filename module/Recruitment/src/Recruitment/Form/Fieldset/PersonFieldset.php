@@ -277,7 +277,12 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StringTrim'),
-                    array('name' => 'StringToUpper'),
+                    array(
+                        'name' => 'StringToUpper',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                        ],
+                    ),
                 ),
                 'validadors' => array(
                     array(
@@ -307,7 +312,7 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
             'personEmail' => array(
                 'required' => true,
                 'filters' => [
-                    ['name' => 'StringToLower']
+                    ['name' => 'StringToLower'],
                 ],
                 'validators' => array(
                     array(

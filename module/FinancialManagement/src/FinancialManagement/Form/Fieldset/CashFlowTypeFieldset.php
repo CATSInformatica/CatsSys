@@ -74,7 +74,12 @@ class CashFlowTypeFieldset extends Fieldset implements InputFilterProviderInterf
                 'filters' => array(
                     array('name' => 'StripTags'),
                     array('name' => 'StringTrim'),
-                    array('name' => 'StringToUpper'),
+                    array(
+                        'name' => 'StringToUpper',
+                        'options' => array(
+                            'encoding' => 'UTF-8',
+                        ),
+                    ),
                 ),
                 'validators' => array(
                     array(

@@ -109,7 +109,12 @@ class JobFieldset extends Fieldset implements InputFilterProviderInterface
             'jobName' => [
                 'required' => true,
                 'filters' => [
-                    ['name' => 'StringToUpper'],
+                    [
+                        'name' => 'StringToUpper',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                        ],
+                    ],
                 ],
                 'validators' => [
                     [

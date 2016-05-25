@@ -249,5 +249,4 @@ class AddressFieldset extends Fieldset implements InputFilterProviderInterface
             ),
         );
     }
-
 }
