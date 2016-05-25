@@ -30,12 +30,13 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
      * @throws \InvalidArgumentException
      */
     public function __construct(ObjectManager $obj,
-        $options = array(
+        $options = [
         'relative' => false,
-        'address' => false,
+        'address' => true,
         'social_media' => false,
-    ), $name = 'person')
+    ], $name = 'person')
     {
+
         if (is_array($options) &&
             (!array_key_exists('relative', $options) ||
             !array_key_exists('address', $options) ||
@@ -198,7 +199,13 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
-                    array('name' => 'StringToUpper'),
+                    array('name' => 'StringTrim'),
+                    [
+                        'name' => 'StringToUpper',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                        ]
+                    ],
                 ),
                 'validators' => array(
                     array(
@@ -214,7 +221,13 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
-                    array('name' => 'StringToUpper'),
+                    array('name' => 'StringTrim'),
+                    [
+                        'name' => 'StringToUpper',
+                        'options' => [
+                            'encoding' => 'UTF-8',
+                        ]
+                    ],
                 ),
                 'validators' => array(
                     array(

@@ -24,7 +24,7 @@ final class StudentRegistrationFieldset extends RegistrationFieldset implements 
 
         $this->setHydrator(new DoctrineHydrator($obj))
             ->setObject(new Registration());
-
+        
         parent::__construct($obj, $options);
 
         $this->add(array(

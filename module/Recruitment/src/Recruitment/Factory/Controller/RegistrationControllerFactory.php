@@ -24,7 +24,7 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Cria uma instância do controller RegistrationController e injeta o EntityManager
+ * Cria uma instância do controller RegistrationController e injeta o EntityManager e o serviço de emails.
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
@@ -33,8 +33,10 @@ class RegistrationControllerFactory implements FactoryInterface
 
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $controller = new RegistrationController();
         $sl = $serviceLocator->getServiceLocator();
+        $emailService = $sl->get('Authentication\Service\EmailSenderServiceInterface');
+        $viewRenderer = $sl->get('ViewRenderer');
+        $controller = new RegistrationController($emailService, $viewRenderer);
         $em = $sl->get('Doctrine\ORM\EntityManager');
 
         $controller->setEntityManager($em);

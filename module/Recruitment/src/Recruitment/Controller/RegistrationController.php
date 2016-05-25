@@ -8,6 +8,7 @@
 
 namespace Recruitment\Controller;
 
+use Authentication\Service\EmailSenderServiceInterface;
 use Database\Controller\AbstractEntityActionController;
 use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
@@ -27,6 +28,7 @@ use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\Form\View\Helper\Captcha\Image;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Zend\View\Renderer\PhpRenderer as ViewRenderer;
 
 /**
  * 
@@ -37,11 +39,35 @@ use Zend\View\Model\ViewModel;
 class RegistrationController extends AbstractEntityActionController
 {
 
-    const PROFILE_DIR = './data/profile/';
-
+    /**
+     * Helpers que ajudam a salvar os dados pessoais, de endereço e status de inscrição.
+     */
     use AddressService,
         PersonService,
         RegistrationStatusService;
+
+    /**
+     * Diretório onde estão armazenadas as fotos dos perfils de usuário.
+     */
+    const PROFILE_DIR = './data/profile/';
+
+    /**
+     *
+     * @var EmailSenderServiceInterface Permite acessar o serviço de envio de emails.
+     */
+    protected $emailService;
+
+    /**
+     *
+     * @var ViewRenderer Necessário para criar o cartão de inscrição e colocá-lo no corpo do email. 
+     */
+    protected $viewRenderer;
+
+    public function __construct(EmailSenderServiceInterface $emailService, ViewRenderer $vr)
+    {
+        $this->emailService = $emailService;
+        $this->viewRenderer = $vr;
+    }
 
     /**
      * 
@@ -92,9 +118,11 @@ class RegistrationController extends AbstractEntityActionController
 
     /**
      * 
-     * @todo redirecionar para a página que gera o comprovante de inscrição e envia o email.
+     * @todo
+     *      - Concluir o template do comprovante de inscrição
+     *      - Mostrar o comprovante de inscrição no navegador após concluir a inscrição.
      * 
-     * Exibe o formulário de inscrição e faz a validação do envio
+     * Exibe o formulário de inscrição (alunos e voluntários) e faz a validação do envio.
      * 
      * Uma nova inscrição poderá ser feita/será aceita se, e somente se, a seguintes condições forem satisfeitas
      *  - Existe um processo seletivo aberto \Recruitment\Entity\Recruitment
@@ -175,14 +203,40 @@ class RegistrationController extends AbstractEntityActionController
 
                     // redirecionar para a página que gera o comprovante de inscrição e envia o email.
                     if ($type == Recruitment::STUDENT_RECRUITMENT_TYPE) {
-                        $message = 'Inscrição para o processo seletivo de alunos efetuada com sucesso.';
-                    } else {
-                        $message = 'Inscrição efetuada com sucesso. Um de nossos voluntários entrará em contato com você '
-                            . '(no período especificado no edital) para agendar uma entrevista.';
+
+                        $subject = 'Processo Seletivo de Alunos';
+                        $view = new ViewModel(array(
+                            'title' => 'Comprovante de Inscrição',
+                            'subtitle' => $subject,
+                        ));
+
+                        // gera o conteúdo do email do candidato.
+                        $view->setTemplate('registration-card/template');
+                        $view->setTerminal(true);
+                        $emailBody = $this->viewRenderer->render($view);
+
+                        // envia email para o candidato
+                        $this->emailService
+                            ->setSubject($subject)
+                            ->setBody($emailBody)
+                            ->setIsHtml(true)
+                            ->addTo($registration->getPerson()->getPersonEmail());
+
+                        if ($this->emailService->send()) {
+                            // o email foi enviado.
+                        } else {
+                            // o email não pode ser enviado.
+                        }
+
+                        return new ViewModel(array(
+                            'message' => 'Inscrição para o processo seletivo de alunos efetuada com sucesso.',
+                            'form' => null,
+                        ));
                     }
 
                     return new ViewModel(array(
-                        'message' => $message,
+                        'message' => 'Inscrição efetuada com sucesso. Um de nossos voluntários entrará em contato com '
+                        . 'você (no período especificado no edital) para agendar uma entrevista.',
                         'form' => null,
                     ));
                 } catch (Exception $ex) {

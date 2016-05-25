@@ -26,7 +26,14 @@ abstract class RegistrationFieldset extends Fieldset
         }
 
         parent::__construct('registration');
-        $this->add(new PersonFieldset($obj, $options['person']));
+
+        if ($options === null) {
+            $person = new PersonFieldset($obj);
+        } else {
+            $person = new PersonFieldset($obj, $options['person']);
+        }
+
+        $this->add($person);
     }
 
 }

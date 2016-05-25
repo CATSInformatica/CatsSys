@@ -24,7 +24,7 @@ use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Description of LoginControllerFactory
+ * Cria uma instância do controller LoginController e injeta o EntityManager
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
