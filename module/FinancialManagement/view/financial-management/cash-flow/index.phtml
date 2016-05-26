@@ -1,14 +1,54 @@
 <section class="content">
     <p><?php if ($message !== null) echo $message; ?></p>
-    <div class="container-fluid">
-        <div class="row">
-            <div class="col-md-8 col-md-offset-2 col-xs-12 text-center">
-                <h4 class="row">RECEITAS E DESPESAS</h4>
-                <canvas id="last-year-balance" class="col-xs-12"></canvas>
+    <div class="row">            
+        <div class="col-md-8 col-md-offset-2 col-xs-12 text-center">
+            <h4 class="text-center">RECEITAS E DESPESAS DO ÚLTIMO ANO</h4>
+            <canvas id="last-year-balance" class="col-xs-12"></canvas>
+        </div>
+
+        <br><div class="row"><br></div><br>
+
+        <div class="col-md-8 col-md-offset-2 col-xs-12 text-center">
+            <h4 class="text-center">RECEITAS E DESPESAS ESPECÍFICAS</h4>
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-th-list" title="Tipo de receita/despesa"></i>
+                </span>
+                <select class="form-control" id="cash-flow-type-input">
+                    <option value="-1">TODAS RECEITAS</option>
+                    <option value="-2">TODAS DESPESAS</option>
+                    <?php foreach ($cashFlowTypes as $cashFlowType) : ?>
+                        <option value="<?php echo $cashFlowType->getCashFlowTypeId(); ?>">
+                            <?php echo $cashFlowType->getCashFlowTypeName()
+                        . ' [' . \FinancialManagement\Entity\CashFlowType::getCashFlowTypeDirectionDescription($cashFlowType->getCashFlowTypeDirection()) . ']'; ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>  
             </div>
+            <div class="input-group">
+                <span class="input-group-addon">
+                    <i class="fa fa-sitemap" title="Departamento"></i>
+                </span>
+                <select class="form-control" id="department-input">
+                    <option value="-1">TODOS</option>
+                    <?php foreach ($departments as $department) : ?>
+                        <option value="<?php echo $department->getDepartmentId(); ?>">
+                            <?php echo $department->getDepartmentName(); ?>
+                        </option>
+                    <?php endforeach; ?>
+                </select>  
+            </div>
+            <div class="input-group">               
+                <span class="input-group-addon">
+                    <i class="fa fa-clock-o" aria-hidden="true" title="Período de tempo"></i>
+                </span>
+                <select class="form-control" id="time-period-input">
+                    <option value="12">ÚLTIMOS 12 MESES</option>
+                </select>  
+            </div>
+            <canvas id="filtered-cash-flows" class="col-xs-12"></canvas>
         </div>
     </div>
-</div>
 </section>
 
 <script>

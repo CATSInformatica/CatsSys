@@ -117,12 +117,10 @@ class CashFlowFieldset extends Fieldset implements InputFilterProviderInterface
         $cashFlowTypes = $obj->getRepository('FinancialManagement\Entity\CashFlowType')
                 ->findAll();
         $cashFlowTypeNames = [];
-        $cashFlowDirectionDescription = [CashFlowType::CASH_FLOW_DIRECTION_OUTFLOW_DESCRIPTION,
-            CashFlowType::CASH_FLOW_DIRECTION_INFLOW_DESCRIPTION];
         foreach ($cashFlowTypes as $cashFlowType) {
             if ($cashFlowType->getCashFlowTypeId() !== CashFlowType::CASH_FLOW_TYPE_MONTHLY_PAYMENT) {
                 $cashFlowTypeNames[$cashFlowType->getCashFlowTypeId()] = $cashFlowType->getCashFlowTypeName()
-                        . ' [' . $cashFlowDirectionDescription[$cashFlowType->getCashFlowTypeDirection()] . ']';
+                        . ' [' . CashFlowType::getCashFlowTypeDirectionDescription($cashFlowType->getCashFlowTypeDirection()) . ']';
             }
         }
         return $cashFlowTypeNames;

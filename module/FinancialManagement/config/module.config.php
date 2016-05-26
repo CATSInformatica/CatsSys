@@ -98,6 +98,12 @@ return array(
                                 'action' => 'get-month-balances',
                                 'icon' => 'fa fa-list-alt',
                             ),
+                            array(
+                                'label' => 'Get Filtered Cash Flows',
+                                'route' => 'financial-management/cash-flow',
+                                'action' => 'get-filtered-cash-flows',
+                                'icon' => 'fa fa-list-alt',
+                            ),
                         ),
                     ),
                     array(
