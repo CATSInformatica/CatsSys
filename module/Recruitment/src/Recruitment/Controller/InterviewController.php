@@ -46,7 +46,7 @@ class InterviewController extends AbstractEntityActionController
                     'person' => array(
 //                        'relative' => $person->isPersonUnderage(),
                         'relative' => false,
-                        'address' => false,
+                        'address' => true,
                         'social_media' => true,
                     ),
                     'pre_interview' => $registration->getPreInterview() !== null,

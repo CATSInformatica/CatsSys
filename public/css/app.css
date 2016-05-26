@@ -78,6 +78,14 @@ and open the template in the editor.
     background: #008080;
     color: white; }
 
+.catssys-bg-teal {
+  background-color: #008080;
+  color: white; }
+
+.catssys-bg-black {
+  background-color: #222222;
+  color: #eeeeee; }
+
 .catssys-admin-structure-disabled {
   color: gray; }
   .catssys-admin-structure-disabled i {

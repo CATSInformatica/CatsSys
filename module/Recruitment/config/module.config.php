@@ -157,6 +157,7 @@ return array(
             'volunteer/template' => __DIR__ . '/../view/templates/volunteer.phtml',
             'volunteer-interview/template' => __DIR__ . '/../view/templates/volunteer-interview.phtml',
             'pre-interview/template' => __DIR__ . '/../view/templates/pre-interview.phtml',
+            'registration-card/template' => __DIR__ . '/../view/templates/registration-card.phtml',
         ),
         'display_exceptions' => true,
     ),

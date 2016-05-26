@@ -17,29 +17,37 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-namespace Recruitment\Factory\Controller;
+namespace Authentication\Factory\Service;
 
-use Recruitment\Controller\RecruitmentController;
+use Authentication\Service\EmailSenderService;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
 
 /**
- * Cria uma instância do controller RecruitmentController e injeta o EntityManager
+ * Cria uma instância do EmailSenderService e injeta a configuração.
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class RecruitmentControllerFactory implements FactoryInterface
+class EmailSenderServiceFactory implements FactoryInterface
 {
 
+    /**
+     * Configura o serviço de email.
+     * 
+     * @param ServiceLocatorInterface $serviceLocator
+     * @return EmailSenderService
+     */
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
-        $controller = new RecruitmentController();
-        $sl = $serviceLocator->getServiceLocator();
-        $em = $sl->get('Doctrine\ORM\EntityManager');
 
-        $controller->setEntityManager($em);
+        $emailConfig = $serviceLocator->get('config')['email_config'];
 
-        return $controller;
+        $emailService = new EmailSenderService();
+        $emailService
+            ->setConfig($emailConfig['smtp_options'])
+            ->setFrom($emailConfig['from_recruitment'], $emailConfig['from_recruitment_name']);
+
+        return $emailService;
     }
 
 }

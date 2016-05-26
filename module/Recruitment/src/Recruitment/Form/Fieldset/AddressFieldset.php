@@ -150,12 +150,13 @@ class AddressFieldset extends Fieldset implements InputFilterProviderInterface
                 'name' => 'city',
                 'required' => true,
                 'filters' => array(
-                    array(
+                    array('name' => 'StringTrim'),
+                    [
                         'name' => 'StringToUpper',
-                        'options' => array(
+                        'options' => [
                             'encoding' => 'UTF-8',
-                        ),
-                    ),
+                        ]
+                    ],
                 ),
                 'validators' => array(
                     array(
@@ -171,12 +172,13 @@ class AddressFieldset extends Fieldset implements InputFilterProviderInterface
                 'name' => 'neighborhood',
                 'required' => true,
                 'filters' => array(
-                    array(
+                    array('name' => 'StringTrim'),
+                    [
                         'name' => 'StringToUpper',
                         'options' => [
                             'encoding' => 'UTF-8',
-                        ],
-                    ),
+                        ]
+                    ],
                 ),
                 'validators' => array(
                     array(
@@ -192,12 +194,13 @@ class AddressFieldset extends Fieldset implements InputFilterProviderInterface
                 'name' => 'street',
                 'required' => true,
                 'filters' => array(
-                    array(
+                    array('name' => 'StringTrim'),
+                    [
                         'name' => 'StringToUpper',
                         'options' => [
                             'encoding' => 'UTF-8',
-                        ],
-                    ),
+                        ]
+                    ],
                 ),
                 'validators' => array(
                     array(
@@ -226,12 +229,13 @@ class AddressFieldset extends Fieldset implements InputFilterProviderInterface
                 'name' => 'complement',
                 'required' => false,
                 'filters' => array(
-                    array(
+                    array('name' => 'StringTrim'),
+                    [
                         'name' => 'StringToUpper',
                         'options' => [
                             'encoding' => 'UTF-8',
-                        ],
-                    ),
+                        ]
+                    ],
                 ),
                 'validators' => array(
                     array(
@@ -245,5 +249,4 @@ class AddressFieldset extends Fieldset implements InputFilterProviderInterface
             ),
         );
     }
-
 }
