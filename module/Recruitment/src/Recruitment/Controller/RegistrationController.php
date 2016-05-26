@@ -200,15 +200,26 @@ class RegistrationController extends AbstractEntityActionController
                     // salva no banco
                     $em->persist($registration);
                     $em->flush();
-
                     // redirecionar para a página que gera o comprovante de inscrição e envia o email.
                     if ($type == Recruitment::STUDENT_RECRUITMENT_TYPE) {
 
                         $subject = 'Processo Seletivo de Alunos';
-                        $view = new ViewModel(array(
+
+                        // comprovante de inscrição
+                        $person = $registration->getPerson();
+
+                        $registrationCardContent = [
+                            'recruitment' => $registration->getRecruitment()->getRecruitmentId(),
                             'title' => 'Comprovante de Inscrição',
                             'subtitle' => $subject,
-                        ));
+                            'registrationNumber' => $registration->getRegistrationNumber(),
+                            'name' => $person->getPersonName(),
+                            'email' => $person->getPersonEmail(),
+                            'rg' => $person->getPersonRg(),
+                            'cpf' => $person->getPersonCpf(),
+                        ];
+
+                        $view = new ViewModel($registrationCardContent);
 
                         // gera o conteúdo do email do candidato.
                         $view->setTemplate('registration-card/template');
@@ -217,21 +228,18 @@ class RegistrationController extends AbstractEntityActionController
 
                         // envia email para o candidato
                         $this->emailService
-                            ->setSubject($subject)
+                            ->setSubject($subject . ' 🚀')
                             ->setBody($emailBody)
                             ->setIsHtml(true)
                             ->addTo($registration->getPerson()->getPersonEmail());
 
-                        if ($this->emailService->send()) {
-                            // o email foi enviado.
-                        } else {
-                            // o email não pode ser enviado.
-                        }
+                        $this->emailService->send();
 
-                        return new ViewModel(array(
+                        return new ViewModel([
                             'message' => 'Inscrição para o processo seletivo de alunos efetuada com sucesso.',
                             'form' => null,
-                        ));
+                            'registrationCardContent' => $registrationCardContent,
+                        ]);
                     }
 
                     return new ViewModel(array(

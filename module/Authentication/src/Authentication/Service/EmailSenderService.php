@@ -191,6 +191,7 @@ class EmailSenderService implements EmailSenderServiceInterface
     {
         if ($this->message === null) {
             $this->message = new Message();
+            $this->message->setEncoding('UTF-8');
         }
 
         $this->message->setSubject($this->subject = $subject);
@@ -211,14 +212,19 @@ class EmailSenderService implements EmailSenderServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function setFrom($from)
+    public function setFrom($from, $name = null)
     {
 
         if ($this->message === null) {
             $this->message = new Message();
+            $this->message->setEncoding('UTF-8');
         }
 
-        $this->message->setFrom($this->from = $from);
+        if ($name !== null) {
+            $this->message->setFrom($this->from = $from, $name);
+        } else {
+            $this->message->setFrom($this->from = $from);
+        }
 
         return $this;
     }

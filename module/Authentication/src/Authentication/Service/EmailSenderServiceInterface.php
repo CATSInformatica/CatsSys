@@ -74,9 +74,10 @@ interface EmailSenderServiceInterface
      * Define o remetente da mensagem.
      * 
      * @param string $from Endereço de email do remetente.
+     * @param string $name Nome do remetente.
      * @return EmailSenderServiceInterface Interface fluente.
      */
-    public function setFrom($from);
+    public function setFrom($from, $name = null);
 
     /**
      * Adiciona um destinatário.

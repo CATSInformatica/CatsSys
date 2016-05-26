@@ -1,5 +1,20 @@
 <section class="content">
-    <?php echo $this->message; ?>
+    <p class="no-print">
+        <?php echo $this->message; ?>
+    </p>
+    <br>
+    <?php if (isset($this->registrationCardContent)): ?>
+        <div class="container no-print">
+            <button target="_blank" class="btn btn-primary btn-flat" onclick="window.print();">
+                <i class="fa fa-file-pdf-o"></i> Salvar
+            </button>
+            <br>
+        </div>
+
+        <?php echo $this->render('registration-card/template', $registrationCardContent); ?>
+
+    <?php endif; ?>
+    <br>
     <?php if ($this->form !== null): ?>
         <?php $form->prepare(); ?>
         <div class="row">
@@ -24,9 +39,9 @@
                     ));
                 }
                 ?>
-                
+
                 <?php echo $this->formHidden($form->get('registrationCsrf')); ?>
-                
+
                 <div class="col-xs-12 col-md-12">
                     <div class="form-group">
                         <?php echo $this->formRow($form->get('registrationConsent')); ?>

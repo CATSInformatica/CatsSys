@@ -45,7 +45,7 @@ class EmailSenderServiceFactory implements FactoryInterface
         $emailService = new EmailSenderService();
         $emailService
             ->setConfig($emailConfig['smtp_options'])
-            ->setFrom($emailConfig['from_recruitment']);
+            ->setFrom($emailConfig['from_recruitment'], $emailConfig['from_recruitment_name']);
 
         return $emailService;
     }

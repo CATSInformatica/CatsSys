@@ -18,6 +18,7 @@ Todas as mudanças notáveis serão documentadas neste arquivo em ordem cronoló
 - [#67](https://github.com/CATSInformatica/CatsSys/issues/67) adição de escolha da quantidade de questões e numeração (escolha do número incial).
 - [#63](https://github.com/CATSInformatica/CatsSys/issues/63) faz a compactação de todos os cartões de respostas antes e faz o download de um único arquivo compactado.
 - Borda inferior nas linhas da tabela de mensalidade para facilitar a diferenciação dos campos de pagamento.
+- Envio de email para candidatos inscritos em processos seletivos de alunos.
 
 ### Removido
 - *Action* edital do controller Recruitment foi renomeada para *publicNotice* sendo necessário alterar o privilégio do *guest* de `edital` para `public-notice`

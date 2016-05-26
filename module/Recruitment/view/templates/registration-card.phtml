@@ -1,3 +1,107 @@
-<h1>Seleção de Alunos</h1>
-<h3><?php echo $title ?></h3>
-<h3><?php echo $subtitle ?></h3>
+<section class="invoice">
+    <div style="width: 750px; margin: 0 auto; border: thin solid #999999; font-size: 11pt;">
+        <div style="background-color: #008080; color: white; height: 130px;">
+            <div style="padding-left: 10px; width: 310px; text-align: center; width: 350px; 
+                 height: 100%; margin: 0; float: left;">
+                <p>
+                    <br>
+                    <img src="http://www.familiacats.com.br/img/logo_branco.png" alt="CATS logo" height="70px">
+                    <br>
+                    CATS, mais que uma oportunidade, uma família!
+                </p>
+            </div>
+            <div style="text-align: center; width: 350px; height: 100%; margin: 0; float: left;">
+                <h3>
+                    <?php echo $title; ?>
+                </h3>
+                <p><?php echo $subtitle; ?></p>
+            </div>
+        </div>
+        <div style="padding: 10px; height: 600px;">
+            <br>
+            <p style="font-size: 20px; text-align: center;">
+                Sua inscrição para o processo seletivo de alunos foi concluída com sucesso.<br>
+            </p>
+
+            <p style="font-size: 20px; text-align: center;">
+                Informações do candidato
+            </p>
+            <ul>
+                <li> Número de inscrição:
+                    <p style="font-weight: bold; font-size: 40px; text-align: center;">
+                        <?php echo $this->registrationNumber; ?>
+                    </p>
+                </li>
+                <li> Nome: <?php echo $this->name; ?></li>
+                <li> Email: <?php echo $this->email; ?> </li>
+                <li> RG: <?php echo $this->rg; ?></li>
+                <li> CPF: <?php echo $this->cpf; ?></li>
+                <li> Todas as informações sobre o processo seletivo de alunos podem ser encontradas no edital:
+                    <p style="font-size: 18px; text-align: center;">
+                        <br>
+                        <a href=" <?php
+                        echo $this->serverUrl($this->url('recruitment/recruitment',
+                                [
+                                'action' => 'public-notice',
+                                'id' => $this->recruitment,
+                        ]));
+                        ?>" target="_blank"> 
+                               <?php
+                               echo $this->serverUrl($this->url('recruitment/recruitment',
+                                       [
+                                       'action' => 'public-notice',
+                                       'id' => $this->recruitment,
+                               ]));
+                               ?>
+                        </a>
+                        <br>
+                    </p>
+                </li>
+                <li>Em caso de dúvidas, por favor, entre em contato conosco
+                    <ul>
+                        <li>Fone: (35) 98871-2364</li>
+                        <li>Rede social: <a href="https://www.facebook.com/cats.familia/" target="_blank">
+                                https://www.facebook.com/cats.familia/</a>
+                        </li>
+                        <li>Email: catsprocessosseletivos@gmail.com</li>
+                    </ul>
+                </li>
+            </ul>
+
+            <br>
+            <br>
+            <br>
+            <p>Observação: Não é necessário imprimir este cartão. Se possível, 
+                mantenha-o guardado em meio eletrônico (email, computador, pendrive, ...).</p>
+        </div>
+
+        <div style="background-color: #008080; color: white; text-align: center; height: 130px;">
+            <div style="width: 350px; height: 100%; margin: 0; float: left;">
+                <h4>Contato</h4>
+                <p> Av. BPS, 1303 – Sala I.1.2.47 – CEP 37500-903 <br> Pinheirinho – Itajubá – MG
+                    <br>Fone: (35) 98871-2364.<br>Email: catsprocessosseletivos@gmail.com </p>
+            </div>
+            <div style="width: 350px; height: 100%; margin: 0; float: left;">
+                <h4>Redes Sociais</h4>
+                <p>
+                    <a href="https://www.facebook.com/cats.familia/" target="_blank" 
+                       style="color: white; text-decoration: underline;">
+                        https://www.facebook.com/cats.familia/
+                    </a>
+                </p>
+            </div>
+        </div>
+    </div>
+</section>
+
+<style>
+
+    @media print
+    {    
+        .no-print, .no-print *
+        {
+            display: none !important;
+        }
+    }
+
+</style>
