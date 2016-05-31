@@ -238,7 +238,7 @@ class RecruitmentController extends AbstractEntityActionController
             }
 
             if ($studentRecruitment === null && $volunteerRecruitment == null) {
-                return JsonModel([
+                return new JsonModel([
                     'recruitments' => null,
                 ]);
             }
@@ -247,7 +247,7 @@ class RecruitmentController extends AbstractEntityActionController
                 'recruitments' => [
                     'student' => [
                         'content' => $studentRecruitment,
-                        'offset' => $vrHasOffiset,
+                        'offset' => $srHasOffset,
                     ],
                     'volunteer' => [
                         'content' => $volunteerRecruitment,
