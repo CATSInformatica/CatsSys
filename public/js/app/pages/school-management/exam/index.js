@@ -160,15 +160,19 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                             + 'quando houver autorização do fiscal.</li>'
                             + '</ol></div></div>';
 
-                    instructionsPage = $(".exam-page").first().clone().addClass("page")
-                            .css("display", "block");
+                    instructionsPage = $(".exam-page")
+                            .clone().removeClass('exam-page')
+                            .addClass("page").css("display", "block")
+                            .css("height", "297mm");
                     instructionsPage.find('.exam-content').html(instructions);
                     instructionsPage.find('.page-number').html(pageNumber);
                     ++pageNumber;
                 }
                 if ($('.exam-questions .wording-block').length !== 0) {
-                    wordingPage = $(".exam-page").first().clone().addClass("page")
-                            .css("display", "block");
+                    wordingPage = $(".exam-page").clone().removeClass('exam-page')
+                            .addClass("page");
+                    wordingPage.css("display", "block").css("height", "297mm");
+                        
                     var wordingBlock = $('.exam-questions .wording-block').clone();                 
                     wordingBlock.find('.question-block *').css('text-align', 'justify');                    
                     wordingBlock.find('.do-not-print').each(function () {
@@ -181,7 +185,7 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
 
                 //  Prepara a div #print-page (columnizer)
                 generateExam(pageNumber);
-
+                
                 MathJax.Hub.Queue(["Typeset", MathJax.Hub, 'print-page'], function () {
                     //  Abre o diálogo de impressão da div #print-page usando jqueryprint
                     $('#print-page').print({
@@ -342,11 +346,11 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
          */
         generateExam = function (pageNumber) {
 
-            var content_height = 884.88;
+            var contentHeight = 884.88;    // Número aproximado empiricamente
             var page = pageNumber;
 
             $('#exam-part-1').append('<div id="exam-temp"></div>');
-            $('#exam-temp').html($("#preview-page").first().html());
+            $('#exam-temp').html($("#preview-page").html());
             $('#exam-temp').find('.do-not-print').each(function () {
                 $(this).remove();
             });
@@ -360,8 +364,8 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                             $('#exam-temp > .exam-questions > div > div').html() === '<hr class="q-divider">') {
                         return;
                     }
-                    $page = $(".exam-page").first().clone().addClass("page")
-                            .css("display", "block");
+                    $page = $(".exam-page").clone().removeClass('exam-page')
+                            .addClass("page").css("display", "block").css("height", "297mm");;
 
                     $page.find(".page-number").first().append(page++);
                     $("#print-page").append($page);
@@ -370,7 +374,7 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                         columns: 2,
                         target: ".page:last .exam-content",
                         overflow: {
-                            height: content_height,
+                            height: contentHeight,
                             id: "#exam-temp > .exam-questions",
                             doneFunc: function () {
                                 buildExamLayout();
