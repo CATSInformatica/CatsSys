@@ -7,9 +7,17 @@ echo 'Installing Required Packages: PHP, Composer Apache, MySql';
 sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom composer apache2 npm libapache2-mod-php
 
 echo 'Installing php-apcu-bc';
-wget http://ftp.us.debian.org/debian/pool/main/p/php-apcu-bc/php-apcu-bc_1.0.3-2_amd64.deb -P "$HOME/Downloads/";
-sudo dpkg -i "$HOME/Downloads/php-apcu-bc_1.0.3-2_amd64.deb";
-rm "$HOME/Downloads/php-apcu-bc_1.0.3-2_amd64.deb";
+
+if [ `getconf LONG_BIT` = "64" ]
+then
+    APCUBC="amd64"
+else
+    APCUBC="i386"
+fi
+
+wget "http://ftp.us.debian.org/debian/pool/main/p/php-apcu-bc/php-apcu-bc_1.0.3-2_$APCUBC.deb" -P "$HOME/Downloads/";
+sudo dpkg -i "$HOME/Downloads/php-apcu-bc_1.0.3-2_$APCUBC.deb";
+rm "$HOME/Downloads/php-apcu-bc_1.0.3-2_$APCUBC.deb";
 
 echo 'Installing bower';
 sudo npm install -g bower
