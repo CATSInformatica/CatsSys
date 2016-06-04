@@ -1,20 +1,15 @@
+#!/bin/bash
+
+echo 'Before installing CatsSys please run "sudo apt-get update && sudo apt-get dist-upgrade" to keep your system up-to-date';
 echo 'Starting script.';
+
 echo 'Installing Required Packages: PHP, Composer Apache, MySql';
-sudo apt-get install php7.0 mysql-server php7.0-mysql php7.0-gd php-apcu php7.0-intl composer apache2 npm autoconf libapache2-mod-php7.0 php-pear -y
+sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom composer apache2 npm libapache2-mod-php
 
-echo 'Installing PEAR package manager';
-sudo wget http://pear.php.net/go-pear.phar
-php go-pear.phar
-
-echo 'Installing APCU (backward compatibility)';  
-sudo pecl install apcu_bc-beta
-sudo bash -c "echo extension=apc.so > /etc/php/7.0/apache2/conf.d/z_apc.ini"
-sudo service apache2 restart
-
-echo 'Installing bower'
+echo 'Installing bower';
 sudo npm install -g bower
 
-echo 'Creating symbolic link for nodejs /usr/bin/nodejs ~> /usr/bin/node (May not work on Ubuntu 16.04)'
+echo 'Creating symbolic link for nodejs /usr/bin/nodejs ~> /usr/bin/node';
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 
 echo 'Creating virtual host configuration'
@@ -78,19 +73,32 @@ tee $HOME/vhosts/cats-lab/config/autoload/local.php << EOF
 * inserir usuario, senha e nome do banco de dados que será utilizado
 * localmente
 */
-return array(
-   'doctrine' => array(
-       'connection' => array(
-           'orm_default' => array(
-               'params' => array(
+return [
+   'doctrine' => [
+       'connection' => [
+           'orm_default' => [
+               'params' => [
                    'user'     => 'root',
                    'password' => 'root',
                    'dbname'   => 'catssys',
-               ),
-           ),
-       ),
-   ),
-);
+               ],
+           ],
+       ],
+   ],
+   'email_config' => [
+      'from_recruitment' => '<colocar um email>',
+      'from_recruitment_name' => '<nome do remetente>',
+      'smtp_options' => [
+         'host' => 'smtp.gmail.com',
+         'connection_class' => 'login',
+         'config' => [
+            'username' => '<colocar um email>',
+            'password' => '<colocar a senha do email>',
+            'ssl' => 'tls',
+         ],
+      ],
+   ],
+];
 EOF
 cp $HOME/vhosts/vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist $HOME/vhosts/cats-lab/config/autoload/zenddevelopertools.local.php
 
