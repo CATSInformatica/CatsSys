@@ -416,16 +416,8 @@ return array(
                             array(
                                 'label' => 'Student pre-interview II',
                                 'route' => 'recruitment/pre-interview',
-                                'action' => 'studentPreInterviewFiles',
-                                'icon' => 'fa fa-file-pdf-o',
-                                'pages' => array(
-                                    array(
-                                        'label' => 'Student pre-interview III',
-                                        'route' => 'recruitment/pre-interview',
-                                        'action' => 'studentPreInterviewForm',
-                                        'icon' => 'fa fa-check-circle',
-                                    ),
-                                ),
+                                'action' => 'studentPreInterviewForm',
+                                'icon' => 'fa fa-check-circle',
                             ),
                         ),
                     ),

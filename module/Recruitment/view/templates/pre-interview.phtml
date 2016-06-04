@@ -1,6 +1,6 @@
-<div class="box">
+<div class="box box-danger">
     <div class="box-header with-border">
-        <h3 class="box-title">Educação</h3>
+        <h3 class="box-title">Vulnerabilidade</h3>
         <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse">
                 <i class="fa fa-minus"></i>
@@ -9,31 +9,40 @@
     </div>
     <div class="box-body">
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewElementarySchoolType')); ?>
+            <?php echo $this->formRow($form->get('elementarySchoolType')); ?>
         </div>
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewHighSchoolType')); ?>
-        </div>
-        <div class="col-xs-12 col-md-9">
-            <?php echo $this->formRow($form->get('preInterviewHighSchool')); ?>
-        </div>
-        <div class="col-xs-12 col-md-3">
-            <?php echo $this->formRow($form->get('preInterviewHSConclusionYear')); ?>
+            <?php echo $this->formRow($form->get('highSchoolType')); ?>
         </div>
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewPreparationSchool')); ?>
+            <div class="col-xs-12 col-md-6">
+                <?php echo $this->formRow($form->get('highSchoolAdmissionYear')); ?>
+            </div>
+            <div class="col-xs-12 col-md-6">
+                <?php echo $this->formRow($form->get('highSchoolConclusionYear')); ?>
+            </div>
         </div>
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewLanguageCourse')); ?>
+            <?php echo $this->formRow($form->get('siblingsUndergraduate')); ?>
         </div>
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewCurrentStudy')); ?>
+            <?php echo $this->formRow($form->get('otherLanguages')); ?>
+        </div>
+        <div class="col-xs-12 col-md-12">
+            <?php echo $this->formRow($form->get('homeStatus')); ?>
+        </div>
+        <div class="col-xs-12 col-md-12">
+            <?php echo $this->formRow($form->get('homeDescription')); ?>
+        </div>
+        <div class="col-xs-12 col-md-12">
+            <?php echo $this->formRow($form->get('transport')); ?>
         </div>
     </div>
 </div>
-<div class="box">
+
+<div class="box box-info">
     <div class="box-header with-border">
-        <h3 class="box-title">Sócioeconômico</h3>
+        <h3 class="box-title">Perfil de Estudante</h3>
         <div class="box-tools pull-right">
             <button type="button" class="btn btn-box-tool" data-widget="collapse">
                 <i class="fa fa-minus"></i>
@@ -42,28 +51,130 @@
     </div>
     <div class="box-body">
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewLiveWithNumber')); ?>
+            <?php echo $this->formRow($form->get('extraCourses')); ?>
         </div>
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewLiveWithYou')); ?>
+            <?php echo $this->formRow($form->get('preparationCourse')); ?>
         </div>
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewNumberOfRooms')); ?>
+            <?php echo $this->formRow($form->get('entranceExam')); ?>
         </div>
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewMeansOfTransport')); ?>
+            <?php echo $this->formRow($form->get('undergraduateCourse')); ?>
         </div>
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewMonthlyIncome')); ?>
+            <?php echo $this->formRow($form->get('waitingForUs')); ?>
+        </div>
+    </div>
+</div>
+
+<div class="box box-warning">
+    <div class="box-header with-border">
+        <h3 class="box-title">Socioeconômico</h3>
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                <i class="fa fa-minus"></i>
+            </button>
+        </div>
+    </div>
+    <div class="box-body">
+        <div class="col-xs-12 col-md-12">
+            <?php echo $this->formRow($form->get('live')); ?>
         </div>
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewFatherEducationGrade')); ?>
+            <?php echo $this->formRow($form->get('responsibleFinancial')); ?>
         </div>
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewMotherEducationGrade')); ?>
+            <?php echo $this->formRow($form->get('infrastructureElements')); ?>
         </div>
         <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('preInterviewExpectFromUs')); ?>
+            <?php echo $this->formRow($form->get('liveArea')); ?>
+        </div>
+        <div class="col-xs-12 col-md-12">
+            <label>Onde você reside existem: </label>
+            <table class="table table-condensed table-striped">
+                <thead>
+                <th>Item</th>
+                <th>Quantidade</th>
+                </thead>
+                <tbody>
+                    <tr>
+                        <td>
+                            <?php echo $this->formLabel($form->get('itemTv')); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->formElement($form->get('itemTv')); ?>
+                            <?php echo $this->formElementErrors($form->get('itemTv')); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><?php echo $this->formLabel($form->get('itemBathroom')); ?></td>
+                        <td>
+                            <?php echo $this->formElement($form->get('itemBathroom')); ?>
+                            <?php echo $this->formElementErrors($form->get('itemBathroom')); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <?php echo $this->formLabel($form->get('itemSalariedHousekeeper')); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->formElement($form->get('itemSalariedHousekeeper')); ?>
+                            <?php echo $this->formElementErrors($form->get('itemSalariedHousekeeper')); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <?php echo $this->formLabel($form->get('itemDailyHousekeeper')); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->formElement($form->get('itemDailyHousekeeper')); ?>
+                            <?php echo $this->formElementErrors($form->get('itemDailyHousekeeper')); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <?php echo $this->formLabel($form->get('itemWashingMachine')); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->formElement($form->get('itemWashingMachine')); ?>
+                            <?php echo $this->formElementErrors($form->get('itemWashingMachine')); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <?php echo $this->formLabel($form->get('itemRefrigerator')); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->formElement($form->get('itemRefrigerator')); ?>
+                            <?php echo $this->formElementErrors($form->get('itemRefrigerator')); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><?php echo $this->formLabel($form->get('itemComputer')); ?></td>
+                        <td>
+                            <?php echo $this->formElement($form->get('itemComputer')); ?>
+                            <?php echo $this->formElementErrors($form->get('itemComputer')); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td><?php echo $this->formLabel($form->get('smartphone')); ?></td>
+                        <td>
+                            <?php echo $this->formElement($form->get('smartphone')); ?>
+                            <?php echo $this->formElementErrors($form->get('smartphone')); ?>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td>
+                            <?php echo $this->formLabel($form->get('bedroom')); ?>
+                        </td>
+                        <td>
+                            <?php echo $this->formElement($form->get('bedroom')); ?>
+                            <?php echo $this->formElementErrors($form->get('bedroom')); ?>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
         </div>
     </div>
 </div>

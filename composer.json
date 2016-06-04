@@ -16,7 +16,7 @@
         "doctrine/doctrine-orm-module": "^0.9",
         "zendframework/zend-developer-tools": "^0.0.2",
         "evandotpro/edp-module-layouts": "^1.0",
-        "neilime/zf2-twb-bundle": "^2.6",
+        "neilime/zf2-twb-bundle": "2.*@stable",
         "itbz/fpdf": "^1.7",
         "ircmaxell/random-lib": "^1.1"
     }

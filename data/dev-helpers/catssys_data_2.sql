@@ -118,6 +118,16 @@ INSERT INTO `recruitment_status` VALUES
 (14, 13);
 UNLOCK TABLES;
 
+LOCK TABLES `infrastructure_element` WRITE;
+INSERT INTO `infrastructure_element` VALUES
+(1, 'Rede de esgoto'),
+(2, 'Água tratada'),
+(3, 'Iluminação pública'),
+(4, 'Lixo recolhido'),
+(5, 'Rua pavimentadas'),
+(6, 'Internet');
+UNLOCK TABLES;
+
 LOCK TABLES `attendance_type` WRITE;
 INSERT INTO `attendance_type` VALUES
 (1, 'FREQUÊNCIA INÍCIO DO DIA'),
@@ -145,3 +155,4 @@ INSERT INTO `subject` VALUES
 (61,46,'POLINÔMIOS','Polinômios');
 /*!40000 ALTER TABLE `subject` ENABLE KEYS */;
 UNLOCK TABLES;
+

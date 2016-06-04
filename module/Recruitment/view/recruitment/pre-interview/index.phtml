@@ -2,8 +2,52 @@
     <p><?php echo $message; ?></p>
 
     <div class="row">
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+            <div class="box box-primary">
+                <div class="box-header with-border">
+                    <div class="box-title">
+                        <h3><i class="fa fa-book pull-left"></i> Instruções 
+                            <small>Antes de preencher o formulário leia atentamente as informações a seguir</small></h3>
+                    </div>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <div class="box-body">
+                    <div class="container-fluid text-justify">
+                        <ol>
+                            <li>Este formulário tem por finalidade o estudo da situação socioeconômica do
+                                candidato e seu grupo familiar.</li>
+                            <li>Entende-se por grupo familiar a unidade nuclear composta por uma ou mais pessoas, 
+                                eventualmente ampliada por outras pessoas que contribuam para o rendimento ou tenham suas 
+                                despesas atendidas, sendo todas moradoras em um mesmo domicílio. 
+                                Entende-se por morador, a pessoa que tem o domicílio como local habitual de residência e 
+                                nele reside na data da inscrição no processo seletivo.</li>
+                            <li>O simples preenchimento e entrega deste formulário não implica a garantia da vaga</li>
+                            <li>Formulários incompletos não serão analisados.</li>
+                            <li>Todos os dados lançados neste formulário deverão ser referentes ao último mês e somente 
+                                deverão ser registrados os <b>rendimentos brutos</b>.</li>
+                            <li>Os candidatos deverão comprovar as informações prestadas por meio de
+                                documentação do solicitante e do seu grupo familiar, somente na data da
+                                entrevista. Em caso de dúvidas, consulte o edital deste processo seletivo.</li>
+                            <li>Para maiores esclarecimentos quanto ao preenchimento deste formulário, envie um e-mail 
+                                para <a href="mailto:catsprocessosseletivos@gmail.com?subject=Pré-entrevista">
+                                    catsprocessosseletivos@gmail.com
+                                </a> com o assunto <em>Pré-entrevista</em>.</li>
+                            <li>Declarações falsas ou omissão da verdade implicarão a desclassificação do estudante.</li>
+                            <li>Para iniciar o preenchimento do formulário de pré-entrevista, insira o cpf utilizado na inscrição.</li>
+                            <li>Se mesmo após inserir o cpf corretamente você não conseguir acessar o formulário, por favor, entre 
+                                em contato conosco.</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
         <div class="ccol-xs-12 col-md-6 col-md-offset-3">
-           <?php echo $this->form($form); ?>
+            <?php echo $this->form($form); ?>
         </div>
     </div>
 
