@@ -1,12 +1,12 @@
 echo 'Starting script.';
 echo 'Installing Required Packages: PHP, Composer Apache, MySql';
-sudo apt-get install php7.0 mysql-server php7.0-mysql php7.0-gd php-apcu php7.0-intl composer apache2 npm gcc make autoconf libc6-dev pkg-config wget -y
+sudo apt-get install php7.0 mysql-server php7.0-mysql php7.0-gd php-apcu php7.0-intl composer apache2 npm autoconf libapache2-mod-php7.0 php-pear -y
 
 echo 'Installing PEAR package manager';
 sudo wget http://pear.php.net/go-pear.phar
 php go-pear.phar
 
-echo 'Installing APCU background compatibility';
+echo 'Installing APCU (backward compatibility)';  
 sudo pecl install apcu_bc-beta
 sudo bash -c "echo extension=apc.so > /etc/php/7.0/apache2/conf.d/z_apc.ini"
 sudo service apache2 restart
