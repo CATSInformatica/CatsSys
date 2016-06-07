@@ -1,28 +1,40 @@
 <section class="content">
     <div class="row">
-        <div class="box box-default color-palette-box">
+        <div class="col-md-12 col-xs-12">
             <div class="box-header with-border">
             </div>
-            <div class="box-body">
-                <div class="col-xs-12 col-md-8 col-md-offset-2">
-                    <div class="alert alert-info alert-dismissible">
-                        <button type="button" class="close" data-dismiss="alert" aria-hidden="true">×</button>
-                        <h4><i class="icon fa fa-info"></i> Observação</h4>
-                        Clique na engrenagem do canto superior direito para visualizar o botão de salvar listas.
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><span class="fa fa-book"></span> Instruções</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
                     </div>
-                    <div class="col-xs-12 col-md-12">
-
-                        <div class="box-group" id="accordion">
-                            <!-- we are adding the .panel class so bootstrap.js collapse plugin detects it -->
-                            <div class="panel box box-primary">
-                                <div class="box-header with-border">
-                                    <h4 class="box-title">
-                                        <a data-toggle="collapse" data-parent="#accordion" href="#collapseOne">
-                                            Configurações
-                                        </a>
-                                    </h4>
-                                </div>
-                                <div id="collapseOne" class="panel-collapse collapse in">
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="display: block;">
+                    <div class="col-md-10 col-md-offset-1">
+			Clique na engrenagem do canto superior direito para visualizar o botão de salvar listas.
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+        </div>
+        <div class="col-md-12 col-xs-12">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><span class="fa fa-gears"></span> Configuração</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body" style="display: block;">
+                    <div class="col-md-10 col-md-offset-1">
+                                                    <div id="collapseOne" class="panel-collapse collapse in">
                                     <div class="box-body">
                                         <dl class="dl-horizontal">
                                             <dt id="schoolClass" class="text-left">Identificador da turma</dt>
@@ -43,11 +55,11 @@
                                         </div>
                                     </div>
                                 </div>
-                            </div>
-                        </div>
                     </div>
                 </div>
+                <!-- /.box-body -->
             </div>
+        </div>
             <div class="box-group" id="attendanceLists">
             </div>
         </div>
