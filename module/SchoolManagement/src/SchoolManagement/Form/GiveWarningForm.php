@@ -80,7 +80,7 @@ class GiveWarningForm extends Form
                     'attributes' => array(
                         'type' => 'submit',
                         'class' => 'btn btn-primary btn-block',
-                        'value' => 'Go',
+                        'value' => 'Salvar',
                     )
         ));
     }
