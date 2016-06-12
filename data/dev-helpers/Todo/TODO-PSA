@@ -9,7 +9,39 @@ Todo
             - vunerabilidade
             - socioeconômico
             - perfil de estudante
+    
+ 
+Testes:
 
+    Nota: Antes de rodar os testes é fundamental que o código e o banco estejam
+    atualizados. Isso pode ser garantido seguindo as duas regras abaixo:
+        > Rodando o script do repositório base: 
+            https://github.com/CATSInformatica/CatsSys/blob/master/data/dev-helpers/ubuntu-16.04-setup-environment.sh
+        > Mantendo seu fork sincronizado com o repositório base
+            https://help.github.com/articles/syncing-a-fork/
 
+    Teste 1: 
 
+        1. Obter o cpf do candidato convocado para pré-entrevista
+        |- Em Inscrições > Show student registrations selecione:
+            > Situação: Convocado para pré-entrevista.
+            > pressione "Buscar".
+        2. Em Inscrições > Student pre-interview I
+            > Inserir o cpf do candidato
+            > pressione "Prosseguir"
+        3. Preencher o formulário de pré-entrevista e salvar.
 
+    Teste 2:
+
+        1. Convocar um candidato para pré-entrevista
+        |- Em Inscrições > Show student registrations selecione:
+            > Situação: Todos.
+            > pressione "Buscar".
+            > Selecione "JOAN SQUIRREL".
+            > Clique em perfil do candidato.
+            > Na nova página clique na engrenagem (canto superior direito)
+            > Clique em convocar.
+
+        2. Repita a sequência do Teste 1 para o cpf de "JOAN SQUIRREL".
+    Observação: como "JOAN SQUIRREL" é menor de 18 anos, na entrevista deverão 
+aparecer campos referentes ao responsável (diferentemente do que ocorre com "JOE DOE").
