@@ -99,13 +99,13 @@ return [
        ],
    ],
    'email_config' => [
-      'from_recruitment' => '<colocar um email>',
+      'from_recruitment' => 'email@hostname',
       'from_recruitment_name' => '<nome do remetente>',
       'smtp_options' => [
          'host' => 'smtp.gmail.com',
          'connection_class' => 'login',
          'config' => [
-            'username' => '<colocar um email>',
+            'username' => 'email@hostname',
             'password' => '<colocar a senha do email>',
             'ssl' => 'tls',
          ],
