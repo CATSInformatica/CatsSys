@@ -80,16 +80,6 @@ INSERT INTO `recruitment_know_about` VALUES
 (8,'Voluntários do CATS');
 UNLOCK TABLES;
 
-LOCK TABLES `recruitment_live_with_you` WRITE;
-INSERT INTO `recruitment_live_with_you` VALUES 
-(1, 'Moro sozinho.'),
-(2, 'Filhos.'),
-(3, 'Moro com pai e/ou mãe.'),
-(4, 'Irmãos.'),
-(5, 'Esposa, marido, companheiro(a).'),
-(6, 'Outro.');
-UNLOCK TABLES;
-
 LOCK TABLES `class` WRITE;
 INSERT INTO `class` VALUES (1,'2016-02-01','2016-12-01','Turma de 2016');
 UNLOCK TABLES;

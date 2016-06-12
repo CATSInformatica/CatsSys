@@ -34,7 +34,154 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
             '6 ou mais' => '6 ou mais',
         ];
 
+        // SOCIOECONÔMICO
+        $familyExpense = new FamilyIncomeExpenseFieldset($obj, 'family-expense');
+
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Collection',
+            'name' => 'familyExpenses',
+            'options' => array(
+                'count' => 1,
+                'target_element' => $familyExpense,
+                'allow_add' => true,
+                'allow_sub' => true,
+                'should_create_template' => true,
+                'should_wrap' => false,
+                'label' => 'Despesas da família. Para '
+                . ' adicionar cada despesa da família (conta de água, energia '
+                . 'elétrica, internet, ...) utilize botão +. '
+                . 'Você deverá preencher todos os campos criados. Se quiser '
+                . 'retirar a última despesa adicionada utilize o botão -. '
+                . 'O valor das despesas deve ser adicionado utilizando ponto'
+                . 'ao invés de vírgula. Ex: R$ 1.520,19 ⟶ 1520.19.',
+            ),
+        ));
+
+        $familyIncome = new FamilyIncomeExpenseFieldset($obj, 'family-income');
+
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Collection',
+            'name' => 'familyIncome',
+            'options' => array(
+                'count' => 1,
+                'target_element' => $familyIncome,
+                'allow_add' => true,
+                'allow_sub' => true,
+                'should_create_template' => true,
+                'should_wrap' => false,
+                'label' => 'Receitas da família. Para '
+                . ' adicionar cada receita da família (salário, ganhos com '
+                . 'locação de casa, pensão, ...) utilize botão +. '
+                . 'Você deverá preencher todos os campos criados. Se quiser '
+                . 'retirar a última receita adicionada utilize o botão -. '
+                . 'O valor das receitas deve ser adicionado utilizando ponto'
+                . 'ao invés de vírgula. Ex: R$ 2.580,59 ⟶ 2580.59',
+            ),
+        ));
         // VULNERABILIDADE
+
+        $familyHealth = new FamilyHealthFieldset($obj);
+
+        $this->add([
+            'type' => 'Zend\Form\Element\Collection',
+            'name' => 'familyHealth',
+            'options' => array(
+                'count' => 0,
+                'target_element' => $familyHealth,
+                'allow_add' => true,
+                'allow_sub' => true,
+                'should_create_template' => true,
+                'should_wrap' => false,
+                'label' => 'Problemas de saúde de membros da família. Para '
+                . ' adicionar cada membro da família com problemas de saúde '
+                . 'utilize botão +. Você deverá preencher todos os campos '
+                . 'criados. Se quiser retirar a última pessoa adicionada '
+                . 'utilize o botão -.',
+            ),
+        ]);
+
+        $familyGoods = new FamilyGoodFieldset($obj);
+
+        $this->add([
+            'type' => 'Zend\Form\Element\Collection',
+            'name' => 'familyGoods',
+            'options' => array(
+                'count' => 1,
+                'target_element' => $familyGoods,
+                'allow_add' => true,
+                'allow_sub' => true,
+                'should_create_template' => true,
+                'should_wrap' => false,
+                'label' => 'Bens móveis. Para adicionar cada bem móvel da '
+                . 'família utilize botão +. Você deverá preencher todos os '
+                . 'campos criados. Se quiser retirar a último bem móvel '
+                . 'adicionado utilize o botão -. O valor estimado do móvel '
+                . 'deve ser adicionado utilizando ponto ao invés de vírgula. '
+                . 'Ex: R$ 1.205,17 ⟶ 1205.17',
+            ),
+        ]);
+
+        $familyProperties = new FamilyPropertyFieldset($obj);
+
+        $this->add([
+            'type' => 'Zend\Form\Element\Collection',
+            'name' => 'familyProperties',
+            'options' => array(
+                'count' => 1,
+                'target_element' => $familyProperties,
+                'allow_add' => true,
+                'allow_sub' => true,
+                'should_create_template' => true,
+                'should_wrap' => false,
+                'label' => 'Bens imóveis (propriedades). Para adicionar cada '
+                . 'imóvel da família utilize botão +. Você deverá preencher '
+                . 'todos os campos criados. Se quiser retirar a último imóvel '
+                . 'adicionado utilize o botão -.',
+            ),
+        ]);
+
+        $candidateFamily = new CandidateFamilyFieldset($obj);
+        $this->add(array(
+            'type' => 'Zend\Form\Element\Collection',
+            'name' => 'familyMembers',
+            'options' => array(
+                'count' => 1,
+                'target_element' => $candidateFamily,
+                'allow_add' => true,
+                'allow_sub' => true,
+                'should_create_template' => true,
+                'should_wrap' => false,
+                'label' => 'Membros da família. Para cada membro da'
+                . ' família adicionado, botão +, você deverá preencher todos'
+                . ' os campos criados. Se quiser retirar o último membro '
+                . 'familiar adicionado utilize o botão -.',
+            ),
+        ));
+
+        $this->add([
+            'name' => 'addButton',
+            'type' => 'button',
+            'options' => [
+                'label' => ' ',
+                'glyphicon' => 'plus',
+            ],
+            'attributes' => [
+                'class' => 'btn btn-flat btn-app bg-green add-button',
+            ]
+        ]);
+
+        $this->add([
+            'name' => 'delButton',
+            'type' => 'button',
+            'options' => [
+                'label' => ' ',
+                'glyphicon' => 'minus',
+            ],
+            'attributes' => [
+                'class' => 'btn btn-flat btn-app bg-red del-button',
+            ]
+        ]);
+
         $this->add(array(
                 'name' => 'elementarySchoolType',
                 'type' => 'radio',
@@ -183,7 +330,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'name' => 'infrastructureElements',
                 'type' => 'DoctrineModule\Form\Element\ObjectMultiCheckbox',
                 'options' => array(
-                    'label' => 'A casa onde mora têm:',
+                    'label' => 'A casa onde mora tem (permite marcar mais de uma alternativa):',
                     'object_manager' => $obj,
                     'target_class' => 'Recruitment\Entity\InfrastructureElement',
                     'property' => 'infrastructureElementDescription',
@@ -270,7 +417,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 )
             ))
             ->add(array(
-                'name' => 'smartphone',
+                'name' => 'itemSmartphone',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'smartphones',
@@ -279,7 +426,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 )
             ))
             ->add(array(
-                'name' => 'bedroom',
+                'name' => 'itemBedroom',
                 'type' => 'radio',
                 'options' => array(
                     'label' => 'quartos',
@@ -287,88 +434,114 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                     'inline' => true,
                 )
             ))
+            ->add([
+                'name' => 'moreInformation',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Informe ou esclareça sobre dados não contemplados neste formulário ou situações '
+                    . 'especiais que julgar conveniente',
+                ],
+                'attributes' => [
+                    'rows' => 6,
+                ]
+            ])
         ;
     }
 
     public function getInputFilterSpecification()
     {
-        return array(
-            'elementarySchoolType' => array(
+        return [
+            'elementarySchoolType' => [
                 'required' => true,
-            ),
-            'highSchoolType' => array(
+            ],
+            'highSchoolType' => [
                 'required' => true,
-            ),
-//            'preInterviewHighSchool' => array(
-//                'required' => true,
-//                'filters' => array(
-//                    array(
-//                        'name' => 'StringToUpper',
-//                        'options' => array(
-//                            'encoding' => 'UTF-8',
-//                        ),
-//                    ),
-//                ),
-//                'validators' => array(
-//                    array(
-//                        'name' => 'Zend\Validator\StringLength',
-//                        'options' => array(
-//                            'min' => 5,
-//                            'max' => 150,
-//                        ),
-//                    ),
-//                ),
-//            ),
-//            'preInterviewHSConclusionYear' => array(
-//                'required' => true,
-//            ),
-//            'preInterviewPreparationSchool' => array(
-//                'required' => true,
-//            ),
-//            'preInterviewLanguageCourse' => array(
-//                'required' => true,
-//            ),
-//            'preInterviewCurrentStudy' => array(
-//                'required' => true,
-//            ),
-//            'preInterviewLiveWithNumber' => array(
-//                'required' => true,
-//            ),
-//            'preInterviewLiveWithYou' => array(
-//                'required' => true,
-//            ),
-//            'preInterviewNumberOfRooms' => array(
-//                'required' => true,
-//            ),
-//            'preInterviewMeansOfTransport' => array(
-//                'required' => true,
-//            ),
-//            'preInterviewMonthlyIncome' => array(
-//                'required' => true,
-//            ),
-//            'preInterviewFatherEducationGrade' => array(
-//                'required' => true,
-//            ),
-//            'preInterviewMotherEducationGrade' => array(
-//                'required' => true,
-//            ),
-//            'preInterviewExpectFromUs' => array(
-//                'required' => true,
-//                'filters' => array(
-//                    array('name' => 'StringTrim'),
-//                    array('name' => 'StripTags'),
-//                ),
-//                'validators' => array(
-//                    array(
-//                        'name' => 'Zend\Validator\StringLength',
-//                        'options' => array(
-//                            'min' => 20,
-//                            'max' => 200,
-//                        ),
-//                    ),
-//                ),
-//            ),
-        );
+            ],
+            'highSchoolAdmissionYear' => [
+                'required' => true,
+            ],
+            'highSchoolConclusionYear' => [
+                'required' => true,
+            ],
+            'siblingsUndergraduate' => [
+                'required' => true,
+            ],
+            'otherLanguages' => [
+                'required' => true,
+            ],
+            'homeStatus' => [
+                'required' => true,
+            ],
+            'homeDescription' => [
+                'required' => true,
+            ],
+            'transport' => [
+                'required' => true,
+            ],
+            'transport' => [
+                'required' => true,
+            ],
+            'extraCourses' => [
+                'required' => false,
+            ],
+            'preparationCourse' => [
+                'required' => false,
+            ],
+            'entranceExam' => [
+                'required' => false,
+            ],
+            'undergraduateCourse' => [
+                'required' => false,
+            ],
+            'waitingForUs' => [
+                'required' => true,
+            ],
+            'live' => [
+                'required' => true,
+            ],
+            'responsibleFinancial' => [
+                'required' => true,
+            ],
+            'infrastructureElements' => [
+                'required' => false,
+            ],
+            'liveArea' => [
+                'required' => true,
+            ],
+            'itemTv' => [
+                'required' => true,
+            ],
+            'itemBathroom' => [
+                'required' => true,
+            ],
+            'itemSalariedHousekeeper' => [
+                'required' => true,
+            ],
+            'itemDailyHousekeeper' => [
+                'required' => true,
+            ],
+            'itemWashingMachine' => [
+                'required' => true,
+            ],
+            'itemRefrigerator' => [
+                'required' => true,
+            ],
+            'itemCableTv' => [
+                'required' => true,
+            ],
+            'itemComputer' => [
+                'required' => true,
+            ],
+            'itemSmartphone' => [
+                'required' => true,
+            ],
+            'itemBedroom' => [
+                'required' => true,
+            ],
+            'moreInformation' => [
+                'required' => false,
+            ],
+        ];
     }
 
     protected static function getYears()
@@ -380,5 +553,4 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
         }
         return $options;
     }
-
 }

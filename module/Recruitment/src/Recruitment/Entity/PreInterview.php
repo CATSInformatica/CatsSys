@@ -1,9 +1,19 @@
 <?php
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Recruitment\Entity;
@@ -16,13 +26,6 @@ use Recruitment\Entity\Registration;
 
 /**
  * Classe que representa a tabela de pré-entrevista para candidatos do processo seletivo de alunos.
- * 
- * @Todo
- *  - Tabela de familiares
- *  - Tabela de Doenças na familia
- *  - Tabela de receitas
- *  - Tabela de dispesas
- *  - Campo para outras informações relevantes (texto)
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  * @ORM\Table(name="pre_interview")
@@ -30,6 +33,7 @@ use Recruitment\Entity\Registration;
  */
 class PreInterview
 {
+    /* ################## RELAÇÕES E DADOS AUTOMÁTICOS ################ */
 
     /**
      *
@@ -173,29 +177,58 @@ class PreInterview
     /**
      *
      * @var string Quantidade de smartphones.
+     * @ORM\Column(name="pre_inteview_item_smartphone", type="string", length=30, nullable=false)
      */
-    private $smartphone;
+    private $itemSmartphone;
 
     /**
      *
      * @var string Quantidade de quartos.
      * @ORM\Column(name="pre_inteview_item_bedroom", type="string", length=30, nullable=false)
      */
-    private $bedroom;
+    private $itemBedroom;
+
+    /**
+     * Despesas da família.
+     * 
+     * var Collection Despesas da família
+     * @ORM\OneToMany(targetEntity="FamilyIncomeExpense", mappedBy="preInterviewExpense", 
+     * cascade={"all"}, orphanRemoval=true)
+     */
+    private $familyExpenses;
+
+    /**
+     * Receitas da família.
+     * 
+     * var Collection Receitas da família
+     * @ORM\OneToMany(targetEntity="FamilyIncomeExpense", mappedBy="preInterviewIncome", 
+     * cascade={"all"}, orphanRemoval=true)
+     */
+    private $familyIncome;
+
 
     /* ####################### VULNERABILIDADE ###################### */
 
     /**
-     * var Collection
-     * @ORM\OneToMany(targetEntity="FamilyProperty", mappedBy="preInterview")
+     * var Collection Bens imóveis da família.
+     * @ORM\OneToMany(targetEntity="FamilyProperty", mappedBy="preInterview", 
+     * cascade={"all"}, orphanRemoval=true)
      */
     private $familyProperties;
 
     /**
-     * var Collection
-     * @ORM\OneToMany(targetEntity="FamilyGood", mappedBy="preInterview")
+     * var Collection Bens móveis da família.
+     * @ORM\OneToMany(targetEntity="FamilyGood", mappedBy="preInterview", 
+     * cascade={"all"}, orphanRemoval=true)
      */
     private $familyGoods;
+
+    /**
+     * var Collection Membros da familia com problemas de saúde.
+     * @ORM\OneToMany(targetEntity="FamilyHealth", mappedBy="preInterview", 
+     * cascade={"all"}, orphanRemoval=true)
+     */
+    private $familyHealth;
 
     // Constantes para o tipo de escola onde o candidato estudou
 
@@ -334,6 +367,15 @@ class PreInterview
      */
     private $transport;
 
+    /**
+     * Membros da familia.
+     *
+     * @var Collection Membros da familia
+     * @ORM\OneToMany(targetEntity="CandidateFamily", mappedBy="preInterview",
+     * cascade={"all"}, orphanRemoval=true)
+     */
+    private $familyMembers;
+
     /* ####################### PERFIL DE ESTUDANTE ################## */
 
     /**
@@ -384,13 +426,34 @@ class PreInterview
      */
     private $waitingForUs;
 
+
+    /* ####################### OUTRAS INFORMAÇÕES ###################### */
+
+    /**
+     * Informe ou esclareça sobre dados não contemplados neste formulário ou situações especiais que julgar conveniente
+     * 
+     * @var string Resposta para pergunta outras informações
+     * @ORM\Column(name="pre_interview_more_info", type="string", length=1000, nullable=true)
+     */
+    private $moreInformation;
+
     public function __construct()
     {
-        $this->preInterviewDate = new DateTime('now');
-        $this->infrastructureElements = new ArrayCollection();
+        // registro do sistema
+        $this->preInterviewDate = new DateTime();
+
+        // Vulnerabilidade
         $this->familyProperties = new ArrayCollection();
+        $this->infrastructureElements = new ArrayCollection();
         $this->familyGoods = new ArrayCollection();
+        $this->familyHealth = new ArrayCollection();
+        $this->familyMembers = new ArrayCollection();
+
+        // Socioeconômico
+        $this->familyIncome = new ArrayCollection();
+        $this->familyExpenses = new ArrayCollection();
     }
+    /* ################## RELAÇÕES E DADOS AUTOMÁTICOS ################ */
 
     /**
      * 
@@ -449,7 +512,6 @@ class PreInterview
         $this->registration = $registration;
         return $this;
     }
-
     /* ####################### SOCIOECONÔMICO ####################### */
 
     /**
@@ -460,12 +522,12 @@ class PreInterview
     public static function getLiveArray()
     {
         return [
-            self::LIVE_ALONE,
-            self::LIVE_WITH_FRIENDS,
-            self::LIVE_WITH_LIFE_PARTNER,
-            self::LIVE_WITH_PARENTS,
-            self::LIVE_WITH_RELATIVES,
-            self::LIVE_OTHER,
+            self::LIVE_ALONE => self::LIVE_ALONE,
+            self::LIVE_WITH_FRIENDS => self::LIVE_WITH_FRIENDS,
+            self::LIVE_WITH_LIFE_PARTNER => self::LIVE_WITH_LIFE_PARTNER,
+            self::LIVE_WITH_PARENTS => self::LIVE_WITH_PARENTS,
+            self::LIVE_WITH_RELATIVES => self::LIVE_WITH_RELATIVES,
+            self::LIVE_OTHER => self::LIVE_OTHER,
         ];
     }
 
@@ -477,11 +539,11 @@ class PreInterview
     public static function getResponsibleFinancialArray()
     {
         return [
-            self::FINANCIAL_ME,
-            self::FINANCIAL_LIFE_PARTNER,
-            self::FINANCIAL_PARENTS,
-            self::FINANCIAL_PARENT,
-            self::FINANCIAL_ACQUAINTED,
+            self::FINANCIAL_ME => self::FINANCIAL_ME,
+            self::FINANCIAL_LIFE_PARTNER => self::FINANCIAL_LIFE_PARTNER,
+            self::FINANCIAL_PARENTS => self::FINANCIAL_PARENTS,
+            self::FINANCIAL_PARENT => self::FINANCIAL_PARENT,
+            self::FINANCIAL_ACQUAINTED => self::FINANCIAL_ACQUAINTED,
         ];
     }
 
@@ -493,16 +555,304 @@ class PreInterview
     public static function getLiveAreaArray()
     {
         return [
-            self::LIVE_AREA_URBAN_CENTRAL,
-            self::LIVE_AREA_URBAN_PERIPHERAL,
-            self::LIVE_AREA_COUNTRYSIDE,
+            self::LIVE_AREA_URBAN_CENTRAL => self::LIVE_AREA_URBAN_CENTRAL,
+            self::LIVE_AREA_URBAN_PERIPHERAL => self::LIVE_AREA_URBAN_PERIPHERAL,
+            self::LIVE_AREA_COUNTRYSIDE => self::LIVE_AREA_COUNTRYSIDE,
         ];
     }
 
+    public function getLive()
+    {
+        return $this->live;
+    }
+
+    public function setLive($live)
+    {
+        $this->live = $live;
+        return $this;
+    }
+
+    public function getResponsibleFinancial()
+    {
+        return $this->responsibleFinancial;
+    }
+
+    public function setResponsibleFinancial($responsibleFinancial)
+    {
+        $this->responsibleFinancial = $responsibleFinancial;
+        return $this;
+    }
+
+    public function getInfrastructureElements()
+    {
+        return $this->infrastructureElements;
+    }
+
+    public function addInfrastructureElements(
+    Collection $infrastructureElements)
+    {
+        foreach ($infrastructureElements as $inEl) {
+            if (!$this->hasInfrastructureElements($inEl)) {
+                $this->infrastructureElements->add($inEl);
+            }
+        }
+
+        return $this;
+    }
+
+    public function removeInfrastructureElements(
+    Collection $infrastructureElements)
+    {
+        foreach ($infrastructureElements as $inEl) {
+            $this
+                ->infrastructureElements
+                ->removeElement($inEl);
+        }
+        return $this;
+    }
+
+    public function hasInfrastructureElements(
+    InfrastructureElement $infrastructureElement)
+    {
+        return $this->infrastructureElements->contains($infrastructureElement);
+    }
+
+    public function getLiveArea()
+    {
+        return $this->liveArea;
+    }
+
+    public function setLiveArea($liveArea)
+    {
+        $this->liveArea = $liveArea;
+        return $this;
+    }
+
+    public function getItemTv()
+    {
+        return $this->itemTv;
+    }
+
+    public function setItemTv($itemTv)
+    {
+        $this->itemTv = $itemTv;
+        return $this;
+    }
+
+    public function getItemBathroom()
+    {
+        return $this->itemBathroom;
+    }
+
+    public function setItemBathroom($itemBathroom)
+    {
+        $this->itemBathroom = $itemBathroom;
+        return $this;
+    }
+
+    public function getItemSalariedHousekeeper()
+    {
+        return $this->itemSalariedHousekeeper;
+    }
+
+    public function setItemSalariedHousekeeper($itemSalariedHousekeeper)
+    {
+        $this->itemSalariedHousekeeper = $itemSalariedHousekeeper;
+        return $this;
+    }
+
+    public function getItemDailyHousekeeper()
+    {
+        return $this->itemDailyHousekeeper;
+    }
+
+    public function setItemDailyHousekeeper($itemDailyHousekeeper)
+    {
+        $this->itemDailyHousekeeper = $itemDailyHousekeeper;
+        return $this;
+    }
+
+    public function getItemWashingMachine()
+    {
+        return $this->itemWashingMachine;
+    }
+
+    public function setItemWashingMachine($itemWashingMachine)
+    {
+        $this->itemWashingMachine = $itemWashingMachine;
+        return $this;
+    }
+
+    public function getItemRefrigerator()
+    {
+        return $this->itemRefrigerator;
+    }
+
+    public function setItemRefrigerator($itemRefrigerator)
+    {
+        $this->itemRefrigerator = $itemRefrigerator;
+        return $this;
+    }
+
+    public function getItemCableTv()
+    {
+        return $this->itemCableTv;
+    }
+
+    public function setItemCableTv($itemCableTv)
+    {
+        $this->itemCableTv = $itemCableTv;
+        return $this;
+    }
+
+    public function getItemComputer()
+    {
+        return $this->itemComputer;
+    }
+
+    public function setItemComputer($itemComputer)
+    {
+        $this->itemComputer = $itemComputer;
+        return $this;
+    }
+
+    public function getItemSmartphone()
+    {
+        return $this->itemSmartphone;
+    }
+
+    public function setItemSmartphone($itemSmartphone)
+    {
+        $this->itemSmartphone = $itemSmartphone;
+        return $this;
+    }
+
+    public function getItemBedroom()
+    {
+        return $this->itemBedroom;
+    }
+
+    public function setItemBedroom($itemBedroom)
+    {
+        $this->itemBedroom = $itemBedroom;
+        return $this;
+    }
+
+    public function getFamilyExpenses()
+    {
+        return $this->familyExpenses;
+    }
+
+    public function addFamilyExpenses(Collection $familyExpenses)
+    {
+        foreach ($familyExpenses as $fe) {
+            if (!$this->hasFamilyExpense($fe)) {
+                $fe->setPreInterviewExpense($this);
+                $this->familyExpenses->add($fe);
+            }
+        }
+        return $this;
+    }
+
+    public function hasFamilyExpense(FamilyIncomeExpense $familyExpense)
+    {
+        return $this->familyExpenses->contains($familyExpense);
+    }
+
+    public function removeFamilyExpenses(Collection $familyExpenses)
+    {
+        foreach ($familyExpenses as $fe) {
+            $fe->setPreInterviewExpense();
+            $this->familyExpenses->removeElement($fe);
+        }
+        return $this;
+    }
+
+    public function getFamilyIncome()
+    {
+        return $this->familyIncome;
+    }
+
+    public function addFamilyIncome(Collection $familyIncome)
+    {
+        foreach ($familyIncome as $fi) {
+            if (!$this->hasFamilyIncome($fi)) {
+                $fi->setPreInterviewIncome($this);
+                $this->familyExpenses->add($fi);
+            }
+        }
+        return $this;
+    }
+
+    public function hasFamilyIncome(FamilyIncomeExpense $familyIncome)
+    {
+        return $this->familyExpenses->contains($familyIncome);
+    }
+
+    public function removeFamilyIncome(Collection $familyIncome)
+    {
+        foreach ($familyIncome as $fi) {
+            $fi->setPreInterviewIncome();
+            $this->familyIncome->removeElement($fi);
+        }
+        return $this;
+    }
     /* ####################### PERFIL DE ESTUDANTE ################## */
 
+    public function getExtraCourses()
+    {
+        return $this->extraCourses;
+    }
 
+    public function setExtraCourses($extraCourses)
+    {
+        $this->extraCourses = $extraCourses;
+        return $this;
+    }
 
+    public function getPreparationCourse()
+    {
+        return $this->preparationCourse;
+    }
+
+    public function setPreparationCourse($preparationCourse)
+    {
+        $this->preparationCourse = $preparationCourse;
+        return $this;
+    }
+
+    public function getEntranceExam()
+    {
+        return $this->entranceExam;
+    }
+
+    public function setEntranceExam($entranceExam)
+    {
+        $this->entranceExam = $entranceExam;
+        return $this;
+    }
+
+    public function getUndergraduateCourse()
+    {
+        return $this->undergraduateCourse;
+    }
+
+    public function setUndergraduateCourse($undergraduateCourse)
+    {
+        $this->undergraduateCourse = $undergraduateCourse;
+        return $this;
+    }
+
+    public function getWaitingForUs()
+    {
+        return $this->waitingForUs;
+    }
+
+    public function setWaitingForUs($waitingForUs)
+    {
+        $this->waitingForUs = $waitingForUs;
+        return $this;
+    }
     /* ####################### VULNERABILIDADE ###################### */
 
     /**
@@ -513,12 +863,12 @@ class PreInterview
     public static function getElementarySchoolTypeArray()
     {
         return [
-            self::SCHOOL_TYPE_PUBLIC,
-            self::SCHOOL_TYPE_PRIVATE,
-            self::SCHOOL_TYPE_PRIVATE_STUDENTSHIP,
-            self::SCHOOL_TYPE_PRIVATE_BEFORE_PUBLIC,
-            self::SCHOOL_TYPE_PUBLIC_BEFORE_PRIVATE,
-            self::SCHOOL_TYPE_PUBLIC_PRIVATE_STUDENTSHIP,
+            self::SCHOOL_TYPE_PUBLIC => self::SCHOOL_TYPE_PUBLIC,
+            self::SCHOOL_TYPE_PRIVATE => self::SCHOOL_TYPE_PRIVATE,
+            self::SCHOOL_TYPE_PRIVATE_STUDENTSHIP => self::SCHOOL_TYPE_PRIVATE_STUDENTSHIP,
+            self::SCHOOL_TYPE_PRIVATE_BEFORE_PUBLIC => self::SCHOOL_TYPE_PRIVATE_BEFORE_PUBLIC,
+            self::SCHOOL_TYPE_PUBLIC_BEFORE_PRIVATE => self::SCHOOL_TYPE_PUBLIC_BEFORE_PRIVATE,
+            self::SCHOOL_TYPE_PUBLIC_PRIVATE_STUDENTSHIP => self::SCHOOL_TYPE_PUBLIC_PRIVATE_STUDENTSHIP,
         ];
     }
 
@@ -530,15 +880,15 @@ class PreInterview
     public static function getHighSchoolTypeArray()
     {
         return [
-            self::SCHOOL_TYPE_PUBLIC,
-            self::SCHOOL_TYPE_PRIVATE,
-            self::SCHOOL_TYPE_PRIVATE_STUDENTSHIP,
-            self::SCHOOL_TYPE_PUBLIC_PRIVATE_STUDENTSHIP,
-            self::SCHOOL_TYPE_PUBLIC_PRIVATE,
-            self::SCHOOL_TYPE_TECH_PRIVATE,
-            self::SCHOOL_TYPE_TECH_PRIVATE_STUDENTSHIP,
-            self::SCHOOL_TYPE_TECH_PUBLIC,
-            self::SCHOOL_TYPE_OTHER,
+            self::SCHOOL_TYPE_PUBLIC => self::SCHOOL_TYPE_PUBLIC,
+            self::SCHOOL_TYPE_PRIVATE => self::SCHOOL_TYPE_PRIVATE,
+            self::SCHOOL_TYPE_PRIVATE_STUDENTSHIP => self::SCHOOL_TYPE_PRIVATE_STUDENTSHIP,
+            self::SCHOOL_TYPE_PUBLIC_PRIVATE_STUDENTSHIP => self::SCHOOL_TYPE_PUBLIC_PRIVATE_STUDENTSHIP,
+            self::SCHOOL_TYPE_PUBLIC_PRIVATE => self::SCHOOL_TYPE_PUBLIC_PRIVATE,
+            self::SCHOOL_TYPE_TECH_PRIVATE => self::SCHOOL_TYPE_TECH_PRIVATE,
+            self::SCHOOL_TYPE_TECH_PRIVATE_STUDENTSHIP => self::SCHOOL_TYPE_TECH_PRIVATE_STUDENTSHIP,
+            self::SCHOOL_TYPE_TECH_PUBLIC => self::SCHOOL_TYPE_TECH_PUBLIC,
+            self::SCHOOL_TYPE_OTHER => self::SCHOOL_TYPE_OTHER,
         ];
     }
 
@@ -550,12 +900,12 @@ class PreInterview
     public static function getHomeStatusArray()
     {
         return [
-            self::HOME_RENTAL_PROPERTY,
-            self::HOME_OWN_ALREADY_PAID,
-            self::HOME_OWN_BY_INHERITANCE,
-            self::HOME_OWN_PAYING,
-            self::HOME_GIVEN_PROPERTY,
-            self::HOME_OTHER
+            self::HOME_RENTAL_PROPERTY => self::HOME_RENTAL_PROPERTY,
+            self::HOME_OWN_ALREADY_PAID => self::HOME_OWN_ALREADY_PAID,
+            self::HOME_OWN_BY_INHERITANCE => self::HOME_OWN_BY_INHERITANCE,
+            self::HOME_OWN_PAYING => self::HOME_OWN_PAYING,
+            self::HOME_GIVEN_PROPERTY => self::HOME_GIVEN_PROPERTY,
+            self::HOME_OTHER => self::HOME_OTHER,
         ];
     }
 
@@ -567,8 +917,8 @@ class PreInterview
     public static function getHomeDescriptionArray()
     {
         return [
-            self::HOME_DESCRIPTION_FINISHED,
-            self::HOME_DESCRIPTION_WITHOUT_FINISHING,
+            self::HOME_DESCRIPTION_FINISHED => self::HOME_DESCRIPTION_FINISHED,
+            self::HOME_DESCRIPTION_WITHOUT_FINISHING => self::HOME_DESCRIPTION_WITHOUT_FINISHING,
         ];
     }
 
@@ -580,14 +930,252 @@ class PreInterview
     public static function getTransportArray()
     {
         return [
-            self::TRANSPORT_ON_FOOT_BYCICLE,
-            self::TRANSPORT_HITCHHIKE,
-            self::TRANSPORT_OWN,
-            self::TRANSPORT_PAID_COLLETIVE_TRANSPORTATION,
-            self::TRANSPORT_RENTED,
-            self::TRANSPORT_SCHOLAR,
-            self::TRANSPORT_OTHER,
+            self::TRANSPORT_ON_FOOT_BYCICLE => self::TRANSPORT_ON_FOOT_BYCICLE,
+            self::TRANSPORT_HITCHHIKE => self::TRANSPORT_HITCHHIKE,
+            self::TRANSPORT_OWN => self::TRANSPORT_OWN,
+            self::TRANSPORT_PAID_COLLETIVE_TRANSPORTATION => self::TRANSPORT_PAID_COLLETIVE_TRANSPORTATION,
+            self::TRANSPORT_RENTED => self::TRANSPORT_RENTED,
+            self::TRANSPORT_SCHOLAR => self::TRANSPORT_SCHOLAR,
+            self::TRANSPORT_OTHER => self::TRANSPORT_OTHER,
         ];
     }
 
+    public function getFamilyMembers()
+    {
+        return $this->familyMembers;
+    }
+
+    public function addFamilyMembers(Collection $familyMembers)
+    {
+        foreach ($familyMembers as $fm) {
+            if (!$this->hasFamilyMember($fm)) {
+                $fm->setPreInterview($this);
+                $this->familyMembers->add($fm);
+            }
+        }
+
+        return $this;
+    }
+
+    public function hasFamilyMember(CandidateFamily $familyMember)
+    {
+        return $this->familyMembers->contains($familyMember);
+    }
+
+    public function removeFamilyMembers(Collection $familyMembers)
+    {
+        foreach ($familyMembers as $fm) {
+            $fm->setPreInterview();
+            $this->familyMembers->removeElement($fm);
+        }
+
+        return $this;
+    }
+
+    public function getFamilyHealth()
+    {
+        return $this->familyHealth;
+    }
+
+    public function addFamilyHealth(Collection $familyHealth)
+    {
+        foreach ($familyHealth as $fh) {
+            if (!$this->hasFamilyHealth($fh)) {
+                $fh->setPreInterview($this);
+                $this->familyHealth->add($fh);
+            }
+        }
+
+        return $this;
+    }
+
+    public function hasFamilyHealth(FamilyHealth $familyHealth)
+    {
+        return $this->familyHealth->contains($familyHealth);
+    }
+
+    public function removeFamilyHealth(Collection $familyHealth)
+    {
+        foreach ($familyHealth as $fh) {
+            $fh->setPreInterview();
+            $this->familyHealth->removeElement($fh);
+        }
+
+        return $this;
+    }
+
+    public function getFamilyGoods()
+    {
+        return $this->familyGoods;
+    }
+
+    public function addFamilyGoods(Collection $familyGoods)
+    {
+        foreach ($familyGoods as $fg) {
+            if (!$this->hasFamilyGood($fg)) {
+                $fg->setPreInterview($this);
+                $this->familyGoods->add($fg);
+            }
+        }
+
+        return $this;
+    }
+
+    public function hasFamilyGood(FamilyGood $fg)
+    {
+        return $this->familyGoods->contains($fg);
+    }
+
+    public function removeFamilyGoods(Collection $familyGoods)
+    {
+        foreach ($familyGoods as $fg) {
+            $fg->setPreInterview();
+            $this->familyGoods->removeElement($fg);
+        }
+
+        return $this;
+    }
+
+    public function getFamilyProperties()
+    {
+        return $this->familyProperties;
+    }
+
+    public function addFamilyProperties(Collection $familyProperties)
+    {
+        foreach ($familyProperties as $fp) {
+            if (!$this->hasFamilyProperty($fp)) {
+                $fp->setPreInterview($this);
+                $this->familyProperties->add($fp);
+            }
+        }
+
+        return $this;
+    }
+
+    public function hasFamilyProperty(FamilyProperty $familyProperty)
+    {
+        return $this->familyProperties->contains($familyProperty);
+    }
+
+    public function removeFamilyProperties(Collection $familyProperties)
+    {
+        foreach ($familyProperties as $fp) {
+            $fp->setPreInterview();
+            $this->familyProperties->removeElement($fp);
+        }
+
+        return $this;
+    }
+
+    public function getElementarySchoolType()
+    {
+        return $this->elementarySchoolType;
+    }
+
+    public function setElementarySchoolType($elementarySchoolType)
+    {
+        $this->elementarySchoolType = $elementarySchoolType;
+        return $this;
+    }
+
+    public function getHighSchoolType()
+    {
+        return $this->highSchoolType;
+    }
+
+    public function setHighSchoolType($highSchoolType)
+    {
+        $this->highSchoolType = $highSchoolType;
+        return $this;
+    }
+
+    public function getHighSchoolAdmissionYear()
+    {
+        return $this->highSchoolAdmissionYear;
+    }
+
+    public function setHighSchoolAdmissionYear($highSchoolAdmissionYear)
+    {
+        $this->highSchoolAdmissionYear = $highSchoolAdmissionYear;
+        return $this;
+    }
+
+    public function getHighSchoolConclusionYear()
+    {
+        return $this->highSchoolConclusionYear;
+    }
+
+    public function setHighSchoolConclusionYear($highSchoolConclusionYear)
+    {
+        $this->highSchoolConclusionYear = $highSchoolConclusionYear;
+        return $this;
+    }
+
+    public function getSiblingsUndergraduate()
+    {
+        return $this->siblingsUndergraduate;
+    }
+
+    public function setSiblingsUndergraduate($siblingsUndergraduate)
+    {
+        $this->siblingsUndergraduate = $siblingsUndergraduate;
+        return $this;
+    }
+
+    public function getOtherLanguages()
+    {
+        return $this->otherLanguages;
+    }
+
+    public function setOtherLanguages($otherLanguages)
+    {
+        $this->otherLanguages = $otherLanguages;
+        return $this;
+    }
+
+    public function getHomeStatus()
+    {
+        return $this->homeStatus;
+    }
+
+    public function setHomeStatus($homeStatus)
+    {
+        $this->homeStatus = $homeStatus;
+        return $this;
+    }
+
+    public function getHomeDescription()
+    {
+        return $this->homeDescription;
+    }
+
+    public function setHomeDescription($homeDescription)
+    {
+        $this->homeDescription = $homeDescription;
+        return $this;
+    }
+
+    public function getTransport()
+    {
+        return $this->transport;
+    }
+
+    public function setTransport($transport)
+    {
+        $this->transport = $transport;
+        return $this;
+    }
+    /* ####################### OUTRAS INFORMAÇÕES ###################### */
+
+    public function getMoreInformation()
+    {
+        return $this->moreInformation;
+    }
+
+    public function setMoreInformation($moreInformation)
+    {
+        $this->moreInformation = $moreInformation;
+        return $this;
+    }
 }

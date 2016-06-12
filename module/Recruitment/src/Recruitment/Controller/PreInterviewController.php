@@ -1,9 +1,19 @@
 <?php
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Recruitment\Controller;
@@ -16,24 +26,16 @@ use Recruitment\Form\PreInterviewForm;
 use Recruitment\Service\AddressService;
 use Recruitment\Service\RegistrationStatusService;
 use Recruitment\Service\RelativeService;
-use RuntimeException;
-use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\Session\Container;
-use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
- * Description of PreInterviewController
+ * Responsável pela manipulação de  informações de inscrição e pré-entrevista.
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
 class PreInterviewController extends AbstractEntityActionController
 {
-
-    const PRE_INTERVIEW_DIR = './data/pre-interview/';
-    const PERSONAL_FILE_SUFFIX = '_personal.pdf';
-    const INCOME_FILE_SUFFIX = '_income.pdf';
-    const EXPENDURE_FILE_SUFFIX = '_expendure.pdf';
 
     use RelativeService,
         AddressService,
@@ -72,8 +74,7 @@ class PreInterviewController extends AbstractEntityActionController
                             $studentContainer = new Container('pre_interview');
                             $studentContainer->offsetSet('regId', $registration->getRegistrationId());
 
-                            return $this->redirect()->toRoute('recruitment/pre-interview',
-                                    array(
+                            return $this->redirect()->toRoute('recruitment/pre-interview', array(
                                     'action' => 'studentPreInterviewForm'
                             ));
                         }
@@ -114,8 +115,7 @@ class PreInterviewController extends AbstractEntityActionController
 
         // id de inscrição não está na sessão redireciona para o início
         if (!$studentContainer->offsetExists('regId')) {
-            return $this->redirect()->toRoute('recruitment/pre-interview',
-                    array(
+            return $this->redirect()->toRoute('recruitment/pre-interview', array(
                     'action' => 'index',
             ));
         }
@@ -124,20 +124,22 @@ class PreInterviewController extends AbstractEntityActionController
 
         try {
 
+            $request = $this->getRequest();
+
             $em = $this->getEntityManager();
             $registration = $em->getReference('Recruitment\Entity\Registration', $rid);
 
             // se o candidato já respondeu o formulário uma vez avisa que a pré-entrevista já foi cadastrada.
-            if ($registration->getPreInterview() !== null) {
-
-                $studentContainer->getManager()->getStorage()->clear('pre_interview');
-
-                return new ViewModel(array(
-                    'registration' => $registration,
-                    'form' => null,
-                    'message' => 'O formulário de pré-entrevista já foi enviado.',
-                ));
-            }
+//            if ($registration->getPreInterview() !== null) {
+//
+//                $studentContainer->getManager()->getStorage()->clear('pre_interview');
+//
+//                return new ViewModel(array(
+//                    'registration' => $registration,
+//                    'form' => null,
+//                    'message' => 'O formulário de pré-entrevista já foi enviado.',
+//                ));
+//            }
 
             $person = $registration->getPerson();
 
@@ -151,48 +153,49 @@ class PreInterviewController extends AbstractEntityActionController
             );
 
             $form = new PreInterviewForm($em, $options);
+
             $form->bind($registration);
-//            if ($request->isPost()) {
-//                $form->setData($request->getPost());
-//                if ($form->isValid()) {
-//
-//                    // manage duplicates in address, and relatives
-//                    $this->adjustAddresses($person);
-//                    $this->adjustRelatives($person);
-//
-//                    $preInterview = $registration->getPreInterview();
-//                    $preInterview
-//                        ->setPreInterviewPersonalInfo($rid . self::PERSONAL_FILE_SUFFIX)
-//                        ->setPreInterviewIncomeProof($rid . self::INCOME_FILE_SUFFIX)
-//                        ->setPreInterviewExpenseReceipt($rid . self::EXPENDURE_FILE_SUFFIX);
-//
+            if ($request->isPost()) {
+                $form->setData($request->getPost());
+
+                if ($form->isValid()) {
+
+                    // gestão de duplicação de endereço e parentes
+                    $this->adjustAddresses($person);
+                    $this->adjustRelatives($person);
+
 //                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE);
-//
-//                    $em->persist($registration);
-//                    $em->flush();
-//                    $studentContainer->getManager()->getStorage()->clear('pre_interview');
-//
-//                    return new ViewModel(array(
-//                        'registration' => null,
-//                        'form' => null,
-//                        'message' => 'Pré-entrevista concluída com com sucesso.',
-//                    ));
-//                }
-//            }
-        } catch (Exception $ex) {
+
+                    $em->persist($registration);
+                    $em->flush();
+                    $studentContainer->getManager()->getStorage()->clear('pre_interview');
+
+                    return new ViewModel(array(
+                        'registration' => null,
+                        'form' => null,
+                        'message' => 'Pré-entrevista concluída com com sucesso.',
+                    ));
+                } else {
+                    return new ViewModel(array(
+                        'registration' => $registration,
+                        'form' => $form,
+                        'message' => 'Existe(m) algum(ns) campo(s) não preenchido(s).',
+                    ));
+                }
+            }
+        } catch (\Throwable $ex) {
             return new ViewModel(array(
                 'registration' => null,
                 'form' => null,
-                'message' => 'Erro inesperado. Por favor, entre em contato com o administrador do sistema.',
+//                'message' => 'Erro inesperado. Por favor, entre em contato com o administrador do sistema.',
                 'message' => $ex->getMessage(),
             ));
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'registration' => $registration,
             'form' => $form,
             'message' => '',
-        ));
+        ]);
     }
-
 }

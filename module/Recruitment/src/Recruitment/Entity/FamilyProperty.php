@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
  *
@@ -50,14 +49,14 @@ class FamilyProperty
     /**
      *
      * @var string
-     * @ORM\Column(name="family_property_description", type="string", length=1000, nullable=false)
+     * @ORM\Column(name="family_property_description", type="string", length=500, nullable=false)
      */
     private $propertyDescription;
 
     /**
      *
      * @var string
-     * @ORM\Column(name="family_property_address", type="string", length=1000, nullable=false)
+     * @ORM\Column(name="family_property_address", type="string", length=500, nullable=false)
      */
     private $propertyAddress;
 
@@ -69,4 +68,52 @@ class FamilyProperty
      */
     private $preInterview;
 
+    public function getFamilyPropertyId()
+    {
+        return $this->familyPropertyId;
+    }
+
+    public function getPropertyName()
+    {
+        return $this->propertyName;
+    }
+
+    public function setPropertyName($propertyName)
+    {
+        $this->propertyName = $propertyName;
+        return $this;
+    }
+
+    public function getPropertyDescription()
+    {
+        return $this->propertyDescription;
+    }
+
+    public function setPropertyDescription($propertyDescription)
+    {
+        $this->propertyDescription = $propertyDescription;
+        return $this;
+    }
+
+    public function getPropertyAddress()
+    {
+        return $this->propertyAddress;
+    }
+
+    public function setPropertyAddress($propertyAddress)
+    {
+        $this->propertyAddress = $propertyAddress;
+        return $this;
+    }
+
+    public function getPreInterview()
+    {
+        return $this->preInterview;
+    }
+
+    public function setPreInterview(PreInterview $preInterview = null)
+    {
+        $this->preInterview = $preInterview;
+        return $this;
+    }
 }
