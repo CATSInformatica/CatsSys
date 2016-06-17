@@ -80,16 +80,6 @@ INSERT INTO `recruitment_know_about` VALUES
 (8,'Voluntários do CATS');
 UNLOCK TABLES;
 
-LOCK TABLES `recruitment_live_with_you` WRITE;
-INSERT INTO `recruitment_live_with_you` VALUES 
-(1, 'Moro sozinho.'),
-(2, 'Filhos.'),
-(3, 'Moro com pai e/ou mãe.'),
-(4, 'Irmãos.'),
-(5, 'Esposa, marido, companheiro(a).'),
-(6, 'Outro.');
-UNLOCK TABLES;
-
 LOCK TABLES `class` WRITE;
 INSERT INTO `class` VALUES (1,'2016-02-01','2016-12-01','Turma de 2016');
 UNLOCK TABLES;
@@ -116,6 +106,16 @@ INSERT INTO `recruitment_status` VALUES
 (12, 11),
 (13, 12),
 (14, 13);
+UNLOCK TABLES;
+
+LOCK TABLES `infrastructure_element` WRITE;
+INSERT INTO `infrastructure_element` VALUES
+(1, 'Rede de esgoto'),
+(2, 'Água tratada'),
+(3, 'Iluminação pública'),
+(4, 'Lixo recolhido'),
+(5, 'Rua pavimentadas'),
+(6, 'Internet');
 UNLOCK TABLES;
 
 LOCK TABLES `attendance_type` WRITE;
@@ -145,3 +145,4 @@ INSERT INTO `subject` VALUES
 (61,46,'POLINÔMIOS','Polinômios');
 /*!40000 ALTER TABLE `subject` ENABLE KEYS */;
 UNLOCK TABLES;
+
