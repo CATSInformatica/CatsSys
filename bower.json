@@ -10,7 +10,7 @@
   "license": "GPL",
   "dependencies": {
     "AdminLTE": "admin-lte#~2.3.3",
-    "font-awesome": "~4.5.0",
+    "font-awesome": "4.5.0",
     "Ionicons": "ionicons#~2.0.1",
     "bootbox.js": "bootbox#~4.4.0",
     "dropzone": "~4.2",

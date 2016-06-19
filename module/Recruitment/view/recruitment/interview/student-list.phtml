@@ -1,0 +1,72 @@
+<section class="content">
+    <p>@Todo:</p>
+
+    <ul>
+        <li>
+            Tabela de alunos com os <em>status</em>: Convocado 
+            para pré-entrevista e pré-entrevista concluída.
+        </li>
+        <li>
+            Barra de botões com os botões: entrevistar e acessar formulário
+            de pré-entrevista.
+        </li>
+    </ul>
+
+    <div class="col-md-12 col-xs-12">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title"><span class="fa fa-book"></span> Informações</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body" style="display: block;">
+                <p class="text-center">
+                    <b>
+                        <?php echo $recruitment['recruitmentNumber']; ?>º Processo Seletivo de Alunos de 
+                        <?php echo $recruitment['recruitmentYear']; ?>
+                    </b>
+                </p>
+
+                <table id="student-list-table" 
+                       class="table table-bordered table-condensed table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Candidato</th>
+                            <th>Email</th>
+                            <th>Cpf</th>
+                            <th>Rg</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php foreach ($candidates as $candidate): ?>
+                            <tr class="cats-row" data-id="<?php echo $candidate['registrationId']; ?>">
+                                <td class="details-control"></td>
+                                <td><?php echo $candidate['personFullName']; ?></td>
+                                <td><?php echo $candidate['personEmail']; ?></td>
+                                <td><?php echo $candidate['personCpf']; ?></td>
+                                <td><?php echo $candidate['personRg']; ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+
+
+
+</section>
+
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/recruitment/interview/StudentList';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+</script>

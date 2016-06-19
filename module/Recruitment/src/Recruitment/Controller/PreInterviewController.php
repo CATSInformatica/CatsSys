@@ -19,7 +19,6 @@
 namespace Recruitment\Controller;
 
 use Database\Controller\AbstractEntityActionController;
-use Exception;
 use Recruitment\Entity\RecruitmentStatus;
 use Recruitment\Form\CpfForm;
 use Recruitment\Form\PreInterviewForm;
@@ -42,7 +41,8 @@ class PreInterviewController extends AbstractEntityActionController
         RegistrationStatusService;
 
     /**
-     * @todo Verificar se a entrevista do candidato já foi feita, se sim, faz o bloqueio da pré-entrevista.
+     * Obtém o cpf e verifica se o candidato poderá acessar o formulário 
+     * de pré-entrevista.
      * 
      * @return ViewModel
      */
@@ -63,7 +63,6 @@ class PreInterviewController extends AbstractEntityActionController
 
                     $registration = $em->getRepository('Recruitment\Entity\Registration')
                         ->findOneByPersonCpf($data['person_cpf']);
-
 
                     if ($registration !== null) {
                         $status = $registration->getCurrentRegistrationStatus();
@@ -183,12 +182,12 @@ class PreInterviewController extends AbstractEntityActionController
                     ));
                 }
             }
-        } catch (\Throwable $ex) {
+        } catch (\Exception $ex) {
             return new ViewModel(array(
                 'registration' => null,
                 'form' => null,
-//                'message' => 'Erro inesperado. Por favor, entre em contato com o administrador do sistema.',
-                'message' => $ex->getMessage(),
+                'message' => 'Erro inesperado. Por favor, entre em contato com o administrador do sistema.',
+//                'message' => $ex->getMessage(),
             ));
         }
 

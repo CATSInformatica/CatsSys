@@ -38,8 +38,6 @@ define(['app/pages/recruitment/registration/registration'], function (regModule)
                 
                 var container = $(this).closest(".field-container");
                 
-//                console.log("id", container.attr("id"));
-                
                 var currentCount = container.find(".field-box").length;
 
                 var outerTemplate = container.children("span").first().data("template");
