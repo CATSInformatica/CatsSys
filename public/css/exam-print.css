@@ -83,7 +83,7 @@ p {
     height: 261mm;
 }
 .exam-content h3 {
-    font-size: 14.5pt;
+    font-size: 13pt;
 }
 .title {
     font-size: 13pt; 
@@ -97,7 +97,7 @@ p {
     -webkit-column-count: 2;
 }
 .question-block * {
-    line-height: 4.2mm;
+    line-height: 4.8mm !important;
 }
 .first.column {
     padding-right: 2mm;
