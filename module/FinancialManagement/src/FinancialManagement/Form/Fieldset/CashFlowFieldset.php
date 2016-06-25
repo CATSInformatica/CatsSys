@@ -130,7 +130,7 @@ class CashFlowFieldset extends Fieldset implements InputFilterProviderInterface
     {
         $openMonthBalance = $obj->getRepository('FinancialManagement\Entity\MonthlyBalance')
                 ->findBy(array('monthlyBalanceIsOpen' => true));
-        return [$openMonthBalance[0]->getMonthlyBalanceOpen()->format("m/Y")];
+        return [$openMonthBalance[0]->getMonthlyBalanceOpen()->format("M \d\\e Y")];
     }
 
     public function getInputFilterSpecification()
