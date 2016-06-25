@@ -175,7 +175,7 @@ class SchoolExamController extends AbstractEntityActionController
 
                     // por algum motivo, não sei dizer qual, o formulário não
                     // faz a remoção de alternativas que sobram, caso:
-                    // nómero de alternativas antes da edição > número de alternativas depois da edição.
+                    // número de alternativas antes da edição > número de alternativas depois da edição.
                     // Faz a remoção manual.
                     $options = $question->getAnswerOptions();
                     if (($length = $options->count() - $numberOfOptions) > 0) {
@@ -190,7 +190,7 @@ class SchoolExamController extends AbstractEntityActionController
 
                         //  Conversão para inteiro
                         $ao = $question->getAnswerOptions()->toArray();
-                        $correctAnswer = (int) $data['correctAnswer'];
+                        $correctAnswer = (int) $data['exam-question']['correctAnswer'];
 
                         // Se a resposta correta antiga ainda existe ela é desmarcada (isCorrect = false)
                         if ($aId < $numberOfOptions) {
@@ -295,7 +295,7 @@ class SchoolExamController extends AbstractEntityActionController
 
             if ($form->isValid()) {
                 $ao = $examQuestion->getAnswerOptions()->toArray();
-                $correctAnswer = (int) $data['correctAnswer'];
+                $correctAnswer = (int) $data['exam-question']['correctAnswer'];
                 $ao[$correctAnswer]->setIsCorrect(true);
                 $em->persist($examQuestion);
                 $em->flush();
