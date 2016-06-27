@@ -27,7 +27,7 @@ class PreInterviewForm extends Form implements InputFilterProviderInterface
         parent::__construct('pre-interview');
         $this->setHydrator(new DoctrineHydrator($obj));
 
-        // Add the user fieldset, and set it as the base fieldset
+        // define o fieldset base
         $registrationFieldset = new StudentRegistrationFieldset($obj, $options);
         $registrationFieldset->setUseAsBaseFieldset(true);
         $this->add($registrationFieldset);

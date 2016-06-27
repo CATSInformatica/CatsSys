@@ -31,6 +31,8 @@ use Recruitment\Entity\Registration;
 class StudentInterview
 {
 
+    const INTERVIEWER_SEPARATOR = ';';
+
     /**
      * Identificador da entrevista.
      * 
@@ -49,14 +51,327 @@ class StudentInterview
      */
     private $registration;
 
+    /* ########################### PREPARAÇÃO ################################# */
+
     /**
-     * Nomes dos Entrevistadores separados por ";".
+     * Horário de início da entrevista.
+     * @var \DateTime
+     * @ORM\Column(name="student_interview_begindate", type="datetime", nullable=false)
+     */
+    private $interviewBeginDate;
+
+    /**
+     * Nomes dos Entrevistadores separados por self::INTERVIWER_SEPARATOR.
      * 
      * @var string
      * @ORM\Column(name="student_interview_interviewers", type="string", 
      * length=300, nullable=false)
      */
     private $interviewers;
+
+
+    /* ################# CONTATO DIRETO COM O CANDIDATO ##################### */
+
+    /**
+     * Comentário dos entrevistadores sobre a postura do candidato.
+     *
+     * @var string
+     * @ORM\Column(name="student_interview_comintro", type="string", length=2000, nullable=true)
+     */
+    private $interviewerCommentIntro;
+
+    /**
+     * Comentário dos entrevistadores sobre a situação socioeconômica.
+     * 
+     * @var string
+     * @ORM\Column(name="student_interview_comse", type="string", length=2000, nullable=true)
+     */
+    private $interviewerCommentSocioeconomic;
+
+    /**
+     * Comentário dos entrevistadores sobre o perfil de estudante do candidato.
+     * @var string
+     * @ORM\Column(name="student_interview_comst", type="string", length=2000, nullable=true)
+     */
+    private $interviewerCommentStudent;
+
+    /* ##################### AVALIAÇÃO SOCIOECONÔMICA ####################### */
+
+    const TOTAL_INCOME_HALF_SALARY = 'Até meio salário mínimo';
+    const TOTAL_INCOME_HALFTOONE_SALARY = 'Entre meio e um salário mínimo';
+    const TOTAL_INCOME_ONETOONEANDHALF_SALARY = 'Entre um e um e meio salário mínimo';
+    const TOTAL_INCOME_ONEANDHALFTOTWO_SALARY = 'Entre um e meio e dois salários mínimos';
+    const TOTAL_INCOME_TWOTOFOUR_SALARY = 'Entre dois a quatro salários mínimos';
+    const TOTAL_INCOME_FOURTOEIGHT_SALARY = 'Entre quatro e oito salários mínimos';
+    const TOTAL_INCOME_EIGHTTOSIXTEEN_SALARY = 'Entre oito e dezesseis salários mínimos';
+    const TOTAL_INCOME_MORETHANSIXTEEN_SALARY = 'Mais de dezesseis salários mínimos';
+
+    /**
+     * Total de rendimentos da família.
+     * @var string
+     * @ORM\Column(name="student_interview_tincome", type="string", length=100, nullable=true)
+     */
+    private $interviewTotalIncome;
+
+    const FAMILY_MEMBERS_ONEORTWO = 'um ou dois';
+    const FAMILY_MEMBERS_THREEORFOUR = 'três ou quatro';
+    const FAMILY_MEMBERS_FIVEORSIX = 'cinco ou seis';
+    const FAMILY_MEMBERS_SEVENOREIGHT = 'sete ou oito';
+    const FAMILY_MEMBERS_NINEORMORE = 'nove ou mais';
+
+    /**
+     * Quantos membros residentes na família.
+     * 
+     * @var string
+     * @ORM\Column(name="student_interview_nfamily", type="string", length=20, nullable=false)
+     */
+    private $interviewNumberOfFamilyMembers;
+
+    const MAXSCHOLARITY_GRADUATIONORMORE = 'Ensino superior ou mais';
+    const MAXSCHOLARITY_HIGHSCHOOL = 'Ensino superior incompleto ou médio completo';
+    const MAXSCHOLARITY_ELEMENTARYSCHOOLII = 'Ensino médio incompleto ou fundamental II completo. (até 9º ano)';
+    const MAXSCHOLARITY_ELEMENTARYSCHOOLI = 'Fundamental II incompleto';
+    const MAXSCHOLARITY_ELEMENTARYSCHOOLI_COMPLETE = 'Fundamental I completo (até o 5º ano)';
+    const MAXSCHOLARITY_ELEMENTARYSCHOOLI_INCOMPLETE = 'Fundamental I incompleto';
+    const MAXSCHOLARITY_LITERATE = 'Alfabetizado';
+    const MAXSCHOLARITY_ILITERATE = 'Analfabeto';
+
+    /**
+     * Qual é a maior escolaridade registrada entre os membros da familia.
+     * 
+     * @var string
+     * @ORM\Column(name="student_interview_mscholarity", type="string", length=100, nullable=false)
+     */
+    private $interviewMaxScholarity;
+
+    const HOME_TYPE_OWN = 'Própria';
+    const HOME_TYPE_FUNDED = 'Financiada';
+    const HOME_TYPE_RENTED = 'Alugada';
+    const HOME_TYPE_GIVEIN = 'Cedida';
+    const HOME_TYPE_OTHER = 'Outra';
+
+    /**
+     * Qual é a situação da casa em que vive o candidato.
+     * 
+     * @var string
+     * @ORM\Column(name="student_interview_hometype", type="string", length=50, nullable=false)
+     */
+    private $interviewHomeType;
+
+    const HOME_SITUATION_UNSATISFACTORY = 'Insatisfatória';
+    const HOME_SITUATION_GOOD = 'Boa';
+    const HOME_SITUATION_REGULAR = 'Boa';
+    const HOME_SITUATION_GREAT = 'Ótima';
+
+    /**
+     * Avaliando o tipo, modalidade, acomodações, localização e infra-estrutura. Qual item 
+     * descreve melhor a casa do candidato.
+     * 
+     * @var string
+     * @ORM\Column(name="student_interview_hsituation", type="string", length=50, nullable=false)
+     */
+    private $interviewHomeSituation;
+
+    const MAX_POSITION_BUSINESSMAN = 'EMPRESÁRIO';
+    const MAX_POSITION_BUSINESSMAN_DESC = ' Proprietários na agricultura, agroindústria, indústria, comércio, sistema financeiro, serviços, etc.';
+    const MAX_POSITION_HIGH_ADMINISTRADOR = 'ALTA ADMINISTRAÇÃO';
+    const MAX_POSITION_HIGH_ADMINISTRADOR_DESC = 'Juízes, Promotores, Diretores, Administradores, Gerentes, Supervisores, Assessores, Consultores, etc';
+    const MAX_POSITION_LIBERAL_AUTONOMOUS = 'LIBERAL AUTÔNOMO';
+    const MAX_POSITION_LIBERAL_AUTONOMOUS_DESC = 'Médico, Advogado, Contador, Arquiteto, Engenheiro, Dentista, Representante comercial, Oculista, Auditor, etc.';
+    const MAX_POSITION_ADMINISTRATOR = 'ASSALARIADO ADMINISTRATIVO';
+    const MAX_POSITION_ADMINISTRATOR_DESC = 'Chefias em geral, Assistentes, Ocupações de nível médio e superior, Analistas, Atletas profissionais, Técnicosem geral, Servidores públicos de nível superior, etc.';
+    const MAX_POSITION_PRODUCTION = 'ASSALARIADO DE PRODUÇÃO';
+    const MAX_POSITION_PRODUCTION_DESC = 'Trabalhadores assalariados da produção, bens e serviços e da administração (indústria, comércio, serviços, setor público e sistema financeiro), ajudantes e auxiliares, etc.';
+    const MAX_POSITION_AUTONOMOUS = 'AUTÔNOMO';
+    const MAX_POSITION_AUTONOMOUS_DESC = ' Pedreiros, Caminhoneiros, Marceneiros, Feirantes, Cabelereiros, Taxistas, Vendedores etc.';
+    const MAX_POSITION_SMALL_PRODUCERS = 'PEQUENO PRODUTOR RURAL';
+    const MAX_POSITION_SMALL_PRODUCERS_DESC = 'Pequenos produtores rurais: Meeiro, Parceiro, Chacareiro, etc.';
+    const MAX_POSITION_DOMESTICS = 'EMPREGADO DOMÉSTICO';
+    const MAX_POSITION_DOMESTICS_DESC = 'Empregados domésticos: Jardineiros, Diaristas, Mensalista, Faxineiro, Cozinheiro, Mordomo, Babá, Motorista Particular, Atendentes, etc.';
+    const MAX_POSITION_RURAL_WORKER = 'TRABALHADOR RURAL';
+    const MAX_POSITION_RURAL_WORKER_DESC = 'Trabalhadores rurais assalariados, volantes e assemelhados: Ambulantes, Chapa, Bóia- Fria, Ajudantes Gerais, etc.';
+    const MAX_POSITION_STUDENTOROTHER = 'ESTUDANTE';
+    const MAX_POSITION_STUDENTOROTHER_DESC = 'Estudante/Sem ocupações anteriores.';
+
+    /**
+     * Maior nível ocupacional.
+     * 
+     * @var string
+     * @ORM\Column(name="student_interview_maxposition", type="string", length=50, nullable=false)
+     */
+    private $interviewMaxPosition;
+
+    /**
+     * Comentários sobre a avaliação socioeconômica.
+     *
+     * @var string
+     * @ORM\Column(name="student_interview_comevsocioe", type="string", length=2000, nullable=true)
+     */
+    private $interviewerCommentEvalSocioec;
+
+    /* ####################### Avaliação da vulnerabilidade ################### */
+
+    const FAM_ETHNICITY_CAUCASIAN = 'Família caucasiana';
+    const FAM_ETHNICITY_NOCAUCASIAN = 'Família negra, parda ou indígena';
+
+    /**
+     * Família negra, parda ou indígena.
+     * 
+     * @var string
+     * @ORM\Column(name="student_interview_famethnicity", type="string", length=50, nullable=false)
+     */
+    private $interviewFamEthnicity;
+
+    const FAM_PROVIDER_YES = 'Provedor da família';
+    const FAM_PROVIDER_NO = 'Não é provedor da família';
+
+    /**
+     * Provedor de família
+     * @var string
+     * @ORM\Column(name="student_interview_famprovider", type="string", length=50, nullable=false)
+     */
+    private $interviewFamilyProvider;
+
+    const HASCHILDREN_YES = 'Tem filhos';
+    const HASCHILDREN_NO = 'Não tem filhos';
+
+    /**
+     * Ter filhos.
+     * @var string
+     * @ORM\Column(name="student_interview_haschildren", type="string", length=50, nullable=false)
+     */
+    private $interviewHasChildren;
+
+    const HASDESEASE_YES = 'Doenças incapacitantes na família';
+    const HASDESEASE_NO = 'Sem doências na família';
+
+    /**
+     * Doenças na família.
+     * @var string
+     * @ORM\Column(name="student_interview_hasdesease", type="string", length=50, nullable=false)
+     */
+    private $interviewHasDisease;
+
+    const HIGHSCHOOL_PUBLIC_YES = 'Ensino médio em escola pública';
+    const HIGHSCHOOL_PUBLIC_NO = 'Sem ensino médio em escola pública';
+
+    /**
+     * Ensino médio em escola pública.
+     * @var string
+     * @ORM\Column(name="student_interview_highschool", type="string", length=50, nullable=false)
+     */
+    private $interviewHighSchool;
+
+    const FAMILYSUPPORT_YES = 'Possui apoio da família nos estudos';
+    const FAMILYSUPPORT_NO = 'Falta de apoio da família nos estudos';
+
+    /**
+     * Falta de apoio da família nos estudos.
+     * @var string
+     * @ORM\Column(name="student_interview_famsupport", type="string", length=50, nullable=false)
+     */
+    private $interviewFamSupport;
+
+    const FAMDEPENDENCY_YES = 'Família depende de terceiros';
+    const FAMDEPENDENCY_NO = 'Família não depende de terceiros';
+
+    /**
+     * Família depende de terceiros.
+     * @var string
+     * @ORM\Column(name="student_interview_famdependency", type="string", length=50, nullable=false)
+     */
+    private $interviewFamDependency;
+
+    const FAMNEEDTOWORK_YES = 'Precisa trabalhar';
+    const FAMNEEDTOWORK_NO = 'Não precisa trabalhar';
+
+    /**
+     * Precisa trabalhar.
+     * @var string
+     * @ORM\Column(name="student_interview_needtowork", type="string", length=50, nullable=false)
+     */
+    private $intervewNeedToWork;
+
+    const SINGLETON_YES = 'Filho único';
+    const SINGLETON_NO = 'Possui irmão(s)';
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="student_interview_singleton", type="string", length=50, nullable=false)
+     */
+    private $interviewSingleton;
+
+    const FAMILYPROPANDGOODS_JUSTNEEDED_YES = 'Somente imóveis/móveis necessários.';
+    const FAMILYPROPANDGOODS_JUSTNEEDED_NO = 'Imóveis/móveis além do necessário.';
+
+    /**
+     * Somente imóveis/móveis necessários.
+     * @var string
+     * @ORM\Column(name="student_interview_fampropandgoods", type="string", length=50, nullable=false)
+     */
+    private $intervewFamilyPropAndGoods;
+
+    const VULNERABILITY_HIGH = 'ALTA VULNERABILIDADE';
+    const VULNERABILITY_HIGH_DESC = 'o candidato apresenta grande dificuldade em satisfazer suas necessidades básicas, o que pode resultar em abandono dos estudos por insuficiência de recurso social ou moral. O candidato classificado nesse índice, caso aprovado, com certeza precisará de apoio para se manter firme nos estudos, necessitando de acompanhamento para não desistir, devido a vários problemas sérios que acompanham seu contexto social. Poderá receber a bolsa da mensalidade, além de outros auxílios psicológicos.';
+    const VULNERABILITY_MIDDLE = 'MÉDIA VULNERABILIDADE';
+    const VULNERABILITY_MIDDLE_DESC = 'o candidato apresenta nível de dificuldade intermediário em satisfazer suas necessidades básicas. O candidato classificado provavelmente solicitará apoio e acompanhamento para não desistir, sendo que apresenta algum problema sério, ou vários pequenos que acompanham seu contexto social.';
+    const VULNERABILITY_LOW = 'BAIXA VULNERABILIDADE';
+    const VULNERABILITY_LOW_DESC = 'o candidato apresenta nível de dificuldade pequeno para satisfazer suas necessidades básicas. Ele aproveitará o apoio, contudo não necessita de acompanhamento especial durante o ano. Possui algum problema pequeno que acompanha seu contexto social.';
+    const VULNERABILITY_TEMPORARY = 'VULNERABILIDADE TEMPORÁRIA';
+    const VULNERABILITY_TEMPORARY_DESC = 'Vulnerabilidade temporária: o candidato apresenta uma necessidade de apoio momentâneo para permanecer nos estudos. Sua situação atualmente é de relativa vulnerabilidade, em comparação a outros momentos. Nesse caso o mesmo poderá ser aprovado, de acordo com a disponibilidade de vagas e parecer quanto a sua responsabilidade e interesse.';
+    const VULNERABILITY_NONE = 'NENHUMA VULNERABILIDADE';
+    const VULNERABILITY_NONE_DESC = 'o candidato e sua família possuem condições estáveis e suficientes para sua manutenção. Não apresenta nenhum tipo de problema ligado a seu contexto social';
+
+    /**
+     * Em que perfil de vulnerabilidade o candidato se encaixa.
+     * @var string
+     * @ORM\Column(name="student_interview_svulnerability", type="string", length=50, nullable=false)
+     */
+    private $interviewStudentVulnerability;
+
+    /**
+     * Nota no critério vulnerabilidade.
+     *
+     * @var float
+     * @ORM\Column(name="student_interview_vgrade", type="float", nullable=false)
+     */
+    private $interviewVulnerabilityGrade;
+
+    const INTERVIEW_STUDENT_COMMON = 'PERFIL COMUM';
+    const INTERVIEW_STUDENT_COMMON_DESC = 'O candidato enxerga a importância do ensino superior, contudo não possui muito foco quanto ao que quer pra si (aqui é importante diferenciar quando o candidato não possui objetivo por falta de informação condicionada, como moradores de zona rural ou pessoas muito carentes, a quando o candidato não possui objetivo por não ter buscado mais informações) . Não possui noções de estudo, como rotina ou material. Não possui nenhum tipo de experiência em simulados, vestibulares e concursos, além de geralmente não ter realizado nenhum tipo de curso profissionalizante ainda.';
+    const INTERVIEW_STUDENT_MODERATE = 'PRÉ-VESTIBULANDO';
+    const INTERVIEW_STUDENT_MODERATE_DESC = 'O candidato demonstra forte interesse em relação ao ensino superior, já tem ideias quanto a áreas de atuação (humanas, exatas, biológicas), contudo não possui noções de estudo ainda, como rotina e material. Normalmente não possui experiência em simulados, vestibulares e concursos, e a vontade de estudar já começa a estar vinculada somente à pessoa.';
+    const INTERVIEW_STUDENT_ADVANCED = 'VESTIBULANDO';
+    const INTERVIEW_STUDENT_ADVANCED_DESC = 'O candidato é objetivo em relação aos estudos, possui foco, já tendo rotina de estudos e ideias quanto a profissões (engenharia, direito, licenciatura). Tem noção das dificuldades do período, possuindo ou não experiência em simulados, vestibulares e concursos. A vontade de estudar é completamente desvinculada à opinião da família ou próximos.';
+    const INTERVIEW_STUDENT_PROBLEMATIC = 'PROBLEMÁTICO';
+    const INTERVIEW_STUDENT_PROBLEMATIC_DESC = 'O candidato foi aluno em anos anteriores, não chegou a ser expulso, mas teve graves problemas com indisciplina ou com frequência. É o caso de ex-alunos que aproveitaram mal a última oportunidade que tiveram, contudo ainda podem ter chances de entrar.';
+    const INTERVIEW_STUDENT_NOTMET = 'NÃO ATENDIDO';
+    const INTERVIEW_STUDENT_NOTMET_DESC = ' O candidato enxerga o ensino superior como uma oportunidade, contudo ainda não visualiza sua importância. Normalmente está sem outras atividades e para não ficar com tempo livre.';
+
+    /**
+     * Perfil do estudante.
+     *
+     * @var string
+     * @ORM\Column(name="student_interview_squestion", type="string", length=30, nullable=false)
+     */
+    private $interviewStudentQuestion;
+
+    /**
+     * Nota no critério perfil de estudante.
+     *
+     * @var float
+     * @ORM\Column(name="student_interview_sgrade", type="float", nullable=false)
+     */
+    private $interviewStudentGrade;
+
+    /**
+     * Comentários gerais do entrevistador.
+     * 
+     * @var string
+     * @ORM\Column(name="student_interview_comge", type="string", length=2000, nullable=false)
+     */
+    private $interviewerGeneralComment;
 
     public function __construct()
     {
@@ -82,19 +397,22 @@ class StudentInterview
     }
 
     /**
+     * Define a qual inscrição a entrevista é referente.
      * 
-     * @param Registration $registration
-     * @return \Recruitment\Entity\StudentInterview
+     * @param Registration $registration Inscrição
+     * @return \Recruitment\Entity\StudentInterview Permite o uso de interface flutente
      */
     public function setRegistration(Registration $registration)
     {
         $this->registration = $registration;
         return $this;
     }
+    /* ########################### PREPARAÇÃO ################################# */
 
     /**
+     * Returna os entrevistadores separados por self::INTERVIEWER_SEPARATOR
      * 
-     * @return string
+     * @return string Nomes dos entrevistadores
      */
     public function getInterviewers()
     {
@@ -102,13 +420,685 @@ class StudentInterview
     }
 
     /**
+     * Organiza os entrevistadores em um vetor.
      * 
-     * @param string $interviewers
-     * @return \Recruitment\Entity\StudentInterview
+     * @return array Vetor de entrevistadores
+     */
+    public function getInterviewersArray()
+    {
+
+        $interviewers = explode(self::INTERVIEWER_SEPARATOR, $this->interviewers);
+        foreach ($interviewers as &$int) {
+            $int = trim($int);
+        }
+        return $interviewers;
+    }
+
+    /**
+     * Define quem são os entrevistadores.
+     * 
+     * @param string $interviewers Entrevistadores separados por self::INTERVIEWER_SEPARATOR
+     * @return \Recruitment\Entity\StudentInterview Permite o uso de interface fluente
      */
     public function setInterviewers($interviewers)
     {
         $this->interviewers = $interviewers;
+        return $this;
+    }
+
+    /**
+     * Busca pelo horário de início da entrevista.
+     * 
+     * @return \DateTime Horário de início da entrevista.
+     */
+    public function getInterviewBeginDate()
+    {
+        return $this->interviewBeginDate;
+    }
+
+    /**
+     * Define o horário de início da entrevista.
+     * 
+     * @param \DateTime $date Horário de início da entrevista.
+     * @return \Recruitment\Entity\StudentInterview Permite o uso de interface fluente
+     */
+    public function setInterviewBeginDate(\DateTime $date)
+    {
+        $this->interviewBeginDate = $date;
+        return $this;
+    }
+    /* ################# CONTATO DIRETO COM O CANDIDATO ##################### */
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewerCommentIntro()
+    {
+        return $this->interviewerCommentIntro;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewerCommentSocioeconomic()
+    {
+        return $this->interviewerCommentSocioeconomic;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewerCommentStudent()
+    {
+        return $this->interviewerCommentStudent;
+    }
+
+    /**
+     * 
+     * @param string $interviewerCommentIntro
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewerCommentIntro($interviewerCommentIntro)
+    {
+        $this->interviewerCommentIntro = $interviewerCommentIntro;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $interviewerCommentSocioeconomic
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewerCommentSocioeconomic($interviewerCommentSocioeconomic)
+    {
+        $this->interviewerCommentSocioeconomic = $interviewerCommentSocioeconomic;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $interviewerCommentStudent
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewerCommentStudent($interviewerCommentStudent)
+    {
+        $this->interviewerCommentStudent = $interviewerCommentStudent;
+        return $this;
+    }
+    /* ##################### AVALIAÇÃO SOCIOECONÔMICA ####################### */
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewTotalIncome()
+    {
+        return $this->interviewTotalIncome;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public static function getInterviewTotalIncomeArray()
+    {
+        return [
+            self::TOTAL_INCOME_HALF_SALARY => self::TOTAL_INCOME_HALF_SALARY,
+            self::TOTAL_INCOME_HALFTOONE_SALARY => self::TOTAL_INCOME_HALFTOONE_SALARY,
+            self::TOTAL_INCOME_ONETOONEANDHALF_SALARY => self::TOTAL_INCOME_ONETOONEANDHALF_SALARY,
+            self::TOTAL_INCOME_ONEANDHALFTOTWO_SALARY => self::TOTAL_INCOME_ONEANDHALFTOTWO_SALARY,
+            self::TOTAL_INCOME_TWOTOFOUR_SALARY => self::TOTAL_INCOME_TWOTOFOUR_SALARY,
+            self::TOTAL_INCOME_FOURTOEIGHT_SALARY => self::TOTAL_INCOME_FOURTOEIGHT_SALARY,
+            self::TOTAL_INCOME_EIGHTTOSIXTEEN_SALARY => self::TOTAL_INCOME_EIGHTTOSIXTEEN_SALARY,
+            self::TOTAL_INCOME_MORETHANSIXTEEN_SALARY => self::TOTAL_INCOME_MORETHANSIXTEEN_SALARY,
+        ];
+    }
+
+    /**
+     * 
+     * @param string $interviewTotalIncome
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewTotalIncome($interviewTotalIncome)
+    {
+        $this->interviewTotalIncome = $interviewTotalIncome;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewNumberOfFamilyMembers()
+    {
+        return $this->interviewNumberOfFamilyMembers;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public static function getInterviewNumberOfFamilyMembersArray()
+    {
+        return [
+            self::FAMILY_MEMBERS_ONEORTWO => self::FAMILY_MEMBERS_ONEORTWO,
+            self::FAMILY_MEMBERS_THREEORFOUR => self::FAMILY_MEMBERS_THREEORFOUR,
+            self::FAMILY_MEMBERS_FIVEORSIX => self::FAMILY_MEMBERS_FIVEORSIX,
+            self::FAMILY_MEMBERS_SEVENOREIGHT => self::FAMILY_MEMBERS_SEVENOREIGHT,
+            self::FAMILY_MEMBERS_NINEORMORE => self::FAMILY_MEMBERS_NINEORMORE,
+        ];
+    }
+
+    /**
+     * 
+     * @param string $interviewNumberOfFamilyMembers
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewNumberOfFamilyMembers($interviewNumberOfFamilyMembers)
+    {
+        $this->interviewNumberOfFamilyMembers = $interviewNumberOfFamilyMembers;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewMaxScholarity()
+    {
+        return $this->interviewMaxScholarity;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public static function getInterviewMaxScholarityArray()
+    {
+        return [
+            self::MAXSCHOLARITY_GRADUATIONORMORE => self::MAXSCHOLARITY_GRADUATIONORMORE,
+            self::MAXSCHOLARITY_HIGHSCHOOL => self::MAXSCHOLARITY_HIGHSCHOOL,
+            self::MAXSCHOLARITY_ELEMENTARYSCHOOLII => self::MAXSCHOLARITY_ELEMENTARYSCHOOLII,
+            self::MAXSCHOLARITY_ELEMENTARYSCHOOLI => self::MAXSCHOLARITY_ELEMENTARYSCHOOLI,
+            self::MAXSCHOLARITY_ELEMENTARYSCHOOLI_COMPLETE => self::MAXSCHOLARITY_ELEMENTARYSCHOOLI_COMPLETE,
+            self::MAXSCHOLARITY_ELEMENTARYSCHOOLI_INCOMPLETE => self::MAXSCHOLARITY_ELEMENTARYSCHOOLI_INCOMPLETE,
+            self::MAXSCHOLARITY_LITERATE => self::MAXSCHOLARITY_LITERATE,
+            self::MAXSCHOLARITY_ILITERATE => self::MAXSCHOLARITY_ILITERATE,
+        ];
+    }
+
+    /**
+     * 
+     * @param string $interviewMaxScholarity
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewMaxScholarity($interviewMaxScholarity)
+    {
+        $this->interviewMaxScholarity = $interviewMaxScholarity;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewHomeType()
+    {
+        return $this->interviewHomeType;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public static function getInterviewHomeTypeArray()
+    {
+        return [
+            self::HOME_TYPE_OWN => self::HOME_TYPE_OWN,
+            self::HOME_TYPE_FUNDED => self::HOME_TYPE_FUNDED,
+            self::HOME_TYPE_RENTED => self::HOME_TYPE_RENTED,
+            self::HOME_TYPE_GIVEIN => self::HOME_TYPE_GIVEIN,
+            self::HOME_TYPE_OTHER => self::HOME_TYPE_OTHER,
+        ];
+    }
+
+    /**
+     * 
+     * @param string $interviewHomeType
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewHomeType($interviewHomeType)
+    {
+        $this->interviewHomeType = $interviewHomeType;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewHomeSituation()
+    {
+        return $this->interviewHomeSituation;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public static function getInterviewHomeSituationArray()
+    {
+        return [
+            self::HOME_SITUATION_UNSATISFACTORY => self::HOME_SITUATION_UNSATISFACTORY,
+            self::HOME_SITUATION_GOOD => self::HOME_SITUATION_GOOD,
+            self::HOME_SITUATION_REGULAR => self::HOME_SITUATION_REGULAR,
+            self::HOME_SITUATION_GREAT => self::HOME_SITUATION_GREAT,
+        ];
+    }
+
+    /**
+     * 
+     * @param string $interviewHomeSituation
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewHomeSituation($interviewHomeSituation)
+    {
+        $this->interviewHomeSituation = $interviewHomeSituation;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewMaxPosition()
+    {
+        return $this->interviewMaxPosition;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public static function getInterviewMaxPositionArray()
+    {
+        return [
+            self::MAX_POSITION_BUSINESSMAN => self::MAX_POSITION_BUSINESSMAN,
+            self::MAX_POSITION_HIGH_ADMINISTRADOR => self::MAX_POSITION_HIGH_ADMINISTRADOR,
+            self::MAX_POSITION_LIBERAL_AUTONOMOUS => self::MAX_POSITION_LIBERAL_AUTONOMOUS,
+            self::MAX_POSITION_ADMINISTRATOR => self::MAX_POSITION_ADMINISTRATOR,
+            self::MAX_POSITION_PRODUCTION => self::MAX_POSITION_PRODUCTION,
+            self::MAX_POSITION_AUTONOMOUS => self::MAX_POSITION_AUTONOMOUS,
+            self::MAX_POSITION_SMALL_PRODUCERS => self::MAX_POSITION_SMALL_PRODUCERS,
+            self::MAX_POSITION_DOMESTICS => self::MAX_POSITION_DOMESTICS,
+            self::MAX_POSITION_RURAL_WORKER => self::MAX_POSITION_RURAL_WORKER,
+            self::MAX_POSITION_STUDENTOROTHER => self::MAX_POSITION_STUDENTOROTHER,
+        ];
+    }
+
+    /**
+     * 
+     * @param string $interviewMaxPosition
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewMaxPosition($interviewMaxPosition)
+    {
+        $this->interviewMaxPosition = $interviewMaxPosition;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewerCommentEvalSocioec()
+    {
+        return $this->interviewerCommentEvalSocioec;
+    }
+
+    /**
+     * 
+     * @param string $interviewerCommentEvalSocioec
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewerCommentEvalSocioec($interviewerCommentEvalSocioec)
+    {
+        $this->interviewerCommentEvalSocioec = $interviewerCommentEvalSocioec;
+        return $this;
+    }
+    /* ####################### Avaliação da vulnerabilidade ################### */
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewFamEthnicity()
+    {
+        return $this->interviewFamEthnicity;
+    }
+
+    /**
+     * 
+     * @param string $interviewFamEthnicity
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewFamEthnicity($interviewFamEthnicity)
+    {
+        $this->interviewFamEthnicity = $interviewFamEthnicity;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewFamilyProvider()
+    {
+        return $this->interviewFamilyProvider;
+    }
+
+    /**
+     * 
+     * @param string $interviewFamilyProvider
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewFamilyProvider($interviewFamilyProvider)
+    {
+        $this->interviewFamilyProvider = $interviewFamilyProvider;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewHasChildren()
+    {
+        return $this->interviewHasChildren;
+    }
+
+    /**
+     * 
+     * @param string $interviewHasChildren
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewHasChildren($interviewHasChildren)
+    {
+        $this->interviewHasChildren = $interviewHasChildren;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewHasDisease()
+    {
+        return $this->interviewHasDisease;
+    }
+
+    /**
+     * 
+     * @param string $interviewHasDisease
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewHasDisease($interviewHasDisease)
+    {
+        $this->interviewHasDisease = $interviewHasDisease;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewHighSchool()
+    {
+        return $this->interviewHighSchool;
+    }
+
+    /**
+     * 
+     * @param string $interviewHighSchool
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewHighSchool($interviewHighSchool)
+    {
+        $this->interviewHighSchool = $interviewHighSchool;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewFamSupport()
+    {
+        return $this->interviewFamSupport;
+    }
+
+    /**
+     * 
+     * @param string $interviewFamSupport
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewFamSupport($interviewFamSupport)
+    {
+        $this->interviewFamSupport = $interviewFamSupport;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewFamDependency()
+    {
+        return $this->interviewFamDependency;
+    }
+
+    /**
+     * 
+     * @param string $interviewFamDependency
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewFamDependency($interviewFamDependency)
+    {
+        $this->interviewFamDependency = $interviewFamDependency;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getIntervewNeedToWork()
+    {
+        return $this->intervewNeedToWork;
+    }
+
+    /**
+     * 
+     * @param string $intervewNeedToWork
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setIntervewNeedToWork($intervewNeedToWork)
+    {
+        $this->intervewNeedToWork = $intervewNeedToWork;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewSingleton()
+    {
+        return $this->interviewSingleton;
+    }
+
+    /**
+     * 
+     * @param string $interviewSingleton
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewSingleton($interviewSingleton)
+    {
+        $this->interviewSingleton = $interviewSingleton;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getIntervewFamilyPropAndGoods()
+    {
+        return $this->intervewFamilyPropAndGoods;
+    }
+
+    /**
+     * 
+     * @param string $intervewFamilyPropAndGoods
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setIntervewFamilyPropAndGoods($intervewFamilyPropAndGoods)
+    {
+        $this->intervewFamilyPropAndGoods = $intervewFamilyPropAndGoods;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewStudentVulnerability()
+    {
+        return $this->interviewStudentVulnerability;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public static function getInterviewStudentVulnerabilityArray()
+    {
+        return [
+            self::VULNERABILITY_HIGH => self::VULNERABILITY_HIGH,
+            self::VULNERABILITY_MIDDLE => self::VULNERABILITY_MIDDLE,
+            self::VULNERABILITY_LOW => self::VULNERABILITY_LOW,
+            self::VULNERABILITY_TEMPORARY => self::VULNERABILITY_TEMPORARY,
+            self::VULNERABILITY_NONE => self::VULNERABILITY_NONE,
+        ];
+    }
+
+    /**
+     * 
+     * @param string $interviewStudentVulnerability
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewStudentVulnerability($interviewStudentVulnerability)
+    {
+        $this->interviewStudentVulnerability = $interviewStudentVulnerability;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return float
+     */
+    public function getInterviewVulnerabilityGrade()
+    {
+        return $this->interviewVulnerabilityGrade;
+    }
+
+    /**
+     * 
+     * @param float $interviewVulnerabilityGrade
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewVulnerabilityGrade($interviewVulnerabilityGrade)
+    {
+        $this->interviewVulnerabilityGrade = $interviewVulnerabilityGrade;
+        return $this;
+    }
+    /* #################### Avaliação do perfil do estudante ################## */
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewStudentQuestion()
+    {
+        return $this->interviewStudentQuestion;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public static function getInterviewStudentQuestionArray()
+    {
+        return [
+            self::INTERVIEW_STUDENT_COMMON => self::INTERVIEW_STUDENT_COMMON,
+            self::INTERVIEW_STUDENT_MODERATE => self::INTERVIEW_STUDENT_MODERATE,
+            self::INTERVIEW_STUDENT_ADVANCED => self::INTERVIEW_STUDENT_ADVANCED,
+            self::INTERVIEW_STUDENT_PROBLEMATIC => self::INTERVIEW_STUDENT_PROBLEMATIC,
+            self::INTERVIEW_STUDENT_NOTMET => self::INTERVIEW_STUDENT_NOTMET,
+        ];
+    }
+
+    /**
+     * 
+     * @param string $interviewStudentQuestion
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewStudentQuestion($interviewStudentQuestion)
+    {
+        $this->interviewStudentQuestion = $interviewStudentQuestion;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return float
+     */
+    public function getInterviewStudentGrade()
+    {
+        return $this->interviewStudentGrade;
+    }
+
+    /**
+     * 
+     * @param float $interviewStudentGrade
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewStudentGrade($interviewStudentGrade)
+    {
+        $this->interviewStudentGrade = $interviewStudentGrade;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewerGeneralComment()
+    {
+        return $this->interviewerGeneralComment;
+    }
+
+    /**
+     * 
+     * @param string $interviewerGeneralComment
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewerGeneralComment($interviewerGeneralComment)
+    {
+        $this->interviewerGeneralComment = $interviewerGeneralComment;
         return $this;
     }
 }

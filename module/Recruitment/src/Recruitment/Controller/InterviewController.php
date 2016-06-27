@@ -31,6 +31,7 @@ use Recruitment\Service\RelativeService;
 use RuntimeException;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Recruitment\Form\StudentInterviewForm;
 
 /**
  * Manipula informações de candidatos do psa e psv.
@@ -208,13 +209,40 @@ class InterviewController extends AbstractEntityActionController
     }
 
     /**
-     * Formulário de entrevista para candidatos ao processo seletivo de alunos.
+     * Exibe o formulário de entrevista para candidatos ao psa.
      * 
      * @return ViewModel
      */
     public function studentFormAction()
     {
-        return new ViewModel([]);
+
+        try {
+
+            $rid = $this->params()->fromRoute('id', null);
+            $em = $this->getEntityManager();
+            $registration = $em->find('Recruitment\Entity\Registration', $rid);
+            $person = $registration->getPerson();
+
+            if ($rid) {
+                $studentInterviewForm = new StudentInterviewForm($em);
+
+                return new ViewModel([
+                    'form' => $studentInterviewForm,
+                    'message' => null,
+                    'person' => $person,
+                ]);
+            }
+
+            return new ViewModel([
+                'form' => null,
+                'message' => 'Nenhum candidato foi escolhido',
+            ]);
+        } catch (\Exception $ex) {
+            return new ViewModel([
+                'form' => null,
+                'message' => $ex->getMessage(),
+            ]);
+        }
     }
 
     /**
