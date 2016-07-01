@@ -17,9 +17,6 @@
 
 @import url("/vendor/AdminLTE/bootstrap/css/bootstrap.min.css");
 
-*, * p {
-    margin: 0;
-}
 #print-page {
     font-size: 10.5pt;
 }
@@ -98,6 +95,8 @@ p {
 }
 .question-block * {
     line-height: 4.8mm !important;
+    font-family: 'Source Sans Pro','Helvetica Neue', Helvetica, Arial, sans-serif !important;
+    font-size: 10.5pt !important;
 }
 .first.column {
     padding-right: 2mm;
