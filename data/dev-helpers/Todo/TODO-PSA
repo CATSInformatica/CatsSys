@@ -9,8 +9,40 @@ Todo
             - vunerabilidade
             - socioeconômico
             - perfil de estudante
-    
+
+    Pré-entrevista [19/06]
+        - Membros da família alterar campos
+            Escolaridade
+            > lista de seleção
+                = Sem escolaridade
+                = Fundamental I incompleto (até 5º ano)
+                = Fundamental I completo (até 5º ano)
+                = Fundamental II incompleto (6º ao 9º ano)
+                = Fundamental II completo (6º ao 9º ano)
+                = Ensino médio incompleto
+                = Ensino médio completo
+                = Ensino superior incompleto
+                = Ensino superior completo, especialização, mestrado, doutorado, ...
+            Parentesco
+            > lista de seleção
+                = Pai/mãe
+                = Padastro/madastra
+                = Irmão/Irmã
+                = Cônjuge/Companheiro(a)
+                = Avô/Avó
+                = Filho
+                = Outro
  
+        - Problemas de saúde
+            > Listar pessoas já cadastradas.
+        - Bem ~> nome do bem, descrição do bem (ano, modelo, valor do ipva)
+        - Imóvel ~> Tipo (casa, lote, apartamento, chácara)
+        - Remover obrigatóriedade do campo Tem irmãos cursando faculdade.
+
+        - Análise de candidatos
+            > Resultado sempre aparente.
+            > Aba entrevista em primeiro.
+        
 Testes:
 
     Nota: Antes de rodar os testes é fundamental que o código e o banco estejam

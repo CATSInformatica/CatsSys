@@ -10,6 +10,9 @@
     "config": {
         "vendor-dir": "../vendor"
     },
+    "require-dev": {
+        "phpunit/phpunit": "^4.5"
+    },
     "require": {
         "php": ">=5.5",
         "zendframework/zendframework": "^2.5",
