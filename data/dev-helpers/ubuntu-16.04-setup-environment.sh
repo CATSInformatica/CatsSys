@@ -69,6 +69,10 @@ read -p "Please insert the link of your forked repository
 " repository;
 git clone $repository $HOME/vhosts/cats-lab
 
+echo 'Configuring https://github.com/CATSInformatica/CatsSys as a remote for your forked repository'
+cd $HOME/vhosts/cats-lab
+git remote add upstream https://github.com/CATSInformatica/CatsSys
+
 echo 'Starting Composer packages installation'
 cd $HOME/vhosts/cats-lab
 COMPOSER_PROCESS_TIMEOUT=2000 composer install
