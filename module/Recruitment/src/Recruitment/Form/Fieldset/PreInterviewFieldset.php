@@ -35,7 +35,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
         ];
 
         // SOCIOECONÔMICO
-        $familyExpense = new FamilyIncomeExpenseFieldset($obj, 'family-expense');
+        $familyExpense = new FamilyIncomeExpenseFieldset($obj, FamilyIncomeExpenseFieldset::EXPENSE);
 
         $this->add(array(
             'type' => 'Zend\Form\Element\Collection',
@@ -57,7 +57,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
             ),
         ));
 
-        $familyIncome = new FamilyIncomeExpenseFieldset($obj, 'family-income');
+        $familyIncome = new FamilyIncomeExpenseFieldset($obj, FamilyIncomeExpenseFieldset::INCOME);
 
         $this->add(array(
             'type' => 'Zend\Form\Element\Collection',

@@ -42,14 +42,14 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
 
         $this
             ->add([
-                'name' => 'interviewBeginDate',
+                'name' => 'interviewStartTime',
                 'type' => 'text',
                 'options' => [
                     'label' => 'Início da entrevista',
                     'add-on-prepend' => '<i class="fa fa-clock-o"></i>',
                 ],
                 'attributes' => [
-                    'id' => 'interview-begin-date', // para o datetimepicker,
+                    'id' => 'interview-starttime', // para o datetimepicker,
                 ]
             ])
             ->add([
@@ -70,20 +70,121 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 ]
             ])
             ->add([
-                'name' => 'interviewerCommentSocioeconomic',
+                'name' => 'interviewHomeSitComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Comentários e visões do entrevistador',
+                    'label' => 'Situação da casa e localização',
                 ],
                 'attributes' => [
-                    'rows' => 10,
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewExpComm',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Bens e despesas básicas',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewFamIncComm',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Membros da família e renda',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewFamProbComm',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Problemas com os membros (Procure por vícios, drogas. Doenças graves ou crônicas.)',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewFamSuppComm',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Membros da família e sua relação e pensamento sobre os estudos/trabalho',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewRoutComm',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Trabalhos do candidato e rotina atual (atividades e hábitos)',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewStudBehaComm',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Histórico escolar e comportamento como aluno',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewCoursComm',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Cursos técnicos, profissionalizantes, de idioma etc',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewStudWayComm',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Rotina de estudos e melhores formas de estudar (horas por semana, agenda, estudar por tarefas)',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewStudExpComm',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Verifique se o candidato já fez simulados, '
+                    . 'vestibulares e concursos...',
+                ],
+                'attributes' => [
+                    'rows' => 2,
                 ]
             ])
             ->add([
                 'name' => 'interviewerCommentStudent',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Comentários e visões do entrevistador',
+                    'label' => 'Comentários e visões do entrevistador (sobre os objetivos do candidato)',
+                ],
+                'attributes' => [
+                    'rows' => 10,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewerOurActivities',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Comentários e visões do entrevistador (sobre nossas atividades)',
                 ],
                 'attributes' => [
                     'rows' => 10,
@@ -192,7 +293,7 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'name' => 'interviewHighSchool',
                 'type' => 'checkbox',
                 'options' => [
-                    'label' => 'Família negra, parda ou indígena',
+                    'label' => 'Ensino médio em escola pública',
                     'use_hidden_element' => true,
                     'checked_value' => StudentInterview::HIGHSCHOOL_PUBLIC_YES,
                     'unchecked_value' => StudentInterview::HIGHSCHOOL_PUBLIC_NO,
@@ -202,10 +303,10 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'name' => 'interviewFamSupport',
                 'type' => 'checkbox',
                 'options' => [
-                    'label' => 'Falta de apoio da família nos estudos',
+                    'label' => 'Falta de apoio da família para estudar',
                     'use_hidden_element' => true,
-                    'checked_value' => StudentInterview::FAMILYSUPPORT_YES,
-                    'unchecked_value' => StudentInterview::FAMILYSUPPORT_NO,
+                    'checked_value' => StudentInterview::FAMILYSUPPORT_NO,
+                    'unchecked_value' => StudentInterview::FAMILYSUPPORT_YES,
                 ],
             ])
             ->add([
@@ -222,7 +323,7 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'name' => 'intervewNeedToWork',
                 'type' => 'checkbox',
                 'options' => [
-                    'label' => 'Família depende de terceiros',
+                    'label' => 'Precisar trabalhar para auxiliar nos rendimentos da família',
                     'use_hidden_element' => true,
                     'checked_value' => StudentInterview::FAMNEEDTOWORK_YES,
                     'unchecked_value' => StudentInterview::FAMNEEDTOWORK_NO,
@@ -232,7 +333,7 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'name' => 'interviewSingleton',
                 'type' => 'checkbox',
                 'options' => [
-                    'label' => 'Precisa trabalhar',
+                    'label' => 'É filho único',
                     'use_hidden_element' => true,
                     'checked_value' => StudentInterview::SINGLETON_YES,
                     'unchecked_value' => StudentInterview::SINGLETON_NO,
@@ -268,7 +369,7 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'type' => 'radio',
                 'options' => [
                     'label' => 'Qual o perfil do estudante?',
-                    'value_options' => StudentInterview::getInterviewStudentVulnerabilityArray(),
+                    'value_options' => StudentInterview::getInterviewStudentQuestionArray(),
                 ],
             ])
             ->add([
@@ -276,7 +377,7 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'type' => 'number',
                 'options' => [
                     'label' => 'Nota no critério perfil de estudante',
-                ]
+                ],
             ])
             ->add([
                 'name' => 'interviewerGeneralComment',
@@ -285,7 +386,7 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                     'label' => 'Comentários gerais do entrevistador',
                 ],
                 'attributes' => [
-                    'rows' => 5,
+                    'rows' => 9,
                 ]
             ])
         ;
@@ -297,7 +398,7 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
     public function getInputFilterSpecification()
     {
         return [
-            'interviewBeginDate' => [
+            'interviewStartTime' => [
                 'required' => true,
             ],
             'interviewers' => [
@@ -306,7 +407,34 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
             'interviewerCommentIntro' => [
                 'required' => false,
             ],
-            'interviewerCommentSocioeconomic' => [
+            'interviewHomeSitComm' => [
+                'required' => false,
+            ],
+            'interviewExpComm' => [
+                'required' => false,
+            ],
+            'interviewFamIncComm' => [
+                'required' => false,
+            ],
+            'interviewFamProbComm' => [
+                'required' => false,
+            ],
+            'interviewFamSuppComm' => [
+                'required' => false,
+            ],
+            'interviewRoutComm' => [
+                'required' => false,
+            ],
+            'interviewStudBehaComm' => [
+                'required' => false,
+            ],
+            'interviewCoursComm' => [
+                'required' => false,
+            ],
+            'interviewStudWayComm' => [
+                'required' => false,
+            ],
+            'interviewStudExpComm' => [
                 'required' => false,
             ],
             'interviewerCommentStudent' => [
@@ -349,6 +477,9 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'required' => false,
             ],
             'interviewHighSchool' => [
+                'required' => false,
+            ],
+            'interviewFamSupport' => [
                 'required' => false,
             ],
             'interviewFamDependency' => [
