@@ -258,10 +258,10 @@ class InterviewController extends AbstractEntityActionController
                                 ->getRecruitmentStatus()
                                 ->getNumericStatusType();
 
-                        // em qualquer um desses status o candidato avança para
-                        // entrevistado
-                        // fora desses status não há modificações de status
-                        // o candidato apenas tem sua entrevista atualizada.
+                        /* Em qualquer um desses status o candidato avança para
+                         * entrevistado. Fora desses status não há modificações
+                         * de status, o candidato apenas tem sua entrevista atualizada.
+                         */
                         if (in_array($status, [
                                 RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
                                 RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW,
@@ -279,10 +279,6 @@ class InterviewController extends AbstractEntityActionController
                             'person' => $person,
                         ]);
                     }
-
-                    echo '<pre>';
-                    var_dump($studentInterviewForm->getMessages());
-                    exit;
                 }
 
                 return new ViewModel([
@@ -296,7 +292,8 @@ class InterviewController extends AbstractEntityActionController
                 'form' => null,
                 'message' => 'Nenhum candidato foi escolhido',
             ]);
-        } catch (\ErrorException $ex) {
+        } catch (\Exception $ex) {
+
             return new ViewModel([
                 'form' => null,
                 'message' => $ex->getMessage(),
