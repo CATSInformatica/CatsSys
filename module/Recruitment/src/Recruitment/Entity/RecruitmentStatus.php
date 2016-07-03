@@ -144,7 +144,7 @@ class RecruitmentStatus
                 $status = self::STATUSTYPEDESC_CONFIRMED;
                 break;
             case self::STATUSTYPE_CALLEDFOR_PREINTERVIEW:
-                $status = self::STATUSTYPEDESC_CALLEDFOR_INTERVIEW;
+                $status = self::STATUSTYPEDESC_CALLEDFOR_PREINTERVIEW;
                 break;
             case self::STATUSTYPE_PREINTERVIEW_COMPLETE:
                 $status = self::STATUSTYPEDESC_PREINTERVIEW_COMPLETE;
@@ -190,5 +190,4 @@ class RecruitmentStatus
 
         return false;
     }
-
 }

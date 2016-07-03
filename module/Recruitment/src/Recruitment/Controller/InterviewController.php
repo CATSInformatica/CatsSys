@@ -24,6 +24,8 @@ use Exception;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\RecruitmentStatus;
 use Recruitment\Form\PreInterviewForm;
+use Recruitment\Form\StudentInterviewForm;
+use Recruitment\Entity\StudentInterview;
 use Recruitment\Form\VolunteerInterviewForm;
 use Recruitment\Service\AddressService;
 use Recruitment\Service\RegistrationStatusService;
@@ -31,7 +33,6 @@ use Recruitment\Service\RelativeService;
 use RuntimeException;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
-use Recruitment\Form\StudentInterviewForm;
 
 /**
  * Manipula informações de candidatos do psa e psv.
@@ -209,7 +210,16 @@ class InterviewController extends AbstractEntityActionController
     }
 
     /**
-     * Exibe o formulário de entrevista para candidatos ao psa.
+     * Formulário de entrevista para candidatos ao psa.
+     * 
+     * Faz/edita a entrevista do candidato. Se o candidato estiver em um dos
+     * status abaixo ele avançará para o status 
+     * RecruitmentStatus::STATUSTYPE_INTERVIEWED:
+     * 
+     *  - RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
+     *  - RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW,
+     *  - RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE,
+     * 
      * 
      * @return ViewModel
      */
@@ -221,10 +231,55 @@ class InterviewController extends AbstractEntityActionController
             $rid = $this->params()->fromRoute('id', null);
             $em = $this->getEntityManager();
             $registration = $em->find('Recruitment\Entity\Registration', $rid);
+            $interview = $registration->getStudentInterview();
             $person = $registration->getPerson();
+
+            $request = $this->getRequest();
 
             if ($rid) {
                 $studentInterviewForm = new StudentInterviewForm($em);
+
+                if ($interview === null) {
+                    $interview = new StudentInterview();
+                    $registration->setStudentInterview($interview);
+                }
+
+                $studentInterviewForm->bind($interview);
+
+                if ($request->isPost()) {
+
+                    $data = $request->getPost();
+                    $studentInterviewForm->setData($data);
+
+                    if ($studentInterviewForm->isValid()) {
+
+                        $status = (int) $registration
+                                ->getCurrentRegistrationStatus()
+                                ->getRecruitmentStatus()
+                                ->getNumericStatusType();
+
+                        /* Em qualquer um desses status o candidato avança para
+                         * entrevistado. Fora desses status não há modificações
+                         * de status, o candidato apenas tem sua entrevista atualizada.
+                         */
+                        if (in_array($status, [
+                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
+                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW,
+                                RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE,
+                            ])) {
+                            $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_INTERVIEWED);
+                        }
+
+                        $em->merge($registration);
+                        $em->flush();
+
+                        return new ViewModel([
+                            'form' => $studentInterviewForm,
+                            'message' => 'Entrevista realizada com sucesso.',
+                            'person' => $person,
+                        ]);
+                    }
+                }
 
                 return new ViewModel([
                     'form' => $studentInterviewForm,
@@ -238,6 +293,7 @@ class InterviewController extends AbstractEntityActionController
                 'message' => 'Nenhum candidato foi escolhido',
             ]);
         } catch (\Exception $ex) {
+
             return new ViewModel([
                 'form' => null,
                 'message' => $ex->getMessage(),

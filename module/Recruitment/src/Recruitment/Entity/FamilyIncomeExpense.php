@@ -61,7 +61,7 @@ class FamilyIncomeExpense
      * 
      * @var PreInterview Relacionamento N:1 com o PreInterview
      * @ORM\ManyToOne(targetEntity="PreInterview", inversedBy="familyExpenses")
-     * @ORM\JoinColumn(name="pre_interview_id", referencedColumnName="pre_interview_id", nullable=true)
+     * @ORM\JoinColumn(name="pre_interview_id_exp", referencedColumnName="pre_interview_id", nullable=true)
      */
     private $preInterviewExpense;
 
@@ -70,7 +70,7 @@ class FamilyIncomeExpense
      * 
      * @var PreInterview Relacionamento N:1 com o PreInterview
      * @ORM\ManyToOne(targetEntity="PreInterview", inversedBy="familyIncome")
-     * @ORM\JoinColumn(name="pre_interview_id", referencedColumnName="pre_interview_id", nullable=true)
+     * @ORM\JoinColumn(name="pre_interview_id_inc", referencedColumnName="pre_interview_id", nullable=true)
      */
     private $preInterviewIncome;
 

@@ -65,10 +65,20 @@ class PreInterviewController extends AbstractEntityActionController
                         ->findOneByPersonCpf($data['person_cpf']);
 
                     if ($registration !== null) {
-                        $status = $registration->getCurrentRegistrationStatus();
 
-                        if ($status->getRecruitmentStatus()->getNumericStatusType() ===
-                            RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW) {
+                        $status = (int) $registration
+                                ->getCurrentRegistrationStatus()
+                                ->getRecruitmentStatus()
+                                ->getNumericStatusType();
+
+                        // se o status do candidato for um desses três 
+                        // ele poderá acessar o formulário de pré-entrevista
+                        // para preencher ou editar.
+                        if (in_array($status, [
+                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW,
+                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
+                                RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE,
+                            ])) {
 
                             $studentContainer = new Container('pre_interview');
                             $studentContainer->offsetSet('regId', $registration->getRegistrationId());
@@ -128,18 +138,6 @@ class PreInterviewController extends AbstractEntityActionController
             $em = $this->getEntityManager();
             $registration = $em->getReference('Recruitment\Entity\Registration', $rid);
 
-            // se o candidato já respondeu o formulário uma vez avisa que a pré-entrevista já foi cadastrada.
-//            if ($registration->getPreInterview() !== null) {
-//
-//                $studentContainer->getManager()->getStorage()->clear('pre_interview');
-//
-//                return new ViewModel(array(
-//                    'registration' => $registration,
-//                    'form' => null,
-//                    'message' => 'O formulário de pré-entrevista já foi enviado.',
-//                ));
-//            }
-
             $person = $registration->getPerson();
 
             $options = array(
@@ -163,7 +161,7 @@ class PreInterviewController extends AbstractEntityActionController
                     $this->adjustAddresses($person);
                     $this->adjustRelatives($person);
 
-//                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE);
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE);
 
                     $em->persist($registration);
                     $em->flush();
