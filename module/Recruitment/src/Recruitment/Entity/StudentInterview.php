@@ -535,11 +535,13 @@ class StudentInterview
     /**
      * Busca pelo horário de início da entrevista.
      * @param string|null $format Formato válido para o \DateTime
-     * @return \DateTime Horário de início da entrevista.
+     * @return string|null Horário de início da entrevista.
      */
     public function getInterviewStartTime($format = 'H:i')
     {
-        return $this->interviewStartTime->format($format);
+        if ($this->interviewStartTime !== null) {
+            return $this->interviewStartTime->format($format);
+        }
     }
 
     /**
