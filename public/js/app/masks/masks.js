@@ -44,6 +44,10 @@ define(['jquery', 'jmaskedinput'], function () {
             $(masks.datetimeNoSeconds).mask("99/99/9999 99:99");
         }
 
+        if (masks.hasOwnProperty("timeNoSeconds")) {
+            $(masks.timeNoSeconds).mask("99:99");
+        }
+
     };
 
     return {
