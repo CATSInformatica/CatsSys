@@ -731,6 +731,7 @@ class Registration
      */
     public function setStudentInterview(StudentInterview $studentInterview)
     {
+        $studentInterview->setRegistration($this);
         $this->studentInterview = $studentInterview;
         return $this;
     }
