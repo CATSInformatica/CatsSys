@@ -32,10 +32,12 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
  */
 class FamilyIncomeExpenseFieldset extends Fieldset implements InputFilterProviderInterface
 {
+    const INCOME = 'familyIncome';
+    const EXPENSE = 'familyExpense';
 
-    public function __construct(ObjectManager $obj, $name = null)
+    public function __construct(ObjectManager $obj, $type)
     {
-        parent::__construct($name);
+        parent::__construct($type);
 
         $this->setHydrator(new DoctrineHydrator($obj))
             ->setObject(new FamilyIncomeExpense());
