@@ -19,6 +19,7 @@
 namespace Recruitment\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\RecruitmentStatus;
 
@@ -117,40 +118,35 @@ class RegistrationRepository extends EntityRepository
      * corrente é $status.
      * 
      * @param int $rid Identificador do processo seletivo
-     * @param int $status Situação da inscrição
+     * @param array $status Situações da inscrição
      * @return array Inscrições do processo seletivo $rid cuja situação corrente
      * é $status
      * @throws \BadMethodCallException Método não implementado
      */
-    public function findByStatusSimplified($rid, $status)
+    public function findByStatusSimplified($rid, array $status)
     {
-        if ($rid != Recruitment::ALL_VOLUNTEER_RECRUITMENTS) {
 
-            if ($status != RecruitmentStatus::STATUSTYPE_ALL) {
-                return $this->_em
-                        ->createQuery('SELECT r.registrationId, '
-                            . 'CONCAT(CONCAT(p.personFirstName, \' \'), p.personLastName) as personFullName, '
-                            . 'p.personRg, p.personCpf, p.personEmail '
-                            . 'FROM Recruitment\Entity\Registration r '
-                            . 'JOIN r.registrationStatus rs WITH  rs.isCurrent = true '
-                            . 'JOIN rs.recruitmentStatus res WITH res.statusType = :status '
-                            . 'JOIN r.person p '
-                            . 'WHERE r.recruitment = :rid '
-                            . 'ORDER BY r.registrationId DESC'
-                        )
-                        ->setParameters([
-                            'rid' => $rid,
-                            'status' => $status,
-                        ])
-                        ->getResult();
-            } else {
-                throw new \BadMethodCallException('Pesquisa por'
-                . ' todos os todos as situações de inscrição não implementada');
-            }
-        } else {
-            throw new \BadMethodCallException('Pesquisa por'
-            . ' todos os processos seletivos de voluntários não '
-            . 'implementada');
+        $qb = $this
+            ->_em
+            ->createQueryBuilder();
+
+        $qb
+            ->select('r.registrationId, CONCAT(CONCAT(p.personFirstName, \' \'), '
+                . 'p.personLastName) as personFullName, p.personRg, p.personCpf, '
+                . 'p.personEmail')
+            ->from('Recruitment\Entity\Registration', 'r')
+            ->join('r.person', 'p')
+            ->join('r.registrationStatus', 'rs', Expr\Join::WITH, 'rs.isCurrent = true')
+            ->join('rs.recruitmentStatus', 'res')
+            ->where('r.recruitment = :recruitment')
+            ->setParameter('recruitment', $rid);
+        
+        if (!empty($status)) {
+            $qb
+                ->andWhere($qb->expr()->in('res.statusType', ':statusArray'))
+                ->setParameter('statusArray', $status);
         }
+        
+        return $qb->getQuery()->getResult();
     }
 }

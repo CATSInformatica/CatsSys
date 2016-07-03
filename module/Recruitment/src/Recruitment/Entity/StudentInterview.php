@@ -295,6 +295,14 @@ class StudentInterview
      */
     private $interviewerCommentEvalSocioec;
 
+    /**
+     * Nota obtida no critério socioeconômico.
+     * 
+     * @var float
+     * @ORM\Column(name="student_interview_segrade", type="float", nullable=false);
+     */
+    private $interviewSocioeconomicGrade;
+
     /* ####################### Avaliação da vulnerabilidade ################### */
 
     const FAM_ETHNICITY_CAUCASIAN = 'Família caucasiana';
@@ -462,6 +470,9 @@ class StudentInterview
     public function __construct()
     {
         $this->interviewDatetime = new \DateTime();
+        $this->interviewSocioeconomicGrade = 0;
+        $this->interviewVulnerabilityGrade = 0;
+        $this->interviewStudentGrade = 0;
     }
 
     /**
@@ -1076,7 +1087,27 @@ class StudentInterview
     {
         return $this->interviewerCommentEvalSocioec;
     }
+    
+    /**
+     * 
+     * @return float
+     */
+    public function getInterviewSocioeconomicGrade()
+    {
+        return $this->interviewSocioeconomicGrade;
+    }
 
+    /**
+     * 
+     * @param float $interviewSocioeconomicGrade
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewSocioeconomicGrade($interviewSocioeconomicGrade)
+    {
+        $this->interviewSocioeconomicGrade = $interviewSocioeconomicGrade;
+        return $this;
+    }
+    
     /**
      *
      * @param string $interviewerCommentEvalSocioec
