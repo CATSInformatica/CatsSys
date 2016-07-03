@@ -292,6 +292,56 @@ class InterviewController extends AbstractEntityActionController
                 $preInterview = $registration->getPreInterview();
                 if ($preInterview !== null) {
                     $data['preInterview'] = $hydrator->extract($preInterview);
+
+                    // informações sobre as despesas da família
+                    $data['preInterview']['familyExpenses'] = [];
+                    $familyExpenses = $preInterview->getFamilyExpenses();
+                    foreach ($familyExpenses as $familyExpense) {
+                        $data['preInterview']['familyExpenses'][] = $hydrator->extract($familyExpense);
+                    }
+
+                    // informações sobre os bens da família
+                    $data['preInterview']['familyGoods'] = [];
+                    $familyGoods = $preInterview->getFamilyGoods();
+                    foreach ($familyGoods as $familyGood) {
+                        $data['preInterview']['familyGoods'][] = $hydrator->extract($familyGood);
+                    }
+
+                    // informações sobre a saúde dos familiares
+                    $data['preInterview']['familyHealth'] = [];
+                    $familyHealth = $preInterview->getFamilyHealth();
+                    foreach ($familyHealth as $individualHealth) {
+                        $data['preInterview']['familyHealth'][] = $hydrator->extract($individualHealth);
+                    }
+
+                    // informações sobre a renda da família
+                    $data['preInterview']['familyIncome'] = [];
+                    $familyIncome = $preInterview->getFamilyIncome();
+                    foreach ($familyIncome as $incomeSource) {
+                        $data['preInterview']['familyIncome'][] = $hydrator->extract($incomeSource);
+                    }
+
+                    // informações sobre os membros da família
+                    $data['preInterview']['familyMembers'] = [];
+                    $familyMembers = $preInterview->getFamilyMembers();
+                    foreach ($familyMembers as $familyMember) {
+                        $data['preInterview']['familyMembers'][] = $hydrator->extract($familyMember);
+                    }
+
+                    // informações sobre as propriedades da família
+                    $data['preInterview']['familyProperties'] = [];
+                    $familyProperties = $preInterview->getFamilyProperties();
+                    foreach ($familyProperties as $familyProperty) {
+                        $data['preInterview']['familyProperties'][] = $hydrator->extract($familyProperty);
+                    }
+
+                    // informações sobre a infraestrutura do local de moradia
+                    $data['preInterview']['infrastructureElements'] = [];
+                    $infrastructureElements = $preInterview->getInfrastructureElements();
+                    foreach ($infrastructureElements as $infrastructureElement) {
+                        $data['preInterview']['infrastructureElements'][] = $hydrator->extract($infrastructureElement);
+                    }
+                            
                 }
 
                 //informações da entrevista
