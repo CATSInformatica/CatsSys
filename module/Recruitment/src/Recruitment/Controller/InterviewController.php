@@ -330,6 +330,13 @@ class InterviewController extends AbstractEntityActionController
                 $data = $hydrator->extract($registration);
                 $data['registrationNumber'] = $registration->getRegistrationNumber();
 
+                // informações sobre os critérios do processo seletivo
+                $data['recruitmentTarget'] = [];
+                $recruitment = $registration->getRecruitment();
+                $data['recruitmentTarget']['socioeconomic'] = $recruitment->getSocioeconomicTarget();
+                $data['recruitmentTarget']['vulnerability'] = $recruitment->getVulnerabilityTarget();
+                $data['recruitmentTarget']['student'] = $recruitment->getStudentTarget();
+
                 // informações pessoais
                 $person = $registration->getPerson();
                 $data['person'] = $hydrator->extract($person);
