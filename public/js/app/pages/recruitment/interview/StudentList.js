@@ -334,21 +334,56 @@ define(['datatable'], function () {
                 '</div>';
             }
             
+            var addresses = '';
+            for (var i = 0; i < info['person']['addresses'].length; ++i) {
+                addresses += info['person']['addresses'][i]['addressStreet'] + ', ' +
+                            ((info['person']['addresses'][i]['addressNumber'] === null) ? 'S/N' : info['person']['addresses'][i]['addressNumber']) + ' - ' + 
+                            info['person']['addresses'][i]['addressNeighborhood'] + ' - ' + 
+                            info['person']['addresses'][i]['addressCity'] + ' - ' + 
+                            info['person']['addresses'][i]['addressState'] + ', CEP: ' + 
+                            info['person']['addresses'][i]['addressPostalCode'] + '<br>';
+            }         
+            
             
             return '<div class="row">' +
                 '<div class="col-md-3">' +
                     '<div class="box box-primary">' +
                         '<div class="box-body box-profile">' +
-                            '<img class="profile-user-img img-responsive img-circle" src="/img/user.png" alt="__NAME__">' +
+                            '<img class="profile-user-img img-responsive img-circle" src="/recruitment/registration/photo/' + info['person']['personId'] +'" alt="__NAME__">' +
                             '<h3 class="profile-username text-center"> ' +
                                 info['person']['personFirstName'] + ' ' + info['person']['personLastName'] +
                             '</h3>' +
-                            '<p class="text-muted text-center">' + info['person']['personBirthday'] + '</p>' +
+                            '<ul class="list-group list-group-unbordered">' + 
+                                '<li class="list-group-item"><strong>Nota</strong>' + 
+                                    '<a class="pull-right">' + '+9000' + '</a>' +
+                                '</li>' +
+                            '</ul>' +
+                        '</div>' +
+                    '</div>' +                    
+                    '<div class="box box-primary">' +
+                        '<div class="box-header with-border">' +
+                            '<h3 class="box-title"> Sobre Mim </h3>' +
+                        '</div>' +
+                        '<div class="box-body">' +
+                            '<strong><i class="fa fa-birthday-cake margin-r-5"></i> Data de Nascimento</strong>' +
+                            '<p class="text-muted">' + info['person']['personBirthday'] + '</p>' +
+                            '<strong><i class="fa fa-phone margin-r-5"></i> Telefone</strong>' +
+                            '<p class="text-muted">' + info['person']['personPhone'] + '</p>' +
+                            '<strong><i class="fa fa-at margin-r-5"></i> Email</strong>' +
+                            '<p class="text-muted">' + info['person']['personEmail'] + '</p>' +
+                            '<strong><i class="fa fa-map-marker margin-r-5"></i> Endereço</strong>' +
+                            '<p class="text-muted">' + addresses + '</p>' +
                         '</div>' +
                     '</div>' +
+                '</div>' +
+                '<div class="col-md-9">' +
                     '<div class="box box-primary">' +
                         '<div class="box-header with-border">' +
                             '<h3 class="box-title"> Composição da Nota </h3>' +
+                            '<div class="box-tools pull-right">' + 
+                                '<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>' +
+                                '</button>' + 
+                            '</div>' +
                         '</div>' +
                         '<div class="box-body">' +
                             '<table class="table table-condensed">' + 
@@ -389,23 +424,6 @@ define(['datatable'], function () {
                             '</table>' +
                         '</div>' +
                     '</div>' +
-                    '<div class="box box-primary">' +
-                        '<div class="box-header with-border">' +
-                            '<h3 class="box-title"> Sobre Mim </h3>' +
-                        '</div>' +
-                        '<div class="box-body">' +
-                            '<strong> <i class="fa fa-book margin-r-5"></i> Education</strong>' +
-                            '<p class = "text-muted">' +
-                                'B.S.in Computer Science from the University of Tennessee at Knoxville' +
-                            '</p>' +
-                            '<hr>' +
-                            '<strong><i class="fa fa-map-marker margin-r-5"></i>Location</strong>' +
-                            '<p class="text-muted"> Malibu, California </p>' +
-                            '<hr>' +
-                        '</div>' +
-                    '</div>' +
-                '</div>' +
-                '<div class="col-md-9">' +
                     '<div class="nav-tabs-custom">' +
                         '<ul class="nav nav-tabs">' +
                             '<li class="active"><a href="#socioeconomic" data-toggle="tab" aria-expanded="true">Socioeconômico</a></li>' +
