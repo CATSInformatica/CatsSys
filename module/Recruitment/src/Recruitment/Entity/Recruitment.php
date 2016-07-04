@@ -99,6 +99,27 @@ class Recruitment
 
     /**
      *
+     * @var float
+     * @ORM\Column(name="socioeconomic_target", type="float", nullable=true)
+     */
+    private $socioeconomicTarget;
+
+    /**
+     *
+     * @var float
+     * @ORM\Column(name="vulnerability_target", type="float", nullable=true)
+     */
+    private $vulnerabilityTarget;
+
+    /**
+     *
+     * @var float
+     * @ORM\Column(name="student_target", type="float", nullable=true)
+     */
+    private $studentTarget;
+
+    /**
+     *
      * @var Collection
      * @ORM\OneToMany(targetEntity="\Recruitment\Entity\Registration", mappedBy="recruitment")
      */
@@ -196,6 +217,33 @@ class Recruitment
 
     /**
      * 
+     * @return float
+     */
+    function getSocioeconomicTarget()
+    {
+        return $this->socioeconomicTarget;
+    }
+
+    /**
+     * 
+     * @return float
+     */
+    function getVulnerabilityTarget()
+    {
+        return $this->vulnerabilityTarget;
+    }
+
+    /**
+     * 
+     * @return float
+     */
+    function getStudentTarget()
+    {
+        return $this->studentTarget;
+    }
+   
+    /**
+     * 
      * @param \DateTime $recruitmentBeginDate
      * @return \Recruitment\Entity\Recruitment
      */
@@ -243,6 +291,39 @@ class Recruitment
         }
 
         $this->recruitmentType = $recruitmentType;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param float $socioeconomicTarget
+     * @return \Recruitment\Entity\Recruitment
+     */
+    function setSocioeconomicTarget($socioeconomicTarget)
+    {
+        $this->socioeconomicTarget = $socioeconomicTarget;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param float $vulnerabilityTarget
+     * @return \Recruitment\Entity\Recruitment
+     */
+    function setVulnerabilityTarget($vulnerabilityTarget)
+    {
+        $this->vulnerabilityTarget = $vulnerabilityTarget;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param float $studentTarget
+     * @return \Recruitment\Entity\Recruitment
+     */
+    function setStudentTarget($studentTarget)
+    {
+        $this->studentTarget = $studentTarget;
         return $this;
     }
 

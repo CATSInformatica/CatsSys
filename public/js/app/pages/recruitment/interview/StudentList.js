@@ -305,6 +305,49 @@ define(['datatable'], function () {
                     '</div>' +
                     '<div class="box box-primary">' +
                         '<div class="box-header with-border">' +
+                            '<h3 class="box-title"> Composição da Nota </h3>' +
+                        '</div>' +
+                        '<div class="box-body">' +
+                            '<table class="table table-condensed">' + 
+                                '<tr>' +
+                                    '<th>Critério</th>' +
+                                    '<th>Nota</th>' +
+                                    '<th>Peso</th>' +
+                                '</tr>' + 
+                                '<tr>' +
+                                    '<td>Socioeconômico</td>' +
+                                    '<td>' + '' + '</td>' +
+                                    '<td>' + ((info['recruitmentTarget']['socioeconomic'] !== null) ? 
+                                            info['recruitmentTarget']['socioeconomic'] 
+                                            : '') + 
+                                    '</td>' +
+                                '</tr>' + 
+                                '<tr>' +
+                                    '<td>Vulnerabilidade</td>' +
+                                    '<td>' + '' + '</td>' +
+                                    '<td>' + ((info['recruitmentTarget']['vulnerability'] !== null) ? 
+                                            info['recruitmentTarget']['vulnerability'] 
+                                            : '') +
+                                    '</td>' +
+                                '</tr>' + 
+                                '<tr>' +
+                                    '<td>Perfil de Estudante</td>' +
+                                    '<td>' + '' + '</td>' +
+                                    '<td>' + ((info['recruitmentTarget']['student'] !== null) ?
+                                            info['recruitmentTarget']['student']
+                                            : '') +
+                                    '</td>' +
+                                '</tr>' + 
+                                '<tr>' +
+                                    '<td><strong>Nota final</strong></td>' +
+                                    '<td>' + '<strong></strong>' + '</td>' +
+                                    '<td></td>' +
+                                '</tr>' + 
+                            '</table>' +
+                        '</div>' +
+                    '</div>' +
+                    '<div class="box box-primary">' +
+                        '<div class="box-header with-border">' +
                             '<h3 class="box-title"> Sobre Mim </h3>' +
                         '</div>' +
                         '<div class="box-body">' +
