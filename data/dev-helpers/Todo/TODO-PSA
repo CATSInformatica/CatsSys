@@ -1,79 +1,16 @@
 Todo
     Entrevista:
-        > Construir formulário de entrevista
+        > Calcular a nota no critério socioeconômico
     Análise de candidatos:
-        > Construir tela para análise de candidatos
+        > Concluir tela de análise de candidatos
     Formulário de criação de processos seletivos
         > Alterar formulário de criação de processos seletivos para adicionar
         os pesos:
             - vunerabilidade
             - socioeconômico
             - perfil de estudante
-
-    Pré-entrevista [19/06]
-        - Membros da família alterar campos
-            Escolaridade
-            > lista de seleção
-                = Sem escolaridade
-                = Fundamental I incompleto (até 5º ano)
-                = Fundamental I completo (até 5º ano)
-                = Fundamental II incompleto (6º ao 9º ano)
-                = Fundamental II completo (6º ao 9º ano)
-                = Ensino médio incompleto
-                = Ensino médio completo
-                = Ensino superior incompleto
-                = Ensino superior completo, especialização, mestrado, doutorado, ...
-            Parentesco
-            > lista de seleção
-                = Pai/mãe
-                = Padastro/madastra
-                = Irmão/Irmã
-                = Cônjuge/Companheiro(a)
-                = Avô/Avó
-                = Filho
-                = Outro
- 
-        - Problemas de saúde
-            > Listar pessoas já cadastradas.
-        - Bem ~> nome do bem, descrição do bem (ano, modelo, valor do ipva)
-        - Imóvel ~> Tipo (casa, lote, apartamento, chácara)
-        - Remover obrigatóriedade do campo Tem irmãos cursando faculdade.
-
-        - Análise de candidatos
-            > Resultado sempre aparente.
-            > Aba entrevista em primeiro.
-        
-Testes:
-
-    Nota: Antes de rodar os testes é fundamental que o código e o banco estejam
-    atualizados. Isso pode ser garantido seguindo as duas regras abaixo:
-        > Rodando o script do repositório base: 
-            https://github.com/CATSInformatica/CatsSys/blob/master/data/dev-helpers/ubuntu-16.04-setup-environment.sh
-        > Mantendo seu fork sincronizado com o repositório base
-            https://help.github.com/articles/syncing-a-fork/
-
-    Teste 1: 
-
-        1. Obter o cpf do candidato convocado para pré-entrevista
-        |- Em Inscrições > Show student registrations selecione:
-            > Situação: Convocado para pré-entrevista.
-            > pressione "Buscar".
-        2. Em Inscrições > Student pre-interview I
-            > Inserir o cpf do candidato
-            > pressione "Prosseguir"
-        3. Preencher o formulário de pré-entrevista e salvar.
-
-    Teste 2:
-
-        1. Convocar um candidato para pré-entrevista
-        |- Em Inscrições > Show student registrations selecione:
-            > Situação: Todos.
-            > pressione "Buscar".
-            > Selecione "JOAN SQUIRREL".
-            > Clique em perfil do candidato.
-            > Na nova página clique na engrenagem (canto superior direito)
-            > Clique em convocar.
-
-        2. Repita a sequência do Teste 1 para o cpf de "JOAN SQUIRREL".
-    Observação: como "JOAN SQUIRREL" é menor de 18 anos, na entrevista deverão 
-aparecer campos referentes ao responsável (diferentemente do que ocorre com "JOE DOE").
+        > Problemas de saúde
+            - Listar pessoas já cadastradas.
+        > Análise de candidatos
+            - Resultado sempre aparente.
+            - Aba entrevista em primeiro.
