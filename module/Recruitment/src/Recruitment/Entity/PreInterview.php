@@ -310,8 +310,8 @@ class PreInterview
      * 
      * Se sim, o candidato deve colocar os nos nomes da(s) instituiçõe(s), caso contrário, deixar em branco.
      * 
-     * @var string Resposta para a pergunta 'Tem irmãos que cursaram/cursam o ensino superior?'
-     * @ORM\Column(name="pre_interview_siblings_undergraduate", type="string", length=500, nullable=true)
+     * @var bool Resposta para a pergunta 'Tem irmãos que cursaram/cursam o ensino superior?'
+     * @ORM\Column(name="pre_interview_siblings_undergraduate", type="boolean", nullable=false)
      */
     private $siblingsUndergraduate;
 
