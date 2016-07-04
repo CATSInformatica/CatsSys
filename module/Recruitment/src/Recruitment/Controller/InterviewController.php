@@ -344,9 +344,9 @@ class InterviewController extends AbstractEntityActionController
                 // informações sobre os critérios do processo seletivo
                 $data['recruitmentTarget'] = [];
                 $recruitment = $registration->getRecruitment();
-                $data['recruitmentTarget']['socioeconomic'] = $recruitment->getSocioeconomicTarget();
-                $data['recruitmentTarget']['vulnerability'] = $recruitment->getVulnerabilityTarget();
-                $data['recruitmentTarget']['student'] = $recruitment->getStudentTarget();
+                $data['recruitmentTarget']['socioeconomic'] = $recruitment->getRecruitmentSocioeconomicTarget();
+                $data['recruitmentTarget']['vulnerability'] = $recruitment->getRecruitmentVulnerabilityTarget();
+                $data['recruitmentTarget']['student'] = $recruitment->getRecruitmentStudentTarget();
 
                 // informações pessoais
                 $person = $registration->getPerson();
