@@ -47,36 +47,44 @@ class InterviewController extends AbstractEntityActionController
         RegistrationStatusService;
 
     /**
-     * Página de alunos que devem preencher ou já preencheram o formulário
-     * de pré-entrevista.
+     * Lista os candidatos de processos seletivos de alunos cuja a entrevista
+     * pode ser realizada. Candidatos em um dos status:
+     *  - RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW
+     *  - RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE
+     *  - RecruitmentStatus::STATUSTYPE_INTERVIEWED
      * 
      * @return ViewModel
      */
     public function studentListAction()
     {
 
-        $em = $this->getEntityManager();
-        $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-            ->findLastClosed(Recruitment::STUDENT_RECRUITMENT_TYPE);
+        try {
+            $em = $this->getEntityManager();
+            $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')
+                ->findLastClosed(Recruitment::STUDENT_RECRUITMENT_TYPE);
 
-        $candidates = [];
+            $candidates = [];
 
-        if (isset($recruitment['recruitmentId'])) {
-            $calledForPreInterview = $em
-                ->getRepository('Recruitment\Entity\Registration')
-                ->findByStatusSimplified($recruitment['recruitmentId'], RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW);
+            if (isset($recruitment['recruitmentId'])) {
+                $candidates = $em
+                    ->getRepository('Recruitment\Entity\Registration')
+                    ->findByStatusSimplified($recruitment['recruitmentId'], [
+                    RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW,
+                    RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE,
+                    RecruitmentStatus::STATUSTYPE_INTERVIEWED,
+                ]);
+            }
 
-            $preInterviewCompleted = $em
-                ->getRepository('Recruitment\Entity\Registration')
-                ->findByStatusSimplified($recruitment['recruitmentId'], RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE);
-
-            $candidates = array_merge($calledForPreInterview, $preInterviewCompleted);
+            return new ViewModel([
+                'recruitment' => $recruitment,
+                'candidates' => $candidates,
+            ]);
+        } catch (\Exception $ex) {
+            return new ViewModel([
+                'recruitment' => null,
+                'candidates' => null,
+            ]);
         }
-
-        return new ViewModel([
-            'recruitment' => $recruitment,
-            'candidates' => $candidates,
-        ]);
     }
 
     /**
@@ -174,9 +182,6 @@ class InterviewController extends AbstractEntityActionController
 
                     $form->setData($request->getPost());
 
-//                    echo $currentStatusType . ' ' . RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW;
-//                    exit;
-
                     if ($form->isValid()) {
 
                         if ($currentStatusType === RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW) {
@@ -216,10 +221,11 @@ class InterviewController extends AbstractEntityActionController
      * status abaixo ele avançará para o status 
      * RecruitmentStatus::STATUSTYPE_INTERVIEWED:
      * 
-     *  - RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
-     *  - RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW,
-     *  - RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE,
+     *  - RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW
+     *  - RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW
+     *  - RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE
      * 
+     * @todo Fazer o cálculo da nota no critério socioeconômico.
      * 
      * @return ViewModel
      */
@@ -417,5 +423,18 @@ class InterviewController extends AbstractEntityActionController
         }
 
         return new JsonModel([]);
+    }
+    
+    /**
+     * Utilizado apenas para manter a sessão ativa.
+     * 
+     * Utilizada nas páginas de entrevista para alunos e análise.
+     * 
+     * @return JsonModel
+     */
+    public function keepAliveAction() {
+        return new JsonModel([
+            'alive' => true,
+        ]);
     }
 }
