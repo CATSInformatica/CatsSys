@@ -156,24 +156,6 @@ define(['datatable'], function () {
                         data, {text: "Saldo", value: total2 - total1});
                 socioeconomic += createBox('Receitas e Despesas da família', table, 'box-warning');
 
-                // habitantes da casa
-                socioeconomic += createBox('Você mora:', info['preInterview']['live'], 'box-warning');
-                // responsáveis financeiros da casa
-                socioeconomic += createBox('Quem é(são) o(os) responsável(is) pela manutenção financeira do grupo familiar?', 
-                        info['preInterview']['responsibleFinancial'], 'box-warning');
-
-                // elementos de infraestrutura do local de moradia
-                var infrastructureElements = '';
-                for (var i = 0; i < info['preInterview']['infrastructureElements'].length; ++i) {
-                    infrastructureElements += 
-                            info['preInterview']['infrastructureElements'][i]['infrastructureElementDescription'];
-                    infrastructureElements += '; ';
-                }
-                socioeconomic += createBox('A casa onde mora tem:', infrastructureElements, 'box-warning');
-
-                // perímetro de moradia (zona central, periférica ou rural)
-                socioeconomic += createBox('Você reside em:', info['preInterview']['liveArea'], 'box-warning');
-
                 // acesso a bens e serviços (em casa)
                 table = createTable(['Item', 'Quantidade'], 
                         [
@@ -189,8 +171,35 @@ define(['datatable'], function () {
                             ["Quartos", info['preInterview']['itemBedroom']]
                         ], 
                         null);
-                socioeconomic += createBox('Onde você reside existem:', table, 'box-warning');
+                socioeconomic += createBox('Onde você reside existem:', table, 'box-warning');                
+                
 
+                // elementos de infraestrutura do local de moradia
+                var infrastructureElements = '';
+                for (var i = 0; i < info['preInterview']['infrastructureElements'].length; ++i) {
+                    infrastructureElements += 
+                            info['preInterview']['infrastructureElements'][i]['infrastructureElementDescription'];
+                    infrastructureElements += '; ';
+                }
+                socioeconomic += '<div class="box box-warning">' +
+                    '<div class="box-body">' +
+                        '<strong>Você mora:</strong><br>' +
+                        info['preInterview']['live'] + 
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Quem é(são) o(os) responsável(is) pela manutenção financeira do grupo familiar?</strong><br>' +
+                        info['preInterview']['responsibleFinancial'] + 
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>A casa onde mora tem:</strong><br>' +
+                        infrastructureElements + 
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Você reside em:</strong><br>' +
+                        info['preInterview']['liveArea'] + 
+                    '</div>' +
+                '</div>';
+        
 
                 /* Aba - Vulnerabilidade */
                 // membros da família
@@ -256,39 +265,73 @@ define(['datatable'], function () {
                 table = createTable(['#', 'Nome', 'Descrição', 'Endereço'], data, null);
                 vulnerability += createBox('Bens imóveis', table, 'box-danger');
 
-                vulnerability += createBox('A Instituição de ensino na qual cursou o ensino fundamental é?', 
-                        info['preInterview']['elementarySchoolType'], 'box-danger');
-                vulnerability += createBox('Você cursou/cursa o ensino médio em escola(s):', 
-                        info['preInterview']['highSchoolType'], 'box-danger');
-                vulnerability += createBox('Ano de ingresso no ensino médio?', 
-                        info['preInterview']['highSchoolAdmissionYear'], 'box-danger');
-                vulnerability += createBox('Ano de conclusão/previsão de conclusão do ensino médio?', 
-                        info['preInterview']['highSchoolConclusionYear'], 'box-danger');
-                vulnerability += createBox('Tem irmãos que cursaram/cursam o ensino superior?', 
-                        (info['preInterview']['siblingsUndergraduate']) ? "Sim" : "Não", 'box-danger');
-                vulnerability += createBox('Fala algum idioma estrangeiro? Se sim, como estudou?', 
-                        info['preInterview']['otherLanguages'], 'box-danger');
-                vulnerability += createBox('Imovel em que reside é?', 
-                        info['preInterview']['homeStatus'], 'box-danger');
-                vulnerability += createBox('Marque a característica que melhor descreve a sua casa?', 
-                        info['preInterview']['homeDescription'], 'box-danger');
-                vulnerability += createBox('Transporte utilizado para comparecer às aulas:', 
-                        info['preInterview']['transport'], 'box-danger');
-
+                vulnerability += '<div class="box box-danger">' +
+                    '<div class="box-body">' +
+                        '<strong>A Instituição de ensino na qual cursou o ensino fundamental é?</strong><br>' +
+                        info['preInterview']['elementarySchoolType'] +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Você cursou/cursa o ensino médio em escola(s):</strong><br>' +
+                        info['preInterview']['highSchoolType'] +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Ano de ingresso no ensino médio?</strong><br>' +
+                        info['preInterview']['highSchoolAdmissionYear'] +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Ano de conclusão/previsão de conclusão do ensino médio?</strong><br>' +
+                        info['preInterview']['highSchoolConclusionYear'] +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Tem irmãos que cursaram/cursam o ensino superior?</strong><br>' +
+                        ((info['preInterview']['siblingsUndergraduate']) ? "Sim" : "Não") +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Fala algum idioma estrangeiro? Se sim, como estudou?</strong><br>' +
+                        info['preInterview']['otherLanguages'] +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Imovel em que reside é?</strong><br>' +
+                        info['preInterview']['homeStatus'] +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Marque a característica que melhor descreve a sua casa?</strong><br>' +
+                        info['preInterview']['homeDescription'] +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Transporte utilizado para comparecer às aulas:</strong><br>' +
+                        info['preInterview']['transport'] +
+                    '</div>' + 
+                '</div>';
+        
 
                 /* Aba - Perfil de Estudante */
-                profile += createBox('Fez algum curso extraclasse? Se sim, qual(is) curso(s)?', 
-                        info['preInterview']['extraCourses'], 'box-info');
-                profile += createBox('Já fez curso pré-vestibular? Se sim, qual(is) curso(s) pré-vestibular(es)?', 
-                        info['preInterview']['preparationCourse'], 'box-info');
-                profile += createBox('Já prestou algum vestibular ou concurso? Se sim, qual(is) vestibular(es)?', 
-                        info['preInterview']['entranceExam'], 'box-info');
-                profile += createBox('Já ingressou no ensino superior? Se sim, ainda cursa?', 
-                        info['preInterview']['undergraduateCourse'], 'box-info');
-                profile += createBox('O que espera de nós e o que pretende alcançar caso seja aprovado?', 
-                        info['preInterview']['waitingForUs'], 'box-info');
-                profile += createBox('Outras Informações', 
-                        info['preInterview']['moreInformation'], 'box-info');
+                profile += '<div class="box box-info">' +
+                    '<div class="box-body">' +
+                        '<strong>Fez algum curso extraclasse? Se sim, qual(is) curso(s)?</strong><br>' +
+                        '<p>' + info['preInterview']['extraCourses'] + '</p>' +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Já fez curso pré-vestibular? Se sim, qual(is) curso(s) pré-vestibular(es)?</strong><br>' +
+                        '<p>' + info['preInterview']['preparationCourse'] + '</p>' +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Já prestou algum vestibular ou concurso? Se sim, qual(is) vestibular(es)?</strong><br>' +
+                        '<p>' + info['preInterview']['entranceExam'] + '</p>' +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Já ingressou no ensino superior? Se sim, ainda cursa?</strong><br>' +
+                        '<p>' + info['preInterview']['undergraduateCourse'] + '</p>' +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>O que espera de nós e o que pretende alcançar caso seja aprovado?</strong><br>' +
+                        '<p>' + info['preInterview']['waitingForUs'] + '</p>' +
+                    '</div>' + 
+                    '<div class="box-body">' +
+                        '<strong>Outras Informações</strong><br>' +
+                        '<p>' + info['preInterview']['moreInformation'] + '</p>' +
+                    '</div>' + 
+                '</div>';
             }
             
             
