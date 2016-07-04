@@ -45,7 +45,7 @@ class FamilyPropertyFieldset extends Fieldset implements InputFilterProviderInte
                 'name' => 'propertyName',
                 'type' => 'text',
                 'options' => [
-                    'label' => 'Nome'
+                    'label' => 'Tipo do imóvel (Ex: casa, lote, terreno, ...)'
                 ]
             ])
             ->add([
