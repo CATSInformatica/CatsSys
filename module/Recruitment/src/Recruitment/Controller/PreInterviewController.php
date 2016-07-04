@@ -19,6 +19,7 @@
 namespace Recruitment\Controller;
 
 use Database\Controller\AbstractEntityActionController;
+use Exception;
 use Recruitment\Entity\RecruitmentStatus;
 use Recruitment\Form\CpfForm;
 use Recruitment\Form\PreInterviewForm;
@@ -26,6 +27,7 @@ use Recruitment\Service\AddressService;
 use Recruitment\Service\RegistrationStatusService;
 use Recruitment\Service\RelativeService;
 use Zend\Session\Container;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -92,7 +94,7 @@ class PreInterviewController extends AbstractEntityActionController
                     } else {
                         $message = 'Candidato não encontrado.';
                     }
-                } catch (\Exception $ex) {
+                } catch (Exception $ex) {
                     $message = 'Erro inesperado. Não foi possível encontrar uma inscrição associada a este cpf.'
                         . $ex->getMessage();
                 }
@@ -170,7 +172,9 @@ class PreInterviewController extends AbstractEntityActionController
                     return new ViewModel(array(
                         'registration' => null,
                         'form' => null,
-                        'message' => 'Pré-entrevista concluída com com sucesso.',
+                        'message' => 'Pré-entrevista concluída com com sucesso. '
+                        . 'O formulário de pré-entrevista continuará disponível para futuras edições até a '
+                        . 'conclusão de sua entrevista.',
                     ));
                 } else {
                     return new ViewModel(array(
@@ -180,7 +184,7 @@ class PreInterviewController extends AbstractEntityActionController
                     ));
                 }
             }
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             return new ViewModel(array(
                 'registration' => null,
                 'form' => null,
@@ -193,6 +197,27 @@ class PreInterviewController extends AbstractEntityActionController
             'registration' => $registration,
             'form' => $form,
             'message' => '',
+        ]);
+    }
+
+    /**
+     * Como o formulário é grande, para que a sessão não expire durante o preenchimento
+     * a página do formulário de tempos em tempos manda requisições para manter a sessão ativa.
+     */
+    public function keepAliveAction()
+    {
+
+        $studentContainer = new Container('pre_interview');
+
+        $alive = true;
+        
+        // id de inscrição não está na sessão redireciona para o início
+        if (!$studentContainer->offsetExists('regId')) {
+            $alive = false;
+        }
+
+        return new JsonModel([
+            'alive' => $alive,
         ]);
     }
 }

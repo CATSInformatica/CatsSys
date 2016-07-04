@@ -44,7 +44,7 @@ class CandidateFamilyFieldset extends Fieldset implements InputFilterProviderInt
                 'name' => 'candidateFamilyName',
                 'type' => 'text',
                 'options' => [
-                    'label' => 'Nome',
+                    'label' => 'Nome da pessoa',
                 ],
             ])
             ->add([
@@ -68,16 +68,20 @@ class CandidateFamilyFieldset extends Fieldset implements InputFilterProviderInt
             ])
             ->add([
                 'name' => 'relationship',
-                'type' => 'text',
+                'type' => 'select',
                 'options' => [
                     'label' => 'Parentesco',
+                    'empty_option' => '',
+                    'value_options' => CandidateFamily::getRelationshipArray(),
                 ],
             ])
             ->add([
                 'name' => 'scholarity',
-                'type' => 'text',
+                'type' => 'select',
                 'options' => [
                     'label' => 'Escolaridade',
+                    'empty_option' => '',
+                    'value_options' => CandidateFamily::getScholarityArray(),
                 ],
             ])
             ->add([
@@ -128,9 +132,10 @@ class CandidateFamilyFieldset extends Fieldset implements InputFilterProviderInt
                         'name' => 'Zend\I18n\Validator\IsInt',
                     ],
                     [
-                        'name' => 'Zend\Validator\GreaterThan',
+                        'name' => 'Zend\Validator\Between',
                         'options' => [
-                            'min' => 0
+                            'min' => 0,
+                            'max' => 110,
                         ]
                     ]
                 ],
@@ -139,55 +144,10 @@ class CandidateFamilyFieldset extends Fieldset implements InputFilterProviderInt
                 'required' => true,
             ],
             'relationship' => [
-                'required' => false,
-                'filters' => [
-                    [
-                        'name' => 'StringToUpper',
-                        'options' => [
-                            'encoding' => 'UTF-8',
-                        ]
-                    ],
-                    [
-                        'name' => 'StripTags',
-                    ],
-                    [
-                        'name' => 'StringTrim',
-                    ]
-                ],
-                'validators' => [
-                    [
-                        'name' => 'StringLength',
-                        'options' => [
-                            'max' => 100,
-                        ]
-                    ]
-                ]
+                'required' => true,
             ],
             'scholarity' => [
                 'required' => true,
-                'filters' => [
-                    [
-                        'name' => 'StringToUpper',
-                        'options' => [
-                            'encoding' => 'UTF-8',
-                        ]
-                    ],
-                    [
-                        'name' => 'StripTags',
-                    ],
-                    [
-                        'name' => 'StringTrim',
-                    ]
-                ],
-                'validators' => [
-                    [
-                        'name' => 'StringLength',
-                        'options' => [
-                            'min' => 1,
-                            'max' => 200,
-                        ]
-                    ]
-                ]
             ],
             'workSituation' => [
                 'required' => true,
