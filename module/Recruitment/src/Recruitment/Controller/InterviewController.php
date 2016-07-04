@@ -182,9 +182,6 @@ class InterviewController extends AbstractEntityActionController
 
                     $form->setData($request->getPost());
 
-//                    echo $currentStatusType . ' ' . RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW;
-//                    exit;
-
                     if ($form->isValid()) {
 
                         if ($currentStatusType === RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW) {
@@ -376,5 +373,18 @@ class InterviewController extends AbstractEntityActionController
         }
 
         return new JsonModel([]);
+    }
+    
+    /**
+     * Utilizado apenas para manter a sessão ativa.
+     * 
+     * Utilizada nas páginas de entrevista para alunos e análise.
+     * 
+     * @return JsonModel
+     */
+    public function keepAliveAction() {
+        return new JsonModel([
+            'alive' => true,
+        ]);
     }
 }
