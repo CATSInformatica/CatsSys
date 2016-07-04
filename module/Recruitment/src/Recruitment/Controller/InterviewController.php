@@ -276,6 +276,17 @@ class InterviewController extends AbstractEntityActionController
                             $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_INTERVIEWED);
                         }
 
+                        $iti = $interview->getInterviewTotalIncome();
+                        $inofm = $interview->getInterviewNumberOfFamilyMembers();
+                        $ims = $interview->getInterviewMaxScholarity();
+                        $iht = $interview->getInterviewHomeType();
+                        $ihs = $interview->getInterviewHomeSituation();
+                        $imp = $interview->getInterviewMaxPosition();
+
+                        $grade = StudentInterview::calculateSocioeconomicGrade($iti, $inofm, $ims, $iht, $ihs, $imp);
+
+                        $interview->setInterviewSocioeconomicGrade($grade);
+
                         $em->merge($registration);
                         $em->flush();
 
@@ -403,7 +414,6 @@ class InterviewController extends AbstractEntityActionController
                     foreach ($infrastructureElements as $infrastructureElement) {
                         $data['preInterview']['infrastructureElements'][] = $hydrator->extract($infrastructureElement);
                     }
-                            
                 }
 
                 //informações da entrevista
@@ -424,7 +434,7 @@ class InterviewController extends AbstractEntityActionController
 
         return new JsonModel([]);
     }
-    
+
     /**
      * Utilizado apenas para manter a sessão ativa.
      * 
@@ -432,7 +442,8 @@ class InterviewController extends AbstractEntityActionController
      * 
      * @return JsonModel
      */
-    public function keepAliveAction() {
+    public function keepAliveAction()
+    {
         return new JsonModel([
             'alive' => true,
         ]);

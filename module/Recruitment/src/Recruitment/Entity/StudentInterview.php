@@ -187,7 +187,7 @@ class StudentInterview
     const TOTAL_INCOME_HALFTOONE_SALARY = 'Entre meio e um salário mínimo';
     const TOTAL_INCOME_ONETOONEANDHALF_SALARY = 'Entre um e um e meio salário mínimo';
     const TOTAL_INCOME_ONEANDHALFTOTWO_SALARY = 'Entre um e meio e dois salários mínimos';
-    const TOTAL_INCOME_TWOTOFOUR_SALARY = 'Entre dois a quatro salários mínimos';
+    const TOTAL_INCOME_TWOTOFOUR_SALARY = 'Entre dois e quatro salários mínimos';
     const TOTAL_INCOME_FOURTOEIGHT_SALARY = 'Entre quatro e oito salários mínimos';
     const TOTAL_INCOME_EIGHTTOSIXTEEN_SALARY = 'Entre oito e dezesseis salários mínimos';
     const TOTAL_INCOME_MORETHANSIXTEEN_SALARY = 'Mais de dezesseis salários mínimos';
@@ -234,7 +234,6 @@ class StudentInterview
     const HOME_TYPE_FUNDED = 'Financiada';
     const HOME_TYPE_RENTED = 'Alugada';
     const HOME_TYPE_GIVEIN = 'Cedida';
-    const HOME_TYPE_OTHER = 'Outra';
 
     /**
      * Qual é a situação da casa em que vive o candidato.
@@ -979,8 +978,7 @@ class StudentInterview
             self::HOME_TYPE_OWN => self::HOME_TYPE_OWN,
             self::HOME_TYPE_FUNDED => self::HOME_TYPE_FUNDED,
             self::HOME_TYPE_RENTED => self::HOME_TYPE_RENTED,
-            self::HOME_TYPE_GIVEIN => self::HOME_TYPE_GIVEIN,
-            self::HOME_TYPE_OTHER => self::HOME_TYPE_OTHER,
+            self::HOME_TYPE_GIVEIN => self::HOME_TYPE_GIVEIN
         ];
     }
 
@@ -1087,7 +1085,7 @@ class StudentInterview
     {
         return $this->interviewerCommentEvalSocioec;
     }
-    
+
     /**
      * 
      * @return float
@@ -1107,7 +1105,7 @@ class StudentInterview
         $this->interviewSocioeconomicGrade = $interviewSocioeconomicGrade;
         return $this;
     }
-    
+
     /**
      *
      * @param string $interviewerCommentEvalSocioec
@@ -1459,5 +1457,87 @@ class StudentInterview
     {
         $this->interviewerGeneralComment = $interviewerGeneralComment;
         return $this;
+    }
+    
+    /**
+     * Cálculo da nota no critério socioeconômico.
+     * 
+     * @param string $iti Renda total
+     * @param string $inofm Numero de membros na família
+     * @param string $ims Maior escolaridade
+     * @param string $iht Tipo de residência
+     * @param string $ihs Situação da residência
+     * @param string $imp Maior cargo na família
+     * @return float Nota no critério socioeconômico
+     */
+    public static function calculateSocioeconomicGrade($iti, $inofm, $ims, $iht, $ihs, $imp)
+    {
+        $interviewTotalIncomeArr = [
+            self::TOTAL_INCOME_MORETHANSIXTEEN_SALARY => 0.83,
+            self::TOTAL_INCOME_EIGHTTOSIXTEEN_SALARY => 1.67,
+            self::TOTAL_INCOME_FOURTOEIGHT_SALARY => 2.5,
+            self::TOTAL_INCOME_TWOTOFOUR_SALARY => 3.33,
+            self::TOTAL_INCOME_ONEANDHALFTOTWO_SALARY => 4.17,
+            self::TOTAL_INCOME_ONETOONEANDHALF_SALARY => 5,
+            self::TOTAL_INCOME_HALFTOONE_SALARY => 7.5,
+            self::TOTAL_INCOME_HALF_SALARY => 10,
+        ];
+
+        $interviewNumberOfFamilyMembersArr = [
+            self::FAMILY_MEMBERS_ONEORTWO => 1.67,
+            self::FAMILY_MEMBERS_THREEORFOUR => 3.33,
+            self::FAMILY_MEMBERS_FIVEORSIX => 5,
+            self::FAMILY_MEMBERS_SEVENOREIGHT => 6.67,
+            self::FAMILY_MEMBERS_NINEORMORE => 10,
+        ];
+
+        $interviewMaxScholarityArr = [
+            self::MAXSCHOLARITY_GRADUATIONORMORE => 0,
+            self::MAXSCHOLARITY_HIGHSCHOOL => 1.43,
+            self::MAXSCHOLARITY_ELEMENTARYSCHOOLII => 2.86,
+            self::MAXSCHOLARITY_ELEMENTARYSCHOOLI => 4.29,
+            self::MAXSCHOLARITY_ELEMENTARYSCHOOLI_COMPLETE => 4.29,
+            self::MAXSCHOLARITY_ELEMENTARYSCHOOLI_INCOMPLETE => 5.71,
+            self::MAXSCHOLARITY_LITERATE => 7.14,
+            self::MAXSCHOLARITY_ILITERATE => 10,
+        ];
+
+        $interviewHomeTypeArr = [
+            self::HOME_TYPE_OWN => 2.5,
+            self::HOME_TYPE_FUNDED => 5,
+            self::HOME_TYPE_RENTED => 7.5,
+            self::HOME_TYPE_GIVEIN => 10,
+        ];
+
+        $interviewHomeSituationArr = [
+            self::HOME_SITUATION_UNSATISFACTORY => 0,
+            self::HOME_SITUATION_GOOD => 3.33,
+            self::HOME_SITUATION_REGULAR => 6.67,
+            self::HOME_SITUATION_GREAT => 10,
+        ];
+
+        $interviewMaxPositionArr = [
+            self::MAX_POSITION_BUSINESSMAN => 0,
+            self::MAX_POSITION_HIGH_ADMINISTRADOR => 0.77,
+            self::MAX_POSITION_LIBERAL_AUTONOMOUS => 2.31,
+            self::MAX_POSITION_ADMINISTRATOR => 3.85,
+            self::MAX_POSITION_PRODUCTION => 5.38,
+            self::MAX_POSITION_AUTONOMOUS => 5.38,
+            self::MAX_POSITION_SMALL_PRODUCERS => 6.92,
+            self::MAX_POSITION_DOMESTICS => 7.69,
+            self::MAX_POSITION_RURAL_WORKER => 8.46,
+            self::MAX_POSITION_STUDENTOROTHER => 10,
+        ];
+        
+        $grade = (
+            $interviewTotalIncomeArr[$iti]
+            + $interviewNumberOfFamilyMembersArr[$inofm]
+            + $interviewMaxScholarityArr[$ims]
+            + $interviewHomeTypeArr[$iht]
+            + $interviewHomeSituationArr[$ihs]
+            + $interviewMaxPositionArr[$imp]
+            ) / 6;
+        
+        return $grade;
     }
 }
