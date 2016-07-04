@@ -100,23 +100,23 @@ class Recruitment
     /**
      *
      * @var float
-     * @ORM\Column(name="socioeconomic_target", type="float", nullable=true)
+     * @ORM\Column(name="recruitment_socioeconomic_target", type="float", nullable=true)
      */
-    private $socioeconomicTarget;
+    private $recruitmentSocioeconomicTarget;
 
     /**
      *
      * @var float
-     * @ORM\Column(name="vulnerability_target", type="float", nullable=true)
+     * @ORM\Column(name="recruitment_vulnerability_target", type="float", nullable=true)
      */
-    private $vulnerabilityTarget;
+    private $recruitmentVulnerabilityTarget;
 
     /**
      *
      * @var float
-     * @ORM\Column(name="student_target", type="float", nullable=true)
+     * @ORM\Column(name="recruitment_student_target", type="float", nullable=true)
      */
-    private $studentTarget;
+    private $recruitmentStudentTarget;
 
     /**
      *
@@ -219,27 +219,27 @@ class Recruitment
      * 
      * @return float
      */
-    function getSocioeconomicTarget()
+    public function getRecruitmentSocioeconomicTarget()
     {
-        return $this->socioeconomicTarget;
+        return $this->recruitmentSocioeconomicTarget;
     }
 
     /**
      * 
      * @return float
      */
-    function getVulnerabilityTarget()
+    public function getRecruitmentVulnerabilityTarget()
     {
-        return $this->vulnerabilityTarget;
+        return $this->recruitmentVulnerabilityTarget;
     }
 
     /**
      * 
      * @return float
      */
-    function getStudentTarget()
+    public function getRecruitmentStudentTarget()
     {
-        return $this->studentTarget;
+        return $this->recruitmentStudentTarget;
     }
    
     /**
@@ -296,34 +296,34 @@ class Recruitment
     
     /**
      * 
-     * @param float $socioeconomicTarget
+     * @param float $recruitmentSocioeconomicTarget
      * @return \Recruitment\Entity\Recruitment
      */
-    function setSocioeconomicTarget($socioeconomicTarget)
+    public function setRecruitmentSocioeconomicTarget($recruitmentSocioeconomicTarget)
     {
-        $this->socioeconomicTarget = $socioeconomicTarget;
+        $this->recruitmentSocioeconomicTarget = $recruitmentSocioeconomicTarget;
         return $this;
     }
 
     /**
      * 
-     * @param float $vulnerabilityTarget
+     * @param float $recruitmentVulnerabilityTarget
      * @return \Recruitment\Entity\Recruitment
      */
-    function setVulnerabilityTarget($vulnerabilityTarget)
+    public function setRecruitmentVulnerabilityTarget($recruitmentVulnerabilityTarget)
     {
-        $this->vulnerabilityTarget = $vulnerabilityTarget;
+        $this->recruitmentVulnerabilityTarget = $recruitmentVulnerabilityTarget;
         return $this;
     }
 
     /**
      * 
-     * @param float $studentTarget
+     * @param float $recruitmentStudentTarget
      * @return \Recruitment\Entity\Recruitment
      */
-    function setStudentTarget($studentTarget)
+    public function setRecruitmentStudentTarget($recruitmentStudentTarget)
     {
-        $this->studentTarget = $studentTarget;
+        $this->recruitmentStudentTarget = $recruitmentStudentTarget;
         return $this;
     }
 
