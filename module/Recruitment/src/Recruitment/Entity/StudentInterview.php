@@ -440,7 +440,7 @@ class StudentInterview
     const INTERVIEW_STUDENT_PROBLEMATIC = 'PROBLEMÁTICO';
     const INTERVIEW_STUDENT_PROBLEMATIC_DESC = 'O candidato foi aluno em anos anteriores, não chegou a ser expulso, mas teve graves problemas com indisciplina ou com frequência. É o caso de ex-alunos que aproveitaram mal a última oportunidade que tiveram, contudo ainda podem ter chances de entrar.';
     const INTERVIEW_STUDENT_NOTMET = 'SEM PERFIL';
-    const INTERVIEW_STUDENT_NOTMET_DESC = ' O candidato enxerga o ensino superior como uma oportunidade, contudo ainda não visualiza sua importância. Normalmente está sem outras atividades e para não ficar com tempo livre.';
+    const INTERVIEW_STUDENT_NOTMET_DESC = ' O candidato enxerga o ensino superior como uma oportunidade, contudo ainda não visualiza sua importância. Normalmente está sem outras atividades e para não ficar com tempo livre decidiu estudar.';
 
     /**
      * Perfil do estudante.
@@ -1334,15 +1334,15 @@ class StudentInterview
     public static function getInterviewStudentVulnerabilityArray()
     {
         return [
-            self::VULNERABILITY_HIGH => self::VULNERABILITY_HIGH .
+            self::VULNERABILITY_HIGH => '(8 a 10 pontos) ' . self::VULNERABILITY_HIGH .
             ': ' . self::VULNERABILITY_HIGH_DESC,
-            self::VULNERABILITY_MIDDLE => self::VULNERABILITY_MIDDLE .
+            self::VULNERABILITY_MIDDLE => '(5 a 8 pontos) ' . self::VULNERABILITY_MIDDLE .
             ': ' . self::VULNERABILITY_MIDDLE_DESC,
-            self::VULNERABILITY_LOW => self::VULNERABILITY_LOW .
+            self::VULNERABILITY_LOW => '(3 a 5 pontos) ' . self::VULNERABILITY_LOW .
             ': ' . self::VULNERABILITY_LOW_DESC,
-            self::VULNERABILITY_TEMPORARY => self::VULNERABILITY_TEMPORARY .
+            self::VULNERABILITY_TEMPORARY => '(1 a 3 pontos) ' . self::VULNERABILITY_TEMPORARY .
             ': ' . self::VULNERABILITY_TEMPORARY_DESC,
-            self::VULNERABILITY_NONE => self::VULNERABILITY_NONE .
+            self::VULNERABILITY_NONE => '(zero pontos) ' . self::VULNERABILITY_NONE .
             ': ' . self::VULNERABILITY_NONE_DESC,
         ];
     }
@@ -1395,15 +1395,15 @@ class StudentInterview
     public static function getInterviewStudentQuestionArray()
     {
         return [
-            self::INTERVIEW_STUDENT_ADVANCED => self::INTERVIEW_STUDENT_ADVANCED . ': ' .
+            self::INTERVIEW_STUDENT_ADVANCED => '(7 a 10 pontos) ' . self::INTERVIEW_STUDENT_ADVANCED . ': ' .
             self::INTERVIEW_STUDENT_ADVANCED_DESC,
-            self::INTERVIEW_STUDENT_MODERATE => self::INTERVIEW_STUDENT_MODERATE . ': ' .
+            self::INTERVIEW_STUDENT_MODERATE => '(4 a 7 pontos) ' . self::INTERVIEW_STUDENT_MODERATE . ': ' .
             self::INTERVIEW_STUDENT_MODERATE_DESC,
-            self::INTERVIEW_STUDENT_COMMON => self::INTERVIEW_STUDENT_COMMON . ': ' .
+            self::INTERVIEW_STUDENT_COMMON => '(2 a 4 pontos) ' . self::INTERVIEW_STUDENT_COMMON . ': ' .
             self::INTERVIEW_STUDENT_COMMON_DESC,
-            self::INTERVIEW_STUDENT_PROBLEMATIC => self::INTERVIEW_STUDENT_PROBLEMATIC . ': ' .
+            self::INTERVIEW_STUDENT_PROBLEMATIC => '(1 a 2 pontos) ' . self::INTERVIEW_STUDENT_PROBLEMATIC . ': ' .
             self::INTERVIEW_STUDENT_PROBLEMATIC_DESC,
-            self::INTERVIEW_STUDENT_NOTMET => self::INTERVIEW_STUDENT_NOTMET . ': ' .
+            self::INTERVIEW_STUDENT_NOTMET => '(zero pontos) ' . self::INTERVIEW_STUDENT_NOTMET . ': ' .
             self::INTERVIEW_STUDENT_NOTMET_DESC,
         ];
     }
