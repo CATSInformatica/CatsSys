@@ -344,6 +344,19 @@ define(['datatable'], function () {
                             info['person']['addresses'][i]['addressState'] + ', CEP: ' + 
                             info['person']['addresses'][i]['addressPostalCode'] + '<br>';
             } 
+                        
+            var socioeconomicGrade = '';
+            var vulnerabilityGrade = '';
+            var studentGrade = '';
+            var finalGrade = '-';
+            if ($('#grades-' + info['registrationId']).data('socioeconomic') !== -1) {
+                socioeconomicGrade = $('#grades-' + info['registrationId']).data('socioeconomic');
+                vulnerabilityGrade = $('#grades-' + info['registrationId']).data('vulnerability');
+                studentGrade = $('#grades-' + info['registrationId']).data('student');
+                finalGrade = (socioeconomicGrade * $('#target-table').data('socioeconomic') + 
+                        vulnerabilityGrade * $('#target-table').data('vulnerability') + 
+                        studentGrade * $('#target-table').data('student')) / 3;
+            }
             
             
             return '<div class="row">' +
@@ -389,23 +402,19 @@ define(['datatable'], function () {
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td>Socioeconômico</td>' +
-                                    '<td>' + $('#grades-' + info['registrationId']).data('socioeconomic') + '</td>' +
+                                    '<td>' + socioeconomicGrade + '</td>' +
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td>Vulnerabilidade</td>' +
-                                    '<td>' + $('#grades-' + info['registrationId']).data('vulnerability') + '</td>' +
+                                    '<td>' + vulnerabilityGrade + '</td>' +
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td>Perfil de Estudante</td>' +
-                                    '<td>' + $('#grades-' + info['registrationId']).data('student') + '</td>' +
+                                    '<td>' + studentGrade + '</td>' +
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td><strong>Nota final</strong></td>' +
-                                    '<td><strong>' + 
-                                            ($('#grades-' + info['registrationId']).data('socioeconomic') * $('#target-table').data('socioeconomic') + 
-                                            $('#grades-' + info['registrationId']).data('vulnerability') * $('#target-table').data('vulnerability') + 
-                                            $('#grades-' + info['registrationId']).data('student') * $('#target-table').data('student')) / 3 + 
-                                    '</strong></td>' +
+                                    '<td><strong>' + finalGrade + '</strong></td>' +
                                     '<td></td>' +
                                 '</tr>' + 
                             '</table>' +
