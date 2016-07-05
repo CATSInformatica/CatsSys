@@ -93,12 +93,12 @@ define(['datatable'], function () {
         createContent = function (info) {
             var socioeconomic = '';
             var vulnerability = '';
-            var profile = '';
+            var student = '';
             
             if (info['preInterview'] === null) {
                 var socioeconomic = 'O candidato ainda não realizou a pré-entrevista.';
                 var vulnerability = 'O candidato ainda não realizou a pré-entrevista.';
-                var profile = 'O candidato ainda não realizou a pré-entrevista.';
+                var student = 'O candidato ainda não realizou a pré-entrevista.';
             } else {
                 var table, data; // Variáveis auxiliares
 
@@ -306,7 +306,7 @@ define(['datatable'], function () {
         
 
                 /* Aba - Perfil de Estudante */
-                profile += '<div class="box box-info">' +
+                student += '<div class="box box-info">' +
                     '<div class="box-body">' +
                         '<strong>Fez algum curso extraclasse? Se sim, qual(is) curso(s)?</strong><br>' +
                         '<p>' + info['preInterview']['extraCourses'] + '</p>' +
@@ -344,20 +344,24 @@ define(['datatable'], function () {
                             info['person']['addresses'][i]['addressPostalCode'] + '<br>';
             }         
             
+            var socioeconomicGrade = '';
+            var vulnerabilityGrade = '';
+            var studentGrade = '';
+            if (info['studentInterview'] !== null) {
+                socioeconomicGrade = info['studentInterview']['interviewSocioeconomicGrade'];
+                vulnerabilityGrade = info['studentInterview']['interviewVulnerabilityGrade'];
+                studentGrade = info['studentInterview']['interviewStudentGrade'];
+            }
+            
             
             return '<div class="row">' +
                 '<div class="col-md-3">' +
                     '<div class="box box-primary">' +
-                        '<div class="box-body box-profile">' +
-                            '<img class="profile-user-img img-responsive img-circle" src="/recruitment/registration/photo/' + info['person']['personId'] +'" alt="__NAME__">' +
-                            '<h3 class="profile-username text-center"> ' +
+                        '<div class="box-body box-student">' +
+                            '<img class="student-user-img img-responsive img-circle center-block" src="/recruitment/registration/photo/' + info['person']['personId'] +'" alt="__NAME__">' +
+                            '<h3 class="student-username text-center"> ' +
                                 info['person']['personFirstName'] + ' ' + info['person']['personLastName'] +
                             '</h3>' +
-                            '<ul class="list-group list-group-unbordered">' + 
-                                '<li class="list-group-item"><strong>Nota</strong>' + 
-                                    '<a class="pull-right">' + '+9000' + '</a>' +
-                                '</li>' +
-                            '</ul>' +
                         '</div>' +
                     '</div>' +                    
                     '<div class="box box-primary">' +
@@ -379,7 +383,7 @@ define(['datatable'], function () {
                 '<div class="col-md-9">' +
                     '<div class="box box-primary">' +
                         '<div class="box-header with-border">' +
-                            '<h3 class="box-title"> Composição da Nota </h3>' +
+                            '<h3 class="box-title"> Nota </h3>' +
                             '<div class="box-tools pull-right">' + 
                                 '<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>' +
                                 '</button>' + 
@@ -390,35 +394,26 @@ define(['datatable'], function () {
                                 '<tr>' +
                                     '<th>Critério</th>' +
                                     '<th>Nota</th>' +
-                                    '<th>Peso</th>' +
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td>Socioeconômico</td>' +
-                                    '<td>' + '' + '</td>' +
-                                    '<td>' + ((info['recruitmentTarget']['socioeconomic'] !== null) ? 
-                                            info['recruitmentTarget']['socioeconomic'] 
-                                            : '') + 
-                                    '</td>' +
+                                    '<td>' + socioeconomicGrade + '</td>' +
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td>Vulnerabilidade</td>' +
-                                    '<td>' + '' + '</td>' +
-                                    '<td>' + ((info['recruitmentTarget']['vulnerability'] !== null) ? 
-                                            info['recruitmentTarget']['vulnerability'] 
-                                            : '') +
-                                    '</td>' +
+                                    '<td>' + vulnerabilityGrade + '</td>' +
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td>Perfil de Estudante</td>' +
-                                    '<td>' + '' + '</td>' +
-                                    '<td>' + ((info['recruitmentTarget']['student'] !== null) ?
-                                            info['recruitmentTarget']['student']
-                                            : '') +
-                                    '</td>' +
+                                    '<td>' + studentGrade + '</td>' +
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td><strong>Nota final</strong></td>' +
-                                    '<td>' + '<strong></strong>' + '</td>' +
+                                    '<td><strong>' + (
+                                            socioeconomicGrade * $('#target-table').data('socioeconomic') + 
+                                            vulnerabilityGrade * $('#target-table').data('vulnerability') + 
+                                            studentGrade * $('#target-table').data('student')) / 3 + 
+                                    '</strong></td>' +
                                     '<td></td>' +
                                 '</tr>' + 
                             '</table>' +
@@ -428,7 +423,7 @@ define(['datatable'], function () {
                         '<ul class="nav nav-tabs">' +
                             '<li class="active"><a href="#socioeconomic" data-toggle="tab" aria-expanded="true">Socioeconômico</a></li>' +
                             '<li class=""><a href="#vulnerability" data-toggle="tab" aria-expanded="false">Vulnerabilidade</a></li>' +
-                            '<li class=""><a href="#profile" data-toggle="tab" aria-expanded="false">Perfil de Estudante</a></li>' +
+                            '<li class=""><a href="#student" data-toggle="tab" aria-expanded="false">Perfil de Estudante</a></li>' +
                         '</ul>' +
                         '<div class="tab-content">' +
                             '<div class="tab-pane active" id="socioeconomic">' +
@@ -437,8 +432,8 @@ define(['datatable'], function () {
                             '<div class="tab-pane" id="vulnerability">' +
                                 vulnerability + 
                             '</div>' +
-                            '<div class="tab-pane" id="profile">' +
-                                profile + 
+                            '<div class="tab-pane" id="student">' +
+                                student + 
                             '</div>' +
                         '</div>' +
                     '</div>' +

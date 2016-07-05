@@ -25,6 +25,31 @@
                         <?php echo $recruitment['recruitmentYear']; ?>
                     </b>
                 </p>
+                <hr>
+                <div class="col-xs-8 col-xs-offset-2 text-center">
+                    <strong> COMPOSIÇÃO DA NOTA </strong> 
+                    <table class="table table-bordered table-condensed text-center" id="target-table" 
+                           data-socioeconomic="<?php echo $recruitment['recruitmentSocioeconomicTarget']; ?>" 
+                           data-vulnerability="<?php echo $recruitment['recruitmentVulnerabilityTarget']; ?>" 
+                           data-student="<?php echo $recruitment['recruitmentStudentTarget']; ?>">
+                        <tr>
+                            <th>Critério</th>
+                            <th>Peso</th>
+                        </tr>
+                        <tr>
+                            <td>Socioeconômico</td>
+                            <td><?php echo $recruitment['recruitmentSocioeconomicTarget']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>Vulnerabilidade</td>
+                            <td><?php echo $recruitment['recruitmentVulnerabilityTarget']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>Perfil de Estudante</td>
+                            <td><?php echo $recruitment['recruitmentStudentTarget']; ?></td>
+                        </tr>
+                    </table>
+                </div>
 
                 <table id="student-list-table" 
                        class="table table-bordered table-condensed table-striped table-hover">
@@ -35,6 +60,7 @@
                             <th>Email</th>
                             <th>Cpf</th>
                             <th>Rg</th>
+                            <th>Nota</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -44,6 +70,7 @@
                                 <td><?php echo $candidate['personFullName']; ?></td>
                                 <td><?php echo $candidate['personEmail']; ?></td>
                                 <td><?php echo $candidate['personCpf']; ?></td>
+                                <td><?php echo $candidate['personRg']; ?></td>
                                 <td><?php echo $candidate['personRg']; ?></td>
                             </tr>
                         <?php endforeach; ?>
