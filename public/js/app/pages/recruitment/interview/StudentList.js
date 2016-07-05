@@ -23,7 +23,8 @@ define(['datatable'], function () {
 
         initDataTable = function () {
             registrationsTable = $('#student-list-table').DataTable({
-                iDisplayLength: 50
+                iDisplayLength: 50,
+                order: [[ 5, 'desc' ], [ 1, 'asc' ]]
             });
         };
         /**
@@ -342,15 +343,19 @@ define(['datatable'], function () {
                             info['person']['addresses'][i]['addressCity'] + ' - ' + 
                             info['person']['addresses'][i]['addressState'] + ', CEP: ' + 
                             info['person']['addresses'][i]['addressPostalCode'] + '<br>';
-            }         
-            
+            } 
+                        
             var socioeconomicGrade = '';
             var vulnerabilityGrade = '';
             var studentGrade = '';
-            if (info['studentInterview'] !== null) {
-                socioeconomicGrade = info['studentInterview']['interviewSocioeconomicGrade'];
-                vulnerabilityGrade = info['studentInterview']['interviewVulnerabilityGrade'];
-                studentGrade = info['studentInterview']['interviewStudentGrade'];
+            var finalGrade = '-';
+            if ($('#grades-' + info['registrationId']).data('socioeconomic') !== -1) {
+                socioeconomicGrade = $('#grades-' + info['registrationId']).data('socioeconomic');
+                vulnerabilityGrade = $('#grades-' + info['registrationId']).data('vulnerability');
+                studentGrade = $('#grades-' + info['registrationId']).data('student');
+                finalGrade = (socioeconomicGrade * $('#target-table').data('socioeconomic') + 
+                        vulnerabilityGrade * $('#target-table').data('vulnerability') + 
+                        studentGrade * $('#target-table').data('student')) / 3;
             }
             
             
@@ -409,11 +414,7 @@ define(['datatable'], function () {
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td><strong>Nota final</strong></td>' +
-                                    '<td><strong>' + (
-                                            socioeconomicGrade * $('#target-table').data('socioeconomic') + 
-                                            vulnerabilityGrade * $('#target-table').data('vulnerability') + 
-                                            studentGrade * $('#target-table').data('student')) / 3 + 
-                                    '</strong></td>' +
+                                    '<td><strong>' + finalGrade + '</strong></td>' +
                                     '<td></td>' +
                                 '</tr>' + 
                             '</table>' +

@@ -74,7 +74,21 @@ class InterviewController extends AbstractEntityActionController
                     RecruitmentStatus::STATUSTYPE_INTERVIEWED,
                 ]);
             }
-
+            
+            foreach ($candidates as $i => $candidate) {
+                $candidateRegistration = $em->find('Recruitment\Entity\Registration', $candidate['registrationId']);
+                $candidateInterview = $candidateRegistration->getStudentInterview();
+                if ($candidateInterview !== null) {
+                    $candidates[$i]['grades'] = [
+                        'socioeconomic' => $candidateInterview->getInterviewSocioeconomicGrade(),
+                        'vulnerability' => $candidateInterview->getInterviewVulnerabilityGrade(),
+                        'student' => $candidateInterview->getInterviewStudentGrade()
+                    ];
+                } else {
+                    $candidates[$i]['grades'] = null;
+                }
+            }
+            
             return new ViewModel([
                 'recruitment' => $recruitment,
                 'candidates' => $candidates,
@@ -414,12 +428,6 @@ class InterviewController extends AbstractEntityActionController
                     foreach ($infrastructureElements as $infrastructureElement) {
                         $data['preInterview']['infrastructureElements'][] = $hydrator->extract($infrastructureElement);
                     }
-                }
-
-                //informações da entrevista
-                $studentInterview = $registration->getStudentInterview();
-                if ($studentInterview !== null) {
-                    $data['studentInterview'] = $hydrator->extract($studentInterview);
                 }
 
                 return new JsonModel([
