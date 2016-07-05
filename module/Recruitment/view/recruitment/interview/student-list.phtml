@@ -71,7 +71,19 @@
                                 <td><?php echo $candidate['personEmail']; ?></td>
                                 <td><?php echo $candidate['personCpf']; ?></td>
                                 <td><?php echo $candidate['personRg']; ?></td>
-                                <td><?php echo $candidate['personRg']; ?></td>
+                                <td id="grades-<?php echo $candidate['registrationId']; ?>"
+                                    data-socioeconomic="<?php echo $candidate['grades']['socioeconomic']; ?>"
+                                    data-vulnerability="<?php echo $candidate['grades']['vulnerability']; ?>"
+                                    data-student="<?php echo $candidate['grades']['student']; ?>">
+                                <span>
+                                    <?php if ($candidate['grades'] !== null) : 
+                                        echo ($candidate['grades']['socioeconomic'] * $recruitment['recruitmentSocioeconomicTarget'] + 
+                                            $candidate['grades']['vulnerability'] * $recruitment['recruitmentVulnerabilityTarget'] + 
+                                            $candidate['grades']['student'] * $recruitment['recruitmentStudentTarget']) / 3; 
+                                    else :
+                                        echo '-';
+                                    endif;?>
+                                </span></td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

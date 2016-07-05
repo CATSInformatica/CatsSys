@@ -23,7 +23,8 @@ define(['datatable'], function () {
 
         initDataTable = function () {
             registrationsTable = $('#student-list-table').DataTable({
-                iDisplayLength: 50
+                iDisplayLength: 50,
+                order: [[ 5, 'desc' ], [ 1, 'asc' ]]
             });
         };
         /**
@@ -342,16 +343,7 @@ define(['datatable'], function () {
                             info['person']['addresses'][i]['addressCity'] + ' - ' + 
                             info['person']['addresses'][i]['addressState'] + ', CEP: ' + 
                             info['person']['addresses'][i]['addressPostalCode'] + '<br>';
-            }         
-            
-            var socioeconomicGrade = '';
-            var vulnerabilityGrade = '';
-            var studentGrade = '';
-            if (info['studentInterview'] !== null) {
-                socioeconomicGrade = info['studentInterview']['interviewSocioeconomicGrade'];
-                vulnerabilityGrade = info['studentInterview']['interviewVulnerabilityGrade'];
-                studentGrade = info['studentInterview']['interviewStudentGrade'];
-            }
+            } 
             
             
             return '<div class="row">' +
@@ -397,22 +389,22 @@ define(['datatable'], function () {
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td>Socioeconômico</td>' +
-                                    '<td>' + socioeconomicGrade + '</td>' +
+                                    '<td>' + $('#grades-' + info['registrationId']).data('socioeconomic') + '</td>' +
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td>Vulnerabilidade</td>' +
-                                    '<td>' + vulnerabilityGrade + '</td>' +
+                                    '<td>' + $('#grades-' + info['registrationId']).data('vulnerability') + '</td>' +
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td>Perfil de Estudante</td>' +
-                                    '<td>' + studentGrade + '</td>' +
+                                    '<td>' + $('#grades-' + info['registrationId']).data('student') + '</td>' +
                                 '</tr>' + 
                                 '<tr>' +
                                     '<td><strong>Nota final</strong></td>' +
-                                    '<td><strong>' + (
-                                            socioeconomicGrade * $('#target-table').data('socioeconomic') + 
-                                            vulnerabilityGrade * $('#target-table').data('vulnerability') + 
-                                            studentGrade * $('#target-table').data('student')) / 3 + 
+                                    '<td><strong>' + 
+                                            ($('#grades-' + info['registrationId']).data('socioeconomic') * $('#target-table').data('socioeconomic') + 
+                                            $('#grades-' + info['registrationId']).data('vulnerability') * $('#target-table').data('vulnerability') + 
+                                            $('#grades-' + info['registrationId']).data('student') * $('#target-table').data('student')) / 3 + 
                                     '</strong></td>' +
                                     '<td></td>' +
                                 '</tr>' + 
