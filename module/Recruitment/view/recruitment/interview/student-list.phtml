@@ -77,16 +77,14 @@
                                     data-vulnerability="<?php echo ($candidate['grades'] !== null) ?
                                         $candidate['grades']['vulnerability'] : '-1';?>"
                                     data-student="<?php echo ($candidate['grades'] !== null) ?
-                                        $candidate['grades']['student'] : '-1';?>">
-                                <span>
-                                    <?php if ($candidate['grades'] !== null) : 
+                                        $candidate['grades']['student'] : '-1';?>"><?php if ($candidate['grades'] !== null) : 
                                         echo ($candidate['grades']['socioeconomic'] * $recruitment['recruitmentSocioeconomicTarget'] + 
                                             $candidate['grades']['vulnerability'] * $recruitment['recruitmentVulnerabilityTarget'] + 
                                             $candidate['grades']['student'] * $recruitment['recruitmentStudentTarget']) / 3; 
                                     else :
                                         echo '-';
                                     endif;?>
-                                </span></td>
+                                </td>
                             </tr>
                         <?php endforeach; ?>
                     </tbody>

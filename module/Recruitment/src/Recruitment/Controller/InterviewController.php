@@ -308,6 +308,7 @@ class InterviewController extends AbstractEntityActionController
                             'form' => $studentInterviewForm,
                             'message' => 'Entrevista realizada com sucesso.',
                             'person' => $person,
+                            'regId' => $rid,
                         ]);
                     }
                 }
@@ -432,6 +433,42 @@ class InterviewController extends AbstractEntityActionController
 
                 return new JsonModel([
                     'info' => $data,
+                ]);
+            } catch (\Throwable $ex) {
+                return new JsonModel([
+                    'message' => $ex->getMessage(),
+                ]);
+            }
+        }
+
+        return new JsonModel([]);
+    }
+
+    /**
+     * Retorna as notas que compõem a nota final do candidato ao processo seletivo de alunos. 
+     * 
+     * @return JsonModel
+     */
+    public function getStudentGradesAction()
+    {
+
+        $registrationId = $this->params('id', false);
+
+        if ($registrationId) {
+            try {
+                $em = $this->getEntityManager();
+
+                $registration = $em->find('Recruitment\Entity\Registration', $registrationId);            
+                $studentInterview = $registration->getStudentInterview();
+                
+                $grades = [
+                    'socioeconomic' => $studentInterview->getInterviewSocioeconomicGrade(),
+                    'vulnerability' => $studentInterview->getInterviewVulnerabilityGrade(),
+                    'student' => $studentInterview->getInterviewStudentGrade(),
+                ];
+                
+                return new JsonModel([
+                    'grades' => $grades
                 ]);
             } catch (\Throwable $ex) {
                 return new JsonModel([
