@@ -17,7 +17,18 @@
 
 define(['moment', 'masks', 'datetimepicker'], function (moment, masks) {
     var StudentInterviewModule = (function () {
-
+        
+        logInterviewChange = function() {
+            $("button[name='interviewSubmit']").click(function() {
+                if (localStorage.getItem('regId') && parseInt(localStorage.getItem('regId')) === $('#candidate-info').data('regid')) {
+                    localStorage.removeItem('regId');
+                } 
+                if ($('#candidate-info').data('regid') !== -1) {
+                    localStorage['regId'] = $('#candidate-info').data('regid');
+                }
+            });
+        };
+        
         initDatetimepicker = function() {
             $('#interview-starttime').closest('.input-group').datetimepicker({
                 format: 'LT',
@@ -34,6 +45,7 @@ define(['moment', 'masks', 'datetimepicker'], function (moment, masks) {
             init: function () {
                 moment.locale("pt-br");
                 initDatetimepicker();
+                logInterviewChange();
             }
         };
     }());
