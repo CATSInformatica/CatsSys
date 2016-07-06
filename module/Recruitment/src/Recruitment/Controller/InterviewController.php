@@ -74,7 +74,21 @@ class InterviewController extends AbstractEntityActionController
                     RecruitmentStatus::STATUSTYPE_INTERVIEWED,
                 ]);
             }
-
+            
+            foreach ($candidates as $i => $candidate) {
+                $candidateRegistration = $em->find('Recruitment\Entity\Registration', $candidate['registrationId']);
+                $candidateInterview = $candidateRegistration->getStudentInterview();
+                if ($candidateInterview !== null) {
+                    $candidates[$i]['grades'] = [
+                        'socioeconomic' => $candidateInterview->getInterviewSocioeconomicGrade(),
+                        'vulnerability' => $candidateInterview->getInterviewVulnerabilityGrade(),
+                        'student' => $candidateInterview->getInterviewStudentGrade()
+                    ];
+                } else {
+                    $candidates[$i]['grades'] = null;
+                }
+            }
+            
             return new ViewModel([
                 'recruitment' => $recruitment,
                 'candidates' => $candidates,
@@ -294,6 +308,7 @@ class InterviewController extends AbstractEntityActionController
                             'form' => $studentInterviewForm,
                             'message' => 'Entrevista realizada com sucesso.',
                             'person' => $person,
+                            'regId' => $rid,
                         ]);
                     }
                 }
@@ -340,13 +355,6 @@ class InterviewController extends AbstractEntityActionController
                 // informações de inscrição
                 $data = $hydrator->extract($registration);
                 $data['registrationNumber'] = $registration->getRegistrationNumber();
-
-                // informações sobre os critérios do processo seletivo
-                $data['recruitmentTarget'] = [];
-                $recruitment = $registration->getRecruitment();
-                $data['recruitmentTarget']['socioeconomic'] = $recruitment->getSocioeconomicTarget();
-                $data['recruitmentTarget']['vulnerability'] = $recruitment->getVulnerabilityTarget();
-                $data['recruitmentTarget']['student'] = $recruitment->getStudentTarget();
 
                 // informações pessoais
                 $person = $registration->getPerson();
@@ -423,14 +431,44 @@ class InterviewController extends AbstractEntityActionController
                     }
                 }
 
-                //informações da entrevista
-                $studentInterview = $registration->getStudentInterview();
-                if ($studentInterview !== null) {
-                    $data['studentInterview'] = $hydrator->extract($studentInterview);
-                }
-
                 return new JsonModel([
                     'info' => $data,
+                ]);
+            } catch (\Throwable $ex) {
+                return new JsonModel([
+                    'message' => $ex->getMessage(),
+                ]);
+            }
+        }
+
+        return new JsonModel([]);
+    }
+
+    /**
+     * Retorna as notas que compõem a nota final do candidato ao processo seletivo de alunos. 
+     * 
+     * @return JsonModel
+     */
+    public function getStudentGradesAction()
+    {
+
+        $registrationId = $this->params('id', false);
+
+        if ($registrationId) {
+            try {
+                $em = $this->getEntityManager();
+
+                $registration = $em->find('Recruitment\Entity\Registration', $registrationId);            
+                $studentInterview = $registration->getStudentInterview();
+                
+                $grades = [
+                    'socioeconomic' => $studentInterview->getInterviewSocioeconomicGrade(),
+                    'vulnerability' => $studentInterview->getInterviewVulnerabilityGrade(),
+                    'student' => $studentInterview->getInterviewStudentGrade(),
+                ];
+                
+                return new JsonModel([
+                    'grades' => $grades
                 ]);
             } catch (\Throwable $ex) {
                 return new JsonModel([

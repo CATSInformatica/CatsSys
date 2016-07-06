@@ -101,7 +101,7 @@ class RecruitmentRepository extends EntityRepository
     {
         return $this->_em
                 ->createQuery('SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
-                    . 'r.recruitmentEndDate '
+                    . 'r.recruitmentEndDate, r.recruitmentSocioeconomicTarget, r.recruitmentVulnerabilityTarget, r.recruitmentStudentTarget '
                     . 'FROM Recruitment\Entity\Recruitment r '
                     . 'WHERE r.recruitmentType = :type AND '
                     . 'r.recruitmentEndDate IS NOT NULL '
