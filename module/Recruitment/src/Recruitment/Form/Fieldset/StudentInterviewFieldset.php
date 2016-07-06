@@ -362,6 +362,9 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'type' => 'number',
                 'options' => [
                     'label' => 'Nota no critério vulnerabilidade',
+                ],
+                'attributes' => [
+                    'step' => 'any',
                 ]
             ])
             ->add([
@@ -378,6 +381,9 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'options' => [
                     'label' => 'Nota no critério perfil de estudante',
                 ],
+                'attributes' => [
+                    'step' => 'any',
+                ]
             ])
             ->add([
                 'name' => 'interviewerGeneralComment',
