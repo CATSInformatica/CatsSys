@@ -1,16 +1,4 @@
 <section class="content">
-    <p>@Todo:</p>
-
-    <ul>
-        <li>
-            Tabela de alunos com os <em>status</em>: Convocado 
-            para pré-entrevista e pré-entrevista concluída.
-        </li>
-        <li>
-            Barra de botões com os botões: entrevistar e acessar formulário
-            de pré-entrevista.
-        </li>
-    </ul>
 
     <div class="row col-md-12 col-xs-12">
         <div class="box box-success">
@@ -78,9 +66,9 @@
                                         $candidate['grades']['vulnerability'] : '-1';?>"
                                     data-student="<?php echo ($candidate['grades'] !== null) ?
                                         $candidate['grades']['student'] : '-1';?>"><?php if ($candidate['grades'] !== null) : 
-                                        echo ($candidate['grades']['socioeconomic'] * $recruitment['recruitmentSocioeconomicTarget'] + 
+                                        echo round(($candidate['grades']['socioeconomic'] * $recruitment['recruitmentSocioeconomicTarget'] + 
                                             $candidate['grades']['vulnerability'] * $recruitment['recruitmentVulnerabilityTarget'] + 
-                                            $candidate['grades']['student'] * $recruitment['recruitmentStudentTarget']) / 3; 
+                                            $candidate['grades']['student'] * $recruitment['recruitmentStudentTarget']) / 3, 3); 
                                     else :
                                         echo '-';
                                     endif;?>
