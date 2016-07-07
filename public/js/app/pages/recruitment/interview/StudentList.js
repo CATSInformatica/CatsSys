@@ -104,39 +104,25 @@ define(['datatable'], function () {
                 var familyIncome = info['preInterview']['familyIncome'];
                 var total2 = 0;
                 var total1 = 0;
-                var smallerArray = Math.min(familyIncome.length, familyExpenses.length);
                 data = [];
                 var i;
-                for (i = 0; i < smallerArray; ++i) {
+                for (i = 0; i < familyIncome.length; ++i) {
                     data.push([
                         i + 1,
                         familyIncome[i]['familyIncomeExpDescription'],
                         '<strong class="text-green">' +
-                                familyIncome[i]['familyIncomeExpValue'] + '</strong>',
+                            familyIncome[i]['familyIncomeExpValue'] + 
+                        '</strong>',
+                    ]);
+                    total2 += parseFloat(familyIncome[i]['familyIncomeExpValue']);
+                }
+                for (i = 0; i < familyExpenses.length; ++i) {
+                    data.push([
+                        familyIncome.length + i + 1,
                         familyExpenses[i]['familyIncomeExpDescription'],
                         '<strong class="text-red">' +
-                                familyExpenses[i]['familyIncomeExpValue'] + '</strong>'
-                    ]);
-                    total2 += parseFloat(familyIncome[i]['familyIncomeExpValue']);
-                    total1 += parseFloat(familyExpenses[i]['familyIncomeExpValue']);
-                }
-                for (/*i começa de onde parou*/; i < familyIncome.length; ++i) {
-                    data.push([
-                        i + 1,
-                        familyIncome[i]['familyIncomeExpDescription'],
-                        familyIncome[i]['familyIncomeExpValue'],
-                        '',
-                        ''
-                    ]);
-                    total2 += parseFloat(familyIncome[i]['familyIncomeExpValue']);
-                }
-                for (/*i começa de onde parou*/; i < familyExpenses.length; ++i) {
-                    data.push([
-                        i + 1,
-                        '',
-                        '',
-                        familyExpenses[i]['familyIncomeExpDescription'],
-                        familyExpenses[i]['familyIncomeExpValue']
+                            familyExpenses[i]['familyIncomeExpValue'] + 
+                        '</strong>'
                     ]);
                     total1 += parseFloat(familyExpenses[i]['familyIncomeExpValue']);
                 }
@@ -144,12 +130,16 @@ define(['datatable'], function () {
                 data.push([
                     '<strong>Total</strong>',
                     '',
-                    '<strong class="text-green">' + total2 + '</strong>',
-                    '',
-                    '<strong class="text-red">' + total1 + '</strong>'
+                    '<strong><span class="text-green">' + (+total2.toFixed(2)) + '</span> / ' +
+                            '<span class="text-red">' + (+total1.toFixed(2)) + '</span></strong>'
                 ]);
-                table = createTable(['#', 'Receita', 'Valor', 'Despesa', 'Valor'],
-                        data, {text: "Saldo", value: total2 - total1});
+                // última linha: saldo
+                data.push([
+                    '<strong>Saldo</strong>',
+                    '',
+                    '<strong>' + (total2 - total1) + '</strong>'
+                ]);
+                table = createTable(['#', 'Receita/Despesa', 'Valor'], data, ['text-center', '', 'text-center']);
                 socioeconomic += createBox('Receitas e Despesas da família', table, 'box-warning');
 
                 // acesso a bens e serviços (em casa)
@@ -165,8 +155,7 @@ define(['datatable'], function () {
                             ["Computador", info['preInterview']['itemComputer']],
                             ["Smartphones", info['preInterview']['itemSmartphone']],
                             ["Quartos", info['preInterview']['itemBedroom']]
-                        ],
-                        null);
+                        ], ['', 'text-center']);
                 socioeconomic += createBox('Onde você reside existem:', table, 'box-warning');
 
 
@@ -212,7 +201,7 @@ define(['datatable'], function () {
                                 '<strong>Escolaridade:</strong> ' + familyMembers[i]['scholarity']
                     ]);
                 }
-                table = createTable(['#', 'Nome', 'Informações'], data, null);
+                table = createTable(['#', 'Nome', 'Informações'], data, ['text-center', 'text-center', '']);
                 vulnerability += createBox('Membros da família', table, 'box-danger');
 
                 // saúde dos familiares
@@ -230,7 +219,7 @@ define(['datatable'], function () {
                                 ((familyHealth[i]['dailyDependency']) ? "Sim" : "Não")
                     ]);
                 }
-                table = createTable(['#', 'Nome', 'Informações'], data, null);
+                table = createTable(['#', 'Nome', 'Informações'], data, ['text-center', 'text-center', '']);
                 vulnerability += createBox('Problemas de saúde de membros da família', table, 'box-danger');
 
                 // bens móveis
@@ -244,7 +233,7 @@ define(['datatable'], function () {
                         familyGoods[i]['goodValue']
                     ]);
                 }
-                table = createTable(['#', 'Nome', 'Descrição', 'Valor'], data, null);
+                table = createTable(['#', 'Nome', 'Descrição', 'Valor'], data, ['text-center', 'text-center', '', 'text-center']);
                 vulnerability += createBox('Bens móveis', table, 'box-danger');
 
                 // bens imóveis
@@ -258,7 +247,7 @@ define(['datatable'], function () {
                         familyProperties[i]['propertyAddress']
                     ]);
                 }
-                table = createTable(['#', 'Nome', 'Descrição', 'Endereço'], data, null);
+                table = createTable(['#', 'Nome', 'Descrição', 'Endereço'], data, ['text-center', 'text-center', 'Descrição', 'Endereço']);
                 vulnerability += createBox('Bens imóveis', table, 'box-danger');
 
                 vulnerability += '<div class="box box-danger">' +
@@ -345,12 +334,13 @@ define(['datatable'], function () {
             var studentGrade = '';
             var finalGrade = '-';
             if ($('#grades-' + info['registrationId']).data('socioeconomic') !== -1) {
-                socioeconomicGrade = $('#grades-' + info['registrationId']).data('socioeconomic');
-                vulnerabilityGrade = $('#grades-' + info['registrationId']).data('vulnerability');
-                studentGrade = $('#grades-' + info['registrationId']).data('student');
+                socioeconomicGrade = +($('#grades-' + info['registrationId']).data('socioeconomic')).toFixed(3);
+                vulnerabilityGrade = +($('#grades-' + info['registrationId']).data('vulnerability')).toFixed(3);
+                studentGrade = +($('#grades-' + info['registrationId']).data('student')).toFixed(3);
                 finalGrade = (socioeconomicGrade * $('#target-table').data('socioeconomic') +
                         vulnerabilityGrade * $('#target-table').data('vulnerability') +
                         studentGrade * $('#target-table').data('student')) / 3;
+                finalGrade = +finalGrade.toFixed(3);
             }
 
 
@@ -471,36 +461,33 @@ define(['datatable'], function () {
          *          ...
          *          [linhaN-coluna1, linhaN-coluna2, linhaN-coluna3]
          *      ]
-         * @param {null ou object} lastLine - Usado para inserir uma última linha do tipo: 
-         *      Texto: valor 
-         *      lastLine = {
-         *          text: "Soma"
-         *          value: 50.5
-         *      }
+         * @param {array} columnCellClasses - array com as classes que devem ser 
+         *      adicionadas as células de cada coluna
+         *      columnCellClasses = [
+         *          [classes-coluna1, classes-coluna2, classes-coluna3]
+         *      ]
          * @returns {String}
          */
-        createTable = function (columns, data, lastLine) {
+        createTable = function (columns, data, columnCellClasses) {
+            var cellClasses = []; 
+            if (!columnCellClasses) {
+                for (var i = 0; i < columns.length; ++i) {
+                    cellClasses[i] = '';
+                }
+            } else {
+                cellClasses = columnCellClasses;
+            }
+            
             var table = '<table class="table table-condensed table-hover"><tbody><tr>';
             for (var i = 0; i < columns.length; ++i) {
-                table += '<th>' + columns[i] + '</th>';
+                table += '<th class="text-center">' + columns[i] + '</th>';
             }
             table += '</tr>';
             for (var i = 0; i < data.length; ++i) {
                 table += '<tr>';
                 for (var j = 0; j < columns.length; ++j) {
-                    table += '<td>' + data[i][j] + '</td>';
+                    table += '<td class="' + cellClasses[j] + '">' + data[i][j] + '</td>';
                 }
-                table += '</tr>';
-            }
-            if (lastLine !== null) {
-                table += '<tr>';
-                for (var j = 0; j < columns.length - 2; ++j) {
-                    table += '<td></td>';
-                }
-                if (columns.length > 1) {
-                    table += '<td class="pull-right"><strong>' + lastLine['text'] + ': </strong></td>';
-                }
-                table += '<td><strong>' + lastLine['value'] + '</strong></td>';
                 table += '</tr>';
             }
             table += '</tbody></table>';
@@ -519,17 +506,18 @@ define(['datatable'], function () {
                     setTimeout(function() {
                         var grades = {socioeconomic:-1, vulnerability:-1, student:-1};
                         getCandidateGrades(e.newValue, function(grades) {
-                            $('#grades-' + (e.newValue)).data('socioeconomic', grades['socioeconomic']);
-                            $('#grades-' + (e.newValue)).data('vulnerability', grades['vulnerability']);
-                            $('#grades-' + (e.newValue)).data('student', grades['student']);
+                            +($('#grades-' + (e.newValue)).data('socioeconomic', grades['socioeconomic'])).toFixed(3);
+                            +($('#grades-' + (e.newValue)).data('vulnerability', grades['vulnerability'])).toFixed(3);
+                            +($('#grades-' + (e.newValue)).data('student', grades['student'])).toFixed(3);
                             
                             var finalGrade = (grades['socioeconomic'] * $('#target-table').data('socioeconomic') +
                                     grades['vulnerability'] * $('#target-table').data('vulnerability') +
                                     grades['student'] * $('#target-table').data('student')) / 3;
+                            finalGrade = +finalGrade.toFixed(3);
                             if ($('#final-grade-' + (e.newValue)).length > 0) {
-                                $('#se-grade' + (e.newValue)).html(grades['socioeconomic']);
-                                $('#v-grade-' + (e.newValue)).html(grades['vulnerability']);
-                                $('#s-grade-' + (e.newValue)).html(grades['student']);
+                                $('#se-grade' + (e.newValue)).html(+(grades['socioeconomic']).toFixed(3));
+                                $('#v-grade-' + (e.newValue)).html(+(grades['vulnerability']).toFixed(3));
+                                $('#s-grade-' + (e.newValue)).html(+(grades['student']).toFixed(3));
                                 $('#final-grade-' + (e.newValue)).html(finalGrade);
                             }
                             
