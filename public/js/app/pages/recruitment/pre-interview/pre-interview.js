@@ -19,6 +19,8 @@ define(['app/pages/recruitment/registration/registration'], function (regModule)
 
     var PreInterviewModule = (function () {
 
+        var suggestions = ['Teste', 'Hello'];
+
         /**
          * Adiciona/Remove conjuntos de campos para
          * 
@@ -51,11 +53,9 @@ define(['app/pages/recruitment/registration/registration'], function (regModule)
                     newPartialElement = newPartialElement.replace("__TEMPLATE" + e + "__", $(this).get(0).outerHTML);
                 });
 
-                if (currentCount > 0) {
-                    container.find(".field-box").last().after(newPartialElement);
-                } else {
-                    container.append(newPartialElement);
-                }
+                container.children('span').last().before(newPartialElement);
+
+//                updateSuggestions();
 
                 return false;
             });
@@ -64,12 +64,23 @@ define(['app/pages/recruitment/registration/registration'], function (regModule)
                 var container = $(this).closest(".field-container");
                 var currentCount = container.find(".field-box").length;
 
+//                updateSuggestions();
+
                 if (currentCount > container.data("min")) {
                     container.find(".field-box").last().remove();
                 }
 
                 return false;
             });
+
+        };
+
+        updateSuggestions = function () {
+
+//            $('input[name *=familyHealthName]').autocomplete({
+//                query: 'Unit',
+//                suggestions: suggestions
+//            });
 
         };
 
@@ -103,6 +114,7 @@ define(['app/pages/recruitment/registration/registration'], function (regModule)
                 regModule.init();
                 initAddDelButtons();
                 keepMeAlive();
+//                updateSuggestions();
             }
         };
     }());
