@@ -155,7 +155,8 @@ define(['datatable'], function () {
                             ["Computador", info['preInterview']['itemComputer']],
                             ["Smartphones", info['preInterview']['itemSmartphone']],
                             ["Quartos", info['preInterview']['itemBedroom']]
-                        ], ['', 'text-center']);
+                        ], 
+                        ['', 'text-center']);
                 socioeconomic += createBox('Onde você reside existem:', table, 'box-warning');
 
 
@@ -167,24 +168,30 @@ define(['datatable'], function () {
                     infrastructureElements += '; ';
                 }
                 socioeconomic += '<div class="box box-warning">' +
-                        '<div class="box-body">' +
+                    '<div class="box-body">' +
                         '<strong>Você mora:</strong><br>' +
                         info['preInterview']['live'] +
-                        '</div>' +
-                        '<div class="box-body">' +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Quem é(são) o(os) responsável(is) pela manutenção financeira do grupo familiar?</strong><br>' +
                         info['preInterview']['responsibleFinancial'] +
-                        '</div>' +
-                        '<div class="box-body">' +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>A casa onde mora tem:</strong><br>' +
                         infrastructureElements +
-                        '</div>' +
-                        '<div class="box-body">' +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Você reside em:</strong><br>' +
                         info['preInterview']['liveArea'] +
-                        '</div>' +
-                        '</div>';
-
+                    '</div>' +
+                    '<div class="box-body">' +
+                        '<strong>Justificativa para a nota no critério Socioeconômico</strong><br>' +
+                        ((info['studentInterview'] !== null) ?
+                            info['studentInterview']['interviewerSocioecGradeJustification'] :
+                            'O candidato ainda não realizou a entrevista.') +
+                    '</div>' +
+                '</div>';
+                
 
                 /* Aba - Vulnerabilidade */
                 // membros da família
@@ -251,72 +258,103 @@ define(['datatable'], function () {
                 vulnerability += createBox('Bens imóveis', table, 'box-danger');
 
                 vulnerability += '<div class="box box-danger">' +
-                        '<div class="box-body">' +
+                    '<div class="box-body">' +
+                        '<strong>Você considera sua família:</strong><br>' +
+                        info['preInterview']['familyEthnicity'] +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>A Instituição de ensino na qual cursou o ensino fundamental é?</strong><br>' +
                         info['preInterview']['elementarySchoolType'] +
-                        '</div>' +
-                        '<div class="box-body">' +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Você cursou/cursa o ensino médio em escola(s):</strong><br>' +
                         info['preInterview']['highSchoolType'] +
-                        '</div>' +
-                        '<div class="box-body">' +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Ano de ingresso no ensino médio?</strong><br>' +
                         info['preInterview']['highSchoolAdmissionYear'] +
-                        '</div>' +
-                        '<div class="box-body">' +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Ano de conclusão/previsão de conclusão do ensino médio?</strong><br>' +
                         info['preInterview']['highSchoolConclusionYear'] +
-                        '</div>' +
-                        '<div class="box-body">' +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Tem irmãos que cursaram/cursam o ensino superior?</strong><br>' +
                         ((info['preInterview']['siblingsUndergraduate']) ? "Sim" : "Não") +
-                        '</div>' +
-                        '<div class="box-body">' +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Fala algum idioma estrangeiro? Se sim, como estudou?</strong><br>' +
                         info['preInterview']['otherLanguages'] +
-                        '</div>' +
-                        '<div class="box-body">' +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Imovel em que reside é?</strong><br>' +
                         info['preInterview']['homeStatus'] +
-                        '</div>' +
-                        '<div class="box-body">' +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Marque a característica que melhor descreve a sua casa?</strong><br>' +
                         info['preInterview']['homeDescription'] +
-                        '</div>' +
-                        '<div class="box-body">' +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Transporte utilizado para comparecer às aulas:</strong><br>' +
                         info['preInterview']['transport'] +
-                        '</div>' +
-                        '</div>';
-
+                    '</div>' +
+                    '<div class="box-body">' +
+                        '<strong>Justificativa para a nota no critério Vulnerabilidade</strong><br>' +
+                        ((info['studentInterview'] !== null) ? 
+                        info['studentInterview']['interviewerVulnerabilityGradeJustification'] :
+                        'O candidato ainda não realizou a entrevista.') +
+                    '</div>' +
+                '</div>';
 
                 /* Aba - Perfil de Estudante */
                 student += '<div class="box box-info">' +
-                        '<div class="box-body">' +
+                    '<div class="box-body">' +
                         '<strong>Fez algum curso extraclasse? Se sim, qual(is) curso(s)?</strong><br>' +
-                        '<p>' + info['preInterview']['extraCourses'] + '</p>' +
-                        '</div>' +
-                        '<div class="box-body">' +
+                        info['preInterview']['extraCourses'] +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Já fez curso pré-vestibular? Se sim, qual(is) curso(s) pré-vestibular(es)?</strong><br>' +
-                        '<p>' + info['preInterview']['preparationCourse'] + '</p>' +
-                        '</div>' +
-                        '<div class="box-body">' +
+                        info['preInterview']['preparationCourse'] + 
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Já prestou algum vestibular ou concurso? Se sim, qual(is) vestibular(es)?</strong><br>' +
-                        '<p>' + info['preInterview']['entranceExam'] + '</p>' +
-                        '</div>' +
-                        '<div class="box-body">' +
+                        info['preInterview']['entranceExam'] + 
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Já ingressou no ensino superior? Se sim, ainda cursa?</strong><br>' +
-                        '<p>' + info['preInterview']['undergraduateCourse'] + '</p>' +
-                        '</div>' +
-                        '<div class="box-body">' +
+                        info['preInterview']['undergraduateCourse'] +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>O que espera de nós e o que pretende alcançar caso seja aprovado?</strong><br>' +
-                        '<p>' + info['preInterview']['waitingForUs'] + '</p>' +
-                        '</div>' +
-                        '<div class="box-body">' +
+                        info['preInterview']['waitingForUs'] +
+                    '</div>' +
+                    '<div class="box-body">' +
                         '<strong>Outras Informações</strong><br>' +
-                        '<p>' + info['preInterview']['moreInformation'] + '</p>' +
-                        '</div>' +
-                        '</div>';
+                        info['preInterview']['moreInformation'] + 
+                    '</div>' +
+                    '<div class="box-body">' +
+                        '<strong>Justificativa para a nota no critério perfil de estudante</strong><br>' +
+                        ((info['studentInterview'] !== null) ?
+                        (info['studentInterview']['interviewerStudentGradeJustification']) :
+                        'O candidato ainda não realizou a entrevista.') +
+                    '</div>' +
+                '</div>';
+            }
+            
+            var socioeconomicGrade = '-';
+            var vulnerabilityGrade = '-';
+            var studentGrade = '-';
+            var finalGrade = '-';
+            // Mostra as notas se o candidato tiver feito a entrevista
+            if (info['studentInterview'] !== null) {
+                socioeconomicGrade = +(info['studentInterview']['interviewSocioeconomicGrade']).toFixed(3);
+                vulnerabilityGrade = +(info['studentInterview']['interviewVulnerabilityGrade']).toFixed(3);
+                studentGrade = +(info['studentInterview']['interviewStudentGrade']).toFixed(3);
+                finalGrade = (socioeconomicGrade * $('#target-table').data('socioeconomic') +
+                        vulnerabilityGrade * $('#target-table').data('vulnerability') +
+                        studentGrade * $('#target-table').data('student')) /
+                        ($('#target-table').data('socioeconomic') + $('#target-table').data('vulnerability') + $('#target-table').data('student'));
+                finalGrade = +finalGrade.toFixed(3);
             }
 
             var addresses = '';
@@ -328,104 +366,88 @@ define(['datatable'], function () {
                         info['person']['addresses'][i]['addressState'] + ', CEP: ' +
                         info['person']['addresses'][i]['addressPostalCode'] + '<br>';
             }
-
-            var socioeconomicGrade = '';
-            var vulnerabilityGrade = '';
-            var studentGrade = '';
-            var finalGrade = '-';
-            if ($('#grades-' + info['registrationId']).data('socioeconomic') !== -1) {
-                socioeconomicGrade = +($('#grades-' + info['registrationId']).data('socioeconomic')).toFixed(3);
-                vulnerabilityGrade = +($('#grades-' + info['registrationId']).data('vulnerability')).toFixed(3);
-                studentGrade = +($('#grades-' + info['registrationId']).data('student')).toFixed(3);
-                finalGrade = (socioeconomicGrade * $('#target-table').data('socioeconomic') +
-                        vulnerabilityGrade * $('#target-table').data('vulnerability') +
-                        studentGrade * $('#target-table').data('student')) /
-                        ($('#target-table').data('socioeconomic') + $('#target-table').data('vulnerability') + $('#target-table').data('student'));
-                finalGrade = +finalGrade.toFixed(3);
-            }
-
+            
 
             return '<div class="row">' +
-                    '<div class="col-md-3">' +
+                '<div class="col-md-3">' +
                     '<div class="box box-primary">' +
-                    '<div class="box-body box-student">' +
-                    '<img class="student-user-img img-responsive img-circle center-block" src="/recruitment/registration/photo/' + info['person']['personId'] + '" alt="__NAME__">' +
-                    '<h3 class="student-username text-center"> ' +
-                    info['person']['personFirstName'] + ' ' + info['person']['personLastName'] +
-                    '</h3>' +
-                    '</div>' +
+                        '<div class="box-body box-student">' +
+                            '<img class="student-user-img img-responsive img-circle center-block" src="/recruitment/registration/photo/' + info['person']['personId'] + '" alt="__NAME__">' +
+                            '<h3 class="student-username text-center"> ' +
+                                info['person']['personFirstName'] + ' ' + info['person']['personLastName'] +
+                            '</h3>' +
+                        '</div>' +
                     '</div>' +
                     '<div class="box box-primary">' +
-                    '<div class="box-header with-border">' +
-                    '<h3 class="box-title"> Sobre Mim </h3>' +
+                        '<div class="box-header with-border">' +
+                            '<h3 class="box-title"> Sobre Mim </h3>' +
+                        '</div>' +
+                        '<div class="box-body">' +
+                            '<strong><i class="fa fa-birthday-cake margin-r-5"></i> Data de Nascimento</strong>' +
+                            '<p class="text-muted">' + info['person']['personBirthday'] + '</p>' +
+                            '<strong><i class="fa fa-phone margin-r-5"></i> Telefone</strong>' +
+                            '<p class="text-muted">' + info['person']['personPhone'] + '</p>' +
+                            '<strong><i class="fa fa-at margin-r-5"></i> Email</strong>' +
+                            '<p class="text-muted">' + info['person']['personEmail'] + '</p>' +
+                            '<strong><i class="fa fa-map-marker margin-r-5"></i> Endereço</strong>' +
+                            '<p class="text-muted">' + addresses + '</p>' +
+                        '</div>' +
                     '</div>' +
-                    '<div class="box-body">' +
-                    '<strong><i class="fa fa-birthday-cake margin-r-5"></i> Data de Nascimento</strong>' +
-                    '<p class="text-muted">' + info['person']['personBirthday'] + '</p>' +
-                    '<strong><i class="fa fa-phone margin-r-5"></i> Telefone</strong>' +
-                    '<p class="text-muted">' + info['person']['personPhone'] + '</p>' +
-                    '<strong><i class="fa fa-at margin-r-5"></i> Email</strong>' +
-                    '<p class="text-muted">' + info['person']['personEmail'] + '</p>' +
-                    '<strong><i class="fa fa-map-marker margin-r-5"></i> Endereço</strong>' +
-                    '<p class="text-muted">' + addresses + '</p>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="col-md-9">' +
+                '</div>' +
+                '<div class="col-md-9">' +
                     '<div class="box box-primary">' +
-                    '<div class="box-header with-border">' +
-                    '<h3 class="box-title"> Nota </h3>' +
-                    '<div class="box-tools pull-right">' +
-                    '<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>' +
-                    '</button>' +
-                    '</div>' +
-                    '</div>' +
-                    '<div class="box-body">' +
-                    '<table class="table table-condensed">' +
-                    '<tr>' +
-                    '<th>Critério</th>' +
-                    '<th>Nota</th>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '<td>Socioeconômico</td>' +
-                    '<td id="se-grade-' + info['registrationId'] + '">' + socioeconomicGrade + '</td>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '<td>Vulnerabilidade</td>' +
-                    '<td id="v-grade-' + info['registrationId'] + '">' + vulnerabilityGrade + '</td>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '<td>Perfil de Estudante</td>' +
-                    '<td id="s-grade-' + info['registrationId'] + '">' + studentGrade + '</td>' +
-                    '</tr>' +
-                    '<tr>' +
-                    '<td><strong>Nota final</strong></td>' +
-                    '<td><strong id="final-grade-' + info['registrationId'] + '">' + finalGrade + '</strong></td>' +
-                    '<td></td>' +
-                    '</tr>' +
-                    '</table>' +
-                    '</div>' +
+                        '<div class="box-header with-border">' +
+                            '<h3 class="box-title"> Nota </h3>' +
+                            '<div class="box-tools pull-right">' +
+                                '<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>' +
+                            '</div>' +
+                        '</div>' +
+                        '<div class="box-body">' +
+                            '<table class="table table-condensed">' +
+                                '<tr>' +
+                                    '<th>Critério</th>' +
+                                    '<th>Nota</th>' +
+                                '</tr>' +
+                                '<tr>' +
+                                    '<td>Socioeconômico</td>' +
+                                    '<td id="se-grade-' + info['registrationId'] + '">' + socioeconomicGrade + '</td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                    '<td>Vulnerabilidade</td>' +
+                                    '<td id="v-grade-' + info['registrationId'] + '">' + vulnerabilityGrade + '</td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                    '<td>Perfil de Estudante</td>' +
+                                    '<td id="s-grade-' + info['registrationId'] + '">' + studentGrade + '</td>' +
+                                '</tr>' +
+                                '<tr>' +
+                                    '<td><strong>Nota final</strong></td>' +
+                                    '<td><strong id="final-grade-' + info['registrationId'] + '">' + finalGrade + '</strong></td>' +
+                                    '<td></td>' +
+                                '</tr>' +
+                            '</table>' +
+                        '</div>' +
                     '</div>' +
                     '<div class="nav-tabs-custom">' +
-                    '<ul class="nav nav-tabs">' +
-                    '<li class="active"><a href="#socioeconomic" data-toggle="tab" aria-expanded="true">Socioeconômico</a></li>' +
-                    '<li class=""><a href="#vulnerability" data-toggle="tab" aria-expanded="false">Vulnerabilidade</a></li>' +
-                    '<li class=""><a href="#student" data-toggle="tab" aria-expanded="false">Perfil de Estudante</a></li>' +
-                    '</ul>' +
-                    '<div class="tab-content">' +
-                    '<div class="tab-pane active" id="socioeconomic">' +
-                    socioeconomic +
+                        '<ul class="nav nav-tabs">' +
+                            '<li class="active"><a href="#socioeconomic" data-toggle="tab" aria-expanded="true">Socioeconômico</a></li>' +
+                            '<li class=""><a href="#vulnerability" data-toggle="tab" aria-expanded="false">Vulnerabilidade</a></li>' +
+                            '<li class=""><a href="#student" data-toggle="tab" aria-expanded="false">Perfil de Estudante</a></li>' +
+                        '</ul>' +
+                        '<div class="tab-content">' +
+                            '<div class="tab-pane active" id="socioeconomic">' +
+                                socioeconomic +
+                            '</div>' +
+                            '<div class="tab-pane" id="vulnerability">' +
+                                vulnerability +
+                            '</div>' +
+                            '<div class="tab-pane" id="student">' +
+                                student +
+                            '</div>' +
+                        '</div>' +
                     '</div>' +
-                    '<div class="tab-pane" id="vulnerability">' +
-                    vulnerability +
-                    '</div>' +
-                    '<div class="tab-pane" id="student">' +
-                    student +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>' +
-                    '</div>';
+                '</div>' +
+            '</div>';
         };
 
         /*
@@ -438,16 +460,16 @@ define(['datatable'], function () {
          */
         createBox = function (boxTitle, boxBody, boxClasses) {
             return '<div class="box collapsed-box ' + boxClasses + '">' +
-                    '<div class="box-header">' +
+                '<div class="box-header">' +
                     '<h3 class="box-title">' + boxTitle + '</h3>' +
                     '<div class="box-tools pull-right">' +
-                    '<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>' +
+                        '<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>' +
                     '</div>' +
-                    '</div>' +
-                    '<div class="box-body">' +
+                '</div>' +
+                '<div class="box-body">' +
                     boxBody +
-                    '</div>' +
-                    '</div>';
+                '</div>' +
+            '</div>';
         };
 
         /*
@@ -506,11 +528,7 @@ define(['datatable'], function () {
                 if (e.newValue !== null) { // e.newValue - registrationId
                     setTimeout(function() {
                         var grades = {socioeconomic:-1, vulnerability:-1, student:-1};
-                        getCandidateGrades(e.newValue, function(grades) {
-                            $('#grades-' + (e.newValue)).data('socioeconomic', +(grades['socioeconomic']).toFixed(3));
-                            $('#grades-' + (e.newValue)).data('vulnerability', +(grades['vulnerability']).toFixed(3));
-                            $('#grades-' + (e.newValue)).data('student', +(grades['student']).toFixed(3));
-                                                        
+                        getCandidateGrades(e.newValue, function(grades) {                                                        
                             var finalGrade = (grades['socioeconomic'] * $('#target-table').data('socioeconomic') +
                                     grades['vulnerability'] * $('#target-table').data('vulnerability') +
                                     grades['student'] * $('#target-table').data('student')) / 
