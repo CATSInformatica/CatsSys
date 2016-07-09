@@ -68,7 +68,8 @@
                                         $candidate['grades']['student'] : '-1';?>"><?php if ($candidate['grades'] !== null) : 
                                         echo round(($candidate['grades']['socioeconomic'] * $recruitment['recruitmentSocioeconomicTarget'] + 
                                             $candidate['grades']['vulnerability'] * $recruitment['recruitmentVulnerabilityTarget'] + 
-                                            $candidate['grades']['student'] * $recruitment['recruitmentStudentTarget']) / 3, 3); 
+                                            $candidate['grades']['student'] * $recruitment['recruitmentStudentTarget']) / 
+                                                ($recruitment['recruitmentSocioeconomicTarget'] + $recruitment['recruitmentVulnerabilityTarget'] + $recruitment['recruitmentStudentTarget']), 3); 
                                     else :
                                         echo '-';
                                     endif;?>

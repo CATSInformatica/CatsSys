@@ -339,7 +339,8 @@ define(['datatable'], function () {
                 studentGrade = +($('#grades-' + info['registrationId']).data('student')).toFixed(3);
                 finalGrade = (socioeconomicGrade * $('#target-table').data('socioeconomic') +
                         vulnerabilityGrade * $('#target-table').data('vulnerability') +
-                        studentGrade * $('#target-table').data('student')) / 3;
+                        studentGrade * $('#target-table').data('student')) /
+                        ($('#target-table').data('socioeconomic') + $('#target-table').data('vulnerability') + $('#target-table').data('student'));
                 finalGrade = +finalGrade.toFixed(3);
             }
 
@@ -506,14 +507,17 @@ define(['datatable'], function () {
                     setTimeout(function() {
                         var grades = {socioeconomic:-1, vulnerability:-1, student:-1};
                         getCandidateGrades(e.newValue, function(grades) {
-                            +($('#grades-' + (e.newValue)).data('socioeconomic', grades['socioeconomic'])).toFixed(3);
-                            +($('#grades-' + (e.newValue)).data('vulnerability', grades['vulnerability'])).toFixed(3);
-                            +($('#grades-' + (e.newValue)).data('student', grades['student'])).toFixed(3);
-                            
+                            $('#grades-' + (e.newValue)).data('socioeconomic', +(grades['socioeconomic']).toFixed(3));
+                            $('#grades-' + (e.newValue)).data('vulnerability', +(grades['vulnerability']).toFixed(3));
+                            $('#grades-' + (e.newValue)).data('student', +(grades['student']).toFixed(3));
+                                                        
                             var finalGrade = (grades['socioeconomic'] * $('#target-table').data('socioeconomic') +
                                     grades['vulnerability'] * $('#target-table').data('vulnerability') +
-                                    grades['student'] * $('#target-table').data('student')) / 3;
+                                    grades['student'] * $('#target-table').data('student')) / 
+                                    ($('#target-table').data('socioeconomic') + $('#target-table').data('vulnerability') + $('#target-table').data('student'));
                             finalGrade = +finalGrade.toFixed(3);
+                            
+                            // Se a área com detalhes sobre o candidato estiver aberta, atualiza lá também
                             if ($('#final-grade-' + (e.newValue)).length > 0) {
                                 $('#se-grade' + (e.newValue)).html(+(grades['socioeconomic']).toFixed(3));
                                 $('#v-grade-' + (e.newValue)).html(+(grades['vulnerability']).toFixed(3));
