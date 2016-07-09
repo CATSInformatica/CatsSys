@@ -350,7 +350,7 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
         };
     };
     initToggle = function () {
-        $(".content").on("click", ".cats-row", function () {
+        $(".content").on("click", ".cats-row", function (e) {
             var selectedElement = $(this);
             if (selectedElement.is('tr')) {
                 selectedElement.find('td').toggleClass('cats-selected-bg');
@@ -362,10 +362,12 @@ define(['bootbox', 'jquery', 'bootstrap'], function (bootbox) {
             selectedElement.toggleClass('cats-selected-row');
             setNumberOfSelectedElements();
 
-            if (selectedElement.hasClass('cats-selected-row')) {
-                openToolbar();
-            } else if (numberOfSelectedElements === 0) {
-                closeToolbar();
+            if (e.ctrlKey) {
+                if (selectedElement.hasClass('cats-selected-row')) {
+                    openToolbar();
+                } else if (numberOfSelectedElements === 0) {
+                    closeToolbar();
+                }
             }
         });
         $(document).keyup(function (e) {
