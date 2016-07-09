@@ -208,6 +208,18 @@ class PreInterview
 
 
     /* ####################### VULNERABILIDADE ###################### */
+    
+    
+    const FAMILY_ETHNICITY_CAUCASIAN = 'Caucasiana';
+    const FAMILY_ETHNICITY_BLACK = 'Negra';
+    const FAMILY_ETHNICITY_BROWN = 'Parda';
+    const FAMILY_ETHNICITY_NATIVE = 'Indígena';
+    
+    /**
+     * Etinia da família.
+     * @ORM\Column(name="pre_interview_famethnicity", type="string", length=30, nullable=false);
+     */
+    private $familyEthnicity;
 
     /**
      * var Collection Bens imóveis da família.
@@ -855,6 +867,44 @@ class PreInterview
     }
     /* ####################### VULNERABILIDADE ###################### */
 
+    
+    /**
+     * Retorna a declaração de etinia da família.
+     * 
+     * @return string
+     */
+    public function getFamilyEthnicity()
+    {
+        return $this->familyEthnicity;
+    }
+
+    /**
+     * Define a etinia da família.
+     * 
+     * @param string $familyEthnicity
+     * @return \Recruitment\Entity\PreInterview
+     */
+    public function setFamilyEthnicity($familyEthnicity)
+    {
+        $this->familyEthnicity = $familyEthnicity;
+        return $this;
+    }
+    
+    /**
+     * Possíveis etinias.
+     * 
+     * @return array Possíveis etinias
+     */
+    public static function getFamilyEthnicityArray()
+    {
+        return [
+            self::FAMILY_ETHNICITY_NATIVE => self::FAMILY_ETHNICITY_NATIVE,
+            self::FAMILY_ETHNICITY_BLACK => self::FAMILY_ETHNICITY_BLACK,
+            self::FAMILY_ETHNICITY_BROWN => self::FAMILY_ETHNICITY_BROWN,
+            self::FAMILY_ETHNICITY_CAUCASIAN => self::FAMILY_ETHNICITY_CAUCASIAN,
+        ];
+    }
+        
     /**
      * Tipos de escolas fundamentais.
      * 

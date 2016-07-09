@@ -52,7 +52,7 @@ class FamilyPropertyFieldset extends Fieldset implements InputFilterProviderInte
                 'name' => 'propertyDescription',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Descrição'
+                    'label' => 'Descrição (Valor do IPTU, a quantos anos possui a propriedade, ...)'
                 ]
             ])
             ->add([

@@ -1,16 +1,6 @@
 <section class="content">
     <div class="row">
         <div class="col-md-10 col-md-offset-1">
-            <div class="box box-default">
-                <div class="box-header with-border">
-                    <h3 class="box-title">CANDIDATO</h3>
-                </div>
-                <div class="box-body" id="candidate-info" 
-                     data-regid="<?php echo (isset($this->regId)) ? $this->regId : '-1';?>">
-                    <p><?php echo $this->person->getPersonName(); ?></p>
-                    <p><?php echo $message; ?></p>
-                </div>
-            </div>
             <?php
             if ($form !== null):
                 $form->prepare();
@@ -20,9 +10,20 @@
                 <?php $interview = $form->get('studentInterview'); ?>
                 <div class="box box-default">
                     <div class="box-header with-border">
-                        <h3 class="box-title">PREPARAÇÃO</h3>
+                        <div class="box-header with-border">
+                            <div class="callout bg-purple">
+                                <i class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+                                <h4 class="text-center">Preparação</h4>
+                                <p class="text-center">Verifique se o candidato correto foi selecionado e insira o horário de início da entrevista</p>
+                            </div>
+                        </div>
                     </div>
-                    <div class="box-body">
+                    <div class="box-body" id="candidate-info" 
+                         data-regid="<?php echo (isset($this->regId)) ? $this->regId : '-1'; ?>">
+                        <p><?php echo $this->person->getPersonName(); ?></p>
+                        
+                        <p><?php echo $message; ?></p>
+                        
                         <div class="col-md-4 col-xs-12">
                             <?php echo $this->formRow($interview->get('interviewStartTime')); ?>
                         </div>
@@ -34,7 +35,11 @@
                 </div>
                 <div class="box box-default">
                     <div class="box-header with-border">
-                        <h3 class="box-title">CONTATO COM O CANDIDATO</h3>
+                        <div class="callout callout-success">
+                                <i class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+                                <h4 class="text-center">Contato com o candidato</h4>
+                                <p class="text-center">Entreviste o candidato</p>
+                            </div>
                     </div>
                     <div class="box-body">
                         <div class="col-md-12">
@@ -120,11 +125,21 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="box box-default">
                         <div class="box-header with-border">
-                            <h3 class="box-title">AVALIAÇÃO</h3>
+                            <div class="callout bg-navy">
+                                <i class="fa fa-exclamation-triangle fa-2x pull-left"></i>
+                                <h4 class="text-center">Área de avaliação do candidato</h4>
+                                <p class="text-center">Nesta etapa apenas os entrevistadores devem estar presentes</p>
+                            </div>
                         </div>
+
                         <div class="box-body">
+
+                            <h3 class="box-title text-center">CRITÉRIO SOCIOECONÔMICO</h3>
+                            <hr>
+
                             <div class="col-md-12">
                                 <div class="col-md-6 col-xs-12">
                                     <?php echo $this->formRow($interview->get('interviewTotalIncome')); ?>
@@ -150,12 +165,16 @@
                                 </div>
                             </div>
                             <div class="col-md-12">
-                                <?php echo $this->formRow($interview->get('interviewerCommentEvalSocioec')); ?>
+                                <?php echo $this->formRow($interview->get('interviewerSocioecGradeJustification')); ?>
                             </div>
+
+                            <hr>
+                            <h3 class="box-title text-center">CRITÉRIO VULNERABILIDADE</h3>
+                            <hr>
+
                             <div class="col-md-12">
                                 <div class="col-md-4 col-xs-12">
                                     <label>Atentar para os seguintes itens</label>
-                                    <?php echo $this->formRow($interview->get('interviewFamEthnicity')); ?>
                                     <?php echo $this->formRow($interview->get('interviewFamilyProvider')); ?>
                                     <?php echo $this->formRow($interview->get('interviewHasChildren')); ?>
                                     <?php echo $this->formRow($interview->get('interviewHasDisease')); ?>
@@ -171,6 +190,15 @@
                                     <?php echo $this->formRow($interview->get('interviewVulnerabilityGrade')); ?>
                                 </div>
                             </div>
+
+                            <div class="col-md-12 col-xs-12">
+                                <?php echo $this->formRow($interview->get('interviewerVulnerabilityGradeJustification')); ?>
+                            </div>
+
+                            <hr>
+                            <h3 class="box-title text-center">CRITÉRIO PERFIL DE ESTUDANTE</h3>
+                            <hr>
+
                             <div class="col-md-12 text-justify">
                                 <?php echo $this->formRow($interview->get('interviewStudentQuestion')); ?>
                             </div>
@@ -178,7 +206,10 @@
                                 <?php echo $this->formRow($interview->get('interviewStudentGrade')); ?>
                             </div>
                             <div class="col-md-12 col-xs-12">
-                                <?php echo $this->formRow($interview->get('interviewerGeneralComment')); ?>
+                                <?php echo $this->formRow($interview->get('interviewerStudentGradeJustification')); ?>
+                            </div>
+                            <div class="col-md-4 col-xs-12">
+                                <?php echo $this->formRow($interview->get('interviewEndTime')); ?>
                             </div>
                         </div>
                     </div>
