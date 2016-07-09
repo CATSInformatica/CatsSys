@@ -1371,7 +1371,7 @@ class StudentInterview
      * @param string $interviewerVulnerabilityGradeJustification
      * @return \Recruitment\Entity\StudentInterview
      */
-    public function setInterviewerVulnerabilityJustification($interviewerVulnerabilityGradeJustification)
+    public function setInterviewerVulnerabilityGradeJustification($interviewerVulnerabilityGradeJustification)
     {
         $this->interviewerVulnerabilityGradeJustification = $interviewerVulnerabilityGradeJustification;
         return $this;
