@@ -431,6 +431,12 @@ class InterviewController extends AbstractEntityActionController
                     }
                 }
 
+                // informações sobre a entrevista
+                $studentInterview = $registration->getStudentInterview();
+                if ($studentInterview !== null) {
+                    $data['studentInterview'] = $hydrator->extract($studentInterview);
+                }
+
                 return new JsonModel([
                     'info' => $data,
                 ]);
