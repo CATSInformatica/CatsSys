@@ -414,6 +414,7 @@ return array(
                         'resource' => 'Recruitment\Controller\PreInterview',
                         'privilege' => 'index',
                         'icon' => 'fa fa-check',
+                        'target' => '_blank',
                         'pages' => array(
                             array(
                                 'label' => 'Student pre-interview II',
