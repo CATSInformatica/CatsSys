@@ -50,6 +50,7 @@ class PreInterviewController extends AbstractEntityActionController
      */
     public function indexAction()
     {
+        $this->layout('application-clean/layout');
         $request = $this->getRequest();
         $form = new CpfForm();
 
@@ -122,6 +123,7 @@ class PreInterviewController extends AbstractEntityActionController
      */
     public function studentPreInterviewFormAction()
     {
+        $this->layout('application-clean/layout');
         $studentContainer = new Container('pre_interview');
 
         // id de inscrição não está na sessão redireciona para o início
