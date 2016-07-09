@@ -49,7 +49,18 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                     'add-on-prepend' => '<i class="fa fa-clock-o"></i>',
                 ],
                 'attributes' => [
-                    'id' => 'interview-starttime', // para o datetimepicker,
+                    'class' => 'interview-time', // para o datetimepicker,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewEndTime',
+                'type' => 'text',
+                'options' => [
+                    'label' => 'Término da entrevista',
+                    'add-on-prepend' => '<i class="fa fa-clock-o"></i>',
+                ],
+                'attributes' => [
+                    'class' => 'interview-time', // para o datetimepicker,
                 ]
             ])
             ->add([
@@ -240,24 +251,14 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 ],
             ])
             ->add([
-                'name' => 'interviewerCommentEvalSocioec',
+                'name' => 'interviewerSocioecGradeJustification',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Comentários sobre a avaliação socioeconômica',
+                    'label' => 'Justificativa para a nota no critério Socioeconômico',
                 ],
                 'attributes' => [
-                    'rows' => 5,
+                    'rows' => 9,
                 ]
-            ])
-            ->add([
-                'name' => 'interviewFamEthnicity',
-                'type' => 'checkbox',
-                'options' => [
-                    'label' => 'Família negra, parda ou indígena',
-                    'use_hidden_element' => true,
-                    'checked_value' => StudentInterview::FAM_ETHNICITY_NOCAUCASIAN,
-                    'unchecked_value' => StudentInterview::FAM_ETHNICITY_CAUCASIAN,
-                ],
             ])
             ->add([
                 'name' => 'interviewFamilyProvider',
@@ -333,10 +334,10 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'name' => 'interviewSingleton',
                 'type' => 'checkbox',
                 'options' => [
-                    'label' => 'É filho único',
+                    'label' => 'Tem irmãos',
                     'use_hidden_element' => true,
-                    'checked_value' => StudentInterview::SINGLETON_YES,
-                    'unchecked_value' => StudentInterview::SINGLETON_NO,
+                    'checked_value' => StudentInterview::SINGLETON_NO,
+                    'unchecked_value' => StudentInterview::SINGLETON_YES,
                 ],
             ])
             ->add([
@@ -368,6 +369,16 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 ]
             ])
             ->add([
+                'name' => 'interviewerVulnerabilityGradeJustification',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Justificativa para a nota no critério Vulnerabilidade',
+                ],
+                'attributes' => [
+                    'rows' => 9,
+                ]
+            ])
+            ->add([
                 'name' => 'interviewStudentQuestion',
                 'type' => 'radio',
                 'options' => [
@@ -386,10 +397,10 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 ]
             ])
             ->add([
-                'name' => 'interviewerGeneralComment',
+                'name' => 'interviewerStudentGradeJustification',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Comentários gerais do entrevistador',
+                    'label' => 'Justificativa para a nota no critério perfil de estudante',
                 ],
                 'attributes' => [
                     'rows' => 9,
@@ -467,11 +478,8 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
             'interviewMaxPosition' => [
                 'required' => true,
             ],
-            'interviewerCommentEvalSocioec' => [
-                'required' => false,
-            ],
-            'interviewFamEthnicity' => [
-                'required' => false,
+            'interviewerSocioecGradeJustification' => [
+                'required' => true,
             ],
             'interviewFamilyProvider' => [
                 'required' => false,
@@ -506,13 +514,16 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
             'interviewVulnerabilityGrade' => [
                 'required' => true,
             ],
+            'interviewerVulnerabilityGradeJustification' => [
+                'required' => true,
+            ],
             'interviewStudentQuestion' => [
                 'required' => true,
             ],
             'interviewStudentGrade' => [
                 'required' => true,
             ],
-            'interviewerGeneralComment' => [
+            'interviewerStudentGradeJustification' => [
                 'required' => true,
             ],
         ];

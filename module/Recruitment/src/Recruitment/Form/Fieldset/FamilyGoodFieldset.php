@@ -45,7 +45,7 @@ class FamilyGoodFieldset extends Fieldset implements InputFilterProviderInterfac
                 'name' => 'goodName',
                 'type' => 'text',
                 'options' => [
-                    'label' => 'Tipo do bem (Ex: automóvel)'
+                    'label' => 'Tipo do bem (Ex: carro, motocileta, jet ski, ...)'
                 ]
             ])
             ->add([

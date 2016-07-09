@@ -30,20 +30,22 @@ define(['moment', 'masks', 'datetimepicker'], function (moment, masks) {
         };
         
         initDatetimepicker = function() {
-            $('#interview-starttime').closest('.input-group').datetimepicker({
+            $('.interview-time').closest('.input-group').datetimepicker({
                 format: 'LT',
                 locale: 'pt-br',
                 viewDate: moment()
             });
             
              masks.bind({
-                timeNoSeconds: "input[name*=interviewStartTime]"
+                timeNoSeconds: ".interview-time"
             });
         };
 
         return {
             init: function () {
                 moment.locale("pt-br");
+                // desabilitar rolagem em campos tipo número
+                $(':input[type=number]').on('mousewheel',function(){$(this).blur();});
                 initDatetimepicker();
                 logInterviewChange();
             }

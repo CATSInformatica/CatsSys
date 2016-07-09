@@ -63,9 +63,9 @@ class StudentInterview
     /**
      * Horário de término da entrevista.
      * @var \DateTime
-     * @ORM\Column(name="student_interview_enddatetime", type="datetime", nullable=false)
+     * @ORM\Column(name="student_interview_endtime", type="time", nullable=false)
      */
-    private $interviewDatetime;
+    private $interviewEndTime;
 
     /**
      * Nomes dos Entrevistadores separados por self::INTERVIWER_SEPARATOR.
@@ -285,15 +285,7 @@ class StudentInterview
      * @ORM\Column(name="student_interview_maxposition", type="string", length=50, nullable=false)
      */
     private $interviewMaxPosition;
-
-    /**
-     * Comentários sobre a avaliação socioeconômica.
-     *
-     * @var string
-     * @ORM\Column(name="student_interview_comevsocioe", type="string", length=2000, nullable=true)
-     */
-    private $interviewerCommentEvalSocioec;
-
+    
     /**
      * Nota obtida no critério socioeconômico.
      * 
@@ -301,19 +293,16 @@ class StudentInterview
      * @ORM\Column(name="student_interview_segrade", type="float", nullable=false);
      */
     private $interviewSocioeconomicGrade;
-
-    /* ####################### Avaliação da vulnerabilidade ################### */
-
-    const FAM_ETHNICITY_CAUCASIAN = 'Família caucasiana';
-    const FAM_ETHNICITY_NOCAUCASIAN = 'Família negra, parda ou indígena';
-
+    
     /**
-     * Família negra, parda ou indígena.
+     * Justificativa para as escolhas no critério socioeconômico.
      *
      * @var string
-     * @ORM\Column(name="student_interview_famethnicity", type="string", length=50, nullable=false)
+     * @ORM\Column(name="student_interview_segjust", type="string", length=2000, nullable=true)
      */
-    private $interviewFamEthnicity;
+    private $interviewerSocioecGradeJustification;
+
+    /* ####################### Avaliação da vulnerabilidade ################### */
 
     const FAM_PROVIDER_YES = 'Provedor da família';
     const FAM_PROVIDER_NO = 'Não é provedor da família';
@@ -443,6 +432,14 @@ class StudentInterview
     const INTERVIEW_STUDENT_NOTMET_DESC = ' O candidato enxerga o ensino superior como uma oportunidade, contudo ainda não visualiza sua importância. Normalmente está sem outras atividades e para não ficar com tempo livre decidiu estudar.';
 
     /**
+     * Justificativa para nota do entrevistador no critério vulnerabilidade
+     *
+     * @var string
+     * @ORM\Column(name="student_interview_vugjust", type="string", length=2000, nullable=false)
+     */
+    private $interviewerVulnerabilityGradeJustification;
+    
+    /**
      * Perfil do estudante.
      *
      * @var string
@@ -459,16 +456,15 @@ class StudentInterview
     private $interviewStudentGrade;
 
     /**
-     * Comentários gerais do entrevistador.
+     * Justificativa para nota do entrevistador no critério perfil de estudante
      *
      * @var string
-     * @ORM\Column(name="student_interview_comge", type="string", length=2000, nullable=false)
+     * @ORM\Column(name="student_interview_stgjust", type="string", length=2000, nullable=false)
      */
-    private $interviewerGeneralComment;
+    private $interviewerStudentGradeJustification;
 
     public function __construct()
     {
-        $this->interviewDatetime = new \DateTime();
         $this->interviewSocioeconomicGrade = 0;
         $this->interviewVulnerabilityGrade = 0;
         $this->interviewStudentGrade = 0;
@@ -568,23 +564,25 @@ class StudentInterview
 
     /**
      * Busca pelo horário de término da entrevista.
-     *
-     * @return \DateTime Horário de término da entrevista.
+     * @param string|null $format Formato válido para o \DateTime
+     * @return string|null Horário de término da entrevista.
      */
-    public function getInterviewDatetime()
+    public function getInterviewEndTime($format = 'H:i')
     {
-        return $this->interviewDatetime;
+        if ($this->interviewEndTime !== null) {
+            return $this->interviewEndTime->format($format);
+        }
     }
 
     /**
      * Define o horário de término da entrevista.
      *
-     * @param \DateTime $datetime Horário de término da entrevista.
+     * @param \DateTime $time Horário de término da entrevista.
      * @return \Recruitment\Entity\StudentInterview Permite o uso de interface fluente
      */
-    public function setInterviewDatetime(\DateTime $datetime)
+    public function setInterviewEndTime(\DateTime $time)
     {
-        $this->interviewDatetime = $datetime;
+        $this->interviewEndTime = $time;
         return $this;
     }
     /* ################# CONTATO DIRETO COM O CANDIDATO ##################### */
@@ -1076,16 +1074,7 @@ class StudentInterview
         $this->interviewMaxPosition = $interviewMaxPosition;
         return $this;
     }
-
-    /**
-     *
-     * @return string
-     */
-    public function getInterviewerCommentEvalSocioec()
-    {
-        return $this->interviewerCommentEvalSocioec;
-    }
-
+    
     /**
      * 
      * @return float
@@ -1105,38 +1094,27 @@ class StudentInterview
         $this->interviewSocioeconomicGrade = $interviewSocioeconomicGrade;
         return $this;
     }
-
-    /**
-     *
-     * @param string $interviewerCommentEvalSocioec
-     * @return \Recruitment\Entity\StudentInterview
-     */
-    public function setInterviewerCommentEvalSocioec($interviewerCommentEvalSocioec)
-    {
-        $this->interviewerCommentEvalSocioec = $interviewerCommentEvalSocioec;
-        return $this;
-    }
-    /* ####################### Avaliação da vulnerabilidade ################### */
-
+    
     /**
      *
      * @return string
      */
-    public function getInterviewFamEthnicity()
+    public function getInterviewerSocioecGradeJustification()
     {
-        return $this->interviewFamEthnicity;
+        return $this->interviewerSocioecGradeJustification;
     }
 
     /**
      *
-     * @param string $interviewFamEthnicity
+     * @param string $interviewerSocioecGradeJustification
      * @return \Recruitment\Entity\StudentInterview
      */
-    public function setInterviewFamEthnicity($interviewFamEthnicity)
+    public function setInterviewerSocioecGradeJustification($interviewerSocioecGradeJustification)
     {
-        $this->interviewFamEthnicity = $interviewFamEthnicity;
+        $this->interviewerSocioecGradeJustification = $interviewerSocioecGradeJustification;
         return $this;
     }
+    /* ####################### Avaliação da vulnerabilidade ################### */
 
     /**
      *
@@ -1377,6 +1355,29 @@ class StudentInterview
         $this->interviewVulnerabilityGrade = $interviewVulnerabilityGrade;
         return $this;
     }
+    
+    /**
+     * Retorna a justificativa para nota no critério vulnerabilidade.
+     * 
+     * @return string
+     */
+    public function getInterviewerVulnerabilityGradeJustification()
+    {
+        return $this->interviewerVulnerabilityGradeJustification;
+    }
+
+    /**
+     * Define a justificativa para nota no critério vulnerabilidade.
+     * @param string $interviewerVulnerabilityGradeJustification
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewerVulnerabilityJustification($interviewerVulnerabilityGradeJustification)
+    {
+        $this->interviewerVulnerabilityGradeJustification = $interviewerVulnerabilityGradeJustification;
+        return $this;
+    }
+    
+    
     /* #################### Avaliação do perfil do estudante ################## */
 
     /**
@@ -1443,19 +1444,19 @@ class StudentInterview
      *
      * @return string
      */
-    public function getInterviewerGeneralComment()
+    public function getInterviewerStudentGradeJustification()
     {
-        return $this->interviewerGeneralComment;
+        return $this->interviewerStudentGradeJustification;
     }
 
     /**
      *
-     * @param string $interviewerGeneralComment
+     * @param string $interviewerStudentGradeJustification
      * @return \Recruitment\Entity\StudentInterview
      */
-    public function setInterviewerGeneralComment($interviewerGeneralComment)
+    public function setInterviewerStudentGradeJustification($interviewerStudentGradeJustification)
     {
-        $this->interviewerGeneralComment = $interviewerGeneralComment;
+        $this->interviewerStudentGradeJustification = $interviewerStudentGradeJustification;
         return $this;
     }
     
