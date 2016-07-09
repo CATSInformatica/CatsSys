@@ -1396,11 +1396,11 @@ class StudentInterview
     public static function getInterviewStudentQuestionArray()
     {
         return [
-            self::INTERVIEW_STUDENT_ADVANCED => '(7 a 10 pontos) ' . self::INTERVIEW_STUDENT_ADVANCED . ': ' .
+            self::INTERVIEW_STUDENT_ADVANCED => '(2 a 4 pontos) ' . self::INTERVIEW_STUDENT_ADVANCED . ': ' .
             self::INTERVIEW_STUDENT_ADVANCED_DESC,
             self::INTERVIEW_STUDENT_MODERATE => '(4 a 7 pontos) ' . self::INTERVIEW_STUDENT_MODERATE . ': ' .
             self::INTERVIEW_STUDENT_MODERATE_DESC,
-            self::INTERVIEW_STUDENT_COMMON => '(2 a 4 pontos) ' . self::INTERVIEW_STUDENT_COMMON . ': ' .
+            self::INTERVIEW_STUDENT_COMMON => '(7 a 10 pontos) ' . self::INTERVIEW_STUDENT_COMMON . ': ' .
             self::INTERVIEW_STUDENT_COMMON_DESC,
             self::INTERVIEW_STUDENT_PROBLEMATIC => '(1 a 2 pontos) ' . self::INTERVIEW_STUDENT_PROBLEMATIC . ': ' .
             self::INTERVIEW_STUDENT_PROBLEMATIC_DESC,
