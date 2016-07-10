@@ -1,4 +1,20 @@
 <?php
+/*
+ * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
 
 namespace Recruitment\Form\Fieldset;
 
@@ -9,7 +25,7 @@ use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
- * Description of PreInterviewFieldset
+ * Define os campos para os atributos da entidade Recruitment\Entity\PreInterview.
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
@@ -35,7 +51,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
         ];
 
         // SOCIOECONÔMICO
-        $familyExpense = new FamilyIncomeExpenseFieldset($obj, 'family-expense');
+        $familyExpense = new FamilyIncomeExpenseFieldset($obj, FamilyIncomeExpenseFieldset::EXPENSE);
 
         $this->add(array(
             'type' => 'Zend\Form\Element\Collection',
@@ -53,11 +69,12 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 . 'Você deverá preencher todos os campos criados. Se quiser '
                 . 'retirar a última despesa adicionada utilize o botão -. '
                 . 'O valor das despesas deve ser adicionado utilizando ponto'
-                . 'ao invés de vírgula. Ex: R$ 1.520,19 ⟶ 1520.19.',
+                . 'ao invés de vírgula. Ex: R$ 1.520,19 ⟶ 1520.19. '
+                . 'Ao menos uma despesa deverá ser preenchida.',
             ),
         ));
 
-        $familyIncome = new FamilyIncomeExpenseFieldset($obj, 'family-income');
+        $familyIncome = new FamilyIncomeExpenseFieldset($obj, FamilyIncomeExpenseFieldset::INCOME);
 
         $this->add(array(
             'type' => 'Zend\Form\Element\Collection',
@@ -75,10 +92,20 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 . 'Você deverá preencher todos os campos criados. Se quiser '
                 . 'retirar a última receita adicionada utilize o botão -. '
                 . 'O valor das receitas deve ser adicionado utilizando ponto'
-                . 'ao invés de vírgula. Ex: R$ 2.580,59 ⟶ 2580.59',
+                . 'ao invés de vírgula. Ex: R$ 2.580,59 ⟶ 2580.59. Ao menos uma receita deverá ser preenchida.',
             ),
         ));
         // VULNERABILIDADE
+
+
+        $this->add([
+            'name' => 'familyEthnicity',
+            'type' => 'radio',
+            'options' => [
+                'label' => 'Você considera sua família:',
+                'value_options' => PreInterview::getFamilyEthnicityArray(),
+            ]
+        ]);
 
         $familyHealth = new FamilyHealthFieldset($obj);
 
@@ -114,10 +141,10 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'should_wrap' => false,
                 'label' => 'Bens móveis. Para adicionar cada bem móvel da '
                 . 'família utilize botão +. Você deverá preencher todos os '
-                . 'campos criados. Se quiser retirar a último bem móvel '
+                . 'campos criados. Se quiser retirar o último bem móvel '
                 . 'adicionado utilize o botão -. O valor estimado do móvel '
                 . 'deve ser adicionado utilizando ponto ao invés de vírgula. '
-                . 'Ex: R$ 1.205,17 ⟶ 1205.17',
+                . 'Ex: R$ 1.205,17 ⟶ 1205.17. Ao menos um bem móvel deverá ser preenchido.',
             ),
         ]);
 
@@ -135,8 +162,8 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'should_wrap' => false,
                 'label' => 'Bens imóveis (propriedades). Para adicionar cada '
                 . 'imóvel da família utilize botão +. Você deverá preencher '
-                . 'todos os campos criados. Se quiser retirar a último imóvel '
-                . 'adicionado utilize o botão -.',
+                . 'todos os campos criados. Se quiser retirar o último imóvel '
+                . 'adicionado utilize o botão -. Ao menos um bem imóvel deverá ser preenchido.',
             ),
         ]);
 
@@ -215,12 +242,13 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
             ])
             ->add([
                 'name' => 'siblingsUndergraduate',
-                'type' => 'textarea',
+                'type' => 'radio',
                 'options' => [
                     'label' => 'Tem irmãos que cursaram/cursam o ensino superior?',
-                ],
-                'attributes' => [
-                    'rows' => 3,
+                    'value_options' => [
+                        false => 'Não',
+                        true => 'Sim',
+                    ],
                 ],
             ])
             ->add([
@@ -451,6 +479,9 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
     public function getInputFilterSpecification()
     {
         return [
+            'familyEthnicity' => [
+                'required' => true,
+            ],
             'elementarySchoolType' => [
                 'required' => true,
             ],
@@ -467,7 +498,7 @@ class PreInterviewFieldset extends Fieldset implements InputFilterProviderInterf
                 'required' => true,
             ],
             'otherLanguages' => [
-                'required' => true,
+                'required' => false,
             ],
             'homeStatus' => [
                 'required' => true,

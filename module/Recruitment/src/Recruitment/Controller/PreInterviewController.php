@@ -27,6 +27,7 @@ use Recruitment\Service\AddressService;
 use Recruitment\Service\RegistrationStatusService;
 use Recruitment\Service\RelativeService;
 use Zend\Session\Container;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -42,12 +43,14 @@ class PreInterviewController extends AbstractEntityActionController
         RegistrationStatusService;
 
     /**
-     * @todo Verificar se a entrevista do candidato já foi feita, se sim, faz o bloqueio da pré-entrevista.
+     * Obtém o cpf e verifica se o candidato poderá acessar o formulário 
+     * de pré-entrevista.
      * 
      * @return ViewModel
      */
     public function indexAction()
     {
+        $this->layout('application-clean/layout');
         $request = $this->getRequest();
         $form = new CpfForm();
 
@@ -64,12 +67,21 @@ class PreInterviewController extends AbstractEntityActionController
                     $registration = $em->getRepository('Recruitment\Entity\Registration')
                         ->findOneByPersonCpf($data['person_cpf']);
 
-
                     if ($registration !== null) {
-                        $status = $registration->getCurrentRegistrationStatus();
 
-                        if ($status->getRecruitmentStatus()->getNumericStatusType() ===
-                            RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW) {
+                        $status = (int) $registration
+                                ->getCurrentRegistrationStatus()
+                                ->getRecruitmentStatus()
+                                ->getNumericStatusType();
+
+                        // se o status do candidato for um desses três 
+                        // ele poderá acessar o formulário de pré-entrevista
+                        // para preencher ou editar.
+                        if (in_array($status, [
+                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW,
+                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
+                                RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE,
+                            ])) {
 
                             $studentContainer = new Container('pre_interview');
                             $studentContainer->offsetSet('regId', $registration->getRegistrationId());
@@ -83,7 +95,7 @@ class PreInterviewController extends AbstractEntityActionController
                     } else {
                         $message = 'Candidato não encontrado.';
                     }
-                } catch (\Exception $ex) {
+                } catch (Exception $ex) {
                     $message = 'Erro inesperado. Não foi possível encontrar uma inscrição associada a este cpf.'
                         . $ex->getMessage();
                 }
@@ -111,6 +123,7 @@ class PreInterviewController extends AbstractEntityActionController
      */
     public function studentPreInterviewFormAction()
     {
+        $this->layout('application-clean/layout');
         $studentContainer = new Container('pre_interview');
 
         // id de inscrição não está na sessão redireciona para o início
@@ -128,18 +141,6 @@ class PreInterviewController extends AbstractEntityActionController
 
             $em = $this->getEntityManager();
             $registration = $em->getReference('Recruitment\Entity\Registration', $rid);
-
-            // se o candidato já respondeu o formulário uma vez avisa que a pré-entrevista já foi cadastrada.
-//            if ($registration->getPreInterview() !== null) {
-//
-//                $studentContainer->getManager()->getStorage()->clear('pre_interview');
-//
-//                return new ViewModel(array(
-//                    'registration' => $registration,
-//                    'form' => null,
-//                    'message' => 'O formulário de pré-entrevista já foi enviado.',
-//                ));
-//            }
 
             $person = $registration->getPerson();
 
@@ -164,7 +165,7 @@ class PreInterviewController extends AbstractEntityActionController
                     $this->adjustAddresses($person);
                     $this->adjustRelatives($person);
 
-//                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE);
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE);
 
                     $em->persist($registration);
                     $em->flush();
@@ -173,7 +174,9 @@ class PreInterviewController extends AbstractEntityActionController
                     return new ViewModel(array(
                         'registration' => null,
                         'form' => null,
-                        'message' => 'Pré-entrevista concluída com com sucesso.',
+                        'message' => 'Pré-entrevista concluída com com sucesso. '
+                        . 'O formulário de pré-entrevista continuará disponível para futuras edições até a '
+                        . 'conclusão de sua entrevista.',
                     ));
                 } else {
                     return new ViewModel(array(
@@ -183,12 +186,12 @@ class PreInterviewController extends AbstractEntityActionController
                     ));
                 }
             }
-        } catch (\Throwable $ex) {
+        } catch (Exception $ex) {
             return new ViewModel(array(
                 'registration' => null,
                 'form' => null,
-//                'message' => 'Erro inesperado. Por favor, entre em contato com o administrador do sistema.',
-                'message' => $ex->getMessage(),
+                'message' => 'Erro inesperado. Por favor, entre em contato com o administrador do sistema.',
+//                'message' => $ex->getMessage(),
             ));
         }
 
@@ -196,6 +199,27 @@ class PreInterviewController extends AbstractEntityActionController
             'registration' => $registration,
             'form' => $form,
             'message' => '',
+        ]);
+    }
+
+    /**
+     * Como o formulário é grande, para que a sessão não expire durante o preenchimento
+     * a página do formulário de tempos em tempos manda requisições para manter a sessão ativa.
+     */
+    public function keepAliveAction()
+    {
+
+        $studentContainer = new Container('pre_interview');
+
+        $alive = true;
+        
+        // id de inscrição não está na sessão redireciona para o início
+        if (!$studentContainer->offsetExists('regId')) {
+            $alive = false;
+        }
+
+        return new JsonModel([
+            'alive' => $alive,
         ]);
     }
 }

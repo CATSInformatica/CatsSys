@@ -5,7 +5,7 @@
             <?php if ($resources): ?>
 
                 <div class="table-responsive">
-                    <table class="table table-condensed table-striped" id="resource-table">
+                    <table class="table table-condensed table-striped" id="resource-table" style="display:none;">
                         <thead>
                             <tr>
                                 <th class="text-center">#</th>
@@ -26,3 +26,16 @@
         </div>
     </div>
 </section>
+
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/authorization/resource/Resource';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+</script>

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -86,11 +85,9 @@ return array(
                     'pre-interview' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/pre-interview[/:action[/:file[/:rid]]]',
+                            'route' => '/pre-interview[/:action]',
                             'constraints' => array(
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'file' => 'personal|income|expendure',
-                                'rid' => '[0-9]+',
                             ),
                             'defaults' => array(
                                 'controller' => 'Recruitment\Controller\PreInterview',
@@ -417,6 +414,7 @@ return array(
                         'resource' => 'Recruitment\Controller\PreInterview',
                         'privilege' => 'index',
                         'icon' => 'fa fa-check',
+                        'target' => '_blank',
                         'pages' => array(
                             array(
                                 'label' => 'Student pre-interview II',
@@ -426,6 +424,44 @@ return array(
                             ),
                         ),
                     ),
+                    [
+                        'label' => 'Student interview',
+                        'route' => 'recruitment/interview',
+                        'action' => 'student-list',
+                        'resource' => 'Recruitment\Controller\Interview',
+                        'privilege' => 'student-list',
+                        'icon' => 'fa fa-file-text-o',
+                        'toolbar' => [
+                            [
+                                'url' => '/recruitment/pre-interview',
+                                'id' => 'fn-pre-interview',
+                                'title' => 'Inscrição/Pré-entrevista',
+                                'description' => 'Permite editar informações de inscrição e pré-entrevista',
+                                'class' => 'fa fa-user bg-blue',
+                                'fntype' => 'httpClick',
+                                'target' => '_blank',
+                            ],
+                            [
+                                'url' => '/recruitment/interview/student-form/$id',
+                                'id' => 'fn-interview',
+                                'title' => 'Entrevista',
+                                'description' => 'Formulário de entrevista',
+                                'class' => 'fa fa-file-text-o bg-green',
+                                'fntype' => 'selectedHttpClick',
+                                'target' => '_blank',
+                            ],
+                        ],
+                        'pages' => [
+                            [
+                                'label' => 'Interview form',
+                                'route' => 'recruitment/interview',
+                                'action' => 'student-form',
+                                'resource' => 'Recruitment\Controller\Interview',
+                                'privilege' => 'student-form',
+                                'icon' => 'fa fa-file-text-o',
+                            ]
+                        ],
+                    ]
                 ),
             ),
         ),

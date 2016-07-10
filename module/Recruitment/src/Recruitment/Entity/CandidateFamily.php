@@ -66,6 +66,14 @@ class CandidateFamily
      */
     private $maritalStatus;
 
+    const RELATIONSHIP_PARENTS = 'Pai/mãe';
+    const RELATIONSHIP_PARENTINLAW = 'Padastro/madastra';
+    const RELATIONSHIP_SIBLINGS = 'Irmão/Irmã';
+    const RELATIONSHIP_WIFEHUSB = 'Cônjuge/Companheiro(a)';
+    const RELATIONSHIP_GRANDPARENTS = 'Avô/Avó';
+    const RELATIONSHIP_CHILDRENS = 'Filho';
+    const RELATIONSHIP_OTHER = 'Outro';
+    
     /**
      *
      * @var string Parentesco
@@ -73,6 +81,15 @@ class CandidateFamily
      */
     private $relationship;
 
+    const SCHOLARITY_NONE = 'Sem escolaridade';
+    const SCHOLARITY_ELEMENTARY_I = 'Fundamental I incompleto (até 5º ano)';
+    const SCHOLARITY_ELEMENTARY_II = 'Fundamental I completo (até 5º ano)';
+    const SCHOLARITY_ELEMENTARY_INCOMPLETE = 'Fundamental II incompleto (6º ao 9º ano)';
+    const SCHOLARITY_ELEMENTARY_COMPLETE = 'Fundamental II completo (6º ao 9º ano)';
+    const SCHOLARITY_HIGHSCHOOL_INCOMPLETE = 'Ensino médio incompleto';
+    const SCHOLARITY_HIGHSCHOOL_COMPLETE = 'Ensino médio completo';
+    const SCHOLARITY_UNDERGRADUATION_INCOMPLETE = 'Ensino superior incompleto';
+    const SCHOLARITY_UNDERGRADUATION_COMPLETE = 'Ensino superior completo, especialização, mestrado ou doutorado';
     /**
      * 
      * @var string Escolaridade
@@ -182,6 +199,24 @@ class CandidateFamily
     {
         return $this->relationship;
     }
+    
+    /**
+     * 
+     * @return array Possibilidades de parentesco
+     */
+    public static function getRelationshipArray()
+    {
+        
+        return [
+            self::RELATIONSHIP_PARENTS => self::RELATIONSHIP_PARENTS,
+            self::RELATIONSHIP_PARENTINLAW => self::RELATIONSHIP_PARENTINLAW,
+            self::RELATIONSHIP_SIBLINGS => self::RELATIONSHIP_SIBLINGS,
+            self::RELATIONSHIP_WIFEHUSB => self::RELATIONSHIP_WIFEHUSB,
+            self::RELATIONSHIP_GRANDPARENTS => self::RELATIONSHIP_GRANDPARENTS,
+            self::RELATIONSHIP_CHILDRENS => self::RELATIONSHIP_CHILDRENS,
+            self::RELATIONSHIP_OTHER => self::RELATIONSHIP_OTHER,
+        ];
+    }
 
     public function setRelationship($relationship)
     {
@@ -193,7 +228,26 @@ class CandidateFamily
     {
         return $this->scholarity;
     }
-
+    
+    /**
+     * 
+     * @return array Possibilidades de escolaridade
+     */
+    public static function getScholarityArray()
+    {
+        return [
+            self::SCHOLARITY_NONE => self::SCHOLARITY_NONE,
+            self::SCHOLARITY_ELEMENTARY_I => self::SCHOLARITY_ELEMENTARY_I,
+            self::SCHOLARITY_ELEMENTARY_II => self::SCHOLARITY_ELEMENTARY_II,
+            self::SCHOLARITY_ELEMENTARY_INCOMPLETE => self::SCHOLARITY_ELEMENTARY_INCOMPLETE,
+            self::SCHOLARITY_ELEMENTARY_COMPLETE => self::SCHOLARITY_ELEMENTARY_COMPLETE,
+            self::SCHOLARITY_HIGHSCHOOL_INCOMPLETE => self::SCHOLARITY_HIGHSCHOOL_INCOMPLETE,
+            self::SCHOLARITY_HIGHSCHOOL_COMPLETE => self::SCHOLARITY_HIGHSCHOOL_COMPLETE,
+            self::SCHOLARITY_UNDERGRADUATION_INCOMPLETE => self::SCHOLARITY_UNDERGRADUATION_INCOMPLETE,
+            self::SCHOLARITY_UNDERGRADUATION_COMPLETE => self::SCHOLARITY_UNDERGRADUATION_COMPLETE,
+        ];
+    }
+    
     public function setScholarity($scholarity)
     {
         $this->scholarity = $scholarity;

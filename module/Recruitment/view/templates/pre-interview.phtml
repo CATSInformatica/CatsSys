@@ -10,12 +10,16 @@
     </div>
     <div class="box-body">
 
+        <div class="col-xs-12 col-md-12">
+            <?php echo $this->formRow($form->get('familyEthnicity')); ?>
+        </div>
+
         <div id="family-members" class="field-container" data-min="1">
-
             <?php $familyMembers = $form->get('familyMembers'); ?>
-
             <?php echo $this->formLabel($familyMembers); ?>
             <hr>
+            <?php echo $this->render('family-members/template', ['forms' => $familyMembers]); ?>
+            <?php echo $this->formCollection()->renderTemplate($familyMembers); ?>
             <div class="text-center">
                 <div class="btn-group">
                     <?php echo $this->formButton($form->get('addButton')); ?>
@@ -23,20 +27,16 @@
                 </div>
                 <hr>
             </div>
-
-            <?php echo $this->render('family-members/template', ['forms' => $familyMembers]); ?>
-
-            <?php echo $this->formCollection()->renderTemplate($familyMembers); ?>
-
 
         </div>
 
         <div id="family-health" class="field-container" data-min="0">
 
             <?php $familyHealth = $form->get('familyHealth'); ?>
-
             <?php echo $this->formLabel($familyHealth); ?>
             <hr>
+            <?php echo $this->render('family-health/template', ['forms' => $familyHealth]); ?>
+            <?php echo $this->formCollection()->renderTemplate($familyHealth); ?>
             <div class="text-center">
                 <div class="btn-group">
                     <?php echo $this->formButton($form->get('addButton')); ?>
@@ -44,19 +44,15 @@
                 </div>
                 <hr>
             </div>
-
-            <?php echo $this->render('family-health/template', ['forms' => $familyHealth]); ?>
-
-            <?php echo $this->formCollection()->renderTemplate($familyHealth); ?>
-
         </div>
 
         <div id="family-goods" class="field-container" data-min="1">
 
             <?php $familyGoods = $form->get('familyGoods'); ?>
-
             <?php echo $this->formLabel($familyGoods); ?>
             <hr>
+            <?php echo $this->render('family-goods/template', ['forms' => $familyGoods]); ?>
+            <?php echo $this->formCollection()->renderTemplate($familyGoods); ?>
             <div class="text-center">
                 <div class="btn-group">
                     <?php echo $this->formButton($form->get('addButton')); ?>
@@ -64,17 +60,14 @@
                 </div>
                 <hr>
             </div>
-
-            <?php echo $this->render('family-goods/template', ['forms' => $familyGoods]); ?>
-
-            <?php echo $this->formCollection()->renderTemplate($familyGoods); ?>
-
         </div>
 
         <div id="family-properties" class="field-container" data-min="1">
             <?php $familyProperties = $form->get('familyProperties'); ?>
             <?php echo $this->formLabel($familyProperties); ?>
             <hr>
+            <?php echo $this->render('family-properties/template', ['forms' => $familyProperties]); ?>
+            <?php echo $this->formCollection()->renderTemplate($familyProperties); ?>
             <div class="text-center">
                 <div class="btn-group">
                     <?php echo $this->formButton($form->get('addButton')); ?>
@@ -82,8 +75,6 @@
                 </div>
                 <hr>
             </div>
-            <?php echo $this->render('family-properties/template', ['forms' => $familyProperties]); ?>
-            <?php echo $this->formCollection()->renderTemplate($familyProperties); ?>
         </div>
 
         <div class="col-xs-12 col-md-12">
@@ -158,11 +149,11 @@
     <div class="box-body">
 
         <div id="family-expenses" class="field-container" data-min="1">
-
             <?php $familyExpenses = $form->get('familyExpenses'); ?>
-
             <?php echo $this->formLabel($familyExpenses); ?>
             <hr>
+            <?php echo $this->render('family-income-expense/template', ['forms' => $familyExpenses]); ?>
+            <?php echo $this->formCollection()->renderTemplate($familyExpenses); ?>
             <div class="text-center">
                 <div class="btn-group">
                     <?php echo $this->formButton($form->get('addButton')); ?>
@@ -170,18 +161,14 @@
                 </div>
                 <hr>
             </div>
-
-            <?php echo $this->render('family-income-expense/template', ['forms' => $familyExpenses]); ?>
-
-            <?php echo $this->formCollection()->renderTemplate($familyExpenses); ?>
         </div>
 
         <div id="family-income" class="field-container" data-min="1">
-
             <?php $familyIncome = $form->get('familyIncome'); ?>
-
             <?php echo $this->formLabel($familyIncome); ?>
             <hr>
+            <?php echo $this->render('family-income-expense/template', ['forms' => $familyIncome]); ?>
+            <?php echo $this->formCollection()->renderTemplate($familyIncome); ?>
             <div class="text-center">
                 <div class="btn-group">
                     <?php echo $this->formButton($form->get('addButton')); ?>
@@ -189,10 +176,6 @@
                 </div>
                 <hr>
             </div>
-
-            <?php echo $this->render('family-income-expense/template', ['forms' => $familyIncome]); ?>
-
-            <?php echo $this->formCollection()->renderTemplate($familyIncome); ?>
         </div>
 
         <div class="col-xs-12 col-md-12">

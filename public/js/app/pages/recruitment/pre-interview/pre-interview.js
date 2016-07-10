@@ -19,27 +19,26 @@ define(['app/pages/recruitment/registration/registration'], function (regModule)
 
     var PreInterviewModule = (function () {
 
+        var suggestions = ['Teste', 'Hello'];
+
         /**
-         * @todo 
-         *  Vincular as ações de adicionar e remover conjuntos de campos para:
-         *  
-         *  Membros da família 1+
-         *  Problemas de saúde de membros da família 0+
-         *  Bens móveis 0+
-         *  Bens imóveis (propriedades) 0+
-         *  Despesas da família 1+
-         *  Receitas da família 1+
+         * Adiciona/Remove conjuntos de campos para
+         * 
+         * - Membros da família
+         * - Doenças na família
+         * - Bens móveis
+         * - Bens imóveis
+         * - Despesas
+         * - Receitas
          * 
          * @returns {undefined}
          */
         initAddDelButtons = function () {
 
             $(".add-button").click(function () {
-                
+
                 var container = $(this).closest(".field-container");
-                
-//                console.log("id", container.attr("id"));
-                
+
                 var currentCount = container.find(".field-box").length;
 
                 var outerTemplate = container.children("span").first().data("template");
@@ -54,11 +53,9 @@ define(['app/pages/recruitment/registration/registration'], function (regModule)
                     newPartialElement = newPartialElement.replace("__TEMPLATE" + e + "__", $(this).get(0).outerHTML);
                 });
 
-                if(currentCount > 0) {
-                    container.find(".field-box").last().after(newPartialElement);
-                } else {
-                    container.append(newPartialElement);
-                }
+                container.children('span').last().before(newPartialElement);
+
+//                updateSuggestions();
 
                 return false;
             });
@@ -66,6 +63,8 @@ define(['app/pages/recruitment/registration/registration'], function (regModule)
             $(".del-button").click(function () {
                 var container = $(this).closest(".field-container");
                 var currentCount = container.find(".field-box").length;
+
+//                updateSuggestions();
 
                 if (currentCount > container.data("min")) {
                     container.find(".field-box").last().remove();
@@ -76,10 +75,46 @@ define(['app/pages/recruitment/registration/registration'], function (regModule)
 
         };
 
+        updateSuggestions = function () {
+
+//            $('input[name *=familyHealthName]').autocomplete({
+//                query: 'Unit',
+//                suggestions: suggestions
+//            });
+
+        };
+
+        /**
+         * Mantém a sessão para o formulário de pré-entrevista ativa.
+         * 
+         * A cada 5 mins uma requisição é enviada ao servidor para manter a
+         * sessão ativa.
+         * 
+         * @returns {undefined}
+         */
+        keepMeAlive = function () {
+
+            setTimeout(function () {
+                $.ajax({
+                    url: '/recruitment/pre-interview/keepAlive',
+                    type: 'GET',
+                    success: function (data) {
+                        keepMeAlive();
+                    },
+                    error: function (texErr) {
+                        console.log('Error', texErr);
+                    }
+                });
+            }, 300000);
+
+        };
+
         return {
             init: function () {
                 regModule.init();
                 initAddDelButtons();
+                keepMeAlive();
+//                updateSuggestions();
             }
         };
     }());
