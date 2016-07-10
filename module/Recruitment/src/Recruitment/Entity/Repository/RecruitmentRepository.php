@@ -59,6 +59,7 @@ class RecruitmentRepository extends EntityRepository
                     'type' => $type,
                     'date' => $date,
                 ))
+                ->setMaxResults(1)
                 ->getOneOrNullResult();
     }
 
