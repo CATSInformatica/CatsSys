@@ -89,6 +89,7 @@ class RecruitmentRepository extends EntityRepository
                     'type' => $type,
                     'date' => $date,
                 ))
+                ->setMaxResults(1)
                 ->getOneOrNullResult();
     }
 
@@ -109,6 +110,7 @@ class RecruitmentRepository extends EntityRepository
                     . 'ORDER BY r.recruitmentId DESC'
                 )
                 ->setParameter('type', $type)
+                ->setMaxResults(1)
                 ->getOneOrNullResult();
     }
 }
