@@ -52,25 +52,30 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <?php foreach ($candidates as $candidate): ?>
-                            <tr class="cats-row" data-id="<?php echo $candidate['registrationId']; ?>">
-                                <td class="details-control"></td>
-                                <td><?php echo $candidate['personFullName']; ?></td>
-                                <td><?php echo $candidate['personEmail']; ?></td>
-                                <td><?php echo $candidate['personCpf']; ?></td>
-                                <td><?php echo $candidate['personRg']; ?></td>
-                                <td id="grades-<?php echo $candidate['registrationId']; ?>">
-                                    <?php if ($candidate['grades'] !== null) : 
-                                        echo round(($candidate['grades']['socioeconomic'] * $recruitment['recruitmentSocioeconomicTarget'] + 
-                                            $candidate['grades']['vulnerability'] * $recruitment['recruitmentVulnerabilityTarget'] + 
-                                            $candidate['grades']['student'] * $recruitment['recruitmentStudentTarget']) / 
-                                                ($recruitment['recruitmentSocioeconomicTarget'] + $recruitment['recruitmentVulnerabilityTarget'] + $recruitment['recruitmentStudentTarget']), 3); 
-                                    else :
-                                        echo '-';
-                                    endif;?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
+                        <?php if ($candidates !== null): ?>
+                            <?php foreach ($candidates as $candidate): ?>
+                                <tr class="cats-row" data-id="<?php echo $candidate['registrationId']; ?>">
+                                    <td class="details-control"></td>
+                                    <td><?php echo $candidate['personFullName']; ?></td>
+                                    <td><?php echo $candidate['personEmail']; ?></td>
+                                    <td><?php echo $candidate['personCpf']; ?></td>
+                                    <td><?php echo $candidate['personRg']; ?></td>
+                                    <td id="grades-<?php echo $candidate['registrationId']; ?>">
+                                        <?php
+                                        if ($candidate['grades'] !== null) :
+                                            echo round(($candidate['grades']['socioeconomic'] * $recruitment['recruitmentSocioeconomicTarget'] +
+                                                $candidate['grades']['vulnerability'] * $recruitment['recruitmentVulnerabilityTarget'] +
+                                                $candidate['grades']['student'] * $recruitment['recruitmentStudentTarget']) /
+                                                ($recruitment['recruitmentSocioeconomicTarget'] + $recruitment['recruitmentVulnerabilityTarget'] + $recruitment['recruitmentStudentTarget']), 3);
+                                        else :
+                                            echo '-';
+                                        endif;
+
+                                        ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
                     </tbody>
                 </table>
             </div>
