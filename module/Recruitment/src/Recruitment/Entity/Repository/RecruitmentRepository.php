@@ -104,7 +104,7 @@ class RecruitmentRepository extends EntityRepository
                     . 'r.recruitmentEndDate, r.recruitmentSocioeconomicTarget, r.recruitmentVulnerabilityTarget, r.recruitmentStudentTarget '
                     . 'FROM Recruitment\Entity\Recruitment r '
                     . 'WHERE r.recruitmentType = :type AND '
-                    . 'r.recruitmentEndDate IS NOT NULL '
+                    . 'r.recruitmentEndDate < CURRENT_DATE() '
                     . 'ORDER BY r.recruitmentId DESC'
                 )
                 ->setParameter('type', $type)
