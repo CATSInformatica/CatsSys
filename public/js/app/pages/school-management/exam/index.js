@@ -323,9 +323,9 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                         var sId = parseInt($("#last-selected").val());
                         for (var i = 0; i < data.length; ++i) {
                             examQuestions[data[i].questionId] = {
-                                'enunciation': data[i].questionEnunciation,
-                                'alternatives': data[i].questionAnswers,
-                                'subject': sId
+                                enunciation: data[i].questionEnunciation,
+                                alternatives: data[i].questionAlternatives,
+                                subject: sId
                             };
                             questions.push({
                                 DT_RowAttr: {
