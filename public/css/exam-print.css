@@ -26,6 +26,7 @@
     width: 210mm;
     padding: 0;
     margin: 0 auto;
+    box-shadow: 1mm 1mm #888888;
 }
 .exam-page {
     display: none;
