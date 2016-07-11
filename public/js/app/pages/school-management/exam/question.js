@@ -9,6 +9,14 @@ define(['jquery', 'datatable', 'mathjax'], function () {
 
         var questionTable = $('#question-table');
 
+        /*
+         * Retorna o código HTML da área onde serão exibidas as alternativas 
+         * da questão
+         * 
+         * @param {array} alternatives - alternativas da questão
+         * @param {int} correctAlternative - índice da alternativa correta
+         * @returns {String}
+         */
         formatAlternatives = function (alternatives, correctAlternative) {
             var html = '<div class="row">' +
                 '<div class="col-md-12">' +
@@ -39,7 +47,11 @@ define(['jquery', 'datatable', 'mathjax'], function () {
             return html;
         };
 
+        /*
+         *  Listeners da tabela de questões
+         */
         initDatatableListeners = function () {
+            // Exibe as alternativas da questão
             $('#question-table tbody').on('click', 'td.details-control', function () {
                 var tr = $(this).closest('tr');
                 var row = questionTable.DataTable().row(tr);
@@ -52,8 +64,17 @@ define(['jquery', 'datatable', 'mathjax'], function () {
                     tr.addClass('shown');
                 }
             });
+            
+            // Recarrega a tabela de questões quando se clica no botão de buscar
+            $('button[name=submit]').click(function () {
+                questionTable.DataTable().ajax.reload();
+            });
         };
 
+        /*
+         * Cria e carrega a tabela de questões de acordo com os filtros 
+         * selecionados (disciplina e tipo de questão)
+         */
         initDataTable = function () {
             questionTable.DataTable({
                 dom: 'lftip',
@@ -90,10 +111,10 @@ define(['jquery', 'datatable', 'mathjax'], function () {
 
                         return questions;
                     }
+                },
+                drawCallback: function (settings) {
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub]);
                 }
-            });
-            $('button[name=submit]').click(function () {
-                questionTable.DataTable().ajax.reload();
             });
         };
 
