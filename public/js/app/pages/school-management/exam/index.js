@@ -87,8 +87,8 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
              * Adiciona todas as questões selecionadas (checkbox)
              */
             $('#add-exam-question').click(function () {
-                $('.select-questions:checkbox:checked').each(function () {
-                    addQuestion($(this).val());
+                $('#question-table > tbody > .cats-selected-row').each(function () {
+                    addQuestion($(this).data('id'));
                 });
             });
 
@@ -328,20 +328,21 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                                 subject: sId
                             };
                             questions.push({
+                                DT_RowClass: "cats-row",
                                 DT_RowAttr: {
-                                    "class": "table-row",
                                     "id": "question-" + data[i].questionId,
                                     "data-id": data[i].questionId
                                 },
-                                0: '<input type="checkbox" class="select-questions" value="'
-                                        + data[i].questionId + '">',
-                                1: data[i].questionEnunciation
+                                0: data[i].questionEnunciation
                             });
                         }
                         sQuestionsDatatable[sId] = questions;
 
                         return questions;
                     }
+                },
+                drawCallback: function (settings) {
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub, 'question-table']);
                 }
             });
         };
