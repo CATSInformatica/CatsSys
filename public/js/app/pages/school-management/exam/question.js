@@ -9,9 +9,60 @@ define(['jquery', 'datatable', 'mathjax'], function () {
 
         var questionTable = $('#question-table');
 
+        formatAlternatives = function (alternatives, correctAlternative) {
+            var html = '<div class="row">' +
+                '<div class="col-md-12">' +
+                    '<div class="nav-tabs-custom no-margin">' +
+                        '<ul class="nav nav-tabs bg-gray">' + 
+                            '<li class="active"><a href="#alternative-0" data-toggle="tab" aria-expanded="true">' +
+                                '<strong class="' + ((correctAlternative === 0) ? 'text-green' : '') + '">Alternativa 1</strong>' +
+                            '</a></li>';
+                            for (var i = 1; i < alternatives.length; ++i) {
+                                html += '<li class=""><a href="#alternative-' + i + '" data-toggle="tab" aria-expanded="false">' +
+                                    '<strong class="' + ((correctAlternative === i) ? 'text-green' : '') + '">Alternativa ' + (i + 1) + '</strong>' +
+                                '</a></li>';
+                            }
+                        html += '</ul>' +
+                        '<div class="tab-content">' + 
+                            '<div class="tab-pane active" id="alternative-0">' +
+                                alternatives[0] +
+                            '</div>';
+                            for (var i = 1; i < alternatives.length; ++i) {
+                                html += '<div class="tab-pane" id="alternative-' + (i + 1) + '">' +
+                                    alternatives[i] +
+                                '</div>';
+                            }
+                        html += '</div>' +
+                    '</div>' +
+                '</div>' +
+            '</div>';
+            return html;
+        };
+
+        initDatatableListeners = function () {
+            $('#question-table tbody').on('click', 'td.details-control', function () {
+                var tr = $(this).closest('tr');
+                var row = questionTable.DataTable().row(tr);
+                
+                if (row.child.isShown()) {
+                    row.child.hide();
+                    tr.removeClass('shown');
+                } else {
+                    row.child(row.data().child).show();
+                    tr.addClass('shown');
+                }
+            });
+        };
+
         initDataTable = function () {
             questionTable.DataTable({
                 dom: 'lftip',
+                columnDefs: [{
+                    targets: 0,
+                    className: 'details-control',
+                    orderable: false
+                }],
+                order: [],
                 ajax: {
                     url: "/school-management/school-exam/get-questions",
                     type: "POST",
@@ -30,9 +81,10 @@ define(['jquery', 'datatable', 'mathjax'], function () {
                                     "id": "question-" + data[i].questionId,
                                     "data-id": data[i].questionId
                                 },
-                                0: data[i].questionId,
+                                0: '',
                                 1: data[i].questionEnunciation,
-                                2: data[i].questionAnswersStr
+                                child: formatAlternatives(data[i].questionAlternatives, 
+                                        data[i].questionCorrectAlternative)
                             });
                         }
 
@@ -48,6 +100,7 @@ define(['jquery', 'datatable', 'mathjax'], function () {
         return {
             init: function () {
                 initDataTable();
+                initDatatableListeners();
             },
             getCallbackOf: function (element) {
 
