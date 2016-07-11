@@ -340,9 +340,6 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
 
                         return questions;
                     }
-                },
-                drawCallback: function (settings) {
-                    MathJax.Hub.Queue(["Typeset", MathJax.Hub, 'question-table']);
                 }
             });
         };
