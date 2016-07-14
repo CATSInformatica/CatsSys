@@ -23,9 +23,9 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Exception;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\RecruitmentStatus;
+use Recruitment\Entity\StudentInterview;
 use Recruitment\Form\PreInterviewForm;
 use Recruitment\Form\StudentInterviewForm;
-use Recruitment\Entity\StudentInterview;
 use Recruitment\Form\VolunteerInterviewForm;
 use Recruitment\Service\AddressService;
 use Recruitment\Service\RegistrationStatusService;
@@ -74,7 +74,7 @@ class InterviewController extends AbstractEntityActionController
                     RecruitmentStatus::STATUSTYPE_INTERVIEWED,
                 ]);
             }
-            
+
             foreach ($candidates as $i => $candidate) {
                 $candidateRegistration = $em->find('Recruitment\Entity\Registration', $candidate['registrationId']);
                 $candidateInterview = $candidateRegistration->getStudentInterview();
@@ -87,8 +87,10 @@ class InterviewController extends AbstractEntityActionController
                 } else {
                     $candidates[$i]['grades'] = null;
                 }
+
+                $candidates[$i]['statusType'] = RecruitmentStatus::statusTypeToString($candidates[$i]['statusType']);
             }
-            
+
             return new ViewModel([
                 'recruitment' => $recruitment,
                 'candidates' => $candidates,
@@ -464,15 +466,15 @@ class InterviewController extends AbstractEntityActionController
             try {
                 $em = $this->getEntityManager();
 
-                $registration = $em->find('Recruitment\Entity\Registration', $registrationId);            
+                $registration = $em->find('Recruitment\Entity\Registration', $registrationId);
                 $studentInterview = $registration->getStudentInterview();
-                
+
                 $grades = [
                     'socioeconomic' => $studentInterview->getInterviewSocioeconomicGrade(),
                     'vulnerability' => $studentInterview->getInterviewVulnerabilityGrade(),
                     'student' => $studentInterview->getInterviewStudentGrade(),
                 ];
-                
+
                 return new JsonModel([
                     'grades' => $grades
                 ]);
