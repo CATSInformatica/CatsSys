@@ -90,16 +90,20 @@ class SchoolExamController extends AbstractEntityActionController
                         ]);
                     }
                     foreach ($questions as $q) {
-                        $answers = [];
+                        $alternatives = [];
                         $answerOptions = $q->getAnswerOptions()->toArray();
-                        foreach ($answerOptions as $ao) {
-                            $answers[] = $ao->getExamAnswerDescription();
+                        $correctAlternative = -1;
+                        foreach ($answerOptions as $i => $ao) {
+                            $alternatives[$i] = $ao->getExamAnswerDescription();
+                            if ($ao->getIsCorrect()) {
+                                $correctAlternative = $i;
+                            }
                         }
                         $result[] = array(
                             'questionId' => $q->getExamQuestionId(),
                             'questionEnunciation' => $q->getExamQuestionEnunciation(),
-                            'questionAnswers' => $answers,
-                            'questionAnswersStr' => implode("<br>", $answers),
+                            'questionAlternatives' => $alternatives,
+                            'questionCorrectAlternative' => $correctAlternative,
                         );
                     }
                 }
@@ -107,8 +111,8 @@ class SchoolExamController extends AbstractEntityActionController
                 $result[] = array(
                     'questionId' => -1,
                     'questionEnunciation' => 'Erro: ' . $ex,
-                    'questionAnswers' => '-',
-                    'questionAnswersStr' => null,
+                    'questionAlternatives' => -1,
+                    'questionCorrectAlternative' => -1,
                 );
             }
         }

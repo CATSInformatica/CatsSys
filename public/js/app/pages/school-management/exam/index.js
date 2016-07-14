@@ -24,7 +24,7 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
         //  Array de objetos com formatação para inserir no DataTable as questões de uma disciplina 
         //  índice = id da disciplina
         var sQuestionsDatatable = [];
-        //  Array de bool com as questões selecionadas
+        //  Array de bool com as questões selecionadas (adicionadas a prova)
         //  índice = id da questão
         var selectedQuestions = [];
         //  id do DataTable
@@ -87,8 +87,30 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
              * Adiciona todas as questões selecionadas (checkbox)
              */
             $('#add-exam-question').click(function () {
-                $('.select-questions:checkbox:checked').each(function () {
-                    addQuestion($(this).val());
+                $('#question-table > tbody > .cats-selected-row').each(function () {
+                    addQuestion($(this).data('id'));
+                });
+            });
+
+            /*
+             * Mostra o diálogo de impressão do gabarito
+             */
+            $('#print-answer-key').click(function () {
+                generateAnswerKey();
+                
+                $('#answer-key-tables').print({
+                    globalStyles: true,
+                    mediaPrint: true,
+                    stylesheet: '/css/exam-print.css',
+                    noPrintSelector: null,
+                    iframe: true,
+                    append: null,
+                    prepend: null,
+                    manuallyCopyFormValues: true,
+                    deferred: $.Deferred(),
+                    timeout: 250,
+                    title: null,
+                    doctype: '<!doctype html>'
                 });
             });
 
@@ -107,14 +129,14 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                     var examDate = $('#exam-day').val();
                     var examBeginTime = $('#exam-begin-time').val();
                     var examEndTime = $('#exam-end-time').val();
-                    
+
                     if (examName === '') {
                         examName = "SIMULADO CATS";
                     }
-                    
+
                     var instructions = '<div id="instructions"><div class="text-center"><h3>'
                             + '<strong>' + examName + '</strong></h3>'
-                            + examDate +' - ' + examBeginTime 
+                            + examDate + ' - ' + examBeginTime
                             + 'h às ' + examEndTime + 'h'
                             + '<div class="text-uppercase"><br><h4>Instruções gerais '
                             + 'para a realização da prova</h4></div><h4><br><strong>'
@@ -175,13 +197,14 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                     instructionsPage.find('.page-number').html(pageNumber);
                     ++pageNumber;
                 }
+
                 if ($('.exam-questions .wording-block').length !== 0) {
                     wordingPage = $(".exam-page").clone().removeClass('exam-page')
                             .addClass("page");
                     wordingPage.css("display", "block").css("height", "297mm");
-                        
-                    var wordingBlock = $('.exam-questions .wording-block').clone();                 
-                    wordingBlock.find('.question-block *').css('text-align', 'justify');                    
+
+                    var wordingBlock = $('.exam-questions .wording-block').clone();
+                    wordingBlock.find('.question-block *').css('text-align', 'justify');
                     wordingBlock.find('.do-not-print').each(function () {
                         $(this).remove();
                     });
@@ -192,7 +215,7 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
 
                 //  Prepara a div #print-page (columnizer)
                 generateExam(pageNumber);
-                
+
                 MathJax.Hub.Queue(["Typeset", MathJax.Hub, 'print-page'], function () {
                     //  Abre o diálogo de impressão da div #print-page usando jqueryprint
                     $('#print-page').print({
@@ -209,6 +232,7 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                         title: null,
                         doctype: '<!doctype html>'
                     });
+                    $('#print-page').html(''); 
                 });
             });
 
@@ -273,6 +297,7 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
         };
 
         updateRemainingQuestions = function () {
+            $('#added-questions').html(questionCount);
             $('#remaining-questions')
                     .html(parseInt($('#question-count').html()) - questionCount);
         };
@@ -323,19 +348,18 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                         var sId = parseInt($("#last-selected").val());
                         for (var i = 0; i < data.length; ++i) {
                             examQuestions[data[i].questionId] = {
-                                'enunciation': data[i].questionEnunciation,
-                                'alternatives': data[i].questionAnswers,
-                                'subject': sId
+                                enunciation: data[i].questionEnunciation,
+                                alternatives: data[i].questionAlternatives,
+                                correctAlternative: data[i].questionCorrectAlternative,
+                                subject: sId
                             };
                             questions.push({
+                                DT_RowClass: "cats-row",
                                 DT_RowAttr: {
-                                    "class": "table-row",
                                     "id": "question-" + data[i].questionId,
                                     "data-id": data[i].questionId
                                 },
-                                0: '<input type="checkbox" class="select-questions" value="'
-                                        + data[i].questionId + '">',
-                                1: data[i].questionEnunciation
+                                0: data[i].questionEnunciation
                             });
                         }
                         sQuestionsDatatable[sId] = questions;
@@ -356,7 +380,7 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
             var contentHeight = 884.88;    // Número aproximado empiricamente
             var page = pageNumber;
 
-            $('#exam-part-1').append('<div id="exam-temp"></div>');
+            $('#exam').append('<div id="exam-temp"></div>');
             $('#exam-temp').html($("#preview-page").html());
             $('#exam-temp').find('.do-not-print').each(function () {
                 $(this).remove();
@@ -372,7 +396,8 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                         return;
                     }
                     $page = $(".exam-page").clone().removeClass('exam-page')
-                            .addClass("page").css("display", "block").css("height", "297mm");;
+                            .addClass("page").css("display", "block").css("height", "297mm");
+                    ;
 
                     $page.find(".page-number").first().append(page++);
                     $("#print-page").append($page);
@@ -393,7 +418,62 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
             buildExamLayout();
 
             $('#exam-temp').remove();
+        };
 
+        /*
+         * Gera o gabarito do simulado
+         */
+        generateAnswerKey = function () {
+            $('.answers-table').remove();
+            
+            var majorSubjects = $('.exam-questions > div');
+            var majorSubjectName = '';
+            var number = $('#exam-numbering-start').val();
+            var columnCount = 1;            
+            var CSVAnswers = "Numero,Resposta,Disciplina\n";
+            
+            majorSubjects.each(function () {
+                if ($(this).hasClass('spanish-block')) {
+                    number = $('#exam-numbering-start').val();
+                }
+                
+                majorSubjectName = $(this).find('.title').html();
+                $('#answer-key-tables').append(
+                    '<table class="table table-striped table-condensed answers-table">' +
+                        '<caption class="text-center"><strong>' +
+                            majorSubjectName + 
+                        '</strong></caption>' +
+                    '</table>'
+                );
+                columnCount = 1;
+                
+                $(this).find('.question-block').each(function () {
+                    if (columnCount++ % 26 === 0) {
+                        $('#answer-key-tables').append(
+                            '<table class="table table-striped table-condensed answers-table">' + 
+                                '<caption class="text-center"><strong></strong></caption>' +
+                            '</table>'
+                        );
+                    }
+                    $('.answers-table').last().append(
+                        '<tr>' +
+                            '<td class="text-center">' + (number) + '</td>' +
+                            '<td class="text-center"><span class="text-center">' +
+                                '&#' + (9398 + $(this).data('answer')) + ';' +
+                            '</span></td>' +
+                        '</tr>'
+                    );
+                    CSVAnswers += (number++) + ',' + 
+                            String.fromCharCode($(this).data('answer') + 'a'.charCodeAt(0)) + ',' + 
+                            majorSubjectName + "\n";
+                });
+            });
+            $('#answer-key-tables').css("height", "210mm");
+
+            $("#save-answers-csv").removeAttr("disabled");
+            $("#save-answers-csv").attr("href", 'data:attachment/csv,' +  encodeURIComponent(CSVAnswers));
+            $("#save-answers-csv").attr("target", '_blank');
+            $("#save-answers-csv").attr("download", 'gabarito.csv');
         };
 
         /*
@@ -480,8 +560,9 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer', 'jqueryprint', 'da
                                 + '</strong></h3></div>');
                     }
 
-                    var q = '<div id="q-' + qId + '" class="question-block"'
-                            + 'data-id="' + qId + '" data-subject-id="' + subjectId + '">'
+                    var q = '<div id="q-' + qId + '" class="question-block" '
+                            + 'data-id="' + qId + '" data-subject-id="' + subjectId + '" '
+                            + 'data-answer="' + examQuestions[qId]['correctAlternative'] + '">'
                             + '<span class="do-not-print control-icons pull-right">'
                             + '<i class="rm-question fa fa-times"></i><br>'
                             + '<i class="move-up fa fa-sort-asc"></i><br>'

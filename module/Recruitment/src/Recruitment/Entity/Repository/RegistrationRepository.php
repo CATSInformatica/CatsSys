@@ -133,7 +133,7 @@ class RegistrationRepository extends EntityRepository
         $qb
             ->select('r.registrationId, CONCAT(CONCAT(p.personFirstName, \' \'), '
                 . 'p.personLastName) as personFullName, p.personRg, p.personCpf, '
-                . 'p.personEmail')
+                . 'p.personEmail, res.statusType')
             ->from('Recruitment\Entity\Registration', 'r')
             ->join('r.person', 'p')
             ->join('r.registrationStatus', 'rs', Expr\Join::WITH, 'rs.isCurrent = true')
