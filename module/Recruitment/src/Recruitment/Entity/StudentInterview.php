@@ -1511,10 +1511,10 @@ class StudentInterview
         ];
 
         $interviewHomeSituationArr = [
-            self::HOME_SITUATION_UNSATISFACTORY => 0,
-            self::HOME_SITUATION_GOOD => 3.33,
-            self::HOME_SITUATION_REGULAR => 6.67,
-            self::HOME_SITUATION_GREAT => 10,
+            self::HOME_SITUATION_UNSATISFACTORY => 10,
+            self::HOME_SITUATION_GOOD => 6.67,
+            self::HOME_SITUATION_REGULAR => 3.33,
+            self::HOME_SITUATION_GREAT => 0,
         ];
 
         $interviewMaxPositionArr = [
