@@ -571,11 +571,37 @@ define(['datatable'], function () {
             });            
         };
         
+        /**
+         * Mantém a sessão para análise de candidatos ativa.
+         * 
+         * A cada 5 mins uma requisição é enviada ao servidor para manter a
+         * sessão ativa.
+         * 
+         * @returns {undefined}
+         */
+        keepMeAlive = function () {
+
+            setTimeout(function () {
+                $.ajax({
+                    url: '/recruitment/interview/keepAlive',
+                    type: 'GET',
+                    success: function (data) {
+                        keepMeAlive();
+                    },
+                    error: function (texErr) {
+                        console.log('Error', texErr);
+                    }
+                });
+            }, 300000);
+
+        };
+        
         return {
             init: function () {
                 initDataTable();
                 initTableListeners();
                 interviewLogListener();
+                keepAlive();
             }
         };
     }());
