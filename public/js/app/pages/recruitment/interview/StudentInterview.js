@@ -75,7 +75,7 @@ define(['moment', 'masks', 'datetimepicker'], function (moment, masks) {
                 });
                 initDatetimepicker();
                 logInterviewChange();
-                keepAlive();
+                keepMeAlive();
             }
         };
     }());
