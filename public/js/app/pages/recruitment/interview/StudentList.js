@@ -601,7 +601,7 @@ define(['datatable'], function () {
                 initDataTable();
                 initTableListeners();
                 interviewLogListener();
-                keepAlive();
+                keepMeAlive();
             }
         };
     }());
