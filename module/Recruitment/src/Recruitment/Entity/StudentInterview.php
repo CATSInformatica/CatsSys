@@ -245,7 +245,7 @@ class StudentInterview
 
     const HOME_SITUATION_UNSATISFACTORY = 'Insatisfatória';
     const HOME_SITUATION_GOOD = 'Boa';
-    const HOME_SITUATION_REGULAR = 'Boa';
+    const HOME_SITUATION_REGULAR = 'Regular';
     const HOME_SITUATION_GREAT = 'Ótima';
 
     /**
