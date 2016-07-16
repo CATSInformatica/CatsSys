@@ -1,10 +1,39 @@
 #!/bin/bash
 
-echo 'Before installing CatsSys please run "sudo apt-get update && sudo apt-get dist-upgrade" to keep your system up-to-date';
-echo 'Starting script.';
+echo 'Before installing CatsSys please run "sudo apt-get update && sudo apt-get dist-upgrade" to keep your system up-to-date.
+Do not execute this script as superuser. Do you wish to install (y/n)?'
+read answer
+if echo "$answer" | grep -iq "^y" ;then
+    clear
+    echo 'Starting script ...';
+else
+    exit;
+fi
 
 echo 'Installing Required Packages: PHP, Composer Apache, MySql';
 sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom composer apache2 npm libapache2-mod-php
+
+# Read mysql user and password
+echo -n 'Please insert your mysql user: '
+read mysqluser
+stty -echo
+
+while :
+ do
+    echo -n 'Please insert your mysql password: '
+    read mysqlpass
+    echo
+    echo -n 'Please insert your mysql password again: '
+    read mysqlpassagain
+    echo
+    if [ "$mysqlpass" = "$mysqlpassagain" ]; then
+        break;
+    else
+        echo "Passwords do not match, please retype"
+    fi
+done
+
+stty echo
 
 echo 'Installing php-apcu-bc';
 
@@ -64,7 +93,7 @@ sudo rm -rf $HOME/vhosts/cats-lab
 
 echo 'Starting git clone'
 mkdir $HOME/vhosts
-read -p "Please insert the link of your forked repository 
+read -p "Please insert the link of your forked repository
 (Example: https://github.com/marciodojr/CatsSys.git):
 " repository;
 git clone $repository $HOME/vhosts/cats-lab
@@ -82,7 +111,7 @@ cd $HOME/vhosts/cats-lab
 bower install
 
 echo 'Creating local configuration'
-tee $HOME/vhosts/cats-lab/config/autoload/local.php << EOF
+tee $HOME/vhosts/cats-lab/config/autoload/local.php > /dev/null <<EOF
 <?php
 /*
 * ./config/autoload/local.php
@@ -95,8 +124,8 @@ return [
        'connection' => [
            'orm_default' => [
                'params' => [
-                   'user'     => 'root',
-                   'password' => 'root',
+                   'user'     => '$mysqluser',
+                   'password' => '$mysqlpass',
                    'dbname'   => 'catssys',
                ],
            ],
@@ -117,11 +146,8 @@ return [
    ],
 ];
 EOF
-cp $HOME/vhosts/vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist $HOME/vhosts/cats-lab/config/autoload/zenddevelopertools.local.php
 
-echo 'Creating data directories'
-mkdir $HOME/vhosts/cats-lab/data/captcha
-mkdir $HOME/vhosts/cats-lab/data/session
+cp $HOME/vhosts/vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist $HOME/vhosts/cats-lab/config/autoload/zenddevelopertools.local.php
 
 echo 'Enabling rewrite mode'
 sudo a2enmod rewrite
@@ -135,23 +161,22 @@ sudo service apache2 restart
 echo 'Setting permissions for data directories'
 sudo chmod 777 $HOME/vhosts/cats-lab/data/DoctrineORMModule/Proxy
 sudo chmod 777 $HOME/vhosts/cats-lab/data/cache
-sudo chmod 777 $HOME/vhosts/cats-lab/data/edital
+sudo chmod 777 $HOME/vhosts/cats-lab/public/docs
 sudo chmod 777 $HOME/vhosts/cats-lab/data/fonts
 sudo chmod 777 $HOME/vhosts/cats-lab/data/profile
 sudo chmod 777 $HOME/vhosts/cats-lab/data/captcha
 sudo chmod 777 $HOME/vhosts/cats-lab/data/session
-sudo chmod 777 $HOME/vhosts/cats-lab/data/pre-interview
 
-echo 'Creating database CatsSys. Please insert your mysql password: '
-mysql -u root -p -e 'drop database if exists catssys; create database catssys'
+echo 'Creating database CatsSys.'
+mysql -u $mysqluser -p$mysqlpass -e 'drop database if exists catssys; create database catssys'
 
 echo 'Creating database schema'
 php $HOME/vhosts/cats-lab/public/index.php orm:validate-schema
 php $HOME/vhosts/cats-lab/public/index.php orm:schema-tool:create
 php $HOME/vhosts/cats-lab/public/index.php orm:generate-proxies
 
-echo 'Importing table contents. Please Insert your mysql password'
-cat $HOME/vhosts/cats-lab/data/dev-helpers/*.sql | mysql -u root -p catssys
+echo 'Importing table contents.'
+cat $HOME/vhosts/cats-lab/data/dev-helpers/catssys_data_*.sql | mysql -u $mysqluser -p$mysqlpass catssys
 
 echo 'Starting browser'
 firefox http://cats-lab.lan &
