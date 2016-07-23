@@ -117,8 +117,8 @@ server {
         deny all;
     }
 
-    access_log /home/marcio/vhosts/cats-lab/access.log;
-    error_log /home/marcio/vhosts/cats-lab/error.log;
+    access_log $HOME/vhosts/cats-lab/access.log;
+    error_log $HOME/vhosts/cats-lab/error.log;
 }
 EOF
 
