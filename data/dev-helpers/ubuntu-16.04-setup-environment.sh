@@ -11,7 +11,7 @@ else
 fi
 
 echo 'Installing Required Packages: PHP, Composer Apache, MySql';
-sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom composer apache2 npm libapache2-mod-php
+sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom composer npm
 
 # Read mysql user and password
 echo -n 'Please insert your mysql user: '
@@ -54,8 +54,17 @@ sudo npm install -g bower
 echo 'Creating symbolic link for nodejs /usr/bin/nodejs ~> /usr/bin/node';
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 
-echo 'Creating virtual host configuration'
-sudo tee /etc/apache2/sites-available/cats-lab.conf << EOF
+echo 'Which http server do you want to install (apache/nginx)?'
+read serverPicked
+echo "Picked $serverPicked"
+case "$serverPicked" in
+apache)
+    echo "installing Apache"
+    sudo service nginx stop # try to stop any nginx daemon
+    sudo apt-get install apache2 libapache2-mod-php
+
+    echo 'Creating apache2 virtual host configuration'
+    sudo tee /etc/apache2/sites-available/cats-lab.conf << EOF
 <VirtualHost 127.1.1.100:80>
 
         ServerName cats-lab.lan
@@ -77,16 +86,58 @@ sudo tee /etc/apache2/sites-available/cats-lab.conf << EOF
 
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 EOF
+    echo 'Changing php.ini max_post_size to 20MB and upload_max_filesize to 15MB'
+    sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php/7.0/apache2/php.ini
+    sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php/7.0/apache2/php.ini
+    ;;
+nginx)
+    echo "installing Nginx"
+    sudo service apache2 stop # try to stop any apache daemon
+    sudo apt-get install nginx-full
+    sudo tee /etc/nginx/sites-enabled/cats-lab.conf <<EOF
+server {
+    listen 127.1.1.100:80;
+    server_name cats-lab.lan;
+    root $HOME/vhosts/cats-lab/public;
+    index index.php;
+
+    location / {
+        try_files \$uri \$uri/ /index.php\$is_args\$args;
+    }
+
+    location ~ \.php\$ {
+        # Pass the PHP requests to FastCGI server (php-fpm)
+        fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+	fastcgi_param APP_ENV development;
+        include fastcgi_params;
+    }
+
+    location ~ \.htaccess {
+        deny all;
+    }
+
+    access_log /home/marcio/vhosts/cats-lab/access.log;
+    error_log /home/marcio/vhosts/cats-lab/error.log;
+}
+EOF
+
+    sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php/7.0/fpm/php.ini
+    sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php/7.0/fpm/php.ini
+
+    sudo service nginx restart;
+    ;;
+*)
+    echo 'invalid option'
+    exit
+    ;;
+esac
 
 echo 'Binding domain http://cats-lab.lan to 127.1.1.100'
 sudo sed -i '/cats-lab.lan/d' /etc/hosts
 sudo tee -a  /etc/hosts << EOF
 127.1.1.100   cats-lab.lan # bind domain http://cats-lab.lan to 127.1.1.100
 EOF
-
-echo 'Changing php.ini max_post_size to 20MB and upload_max_filesize to 15MB'
-sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php/7.0/apache2/php.ini
-sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php/7.0/apache2/php.ini
 
 echo 'Removing previous cats-lab project'
 sudo rm -rf $HOME/vhosts/cats-lab
@@ -149,15 +200,6 @@ EOF
 
 cp $HOME/vhosts/vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist $HOME/vhosts/cats-lab/config/autoload/zenddevelopertools.local.php
 
-echo 'Enabling rewrite mode'
-sudo a2enmod rewrite
-
-echo 'Enabling cats-lab virtual host'
-sudo a2ensite cats-lab.conf
-
-echo 'Restarting Apache server'
-sudo service apache2 restart
-
 echo 'Setting permissions for data directories'
 sudo chmod 777 $HOME/vhosts/cats-lab/data/DoctrineORMModule/Proxy
 sudo chmod 777 $HOME/vhosts/cats-lab/data/cache
@@ -177,6 +219,22 @@ php $HOME/vhosts/cats-lab/public/index.php orm:generate-proxies
 
 echo 'Importing table contents.'
 cat $HOME/vhosts/cats-lab/data/dev-helpers/catssys_data_*.sql | mysql -u $mysqluser -p$mysqlpass catssys
+
+case "$serverPicked" in
+apache)
+    echo 'Enabling rewrite mode'
+    sudo a2enmod rewrite
+
+    echo 'Enabling cats-lab virtual host'
+    sudo a2ensite cats-lab.conf
+    echo 'Restarting Apache server'
+    sudo service apache2 restart
+    ;;
+nginx)
+    echo 'Restarting Nginx server'
+    sudo service nginx restart;
+    ;;
+esac
 
 echo 'Starting browser'
 firefox http://cats-lab.lan &
