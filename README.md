@@ -12,19 +12,22 @@ Instalar dependências
 Digite ou cole no terminal:
 
 ```
-sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom composer apache2 npm libapache2-mod-php
+sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom composer npm
 ```
+
+Escolher qual servidor http será utilizado (Escolha apenas um)
+
+Para o Apache instale: `sudo apt-get install Apache2 libapache2-mod-php`
+Para o Nginx instale: `sudo apt-get install nginx-full`
 
 Instalar Apcu
 Baixe e instale a versão mais nova do apcu [apcu](http://ftp.us.debian.org/debian/pool/main/p/php-apcu-bc).
 
-Configuração do virtual host
-Digite ou cole no terminal: `sudo gedit /etc/apache2/sites-available/cats-lab.conf`
-
 Instalação do bower. Digite ou cole no terminal: `sudo npm install -g bower`
-
 Provavelmente será necessário criar um link para que o bower funcione corretamente: `sudo ln -s /usr/bin/nodejs /usr/bin/node`
 
+Configuração do virtual host (Apache)
+Digite ou cole no terminal: `sudo gedit /etc/apache2/sites-available/cats-lab.conf`
 Cole no arquivo de texto o seguinte conteúdo, substituindo `<HOME>` pelo valor retornado pelo comando `echo $HOME`:
 
 ```
@@ -52,6 +55,38 @@ Cole no arquivo de texto o seguinte conteúdo, substituindo `<HOME>` pelo valor 
 
 Salve e feche o arquivo de texto.
 
+Configuração do virtual host (Nginx)
+Digite ou cole no terminal: `sudo gedit /etc/nginx/sites-enabled/cats-lab.conf`
+Cole no arquivo de texto o seguinte conteúdo, substituindo `<HOME>` pelo valor retornado pelo comando `echo $HOME`:
+
+```
+server {
+    listen 127.1.1.100:80;
+    server_name cats-lab.lan;
+    root <HOME>/vhosts/cats-lab/public;
+    index index.php;
+
+    location / {
+        try_files \$uri \$uri/ /index.php\$is_args\$args;
+    }
+
+    location ~ \.php\$ {
+        # Pass the PHP requests to FastCGI server (php-fpm)
+        fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+	fastcgi_param APP_ENV development;
+        include fastcgi_params;
+    }
+
+    location ~ \.htaccess {
+        deny all;
+    }
+
+    access_log <HOME>/vhosts/cats-lab/access.log;
+    error_log <HOME>/vhosts/cats-lab/error.log;
+}
+```
+
 Pelo gerenciador de arquivos ou pelo terminal crie uma pasta chamada vhosts/cats-lab na raiz do diretório home do usuário. digite ou cole no terminal:
 
 ```
@@ -70,13 +105,28 @@ Adicione ao final do arquivo a linha:
 127.1.1.100     cats-lab.lan # nome associado ao virtual host local de desenvolvimento
 ```
 
-Habilitar modo de reescrita no apache2
+Habilitar modo de reescrita no (Apache)
 digite ou cole no terminal: `sudo a2enmod rewrite`
 
-Habilitar o site criado
+Habilitar o site criado (Apache)
 digite ou cole no terminal: `sudo a2ensite cats-lab.conf`
 
-Reiniciar o apache: `sudo service apache2 restart`
+Aumentar o tamanho do conteúdo de posts e upload de arquivos
+
+Para Apache
+```
+sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php/7.0/apache2/php.ini
+sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php/7.0/apache2/php.ini
+```
+
+Para Nginx
+```
+sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php/7.0/fpm/php.ini
+sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php/7.0/fpm/php.ini
+```
+
+Reiniciar o servidor (Apache): `sudo service apache2 restart`
+Reiniciar o servidor (Nginx): `sudo service nginx restart`
 
 Testar se o virtual host foi criado com sucesso.
 
@@ -134,9 +184,9 @@ return [
        'connection' => [
            'orm_default' => [
                'params' => [
-                   'user'     => '<USUÁRIO DO BANCO DE DADOS>',
-                   'password' => '<SENHA DO BANCO DE DADOS>',
-                   'dbname'   => '<NOME DO BANCO DE DADOS>',
+                   'user'     => '<usuario>',
+                   'password' => '<senha>',
+                   'dbname'   => '<banco>',
                ],
            ],
        ],
