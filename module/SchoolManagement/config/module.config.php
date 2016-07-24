@@ -258,14 +258,6 @@ return array(
                         'privilege' => 'index',
                         'icon' => 'fa fa-users',
                         'toolbar' => array(
-//                            array(
-//                                'url' => '/recruitment/interview/student/$id',
-//                                'title' => 'Perfil do Candidato',
-//                                'description' => 'Analizar Perfil do Candidato',
-//                                'class' => 'fa fa-file-text-o bg-blue',
-//                                'target' => '_blank',
-//                                'fntype' => 'selectedHttpClick',
-//                            ),
                             array(
                                 'url' => '/school-management/enrollment/enroll/$id',
                                 'id' => 'fn-enroll',
@@ -274,6 +266,16 @@ return array(
                                 'class' => 'fa fa-check bg-green',
                                 'fntype' => 'ajaxPostSelectedClick',
                             ),
+                        ),
+                    ),
+                    array(
+                        'label' => 'Manage enrollments',
+                        'route' => 'school-management/enrollment',
+                        'action' => 'manage',
+                        'resource' => 'SchoolManagement\Controller\Enrollment',
+                        'privilege' => 'manage',
+                        'icon' => 'fa fa-ticket',
+                        'toolbar' => array(
                             array(
                                 'url' => '/school-management/enrollment/unenroll/$id',
                                 'id' => 'fn-unenroll',

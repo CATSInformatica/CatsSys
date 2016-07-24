@@ -52,5 +52,4 @@ class EnrollmentRepository extends EntityRepository
                 ->setParameter('class', $classId)
                 ->getResult();
     }
-
 }
