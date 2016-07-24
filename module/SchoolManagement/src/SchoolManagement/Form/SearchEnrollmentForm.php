@@ -29,7 +29,24 @@ class SearchEnrollmentForm extends Form implements InputFilterProviderInterface
                     'label' => 'Turmas',
                     'value_options' => $this->getStudentClasses($sClasses),
                 ),
-        ));
+                'attributes' => [
+                    'id' => 'class-search-field',
+                ]
+            ))
+            ->add(array(
+                'name' => 'submit',
+                'type' => 'button',
+                'attributes' => array(
+                    'value' => 'Buscar',
+                    'class' => 'btn-primary btn-flat btn-block',
+                    'id' => 'class-search-button',
+                ),
+                'options' => array(
+                    'label' => 'Buscar',
+                    'glyphicon' => 'search',
+                ),
+            ))
+        ;
     }
 
     /**
@@ -56,6 +73,5 @@ class SearchEnrollmentForm extends Form implements InputFilterProviderInterface
             ),
         );
     }
-
 //put your code here
 }
