@@ -31,7 +31,7 @@
 .exam-page {
     display: none;
 }
-.fa-times:hover, .fa-sort-asc:hover, .fa-sort-desc:hover {
+.fa-times:hover, .fa-sort-asc:hover, .fa-sort-desc:hover, #refresh-button:hover {
     cursor: pointer;
 }
 .control-icons .fa-times {

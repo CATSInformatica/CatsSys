@@ -15,38 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(['jquery', 'datatable'], function () {
-    var index = (function () {
-
-        var examsTable = $('#exams-table');
-
-        initDataTable = function () {
-            examsTable.DataTable({
-                dom: 'lftip',
-                autoWidth: false
-            });
-        };
-
+define(['app/pages/school-management/exam/exam-config'], function () {
+    var create = (function () {
         return {
             init: function () {
-                initDataTable();
-            },
-            getCallbackOf: function (element) {
-                
-                return {
-                    exec: function (data) {
-                        examsTable
-                                .DataTable()
-                                .row('#exam-' + data.examId)
-                                .remove()
-                                .draw();
-                    }
-                };
-
+                initQuantities();
+                examConfigListeners();
+                initDatepicker();
+                initQuestionAmount();
             }
         };
 
     }());
 
-    return index;
+    return create;
 });

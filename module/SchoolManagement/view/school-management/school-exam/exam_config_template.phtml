@@ -1,0 +1,74 @@
+<?php
+    $form->prepare();
+    $exam = $form->get('exam-fieldset');
+    echo $this->form()->openTag($form);
+?>
+<div class="col-xs-12 no-padding">
+    <div class="col-xs-12 col-md-8">
+        <?php echo $this->formRow($exam->get('examName')); ?>
+    </div>
+    <div class="col-xs-12 col-md-4">
+        <?php echo $this->formRow($form->get('examNumberingStart')); ?>
+    </div>
+</div>
+<div class="col-xs-12 checkbox no-padding">
+    <label><input type="checkbox" id="exam-instructions" checked> Incluir cabeçalho com instruções</label>
+</div>
+<div class="col-xs-12 no-padding">
+    <div class="col-xs-12 col-md-4">
+        <?php echo $this->formRow($exam->get('examDate')); ?>
+    </div>
+    <div class="col-xs-12 col-md-4">
+        <?php echo $this->formRow($form->get('examBeginTime')); ?>
+    </div>
+    <div class="col-xs-12 col-md-4">
+        <?php echo $this->formRow($form->get('examEndTime')); ?>
+    </div>
+</div>
+<div class="col-xs-12 no-padding">
+    <table class="table table-bordered table-condensed">
+        <tr>
+            <?php foreach ($this->baseSubjects as $baseSubject) : ?>
+                <?php
+                if ($baseSubject->getSubjectName() === "REDAÇÃO"):
+                    continue;
+                endif;
+                ?>
+
+                <th>
+                    <h4 class="text-uppercase"><?php echo $baseSubject->getSubjectName(); ?></h4>
+                </th>
+            <?php endforeach; ?>
+        </tr>
+        <tr>
+            <?php 
+                $i = 0;
+            ?>
+            <?php foreach ($this->baseSubjects as $baseSubject) : ?>
+                <?php
+                if ($baseSubject->getSubjectName() === "REDAÇÃO"):
+                    continue;
+                endif;
+                ?>
+                <td class="base-subject col-xs-3" id="base-subject-<?php echo $baseSubject->getSubjectId(); ?>" 
+                    data-id="<?php echo $baseSubject->getSubjectId(); ?>" data-name="<?php echo $baseSubject->getSubjectName(); ?>">
+                    <?php foreach ($baseSubject->getChildren() as $subject) : ?>
+                        <div class="col-xs-12">
+                            <?php echo $subject->getSubjectName(); ?>
+                        </div>
+                    <div class="col-xs-12 quantity-block" 
+                         data-s-id="<?php echo $subject->getSubjectId(); ?>" 
+                         data-quantity="<?php echo $this->quantities[$i]; ?>">
+                            <?php echo $this->formRow($form->get('examQuestionQuantity')->get($i)->get('quantity')); ?>
+                        </div>
+                        <?php ++$i; ?>
+                    <?php endforeach; ?>
+                </td>
+            <?php endforeach; ?>
+        </tr>
+    </table>
+    <div class="col-md-12"><strong>Total: <span id="question-count">0</span></strong></div>
+    <!-- /.col -->
+</div>
+<?php echo $this->formButton($form->get('submit')); ?>
+<?php echo $this->form()->closeTag(); ?>
