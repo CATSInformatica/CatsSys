@@ -1,0 +1,321 @@
+<section class="content">
+    <?php
+    $this->headLink()->appendStylesheet('/css/exam-print.css', 'all');
+    $this->headTitle()->append('Preparação do Simulado')
+            ->setSeparator(' - ');
+    ?>
+    <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+            <div class="box box-danger">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><span class="fa fa-book"></span> INSTRUÇÕES</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <ul>
+                        <li>
+                            A ferramenta de geração automática de simulados ainda está sendo aprimorada, é possível que não haja o melhor aproveitamento de espaço em algumas páginas ou que questões extravasem o limite entre as questões e o rodapé. Uma maneira de tentar solucionar o eventual problema é rearranjando as questões.
+                        </li>
+                        <li>
+                            Para salvar/imprimir corretamente o simulado gerado é necessário remover as margens de impressão do navegador.<br>
+                            <strong>Google Chrome</strong>: <br>
+                            - Na janela de impressão, clique em "Mais definições" (<i>More settings</i>).<br>
+                            - Em "Margens" (<i>Margins</i>), selecione "Nenhum" (<i>None</i>). <br>
+                            <strong>Mozilla Firefox</strong>: <br>
+                            - Na janela de impressão, clique na aba "Configurar página" (<i>Page Setup</i>).<br>
+                            - Clique em "Tamanho do papel" (<i>Paper size</i>).<br>
+                            - Selecione "Gerenciar Tamanhos Personalizados..." (<i>Manage Custom Sizes...</i>).<br>
+                            - Certifique-se que as dimensões do papel (largura x altura) estão definidas como 210x297mm (A4).<br>
+                            - Em "Margens do papel" (<i>Paper Margins</i>), coloque zero em todos os campos.
+                        </li>
+                    </ul>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <div class="box box-primary color-palette-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title text-uppercase"><i class="fa fa-cogs"></i> CONFIGURAÇÃO DO SIMULADO</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div><!-- /.box-tools -->
+                </div>
+                <input type="hidden" name="examId" id="examId" value="<?php echo $this->examId; ?>">
+                <div class="box-body">
+                    <?php if ($form !== null) :
+                        echo $this->render('exam_config_template', array(
+                            'form' => $this->form,
+                            'baseSubjects' => $this->baseSubjects,
+                            'quantities' => $quantities,
+                        ));
+                    endif; ?>
+                    <!-- /.row -->
+                </div>
+                <!-- /.box-body -->
+            </div>
+            <div class="box box-success color-palette-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title text-uppercase"><i class="fa fa-list" aria-hidden="true"></i> SELEÇÃO DAS QUESTÕES</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div><!-- /.box-tools -->
+                </div>
+                <div class="box-body">
+                    <div class="col-md-3 col-sm-12 no-padding" id="subjects">
+                        <dl class="col-xs-12 no-padding">
+                            <?php foreach ($this->baseSubjects as $baseSubject) : ?>
+                                <div class="base-subject-info no-margin no-padding" 
+                                     data-name="<?php echo $baseSubject->getSubjectName(); ?>"
+                                     data-id="<?php echo $baseSubject->getSubjectId(); ?>">
+
+                                    <?php foreach ($baseSubject->getChildren() as $subject) : ?>
+                                        <dt id="select-<?php echo $subject->getSubjectId(); ?>"
+                                            data-name="<?php echo $subject->getSubjectName(); ?>">
+                                                <?php echo $subject->getSubjectName(); ?>
+                                            <span class="pull-right">
+                                                <span class="q-added text-green">0</span>
+                                                <?php if ($baseSubject->getSubjectName() !== "REDAÇÃO"): ?>
+                                                    /
+                                                    <span class="q-amount text-blue"></span>
+                                                <?php endif; ?>
+                                            </span>
+                                        </dt>
+                                        <dd class="col-xs-12" id="subject-<?php echo $subject->getSubjectId() ?>">
+                                            <select name="subject" class="col-xs-12 no-padding no-border" multiple>
+
+                                                <?php
+                                                foreach ($subject->getChildren() as $topic) :
+
+                                                    //  DFS para imprimir a arvore de disciplinas
+                                                    $visited = [];
+                                                    $stack = new SplStack();
+                                                    $stack->push($topic);
+                                                    while (!$stack->isEmpty()) :
+                                                        $current = $stack->pop();
+                                                        if (isset($visited[$current->getSubjectId()])) :
+                                                            continue;
+                                                        endif;
+                                                        $visited[$current->getSubjectId()]
+                                                                = true;
+                                                        if (empty($current->getChildren()->toArray())) :
+                                                            ?>
+                                                            <option value="<?php echo $current->getSubjectId(); ?>">
+                                                                <?php echo $current->getSubjectName(); ?>
+                                                            </option>
+                                                            <?php
+                                                        endif;
+
+                                                        foreach ($current->getChildren()->toArray() as $child) :
+                                                            $stack->push($child);
+                                                        endforeach;
+                                                    endwhile;
+
+                                                endforeach;
+                                                ?>    
+                                                <option value="<?php echo $subject->getSubjectId(); ?>">SEM TÓPICO DEFINIDO</option>
+
+                                            </select>
+                                        </dd>
+                                    <?php endforeach; ?>
+                                </div>
+                            <?php endforeach; ?>
+                        </dl>
+                    </div>
+                    <div class="col-md-9 col-sm-12" id="questions">
+                        <div class="row">
+                            <span class="pull-right"> <span class="text-bold text-sm" style="padding-right: 10%;">RECARREGAR</span>
+                            <i class="fa fa-refresh text-purple" style="font-size: 17px;" id="refresh-button" aria-hidden="true"></i></span>
+                        </div>
+                        <div class="table-responsive">
+                            <table class="table table-condensed table-bordered" id="question-table">
+                                <thead>
+                                <th>Questões</th>
+                                </thead>
+                                <tbody>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-6 col-xs-offset-3">
+                            <button class="btn-primary btn-block btn" id="add-exam-question">Adicionar</button>                            
+                        </div>
+                    </div>
+                    <!-- /.col -->
+                </div>
+                <!-- /.box-body -->
+            </div>
+            
+            <!-- GABARITO -->
+            <div class="box box-default collapsed-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><i class="fa fa-check-square-o"></i> GABARITO </h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                    </div><!-- /.box-tools -->
+                </div><!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row text-center">
+                        <i class="fa fa-info-circle text-blue" style="font-size: 20px; padding-right: 15px;" aria-hidden="true"></i>
+                        Escolha orientação horizontal para a folha ao imprimir/salvar o PDF do gabarito.
+                        <br><br>
+                    </div>
+                    <div class="row">
+                        <div class="btn-group col-xs-8 col-xs-offset-2 col-md-6 col-md-offset-3"> 
+                            <a class="col-xs-6 btn btn-primary" id="print-answer-key">Gerar PDF</a>
+                            <a class="col-xs-6 btn btn-success" id="save-answers-csv" disabled>Gerar CSV</a>
+                        </div>
+                        <div class="col-xs-10 col-xs-offset-1" id="answer-key-tables">
+                        </div>
+                    </div> 
+                </div><!-- /.box-body -->
+            </div><!-- /.box -->
+            
+            <!-- TEMPLATE DAS INSTRUÇÕES DO SIMULADO -->  
+            <script id="instructions-template" type="text/template">      
+                <div class="id-goes-here">
+                    <div class="text-center">
+                        <h3><strong> <span class="i-exam-name"></span> </strong></h3>
+                            <span class="i-exam-date"></span> - 
+                            <span class="i-begin-time"></span>h às 
+                            <span class="i-end-time"></span>h
+                            <div class="text-uppercase">
+                                <br>
+                                <h4>Instruções gerais para a realização da prova</h4>
+                            </div>
+                            <h4>
+                                <br>
+                                <strong> Antes de iniciar a resolução da prova, verifique 
+                                        se as regras abaixo estão sendo cumpridas.
+                                </strong>
+                            </h4>
+                    </div>
+                    <br>
+                    <div class="text-justify">
+                        <ol> 
+                            <li>Não abra a prova até que o fiscal lhe conceda autorização</li>
+                            <li>Em sua mesa de prova <strong>não deve constar nada além de lápis, borracha e caneta.</strong></li>
+                            <li>Quaisquer materiais que não sejam os descritos acima devem ser deixados à sua direita, no chão.</li>
+                            <li><strong>O candidato</strong> que precisar usar o banheiro ou que, por ventura, 
+                                    <strong> venha a se sentir mal, deve chamar o fiscal</strong> à sua mesa. <strong>Não</strong>
+                                    se levante da mesa sem comunicar o fiscal.
+                            </li>
+                            <li>Não haverá correção de erros nas questões. Caso esses existam e comprometam o resultado das mesmas, 
+                                    as questões erradas serão anuladas posteriormente.
+                            </li>
+                            <li>A prova tem duração máxima de 4 (quatro) horas. O tempo mínimo de permanência na sala é de 2
+                                    <strong> (duas)</strong> horas. Após este período, você receberá uma folha de respostas, 
+                                    onde deverá marcar as repostas de <strong>caneta azul ou preta.</strong> Marque somente 
+                                    uma resposta para cada questão, caso contrário, tal questão será considerada anulada em 
+                                    sua prova. Logo abaixo, você pode verificar como deve ser marcada a resposta que você julgar correta.
+                            </li>
+                            
+                            <div class="col-xs-6 col-xs-offset-3" style="line-height: 15mm;">
+                                <div class="col-xs-1" style="font-size: 30pt; line-height: 15mm;"></div>
+                                <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9398 </div>
+                                <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9399 </div>
+                                <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9400 </div>
+                                <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 1mm 0 0;"> 
+                                        <svg height="38" width="38"><circle cx="19" cy="19" r="19" fill="black" /></svg>
+                                </div>
+                                <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9402 </div>
+                                <div class="col-xs-1" style="font-size: 30pt; line-height: 15mm;"></div>
+                            </div>
+                            <br><br><br>
+                            
+                            <li>Caso exista uma questão que você julgue estar sem sentido, sem resposta correta, mais de uma resposta 
+                                    correta, ilegível ou algo do gênero, escreva atrás do gabarito o número da questão e o erro encontrado.
+                            </li>
+                            <li>É recomendável que se deixem pelo menos 30 (trinta) minutos para o preenchimento da folha de resposta. Em 
+                                    hipótese alguma o fiscal irá trocá-la e somente ela deverá ser entregue ao fiscal no fim de sua prova. 
+                                    Não se esqueça de escrever o número de matrícula na folha de resposta. O caderno de questões ficará com 
+                                    você.
+                            </li>
+                            <li>Antes de iniciar sua prova, espere autorização do fiscal para conferir se todas as páginas estão em seu 
+                                    caderno e se todas estão legíveis.
+                            </li>
+                            <li>Inicie a prova quando houver autorização do fiscal.</li>
+                        </ol>
+                    </div>
+                </div>
+            </script>   
+            
+            <!-- SIMULADO -->
+            <div class="box box-warning color-palette-box">
+                <div class="box-header with-border">
+                    <h3 class="box-title text-uppercase"><i class="fa fa-file-text-o"></i> PRÉ-VISUALIZAÇÃO DO SIMULADO </h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div><!-- /.box-tools -->
+                </div>
+                <div class="box-body" id="exam">
+                    <div class="progress" id="exam-load-progress" style="display: none;">
+                        <div class="progress-bar progress-bar-green" role="progressbar" style="width: 0%"><span class="sr-only" style="position: static;">0%</span></div>
+                    </div>
+                    <div class="do-not-print col-xs-12">
+                        <strong><span id="added-questions" class="text-green"></span></strong> questões adicionadas.<br>
+                        <strong><span id="remaining-questions" class="text-red"></span></strong> questões restantes.
+                    </div>
+
+                    <div class="do-not-print row">
+                        <div class="btn-group col-xs-8 col-xs-offset-2 col-md-6 col-md-offset-3"> 
+                            <a class="col-xs-6 btn btn-primary" id="print-exam">Gerar PDF</a>
+                            <a class="col-xs-6 btn btn-success" id="save-exam">Salvar Simulado</a>
+                        </div>
+                        <br><br><br><br>
+                    </div> 
+
+                    <!-- TEMPLATE DA DE CADA PÁGINA (CABEÇALHO, CONTEÚDO, RODAPÉ) -->
+                    <div class="exam-page">
+                        <div class="exam-header">
+                            <div class="col-xs-3 no-padding">
+                                <img class="center-block cats-logo" src="/img/logo_prova.png">
+                            </div>
+                            <div class="col-xs-9 no-padding">
+                                <p class="text-center header-text"><strong>Curso Assistencial Theodomiro Santiago</strong><br>
+                                    Av. BPS, 1303 - UNIFEI - Campus Professor J.R. Seabra - Sala I.1.2.47 - Itajubá - MG<br>
+                                    <strong>Tel.:</strong>(38) 98871-2364 | <strong>Email:</strong> catsensino@gmail.com | familiacats.com.br</p>
+                            </div>
+                        </div>
+                        <div class="exam-content">
+
+                        </div>
+                        <div class="exam-footer">
+                            <p><span class="exam-name"></span><span class="page-number pull-right"></span></p>
+                        </div>
+                    </div>
+
+                    <!-- PREVIEW -->
+                    <div id="preview-page">
+                        <div class="exam-questions">
+                        </div>
+                    </div>
+
+                    <!-- DIV PARA IMPRESSÃO -->
+                    <div id="print-page">
+
+                    </div> 
+                </div>
+                <!-- /.col -->
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+</div>
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/exam/prepare';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>
