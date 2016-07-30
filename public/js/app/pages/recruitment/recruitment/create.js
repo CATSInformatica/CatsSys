@@ -4,8 +4,10 @@
  * and open the template in the editor.
  */
 
-define(['moment', 'masks', 'jquery', 'datetimepicker'], function (moment, masks) {
+define(['moment', 'masks', 'jquery', 'datetimepicker', 'bootstrapslider'], function (moment, masks) {
     var create = (function () {
+
+        var PSA = 1;
 
         initDatepickers = function () {
 
@@ -26,10 +28,32 @@ define(['moment', 'masks', 'jquery', 'datetimepicker'], function (moment, masks)
             });
         };
 
+        initSliders = function () {
+            $('.input-slider').slider({
+                tooltip: 'always'
+            });
+            
+            $('select[name=recruitment_type]').on('change', function(){
+                disableSliderIfNeeded($(this).val());
+            });
+            
+            disableSliderIfNeeded($('select[name=recruitment_type]').val());
+        };
+        
+        disableSliderIfNeeded = function(value){
+            if(parseInt(value) !== PSA) {
+                console.log();
+                $(".input-slider").slider('disable');
+            } else {
+                $(".input-slider").slider('enable');
+            }
+        };
+
         return {
             init: function () {
                 initDatepickers();
                 initMasks();
+                initSliders();
             }
         };
 

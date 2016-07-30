@@ -12,6 +12,7 @@ requirejs.config({
         jquerycsv: 'jquery-csv/src/jquery.csv',
         jquerycolumnizer: 'jquery.columnizer/src/jquery.columnizer.min',
         bootstrap: 'AdminLTE/bootstrap/js/bootstrap.min',
+        bootstrapslider: 'AdminLTE/plugins/bootstrap-slider/bootstrap-slider',
         jmaskedinput: 'jquery.maskedinput/dist/jquery.maskedinput.min',
         slimscroll: 'AdminLTE/plugins/slimScroll/jquery.slimscroll.min',
         pace: 'AdminLTE/plugins/pace/pace.min',
@@ -36,6 +37,9 @@ requirejs.config({
     shim: {
         bootstrap: {
             deps: ['jquery']
+        },
+        bootstrapslider: {
+            deps: ['bootstrap']
         },
         datatable: {
             deps: ['jquery', 'bootstrap', 'jquerydatatable']
