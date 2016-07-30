@@ -26,7 +26,7 @@ use Recruitment\Entity\Person;
 
 /**
  * Description of People
- * @author Márcio
+ * @author Márcio Dias <marciojr91@gmail.com>
  * @ORM\Table(name="address",
  *      uniqueConstraints={@ORM\UniqueConstraint(name="addr_unique_idx", columns={"address_state",
  *      "address_city", "address_neighborhood", "address_street", "address_number","address_complement"})}

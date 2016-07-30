@@ -1,22 +1,34 @@
 <?php
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Recruitment\Form;
 
-use Zend\Form\Form;
+use DateTime;
 use Recruitment\Entity\Recruitment;
+use Zend\Form\Form;
+use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
- * Description of RecruitmentForm
+ * Modela os campos da entidade Recruitment\Entity\Recruitment
  *
- * @author marcio
+ * @author Márcio Dias <marciojr91@gmail.com>
  */
-class RecruitmentForm extends Form
+class RecruitmentForm extends Form implements InputFilterProviderInterface
 {
 
     //put your code here
@@ -25,8 +37,6 @@ class RecruitmentForm extends Form
         parent::__construct('Recruitment');
         $this->setAttribute('method', 'post');
         $this->setAttribute('enctype', 'multipart/form-data');
-
-        $date = new \DateTime('now');
 
         $this->add(array(
                 'name' => 'recruitment_number',
@@ -105,23 +115,178 @@ class RecruitmentForm extends Form
                     'class' => 'text-center',
                 ),
             ))
-            ->add(array(
+            ->add([
+                'name' => 'recruitmentSocioeconomicTarget',
+                'type' => 'number',
+                'options' => [
+                    'label' => 'Socioeconômico',
+                ],
+                'attributes' => [
+                    'class' => 'input-slider',
+                    'data-slider-min'=> 0,
+                    'data-slider-step' => 0.01,
+                    'data-slider-max'=> 10,
+                    'data-slider-id' => 'yellow',
+                    'min' => 0,
+                    'max' => 10,
+                    'step' => 0.01,
+                ]
+            ])
+            ->add([
+                'name' => 'recruitmentVulnerabilityTarget',
+                'type' => 'number',
+                'options' => [
+                    'label' => 'Vulerabilidade',
+                ],
+                'attributes' => [
+                    'class' => 'input-slider',
+                    'data-slider-min'=> 0,
+                    'data-slider-step' => 0.01,
+                    'data-slider-max'=> 10,
+                    'data-slider-id' => 'red',
+                    'min' => 0,
+                    'max' => 10,
+                    'step' => 0.01,
+                ]
+            ])
+            ->add([
+                'name' => 'recruitmentStudentTarget',
+                'type' => 'number',
+                'options' => [
+                    'label' => 'Perfil de estudante',
+                ],
+                'attributes' => [
+                    'class' => 'input-slider',
+                    'data-slider-min'=> 0,
+                    'data-slider-step' => 0.01,
+                    'data-slider-max'=> 10,
+                    'data-slider-id' => 'green',
+                    'min' => 0,
+                    'max' => 10,
+                    'step' => 0.01,
+                ]
+            ])
+            ->add([
                 'name' => 'Submit',
                 'type' => 'submit',
-                'attributes' => array(
+                'attributes' => [
                     'class' => 'btn btn-primary btn-block',
                     'value' => 'Criar',
-                )
-        ));
+                ]
+        ]);
     }
 
     protected function getYears()
     {
-        $year = (new \DateTime('now'))->format('Y');
+        $year = (new DateTime('now'))->format('Y');
         return array(
             $year => $year,
             ++$year => $year,
         );
     }
 
+    public function getInputFilterSpecification()
+    {
+        return [
+            'recruitment_number' => [
+                'required' => true,
+            ],
+            'recruitment_year' => [
+                'required' => true,
+            ],
+            'recruitment_begindate' => [
+                'required' => true,
+                'filters' => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                    [
+                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'options' => [
+                            'inputFormat' => 'd/m/Y',
+                            'outputFormat' => 'Y-m-d'
+                        ],
+                    ],
+                ],
+                'validators' => [
+                    [
+                        'name' => 'Date',
+                        'options' => [
+                            'format' => 'Y-m-d',
+                        ]
+                    ],
+                    [
+                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'options' => [
+                            'format' => 'Y-m-d',
+                            'inclusive' => true,
+                        ],
+                    ],
+                ],
+            ],
+            'recruitment_enddate' => [
+                'require' => true,
+                'filters' => [
+                    ['name' => 'StripTags'],
+                    ['name' => 'StringTrim'],
+                    [
+                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'options' => [
+                            'inputFormat' => 'd/m/Y',
+                            'outputFormat' => 'Y-m-d'
+                        ],
+                    ],
+                ],
+                'validators' => [
+                    [
+                        'name' => 'Date',
+                        'options' => [
+                            'format' => 'Y-m-d',
+                        ]
+                    ],
+                    [
+                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'options' => [
+                            'format' => 'Y-m-d',
+                            'compareWith' => [
+                                'name' => 'recruitment_begindate',
+                                'format' => 'd/m/Y',
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            'recruitment_public_notice' => [
+                'required' => true,
+                'validators' => [
+                    [
+                        'name' => 'Zend\Validator\File\Extension',
+                        'options' => [
+                            'extension' => [
+                                'pdf',
+                            ],
+                        ],
+                    ],
+                    [
+                        'name' => 'Zend\Validator\File\Size',
+                        'options' => [
+                            'min' => '1000',
+                            'max' => '5000000',
+                        ]
+                    ]
+                ]
+            ],
+            'recruitment_type' => [
+                'required' => true,
+            ],
+            'recruitmentSocioeconomicTarget' => [
+                'required' => false,
+            ],
+            'recruitmentVulnerabilityTarget' => [
+                'required' => false,
+            ],
+            'recruitmentStudentTarget' => [
+                'required' => false,
+            ],
+        ];
+    }
 }

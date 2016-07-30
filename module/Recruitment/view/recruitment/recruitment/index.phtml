@@ -1,7 +1,7 @@
 <section class="content">
-    
+
     <p><?php echo $this->message; ?></p>
-    
+
     <div class="table-responsive col-xs-8 col-md-8 col-md-offset-2">
         <table id="recruitment-table" class="table table-condensed table-striped">
             <thead>
@@ -23,8 +23,18 @@
                         <td class="text-center"> <?php echo $recruitment->getRecruitmentBeginDate()->format('d/m/Y'); ?></td>
                         <td class="text-center"> <?php echo $recruitment->getRecruitmentEndDate()->format('d/m/Y'); ?></td>
                         <td class="text-center"> <?php
-                            echo ($recruitment->getRecruitmentType() == 1) ? 'Processo Seletivo de Alunos' : 'Processo Seletivo de Voluntários';
-                            ?></td>
+                            echo ($recruitment->getRecruitmentType() == Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE) ? 'PSA' : 'PSV';
+                            ?>
+                        </td>
+                        <td class="text-center">
+                            <?php if ($recruitment->getRecruitmentType() == Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE): ?>
+                                <div class="btn-group">
+                                    <button class="btn btn-warning"><?php echo $recruitment->getRecruitmentSocioeconomicTarget(); ?></button>
+                                    <button class="btn btn-danger"><?php echo $recruitment->getRecruitmentVulnerabilityTarget(); ?></button>
+                                    <button class="btn btn-success"><?php echo $recruitment->getRecruitmentStudentTarget(); ?></button>
+                                </div>
+                            <?php endif; ?>
+                        </td>
                     </tr>
                 <?php endforeach; ?>
             </tbody>

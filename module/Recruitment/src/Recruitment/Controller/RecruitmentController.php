@@ -25,7 +25,6 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\Repository\RecruitmentRepository;
-use Recruitment\Form\RecruitmentFilter;
 use Recruitment\Form\RecruitmentForm;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
@@ -85,7 +84,6 @@ class RecruitmentController extends AbstractEntityActionController
             );
 
             $form->setData($data);
-            $form->setInputFilter(new RecruitmentFilter());
 
             if ($form->isValid()) {
                 $data = $form->getData();
@@ -131,6 +129,14 @@ class RecruitmentController extends AbstractEntityActionController
                         ->setRecruitmentEndDate(new DateTime($data['recruitment_enddate']))
                         ->setRecruitmentPublicNotice($filename)
                         ->setRecruitmentType($data['recruitment_type']);
+                    
+                    if($data['recruitment_type'] == Recruitment::STUDENT_RECRUITMENT_TYPE) {
+                        $recruitment
+                            ->setRecruitmentSocioeconomicTarget($data['recruitmentSocioeconomicTarget'])
+                            ->setRecruitmentVulnerabilityTarget($data['recruitmentVulnerabilityTarget'])
+                            ->setRecruitmentStudentTarget($data['recruitmentStudentTarget'])
+                            ;
+                    }
 
                     $em->persist($recruitment);
                     $em->flush();
