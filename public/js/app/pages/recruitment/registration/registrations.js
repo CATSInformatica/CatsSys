@@ -103,6 +103,12 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                     case 'fn-testclass-convocation':
                     case 'fn-testclass-waitlist':
                     case 'fn-canceled-registration':
+                    
+                    // student
+                    case 'fn-confirmation':
+                    case 'fn-convocation':
+                    case 'fn-acceptance':
+                    
                         obj.exec = function (params) {
                             $(".cats-selected-row").find("td:last")
                                     .text(params.status +

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -190,8 +189,7 @@ class RegistrationController extends AbstractEntityActionController
                     $this->adjustPerson($registration);
 
                     $this->updateRegistrationStatus(
-                        $registration, RecruitmentStatus::STATUSTYPE_REGISTERED,
-                        $registration->getRegistrationDateAsDateTime()
+                        $registration, RecruitmentStatus::STATUSTYPE_REGISTERED, $registration->getRegistrationDateAsDateTime()
                     );
 
                     // atribui a qual processo seletivo a inscrição pertence
@@ -329,29 +327,34 @@ class RegistrationController extends AbstractEntityActionController
     }
 
     /**
-     * 
-     * Refactor merge confirmation, convocation and acceptance into one
+     * Altera a situação do candidato do processo seletivo de alunos para 
+     * Confirmado.
      * 
      * @return JsonModel
      */
     public function confirmationAction()
     {
-        $request = $this->getRequest();
+        $id = $this->params('id', false);
 
-        if ($request->isPost()) {
+        if ($id) {
 
             try {
-                $data = $request->getPost();
                 $em = $this->getEntityManager();
-                $registration = $em->getReference('Recruitment\Entity\Registration', $data['id']);
+                $registration = $em->getReference('Recruitment\Entity\Registration', $id);
 
                 $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_CONFIRMED);
 
                 $em->persist($registration);
                 $em->flush();
 
+               $dt = new \DateTime();
+
                 return new JsonModel(array(
                     'message' => 'Candidato confirmado com sucesso.',
+                    'callback' => array(
+                        'timestamp' => $dt->format('d/m/Y H:i:s'),
+                        'status' => RecruitmentStatus::STATUSTYPEDESC_CONFIRMED,
+                    ),
                 ));
             } catch (Exception $ex) {
                 return new JsonModel(array(
@@ -361,20 +364,25 @@ class RegistrationController extends AbstractEntityActionController
         }
 
         return new JsonModel(array(
-            'message' => 'Esta url só pode ser acessada via POST.',
+            'message' => 'Nenhum candidato selecionado',
         ));
     }
 
+    /**
+     * Altera a situação do candidato do processo seletivo de alunos para 
+     * Convocado.
+     * 
+     * @return JsonModel
+     */
     public function convocationAction()
     {
-        $request = $this->getRequest();
+        $id = $this->params('id', false);
 
-        if ($request->isPost()) {
+        if ($id) {
 
             try {
-                $data = $request->getPost();
                 $em = $this->getEntityManager();
-                $registration = $em->getReference('Recruitment\Entity\Registration', $data['id']);
+                $registration = $em->getReference('Recruitment\Entity\Registration', $id);
 
                 /**
                  * Atualizar status do candidato
@@ -384,8 +392,14 @@ class RegistrationController extends AbstractEntityActionController
                 $em->persist($registration);
                 $em->flush();
 
+                $dt = new \DateTime();
+
                 return new JsonModel(array(
                     'message' => 'Candidato convocado com sucesso.',
+                    'callback' => array(
+                        'timestamp' => $dt->format('d/m/Y H:i:s'),
+                        'status' => RecruitmentStatus::STATUSTYPEDESC_CALLEDFOR_PREINTERVIEW,
+                    ),
                 ));
             } catch (Exception $ex) {
                 return new JsonModel(array(
@@ -395,20 +409,25 @@ class RegistrationController extends AbstractEntityActionController
         }
 
         return new JsonModel(array(
-            'message' => 'Esta url só pode ser acessada via POST.',
+            'message' => 'Nenhum candidato selecionado',
         ));
     }
 
+    /**
+     * Altera a situação do candidato do processo seletivo de alunos para 
+     * Aprovado.
+     * 
+     * @return JsonModel
+     */
     public function acceptanceAction()
     {
-        $request = $this->getRequest();
+        $id = $this->params('id', false);
 
-        if ($request->isPost()) {
+        if ($id) {
 
             try {
-                $data = $request->getPost();
                 $em = $this->getEntityManager();
-                $registration = $em->getReference('Recruitment\Entity\Registration', $data['id']);
+                $registration = $em->getReference('Recruitment\Entity\Registration', $id);
 
                 /**
                  * Atualizar status do candidato
@@ -418,8 +437,14 @@ class RegistrationController extends AbstractEntityActionController
                 $em->persist($registration);
                 $em->flush();
 
+                $dt = new \DateTime();
+
                 return new JsonModel(array(
                     'message' => 'Candidato aprovado com sucesso.',
+                    'callback' => array(
+                        'timestamp' => $dt->format('d/m/Y H:i:s'),
+                        'status' => RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_APPROVED,
+                    ),
                 ));
             } catch (Exception $ex) {
                 return new JsonModel(array(
@@ -429,7 +454,7 @@ class RegistrationController extends AbstractEntityActionController
         }
 
         return new JsonModel(array(
-            'message' => 'Esta url só pode ser acessada via POST.',
+            'message' => 'Nenhum candidato selecionado',
         ));
     }
 
@@ -578,8 +603,7 @@ class RegistrationController extends AbstractEntityActionController
 
                 $uploadAdapter = new HttpAdapter();
 
-                $uploadAdapter->addFilter('File\Rename',
-                    array(
+                $uploadAdapter->addFilter('File\Rename', array(
                     'target' => $targetFile,
                     'overwrite' => true
                 ));
@@ -608,5 +632,4 @@ class RegistrationController extends AbstractEntityActionController
             }
         }
     }
-
 }
