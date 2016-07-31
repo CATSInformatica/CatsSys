@@ -1,10 +1,39 @@
 #!/bin/bash
 
-echo 'Before installing CatsSys please run "sudo apt-get update && sudo apt-get dist-upgrade" to keep your system up-to-date';
-echo 'Starting script.';
+echo 'Before installing CatsSys please run "sudo apt-get update && sudo apt-get dist-upgrade" to keep your system up-to-date.
+Do not execute this script as superuser. Do you wish to install (y/n)?'
+read answer
+if echo "$answer" | grep -iq "^y" ;then
+    clear
+    echo 'Starting script ...';
+else
+    exit;
+fi
 
 echo 'Installing Required Packages: PHP, Composer Apache, MySql';
-sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom composer apache2 npm libapache2-mod-php
+sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom composer npm
+
+# Read mysql user and password
+echo -n 'Please insert your mysql user: '
+read mysqluser
+stty -echo
+
+while :
+ do
+    echo -n 'Please insert your mysql password: '
+    read mysqlpass
+    echo
+    echo -n 'Please insert your mysql password again: '
+    read mysqlpassagain
+    echo
+    if [ "$mysqlpass" = "$mysqlpassagain" ]; then
+        break;
+    else
+        echo "Passwords do not match, please retype"
+    fi
+done
+
+stty echo
 
 echo 'Installing php-apcu-bc';
 
@@ -25,8 +54,17 @@ sudo npm install -g bower
 echo 'Creating symbolic link for nodejs /usr/bin/nodejs ~> /usr/bin/node';
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 
-echo 'Creating virtual host configuration'
-sudo tee /etc/apache2/sites-available/cats-lab.conf << EOF
+echo 'Which http server do you want to install (apache/nginx)?'
+read serverPicked
+echo "Picked $serverPicked"
+case "$serverPicked" in
+apache)
+    echo "installing Apache"
+    sudo service nginx stop # try to stop any nginx daemon
+    sudo apt-get install apache2 libapache2-mod-php
+
+    echo 'Creating apache2 virtual host configuration'
+    sudo tee /etc/apache2/sites-available/cats-lab.conf << EOF
 <VirtualHost 127.1.1.100:80>
 
         ServerName cats-lab.lan
@@ -48,6 +86,52 @@ sudo tee /etc/apache2/sites-available/cats-lab.conf << EOF
 
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 EOF
+    echo 'Changing php.ini max_post_size to 20MB and upload_max_filesize to 15MB'
+    sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php/7.0/apache2/php.ini
+    sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php/7.0/apache2/php.ini
+    ;;
+nginx)
+    echo "installing Nginx"
+    sudo service apache2 stop # try to stop any apache daemon
+    sudo apt-get install nginx-full
+    sudo tee /etc/nginx/sites-enabled/cats-lab.conf <<EOF
+server {
+    listen 127.1.1.100:80;
+    server_name cats-lab.lan;
+    root $HOME/vhosts/cats-lab/public;
+    index index.php;
+
+    location / {
+        try_files \$uri \$uri/ /index.php\$is_args\$args;
+    }
+
+    location ~ \.php\$ {
+        # Pass the PHP requests to FastCGI server (php-fpm)
+        fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+        fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
+	fastcgi_param APP_ENV development;
+        include fastcgi_params;
+    }
+
+    location ~ \.htaccess {
+        deny all;
+    }
+
+    access_log $HOME/vhosts/cats-lab/access.log;
+    error_log $HOME/vhosts/cats-lab/error.log;
+}
+EOF
+
+    sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php/7.0/fpm/php.ini
+    sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php/7.0/fpm/php.ini
+
+    sudo service nginx restart;
+    ;;
+*)
+    echo 'invalid option'
+    exit
+    ;;
+esac
 
 echo 'Binding domain http://cats-lab.lan to 127.1.1.100'
 sudo sed -i '/cats-lab.lan/d' /etc/hosts
@@ -55,16 +139,12 @@ sudo tee -a  /etc/hosts << EOF
 127.1.1.100   cats-lab.lan # bind domain http://cats-lab.lan to 127.1.1.100
 EOF
 
-echo 'Changing php.ini max_post_size to 20MB and upload_max_filesize to 15MB'
-sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php/7.0/apache2/php.ini
-sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php/7.0/apache2/php.ini
-
 echo 'Removing previous cats-lab project'
 sudo rm -rf $HOME/vhosts/cats-lab
 
 echo 'Starting git clone'
 mkdir $HOME/vhosts
-read -p "Please insert the link of your forked repository 
+read -p "Please insert the link of your forked repository
 (Example: https://github.com/marciodojr/CatsSys.git):
 " repository;
 git clone $repository $HOME/vhosts/cats-lab
@@ -82,7 +162,7 @@ cd $HOME/vhosts/cats-lab
 bower install
 
 echo 'Creating local configuration'
-tee $HOME/vhosts/cats-lab/config/autoload/local.php << EOF
+tee $HOME/vhosts/cats-lab/config/autoload/local.php > /dev/null <<EOF
 <?php
 /*
 * ./config/autoload/local.php
@@ -95,8 +175,8 @@ return [
        'connection' => [
            'orm_default' => [
                'params' => [
-                   'user'     => 'root',
-                   'password' => 'root',
+                   'user'     => '$mysqluser',
+                   'password' => '$mysqlpass',
                    'dbname'   => 'catssys',
                ],
            ],
@@ -117,41 +197,44 @@ return [
    ],
 ];
 EOF
+
 cp $HOME/vhosts/vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist $HOME/vhosts/cats-lab/config/autoload/zenddevelopertools.local.php
-
-echo 'Creating data directories'
-mkdir $HOME/vhosts/cats-lab/data/captcha
-mkdir $HOME/vhosts/cats-lab/data/session
-
-echo 'Enabling rewrite mode'
-sudo a2enmod rewrite
-
-echo 'Enabling cats-lab virtual host'
-sudo a2ensite cats-lab.conf
-
-echo 'Restarting Apache server'
-sudo service apache2 restart
 
 echo 'Setting permissions for data directories'
 sudo chmod 777 $HOME/vhosts/cats-lab/data/DoctrineORMModule/Proxy
 sudo chmod 777 $HOME/vhosts/cats-lab/data/cache
-sudo chmod 777 $HOME/vhosts/cats-lab/data/edital
+sudo chmod 777 $HOME/vhosts/cats-lab/public/docs
 sudo chmod 777 $HOME/vhosts/cats-lab/data/fonts
 sudo chmod 777 $HOME/vhosts/cats-lab/data/profile
 sudo chmod 777 $HOME/vhosts/cats-lab/data/captcha
 sudo chmod 777 $HOME/vhosts/cats-lab/data/session
-sudo chmod 777 $HOME/vhosts/cats-lab/data/pre-interview
 
-echo 'Creating database CatsSys. Please insert your mysql password: '
-mysql -u root -p -e 'drop database if exists catssys; create database catssys'
+echo 'Creating database CatsSys.'
+mysql -u $mysqluser -p$mysqlpass -e 'drop database if exists catssys; create database catssys'
 
 echo 'Creating database schema'
 php $HOME/vhosts/cats-lab/public/index.php orm:validate-schema
 php $HOME/vhosts/cats-lab/public/index.php orm:schema-tool:create
 php $HOME/vhosts/cats-lab/public/index.php orm:generate-proxies
 
-echo 'Importing table contents. Please Insert your mysql password'
-cat $HOME/vhosts/cats-lab/data/dev-helpers/*.sql | mysql -u root -p catssys
+echo 'Importing table contents.'
+cat $HOME/vhosts/cats-lab/data/dev-helpers/catssys_data_*.sql | mysql -u $mysqluser -p$mysqlpass catssys
+
+case "$serverPicked" in
+apache)
+    echo 'Enabling rewrite mode'
+    sudo a2enmod rewrite
+
+    echo 'Enabling cats-lab virtual host'
+    sudo a2ensite cats-lab.conf
+    echo 'Restarting Apache server'
+    sudo service apache2 restart
+    ;;
+nginx)
+    echo 'Restarting Nginx server'
+    sudo service nginx restart;
+    ;;
+esac
 
 echo 'Starting browser'
 firefox http://cats-lab.lan &

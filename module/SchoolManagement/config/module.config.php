@@ -258,14 +258,6 @@ return array(
                         'privilege' => 'index',
                         'icon' => 'fa fa-users',
                         'toolbar' => array(
-//                            array(
-//                                'url' => '/recruitment/interview/student/$id',
-//                                'title' => 'Perfil do Candidato',
-//                                'description' => 'Analizar Perfil do Candidato',
-//                                'class' => 'fa fa-file-text-o bg-blue',
-//                                'target' => '_blank',
-//                                'fntype' => 'selectedHttpClick',
-//                            ),
                             array(
                                 'url' => '/school-management/enrollment/enroll/$id',
                                 'id' => 'fn-enroll',
@@ -274,6 +266,16 @@ return array(
                                 'class' => 'fa fa-check bg-green',
                                 'fntype' => 'ajaxPostSelectedClick',
                             ),
+                        ),
+                    ),
+                    array(
+                        'label' => 'Manage enrollments',
+                        'route' => 'school-management/enrollment',
+                        'action' => 'manage',
+                        'resource' => 'SchoolManagement\Controller\Enrollment',
+                        'privilege' => 'manage',
+                        'icon' => 'fa fa-ticket',
+                        'toolbar' => array(
                             array(
                                 'url' => '/school-management/enrollment/unenroll/$id',
                                 'id' => 'fn-unenroll',
@@ -498,9 +500,37 @@ return array(
                 'resource' => 'SchoolManagement\Controller\SchoolExam',
                 'pages' => array(
                     array(
-                        'label' => 'Create Exam',
+                        'label' => 'Show Exams',
                         'route' => 'school-management/school-exam',
                         'action' => 'index',
+                        'icon' => 'fa fa-file-text-o',
+                        'toolbar' => array(
+                            array(
+                                'url' => '/school-management/school-exam/prepare/$id',
+                                'privilege' => 'prepare',
+                                'title' => 'Preparar Simulado',
+                                'id' => 'exam-prepare',
+                                'description' => 'Permite selecionar questões e editar configurações do simulado selecionado',
+                                'class' => 'fa fa-check-circle bg-blue',
+                                'fntype' => 'selectedHttpClick',
+                                'target' => '__blank',
+                            ),
+                            array(
+                                'url' => '/school-management/school-exam/delete/$id',
+                                'privilege' => 'delete',
+                                'title' => 'Remover',
+                                'id' => 'exam-delete',
+                                'description' => 'Permite remoção do simulado selecionado',
+                                'class' => 'fa fa-trash-o bg-red',
+                                'fntype' => 'selectedAjaxClick',
+                                'hideOnSuccess' => true,
+                            ),
+                        ),
+                    ),
+                    array(
+                        'label' => 'Create Exam',
+                        'route' => 'school-management/school-exam',
+                        'action' => 'create',
                         'icon' => 'fa fa-file-text-o',
                     ),
                     array(

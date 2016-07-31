@@ -1,9 +1,19 @@
 <?php
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SchoolManagement\Controller;
@@ -20,7 +30,7 @@ use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
- * Description of StudentClassController
+ * Permite manipular turmas
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
@@ -145,7 +155,8 @@ class StudentClassController extends AbstractEntityActionController
     }
 
     /**
-     * Busca por todos os alunos da turma $id
+     * Busca pela matrícula, nome e sobrenome de todos os alunos da turma $id.
+     * @return JsonModel
      */
     public function getStudentsAction()
     {
@@ -162,6 +173,42 @@ class StudentClassController extends AbstractEntityActionController
                         'class' => $data['id'],
                     ));
 
+                    return new JsonModel([
+                        'students' => $students,
+                    ]);
+                } catch (\Exception $ex) {
+                    $message = $ex->getMessage();
+                }
+            } else {
+                $message = 'Nenhuma turma selecionada';
+            }
+        } else {
+            $message = 'Esta url só pode ser acessada via post';
+        }
+
+        return new JsonModel(array(
+            'message' => $message
+        ));
+    }
+
+    /**
+     * Busca pelos dados todos os alunos da turma $id.
+     * 
+     * Esta função tem o mesmo papel de getStudentsAction, mas retorna mais informações.
+     * 
+     * @return ViewModel
+     */
+    public function getStudentsByClassAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+
+            $data = $request->getPost();
+            if (is_numeric($data['id'])) {
+                try {
+                    $em = $this->getEntityManager();
+                    $students = $em->getRepository('SchoolManagement\Entity\Enrollment')->findByClass($data['id']);
                     return new JsonModel([
                         'students' => $students,
                     ]);
@@ -244,5 +291,4 @@ class StudentClassController extends AbstractEntityActionController
             'students' => null,
         ]);
     }
-
 }

@@ -73,10 +73,7 @@ class SchoolSubjectController extends AbstractEntityActionController
                     $subject->setParent($parent);
                     $em->persist($subject);
                     $em->flush();
-
-                    $subject = new Subject();
-                    $form = new SubjectForm($em);
-                    $form->bind($subject);
+                    
                     return new ViewModel(array(
                         'message' => "Disciplina cadastrada com sucesso!",
                         'form' => $form,
