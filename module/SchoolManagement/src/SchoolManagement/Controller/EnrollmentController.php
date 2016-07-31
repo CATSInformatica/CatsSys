@@ -233,13 +233,13 @@ class EnrollmentController extends AbstractEntityActionController
 
                 return new JsonModel([
                     'message' => $message,
+                    'callback' => [
+                        'id' => $sid,
+                    ]
                 ]);
             } catch (Exception $ex) {
                 return new JsonModel([
                     'message' => $ex->getMessage(),
-                    'callback' => [
-                        'id' => $sid,
-                    ]
                 ]);
             }
         }
