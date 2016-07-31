@@ -8,7 +8,7 @@
 requirejs.config({
     baseUrl: '/vendor',
     paths: {
-        jquery: 'jquery/dist/jquery.min',
+        jquery: 'AdminLTE/plugins/jQuery/jquery-2.2.3.min',
         jquerycsv: 'jquery-csv/src/jquery.csv',
         jquerycolumnizer: 'jquery.columnizer/src/jquery.columnizer.min',
         bootstrap: 'AdminLTE/bootstrap/js/bootstrap.min',
