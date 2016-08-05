@@ -85,7 +85,10 @@ define(['jquery', 'datetimepicker'], function () {
                     $('#save-exam-message').text("Um erro ocorreu ao tentar salvar o formulário. Verifique se as informações do formulário estão corretas.");
                 } else {
                     $('#save-exam-message').addClass('text-green');
-                    $('#save-exam-message').text(data.message);
+                    $('#save-exam-message').text(data.message + ' Redirecionando para "Mostrar simulados".');
+                    setTimeout(function () {
+                        window.location.replace("/school-management/school-exam/index");
+                    }, 3000);
                 }
             });
         };

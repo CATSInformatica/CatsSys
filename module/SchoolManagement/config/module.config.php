@@ -508,7 +508,7 @@ return array(
                             array(
                                 'url' => '/school-management/school-exam/prepare/$id',
                                 'privilege' => 'prepare',
-                                'title' => 'Preparar Simulado',
+                                'title' => 'Preparar Prova',
                                 'id' => 'exam-prepare',
                                 'description' => 'Permite selecionar questões e editar configurações do simulado selecionado',
                                 'class' => 'fa fa-check-circle bg-blue',
