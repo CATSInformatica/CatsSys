@@ -327,6 +327,18 @@ class SchoolExamController extends AbstractEntityActionController
                 $questionsData = [];
                 foreach ($questions as $i => $question) {
                     $q = $em->find('SchoolManagement\Entity\ExamQuestion', $question['questionId']);
+                    if ($q === null) {
+                        $questionsData[] = [
+                            'id' => $question['questionId'], 
+                            'enunciation' => 'A questão foi removida', 
+                            'alternatives' => null,
+                            'answer' => null,
+                            'subjectId' => null, 
+                            'baseSubjectId' => null
+                        ];
+                        
+                        continue;
+                    }
                     
                     $answer = -1;
                     $alternatives = [];

@@ -23,7 +23,8 @@ define(['jquery', 'datatable'], function () {
         initDataTable = function () {
             examsTable.DataTable({
                 dom: 'lftip',
-                autoWidth: false
+                autoWidth: false,
+                order: [0, 'desc'] 
             });
         };
 

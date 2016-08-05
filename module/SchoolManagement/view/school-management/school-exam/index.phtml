@@ -9,10 +9,10 @@
             <table class="table table-condensed table-bordered table-striped" id="exams-table">              
                 <thead>
                     <tr>
-                        <th>#</th>
-                        <th>Nome</th>
-                        <th>Status</th>
-                        <th>Data</th>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Data</th>
+                        <th class="text-center">Nome</th>
+                        <th class="text-center">Status</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -22,9 +22,9 @@
                                 data-id="<?php echo $exam->getExamId(); ?>" 
                                 id="exam-<?php echo $exam->getExamId(); ?>">
                                 <td><?php echo $exam->getExamId(); ?></td>
+                                <td><?php echo ($exam->getExamDate() !== null ? $exam->getExamDate()->format('d/m/Y') : '-'); ?></td>
                                 <td><?php echo $exam->getExamName(); ?></td>
                                 <td><?php echo ($exam->getExamStatus() !== null ? SchoolManagement\Entity\Exam::statusToString($exam->getExamStatus()) : '-'); ?></td>
-                                <td><?php echo ($exam->getExamDate() !== null ? $exam->getExamDate()->format('d/m/Y') : '-'); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>

@@ -217,11 +217,11 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer',
                             + 'que você julgar correta.</li>'
                             + '<div class="col-xs-6 col-xs-offset-3" style="line-height: 15mm;">'
                             + '<div class="col-xs-1" style="font-size: 30pt; line-height: 15mm;"></div>'
-                            + '<div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9398 </div>'
-                            + '<div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9399 </div>'
-                            + '<div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9400 </div>'
+                            + '<div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9398; </div>'
+                            + '<div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9399; </div>'
+                            + '<div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9400; </div>'
                             + '<div class="col-xs-2 text-center" style="font-size: 30pt; padding: 1mm 0 0;"> <svg height="38" width="38"><circle cx="19" cy="19" r="19" fill="black" /></svg></div>'
-                            + '<div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9402 </div>'
+                            + '<div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9402; </div>'
                             + '<div class="col-xs-1" style="font-size: 30pt; line-height: 15mm;"></div>'
                             + '</div>'
                             + '<br><br><br><li>Caso exista uma questão que você julgue estar sem '
@@ -744,14 +744,9 @@ define(['jquery', 'datatable', 'mathjax', 'jquerycolumnizer',
                         + '</strong></p>' + questionEnunciation;
 
                 for (var i = 0; i < alternatives.length; ++i) {
-                    var alternative = alternatives[i]
-                            .replace(/(<div.*?>)/, '$1<span class="push-left">'
-                                    + '&#' + (9398 + i) + ';  </span>');
-                    if (alternative === alternatives[i]) {
-                        alternative = '<span class="push-left">'
-                                + '&#' + (9398 + i) + ';  </span>'
-                                + alternative;
-                    }
+                    var alternative = '<span class="pull-left" style="padding-right: 1mm">'
+                            + '&#' + (9398 + i) + ';  </span>'
+                            + alternatives[i];
                     q += '<div>' + alternative + '</div>';
                 }
                 updateRemainingQuestions();
