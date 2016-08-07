@@ -2,7 +2,7 @@
 
 # Instruções de instalação - Para Ubuntu 16.04
 
-Obs: caso queira utilizar a configuração padrão para instalação, é possível utilizar o script [ubuntu-16.04-setup-environment.sh](https://raw.githubusercontent.com/CATSInformatica/CatsSys/master/data/dev-helpers/setup-environment.sh) e pular diretamente para a [terceira parte](#step-three) deste documento.
+Obs: caso queira utilizar a configuração padrão para instalação, é possível utilizar o script [ubuntu-16.04-setup-environment.sh](https://raw.githubusercontent.com/CATSInformatica/CatsSys/master/data/dev-helpers/ubuntu-16.04-setup-environment.sh) e pular diretamente para a [terceira parte](#step-three) deste documento.
 
 **_Importante_**: Lembre-se do usuário e senha utilizados na instalação do `mysql`.
 
