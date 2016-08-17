@@ -142,12 +142,6 @@ $addresses = $person->getAddresses();
                 <?php if (isset($config['tabs']['recruitment-timeline'])): ?>
                     <li class="active"><a href="#recruitment-timeline" data-toggle="tab" aria-expanded="false">Situação</a></li>
                 <?php endif; ?>
-                <?php if (isset($config['tabs']['documentation'])): ?>
-                    <li class=""><a href="#documentation" data-toggle="tab" aria-expanded="false">Documentação</a></li>
-                <?php endif; ?>
-                <?php if (isset($config['tabs']['score'])): ?>
-                    <li class=""><a href="#score" data-toggle="tab" aria-expanded="true">Pontuação</a></li>
-                <?php endif; ?>
                 <?php if (isset($config['tabs']['info'])): ?>
                     <li class=""><a href="#info" data-toggle="tab" aria-expanded="true">Editar Dados</a></li>
                 <?php endif; ?>
@@ -177,97 +171,6 @@ $addresses = $person->getAddresses();
                             </tbody>
                         </table>
                     </div>
-
-                <?php endif; ?>
-                <?php if (isset($config['tabs']['documentation'])): ?>
-
-                    <div class="tab-pane" id="documentation">
-                        <div class="row">
-                            <div class="col-md-4 col-sm-6 col-xs-12">
-                                <a href="<?php
-                                echo $this->url('recruitment/pre-interview',
-                                    array(
-                                    'action' => 'getUploadedFile',
-                                    'file' => 'personal',
-                                    'rid' => $registration->getRegistrationId(),
-                                ));
-                                ?>"
-                                   target="_blank">
-                                    <div class="info-box">
-                                        <span class="info-box-icon bg-aqua"><i class="fa fa-user"></i></span>
-
-                                        <div class="info-box-content">
-                                            <span class="info-box-text">Informações pessoais</span>
-                                            Informações pessoais.pdf
-                                        </div>
-                                        <!-- /.info-box-content -->
-                                    </div>
-                                    <!-- /.info-box -->
-                                </a>
-                            </div>
-                            <!-- /.col -->
-                            <div class="col-md-4 col-sm-6 col-xs-12">
-                                <a href="<?php
-                                echo $this->url('recruitment/pre-interview',
-                                    array(
-                                    'action' => 'getUploadedFile',
-                                    'file' => 'income',
-                                    'rid' => $registration->getRegistrationId(),
-                                ));
-                                ?>"
-                                   target="_blank">
-                                    <div class="info-box">
-                                        <span class="info-box-icon bg-green"><i class="fa fa-dollar"></i></span>
-
-                                        <div class="info-box-content">
-                                            <span class="info-box-text">Comprovantes de renda</span>
-                                            Comprovantes de renda.pdf
-
-                                        </div>
-                                        <!-- /.info-box-content -->
-                                    </div>
-                                    <!-- /.info-box -->
-                                </a>
-                            </div>
-                            <!-- /.col -->
-
-                            <!-- fix for small devices only -->
-                            <div class="clearfix visible-sm-block"></div>
-
-                            <div class="col-md-4 col-sm-6 col-xs-12">
-                                <a href="<?php
-                                echo $this->url('recruitment/pre-interview',
-                                    array(
-                                    'action' => 'getUploadedFile',
-                                    'file' => 'expendure',
-                                    'rid' => $registration->getRegistrationId(),
-                                ));
-                                ?>"
-                                   target="_blank">
-                                    <div class="info-box">
-                                        <span class="info-box-icon bg-red"><i class="fa fa-dollar"></i></span>
-
-                                        <div class="info-box-content">
-                                            <span class="info-box-text">Comprovantes de despesas</span>
-                                            Comprovantes de despesas.pdf
-                                        </div>
-                                        <!-- /.info-box-content -->
-                                    </div>
-                                    <!-- /.info-box -->
-                                </a>
-                            </div>
-                            <!-- /.col -->
-                        </div>
-                    </div>
-                    <!-- /.tab-pane -->
-
-                <?php endif; ?>
-                <?php if (isset($config['tabs']['score'])): ?>
-
-                    <div class="tab-pane" id="score">
-                        <p> Números, números números, ... </p>
-                    </div>
-                    <!-- /.tab-pane -->
 
                 <?php endif; ?>
                 <?php if ($config['tabs']['info']): ?>

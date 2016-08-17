@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -8,7 +8,7 @@
 requirejs.config({
     baseUrl: '/vendor',
     paths: {
-        jquery: 'AdminLTE/plugins/jQuery/jQuery-2.2.0.min',
+        jquery: 'jquery/dist/jquery.min',
         bootstrap: 'bootstrap/dist/js/bootstrap.min',
         smoothscroll: 'smooth-scroll/dist/js/smooth-scroll.min',
         moment: 'moment/min/moment-with-locales.min',
@@ -28,7 +28,7 @@ define(['smoothscroll', 'jquery', 'bootstrap'], function (smoothScroll) {
         $("body").scrollspy();
 
         /**
-         * Salva a sessão que o usuário passou, 
+         * Salva a sessão que o usuário passou,
          * caso ele recarregue o site a última sessão visitada será exibida
          */
         $("body").on('activate.bs.scrollspy', function (e) {

@@ -1,0 +1,52 @@
+<?php foreach ($forms as $indx => $form): ?>
+    <div class="box box-solid field-box box-danger">
+        <div class="box-header with-border">
+            <h3 class="box-title"> <?php echo ($indx + 1); ?> <i class="fa fa-home"></i> </h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="col-xs-12 col-md-12">
+                        <?php echo $this->formRow($form->get('propertyName')); ?>
+                    </div>
+                    <div class="col-xs-6 col-md-6">
+                        <?php echo $this->formRow($form->get('propertyDescription')); ?>
+                    </div>
+                    <div class="col-xs-6 col-md-6">
+                        <?php echo $this->formRow($form->get('propertyAddress')); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+<?php endforeach; ?>
+
+<span data-template='<div class="box box-solid field-box box-danger">
+      <div class="box-header with-border">
+      <h3 class="box-title"> __index__ <i class="fa fa-home"></i> </h3>
+      <div class="box-tools pull-right">
+      <button type="button" class="btn btn-box-tool" data-widget="collapse">
+      <i class="fa fa-minus"></i>
+      </button>
+      </div>
+      </div>
+      <!-- /.box-header -->
+      <div class="box-body">
+      <div class="form-group">
+      <div class="col-md-12">
+      <div class="col-xs-12 col-md-12">__TEMPLATE0__</div>
+      <div class="col-xs-6 col-md-6">__TEMPLATE1__</div>
+      <div class="col-xs-6 col-md-6">__TEMPLATE2__</div>
+      </div>
+      </div>
+      </div>
+      <!-- /.box-body -->
+      </div>'>
+</span>

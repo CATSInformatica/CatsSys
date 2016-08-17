@@ -72,11 +72,6 @@ define(['dropzone', 'bootbox', 'moment', 'masks', 'app/models/Service', 'datetim
                 initDatepickers();
                 initMasks();
                 initServices();
-            },
-            getDataOf: function (identity) {
-                return {
-                    id: $('#identity').data('identity')
-                };
             }
         };
     }());

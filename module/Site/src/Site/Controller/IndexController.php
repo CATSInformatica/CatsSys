@@ -37,6 +37,6 @@ class IndexController extends AbstractActionController
             'message' => $message,
             'contact_form' => $form,
         ));
-    }    
+    }
 
 }

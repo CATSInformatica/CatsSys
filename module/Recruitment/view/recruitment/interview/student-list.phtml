@@ -1,0 +1,100 @@
+<section class="content">
+
+    <div class="row col-md-12 col-xs-12">
+        <div class="box box-success">
+            <div class="box-header with-border">
+                <h3 class="box-title"><span class="fa fa-book"></span> Informações</h3>
+            </div>
+            <!-- /.box-header -->
+            <div class="box-body" style="display: block;">
+                <p class="text-center">
+                    <b>
+                        <?php echo $recruitment['recruitmentNumber']; ?>º Processo Seletivo de Alunos de 
+                        <?php echo $recruitment['recruitmentYear']; ?>
+                    </b>
+                </p>
+                <hr>
+                <div class="col-xs-8 col-xs-offset-2 text-center">
+                    <strong> COMPOSIÇÃO DA NOTA </strong> 
+                    <table class="table table-bordered table-condensed text-center" id="target-table" 
+                           data-socioeconomic="<?php echo $recruitment['recruitmentSocioeconomicTarget']; ?>" 
+                           data-vulnerability="<?php echo $recruitment['recruitmentVulnerabilityTarget']; ?>" 
+                           data-student="<?php echo $recruitment['recruitmentStudentTarget']; ?>">
+                        <tr>
+                            <th>Critério</th>
+                            <th>Peso</th>
+                        </tr>
+                        <tr>
+                            <td>Socioeconômico</td>
+                            <td><?php echo $recruitment['recruitmentSocioeconomicTarget']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>Vulnerabilidade</td>
+                            <td><?php echo $recruitment['recruitmentVulnerabilityTarget']; ?></td>
+                        </tr>
+                        <tr>
+                            <td>Perfil de Estudante</td>
+                            <td><?php echo $recruitment['recruitmentStudentTarget']; ?></td>
+                        </tr>
+                    </table>
+                </div>
+
+                <table id="student-list-table" 
+                       class="table table-bordered table-condensed table-striped table-hover">
+                    <thead>
+                        <tr>
+                            <th></th>
+                            <th>Candidato</th>
+                            <th>Situação</th>
+                            <th>Email</th>
+                            <th>Cpf</th>
+                            <th>Rg</th>
+                            <th>Nota</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <?php if ($candidates !== null): ?>
+                            <?php foreach ($candidates as $candidate): ?>
+                                <tr class="cats-row" data-id="<?php echo $candidate['registrationId']; ?>">
+                                    <td class="details-control"></td>
+                                    <td><?php echo $candidate['personFullName']; ?></td>
+                                    <td><?php echo $candidate['statusType']; ?></td>
+                                    <td><?php echo $candidate['personEmail']; ?></td>
+                                    <td><?php echo $candidate['personCpf']; ?></td>
+                                    <td><?php echo $candidate['personRg']; ?></td>
+                                    <td id="grades-<?php echo $candidate['registrationId']; ?>">
+                                        <?php
+                                        if ($candidate['grades'] !== null) :
+                                            echo round(($candidate['grades']['socioeconomic'] * $recruitment['recruitmentSocioeconomicTarget'] +
+                                                $candidate['grades']['vulnerability'] * $recruitment['recruitmentVulnerabilityTarget'] +
+                                                $candidate['grades']['student'] * $recruitment['recruitmentStudentTarget']) /
+                                                ($recruitment['recruitmentSocioeconomicTarget'] + $recruitment['recruitmentVulnerabilityTarget'] + $recruitment['recruitmentStudentTarget']), 3);
+                                        else :
+                                            echo '-';
+                                        endif;
+
+                                        ?>
+                                    </td>
+                                </tr>
+                            <?php endforeach; ?>
+                        <?php endif; ?>
+                    </tbody>
+                </table>
+            </div>
+            <!-- /.box-body -->
+        </div>
+    </div>
+</section>
+
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/recruitment/interview/StudentList';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+</script>

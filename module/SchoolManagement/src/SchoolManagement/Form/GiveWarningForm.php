@@ -74,13 +74,16 @@ class GiveWarningForm extends Form
                         'label' => 'Comentário',
                         'add-on-prepend' => '<i class="fa fa-paragraph"></i>',
                     ),
+                    'attributes' => array(
+                        'rows' => '5',
+                    )
                 ))
                 ->add(array(
                     'name' => 'Submit',
                     'attributes' => array(
                         'type' => 'submit',
                         'class' => 'btn btn-primary btn-block',
-                        'value' => 'Go',
+                        'value' => 'Salvar',
                     )
         ));
     }

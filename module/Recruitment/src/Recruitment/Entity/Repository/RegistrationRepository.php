@@ -1,21 +1,32 @@
 <?php
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Recruitment\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\Query\Expr;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\RecruitmentStatus;
 
 /**
- * Description of RegistrationRepository
+ * Contém consultas específicas para a entidade Registration
  *
- * @author marcio
+ * @author Márcio Dias <marciojr91@gmail.com>
  */
 class RegistrationRepository extends EntityRepository
 {
@@ -102,4 +113,40 @@ class RegistrationRepository extends EntityRepository
         }
     }
 
+    /**
+     * Busca todas as inscrições do processo seletivo $rid cuja situação 
+     * corrente é $status.
+     * 
+     * @param int $rid Identificador do processo seletivo
+     * @param array $status Situações da inscrição
+     * @return array Inscrições do processo seletivo $rid cuja situação corrente
+     * é $status
+     * @throws \BadMethodCallException Método não implementado
+     */
+    public function findByStatusSimplified($rid, array $status)
+    {
+
+        $qb = $this
+            ->_em
+            ->createQueryBuilder();
+
+        $qb
+            ->select('r.registrationId, CONCAT(CONCAT(p.personFirstName, \' \'), '
+                . 'p.personLastName) as personFullName, p.personRg, p.personCpf, '
+                . 'p.personEmail, res.statusType')
+            ->from('Recruitment\Entity\Registration', 'r')
+            ->join('r.person', 'p')
+            ->join('r.registrationStatus', 'rs', Expr\Join::WITH, 'rs.isCurrent = true')
+            ->join('rs.recruitmentStatus', 'res')
+            ->where('r.recruitment = :recruitment')
+            ->setParameter('recruitment', $rid);
+        
+        if (!empty($status)) {
+            $qb
+                ->andWhere($qb->expr()->in('res.statusType', ':statusArray'))
+                ->setParameter('statusArray', $status);
+        }
+        
+        return $qb->getQuery()->getResult();
+    }
 }

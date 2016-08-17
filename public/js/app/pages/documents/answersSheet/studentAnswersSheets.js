@@ -167,7 +167,7 @@ define(['jszip', 'filesaver'], function (JSZip) {
             textElement.text(subtitle);
 
             // centralizar
-            var textWidth = textElement[0].getBoundingClientRect().width;
+            var textWidth = textElement[0].getBBox().width;
             var xPosition = (svgWidth / 2) - (textWidth / 2);
             textElement.attr("x", xPosition);
 

@@ -1,9 +1,19 @@
 <?php
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Recruitment\Controller;
@@ -16,36 +26,31 @@ use Recruitment\Form\PreInterviewForm;
 use Recruitment\Service\AddressService;
 use Recruitment\Service\RegistrationStatusService;
 use Recruitment\Service\RelativeService;
-use RuntimeException;
-use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\Session\Container;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
- * Description of PreInterviewController
+ * Responsável pela manipulação de  informações de inscrição e pré-entrevista.
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
 class PreInterviewController extends AbstractEntityActionController
 {
 
-    const PRE_INTERVIEW_DIR = './data/pre-interview/';
-    const PERSONAL_FILE_SUFFIX = '_personal.pdf';
-    const INCOME_FILE_SUFFIX = '_income.pdf';
-    const EXPENDURE_FILE_SUFFIX = '_expendure.pdf';
-
     use RelativeService,
         AddressService,
         RegistrationStatusService;
 
     /**
-     * @todo Verificar se a entrevista do candidato já foi feita, se sim, faz o bloqueio da pré-entrevista.
+     * Obtém o cpf e verifica se o candidato poderá acessar o formulário 
+     * de pré-entrevista.
      * 
      * @return ViewModel
      */
     public function indexAction()
     {
+        $this->layout('application-clean/layout');
         $request = $this->getRequest();
         $form = new CpfForm();
 
@@ -62,27 +67,35 @@ class PreInterviewController extends AbstractEntityActionController
                     $registration = $em->getRepository('Recruitment\Entity\Registration')
                         ->findOneByPersonCpf($data['person_cpf']);
 
-
                     if ($registration !== null) {
-                        $status = $registration->getCurrentRegistrationStatus();
 
-                        if ($status->getRecruitmentStatus()->getNumericStatusType() ===
-                            RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW) {
+                        $status = (int) $registration
+                                ->getCurrentRegistrationStatus()
+                                ->getRecruitmentStatus()
+                                ->getNumericStatusType();
+
+                        // se o status do candidato for um desses três 
+                        // ele poderá acessar o formulário de pré-entrevista
+                        // para preencher ou editar.
+                        if (in_array($status, [
+                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW,
+                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
+                                RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE,
+                            ])) {
 
                             $studentContainer = new Container('pre_interview');
                             $studentContainer->offsetSet('regId', $registration->getRegistrationId());
 
-                            return $this->redirect()->toRoute('recruitment/pre-interview',
-                                    array(
-                                    'action' => 'studentPreInterviewFiles'
+                            return $this->redirect()->toRoute('recruitment/pre-interview', array(
+                                    'action' => 'studentPreInterviewForm'
                             ));
                         }
 
-                        $message = 'Candidato não convocado';
+                        $message = 'Candidato não convocado.';
                     } else {
                         $message = 'Candidato não encontrado.';
                     }
-                } catch (\Exception $ex) {
+                } catch (Exception $ex) {
                     $message = 'Erro inesperado. Não foi possível encontrar uma inscrição associada a este cpf.'
                         . $ex->getMessage();
                 }
@@ -99,98 +112,35 @@ class PreInterviewController extends AbstractEntityActionController
         ));
     }
 
-    public function studentPreInterviewFilesAction()
-    {
-        $studentContainer = new Container('pre_interview');
-
-        if (!$studentContainer->offsetExists('regId')) {
-            return $this->redirect()->toRoute('recruitment/pre-interview', array('action' => 'index'));
-        }
-
-        $request = $this->getRequest();
-
-        $files['personal'] = $files['income'] = $files['expendure'] = false;
-
-        $prefix = self::PRE_INTERVIEW_DIR . $studentContainer->offsetGet('regId');
-
-        $files['personal'] = file_exists($prefix . self::PERSONAL_FILE_SUFFIX);
-        $files['income'] = file_exists($prefix . self::INCOME_FILE_SUFFIX);
-        $files['expendure'] = file_exists($prefix . self::EXPENDURE_FILE_SUFFIX);
-
-        $message = null;
-        if ($request->isPost()) {
-            if ($files['personal'] && $files['income'] && $files['expendure']) {
-                $this->redirect()->toRoute('recruitment/pre-interview',
-                    array(
-                    'action' => 'studentPreInterviewForm'
-                ));
-            } else {
-                $message = 'Para prosseguir, por favor, envie todos os arquivos.';
-            }
-        }
-
-        return new ViewModel(array(
-            'message' => $message,
-            'files' => $files
-        ));
-    }
-
     /**
      * Formulário de pré-entrevista
      * 
      * Se a sessão de pré-entrevista não foi criada redireciona para o início da pré-entrevista (indexAction)
-     * Se algum(uns) dos arquivos ainda não foi recebido redireciona para a segunda etapa da pré-entrevista 
-     * (studentPreInterviewFilesAction)
-     * 
-     * Salva o endereço se necessário, responsável se necessário, endereço do responsável se necessário e pré-entrevista
+     * Salva o endereço se necessário, responsável se necessário, endereço do responsável se necessário e, é claro,
+     * as informações da pré-entrevista.
      * 
      * @return ViewModel
      */
     public function studentPreInterviewFormAction()
     {
+        $this->layout('application-clean/layout');
         $studentContainer = new Container('pre_interview');
 
         // id de inscrição não está na sessão redireciona para o início
         if (!$studentContainer->offsetExists('regId')) {
-            return $this->redirect()->toRoute('recruitment/pre-interview',
-                    array(
+            return $this->redirect()->toRoute('recruitment/pre-interview', array(
                     'action' => 'index',
             ));
         }
+
         $rid = $studentContainer->offsetGet('regId');
-
-        // Se ao menos um documento não foi enviado redireciona para a página de documentos da pré-entrevista
-        $prefix = self::PRE_INTERVIEW_DIR . $rid;
-
-        $files['personal'] = file_exists($prefix . self::PERSONAL_FILE_SUFFIX);
-        $files['income'] = file_exists($prefix . self::INCOME_FILE_SUFFIX);
-        $files['expendure'] = file_exists($prefix . self::EXPENDURE_FILE_SUFFIX);
-
-        if (!$files['personal'] || !$files['income'] || !$files['expendure']) {
-            return $this->redirect()->toRoute('recruitment/pre-interview',
-                    array(
-                    'action' => 'studentPreInterviewFilesAction',
-            ));
-        }
-
-        $request = $this->getRequest();
 
         try {
 
+            $request = $this->getRequest();
+
             $em = $this->getEntityManager();
             $registration = $em->getReference('Recruitment\Entity\Registration', $rid);
-
-            // se o candidato já respondeu o formulário uma vez avisa que a pré-entrevista já foi cadastrada.
-            if ($registration->getPreInterview() !== null) {
-
-                $studentContainer->getManager()->getStorage()->clear('pre_interview');
-
-                return new ViewModel(array(
-                    'registration' => $registration,
-                    'form' => null,
-                    'message' => 'O formulário de pré-entrevista já foi enviado.',
-                ));
-            }
 
             $person = $registration->getPerson();
 
@@ -204,20 +154,16 @@ class PreInterviewController extends AbstractEntityActionController
             );
 
             $form = new PreInterviewForm($em, $options);
+
             $form->bind($registration);
             if ($request->isPost()) {
                 $form->setData($request->getPost());
+
                 if ($form->isValid()) {
 
-                    // manage duplicates in address, and relatives
+                    // gestão de duplicação de endereço e parentes
                     $this->adjustAddresses($person);
                     $this->adjustRelatives($person);
-
-                    $preInterview = $registration->getPreInterview();
-                    $preInterview
-                        ->setPreInterviewPersonalInfo($rid . self::PERSONAL_FILE_SUFFIX)
-                        ->setPreInterviewIncomeProof($rid . self::INCOME_FILE_SUFFIX)
-                        ->setPreInterviewExpenseReceipt($rid . self::EXPENDURE_FILE_SUFFIX);
 
                     $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE);
 
@@ -228,7 +174,15 @@ class PreInterviewController extends AbstractEntityActionController
                     return new ViewModel(array(
                         'registration' => null,
                         'form' => null,
-                        'message' => 'Pré-entrevista concluída com com sucesso.',
+                        'message' => 'Pré-entrevista concluída com com sucesso. '
+                        . 'O formulário de pré-entrevista continuará disponível para futuras edições até a '
+                        . 'conclusão de sua entrevista.',
+                    ));
+                } else {
+                    return new ViewModel(array(
+                        'registration' => $registration,
+                        'form' => $form,
+                        'message' => 'Existe(m) algum(ns) campo(s) não preenchido(s).',
                     ));
                 }
             }
@@ -237,152 +191,35 @@ class PreInterviewController extends AbstractEntityActionController
                 'registration' => null,
                 'form' => null,
                 'message' => 'Erro inesperado. Por favor, entre em contato com o administrador do sistema.',
-                'message' => $ex->getMessage(),
+//                'message' => $ex->getMessage(),
             ));
         }
 
-        return new ViewModel(array(
+        return new ViewModel([
             'registration' => $registration,
             'form' => $form,
             'message' => '',
-        ));
+        ]);
     }
 
     /**
-     * Recebe os arquivos de informações pessoais, despesas e renda.
-     * 
-     * @return JsonModel
-     * @throws RuntimeException
+     * Como o formulário é grande, para que a sessão não expire durante o preenchimento
+     * a página do formulário de tempos em tempos manda requisições para manter a sessão ativa.
      */
-    public function studentFileUploadAction()
+    public function keepAliveAction()
     {
-        $request = $this->getRequest();
 
-        if ($request->isPost()) {
-            $studentContainer = new Container('pre_interview');
-            if ($studentContainer->offsetExists('regId')) {
-                $type = $this->params('file', false);
+        $studentContainer = new Container('pre_interview');
 
-                try {
-
-                    if (!$type) {
-                        throw new RuntimeException('O arquivo enviado não é de um dos tipos especificados.');
-                    }
-
-                    $file = $request->getFiles()->$type;
-
-                    if ($file === null) {
-                        throw new RuntimeException('Nenhum arquivo enviado.');
-                    }
-
-                    $targetDir = self::PRE_INTERVIEW_DIR;
-
-                    $filename = $studentContainer->offsetGet('regId');
-                    switch ($type) {
-                        case 'income':
-                            $filename .= self::INCOME_FILE_SUFFIX;
-                            break;
-                        case 'expendure':
-                            $filename .= self::EXPENDURE_FILE_SUFFIX;
-                            break;
-                        case 'personal':
-                            $filename .= self::PERSONAL_FILE_SUFFIX;
-                            break;
-                    }
-
-                    $targetFile = $targetDir . $filename;
-
-                    $uploadAdapter = new HttpAdapter();
-
-                    $uploadAdapter->addFilter('File\Rename',
-                        array(
-                        'target' => $targetFile,
-                        'overwrite' => true
-                    ));
-
-                    $uploadAdapter->setDestination($targetDir);
-
-                    if (!$uploadAdapter->receive($type)) {
-                        throw new RuntimeException(implode('\n', $uploadAdapter->getMessages()));
-                    }
-
-                    return new JsonModel(array(
-                        'message' => 'Arquivo salvo com sucesso.',
-                        'file' => $file,
-                        'target' => $targetFile
-                    ));
-                } catch (Exception $ex) {
-
-                    if ($ex instanceof RuntimeException) {
-                        $message = 'Erro: ' . $ex->getMessage();
-                    } else {
-                        $message = 'Erro inesperado. Entre em contato com o administrador do sistema. '
-                            . $ex->getMessage();
-                    }
-
-                    return new JsonModel(array(
-                        'message' => $message,
-                    ));
-                }
-            }
-
-            return new JsonModel(array(
-                'message' => 'Sessão expirada. Por favor, retorne a página de inserção de cpf e tente novamente.',
-            ));
+        $alive = true;
+        
+        // id de inscrição não está na sessão redireciona para o início
+        if (!$studentContainer->offsetExists('regId')) {
+            $alive = false;
         }
 
-        return $this->redirect()->toRoute('recruitment/pre-interview', array(
-                'index'
-        ));
+        return new JsonModel([
+            'alive' => $alive,
+        ]);
     }
-
-    public function getUploadedFileAction()
-    {
-        $this->layout('empty/layout');
-        $file = $this->params('file', false);
-        $rid = $this->params('rid', false);
-
-        if (!$rid) {
-            $studentContainer = new Container('pre_interview');
-            if ($studentContainer->offsetExists('regId')) {
-                $rid = $studentContainer->offsetGet('regId');
-            } else {
-                return $this->redirect()->toRoute('authorization/index');
-            }
-        }
-
-        if ($file) {
-
-            $pdf = self::PRE_INTERVIEW_DIR . $rid;
-            switch ($file) {
-                case 'income':
-                    $pdf .= self::INCOME_FILE_SUFFIX;
-                    break;
-                case 'expendure':
-                    $pdf .= self::EXPENDURE_FILE_SUFFIX;
-                    break;
-                case 'personal':
-                    $pdf .= self::PERSONAL_FILE_SUFFIX;
-                    break;
-            }
-
-            if (file_exists($pdf) !== false) {
-                $response = $this->getResponse();
-                $response->getHeaders()->addHeaderLine('Content-Type', 'application/pdf');
-                $editalContent = file_get_contents($pdf);
-                $response->setStatusCode(200);
-                $response->setContent($editalContent);
-                return $response;
-            }
-
-            $message = 'Arquivo não encontrado.';
-        } else {
-            $message = 'Nenhum tipo de arquivo foi especificado.';
-        }
-
-        return new ViewModel(array(
-            'message' => $message,
-        ));
-    }
-
 }

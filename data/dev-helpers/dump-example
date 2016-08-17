@@ -1,6 +1,0 @@
-
-Export data:
-mysqldump -u root -p --no-create-info catssys >~/vhosts/cats-lab/data/dev-helpers/<nome_do_arquivo>.sql
-
-Import data:
-mysql -u root -p catssys < ~/vhosts/cats-lab/data/dev-helpers/<nome_do_arquivo>.sql

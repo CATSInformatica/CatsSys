@@ -1,0 +1,53 @@
+
+<?php foreach ($forms as $indx => $form): ?>
+    <div class="box box-solid field-box box-danger">
+        <div class="box-header with-border">
+            <h3 class="box-title"> <?php echo ($indx + 1); ?> <i class="fa fa-user-md"></i> </h3>
+            <div class="box-tools pull-right">
+                <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                    <i class="fa fa-minus"></i>
+                </button>
+            </div>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div class="form-group">
+                <div class="col-md-12">
+                    <div class="col-xs-6 col-md-6">
+                        <?php echo $this->formRow($form->get('familyHealthName')); ?>
+                    </div>
+                    <div class="col-xs-6 col-md-6">
+                        <?php echo $this->formRow($form->get('healthProblem')); ?>
+                    </div>
+                    <div class="col-xs-6 col-md-6">
+                        <?php echo $this->formRow($form->get('disableForWork')); ?>
+                    </div>
+                    <div class="col-xs-6 col-md-6">
+                        <?php echo $this->formRow($form->get('dailyDependency')); ?>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+<?php endforeach; ?>
+<span data-template='<div class="box box-solid field-box box-danger">
+      <div class="box-header with-border">
+      <h3 class="box-title">__index__ <i class="fa fa-user-md"></i> </h3>
+      <div class="box-tools pull-right">
+      <button type="button" class="btn btn-box-tool" data-widget="collapse">
+      <i class="fa fa-minus"></i>
+      </button>
+      </div>
+      </div>
+      <div class="box-body">
+      <div class="form-group">
+      <div class="col-md-12">
+      <div class="col-xs-6 col-md-6">__TEMPLATE0__</div>
+      <div class="col-xs-6 col-md-6">__TEMPLATE1__</div>
+      <div class="col-xs-6 col-md-6">__TEMPLATE2__</div>
+      <div class="col-xs-6 col-md-6">__TEMPLATE3__</div>
+      </div>
+      </div>
+      </div>'>
+</span>
