@@ -47,7 +47,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
      * 
      * @type object
      */
-    var studentAnswers = {};
+    var studentAnswers = null;
 
     /**
      * é construído na forma
@@ -309,6 +309,8 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
         var ans = null;
         var enrollmentId;
         var partialId;
+        
+        studentAnswers = {};
         
         for (var i = 1; i < csvData.answers.length; i++) {
             ans = csvData.answers[i];

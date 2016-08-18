@@ -17,9 +17,6 @@
 
 @import url("/vendor/AdminLTE/bootstrap/css/bootstrap.min.css");
 
-*, * p {
-    margin: 0;
-}
 #print-page {
     font-size: 10.5pt;
 }
@@ -29,11 +26,12 @@
     width: 210mm;
     padding: 0;
     margin: 0 auto;
+    border: 1px solid #888888;
 }
 .exam-page {
     display: none;
 }
-.fa-times:hover, .fa-sort-asc:hover, .fa-sort-desc:hover {
+.fa-times:hover, .fa-sort-asc:hover, .fa-sort-desc:hover, #refresh-button:hover {
     cursor: pointer;
 }
 .control-icons .fa-times {
@@ -83,7 +81,7 @@ p {
     height: 261mm;
 }
 .exam-content h3 {
-    font-size: 14.5pt;
+    font-size: 13pt;
 }
 .title {
     font-size: 13pt; 
@@ -96,8 +94,10 @@ p {
     -moz-column-count:2;
     -webkit-column-count: 2;
 }
-.question-block * {
-    line-height: 4.2mm;
+.question-block * :not(.fa), #question-table * {
+    line-height: 4.8mm !important;
+    font-family: 'Source Sans Pro','Helvetica Neue', Helvetica, Arial, sans-serif !important;
+    font-size: 10.5pt !important;
 }
 .first.column {
     padding-right: 2mm;
@@ -123,7 +123,63 @@ p {
     margin: 0;
 }
 
+/*Gabarito*/
+#answer-key-tables {
+    width: 297mm;
+    margin: 0;
+    padding: 10mm;
+}
+
+.answers-table caption {
+    padding: 0;
+    height: 19mm;
+}
+
+.answers-table {
+    margin: 0 1.7mm !important;
+    width: 21mm !important;
+    float: left;
+}
+
+.answers-table * {
+    font-size: 9pt;
+}
+
+.answers-table tr, .answers-table tr td {
+    border: 0.4mm solid black !important;
+}
+
+.answers-table td {
+    padding: 0.8mm !important;
+}
+
+.answers-table>tbody>tr:nth-child(odd)>td, 
+.answers-table>tbody>tr:nth-child(odd)>th {
+    background-color: #50bb67;
+}
+
+.answers-table>tbody>tr:nth-child(even)>td, 
+.answers-table>tbody>tr:nth-child(even)>th {
+    background-color: #dbf9bb;
+}
+
 /*  Margens de impressão  */
 @page {
     margin: 0mm 0mm;
+}
+
+@media print {
+    body {
+        -webkit-print-color-adjust: exact;
+    }
+        
+    .answers-table>tbody>tr:nth-child(odd)>td, 
+    .answers-table>tbody>tr:nth-child(odd)>th {
+        background-color: #50bb67 !important;
+    }
+
+    .answers-table>tbody>tr:nth-child(even)>td, 
+    .answers-table>tbody>tr:nth-child(even)>th {
+        background-color: #dbf9bb !important;
+    }
 }

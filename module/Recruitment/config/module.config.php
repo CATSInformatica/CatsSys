@@ -1,5 +1,4 @@
 <?php
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -86,11 +85,9 @@ return array(
                     'pre-interview' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/pre-interview[/:action[/:file[/:rid]]]',
+                            'route' => '/pre-interview[/:action]',
                             'constraints' => array(
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                                'file' => 'personal|income|expendure',
-                                'rid' => '[0-9]+',
                             ),
                             'defaults' => array(
                                 'controller' => 'Recruitment\Controller\PreInterview',
@@ -158,6 +155,11 @@ return array(
             'volunteer-interview/template' => __DIR__ . '/../view/templates/volunteer-interview.phtml',
             'pre-interview/template' => __DIR__ . '/../view/templates/pre-interview.phtml',
             'registration-card/template' => __DIR__ . '/../view/templates/registration-card.phtml',
+            'family-members/template' => __DIR__ . '/../view/templates/family-members.phtml',
+            'family-goods/template' => __DIR__ . '/../view/templates/family-goods.phtml',
+            'family-health/template' => __DIR__ . '/../view/templates/family-health.phtml',
+            'family-income-expense/template' => __DIR__ . '/../view/templates/family-income-expense.phtml',
+            'family-properties/template' => __DIR__ . '/../view/templates/family-properties.phtml',
         ),
         'display_exceptions' => true,
     ),
@@ -255,6 +257,30 @@ return array(
                                 'target' => '_blank',
                                 'fntype' => 'selectedHttpClick',
                             ),
+                            array(
+                                'url' => '/recruitment/registration/confirmation/$id',
+                                'id' => 'fn-confirmation',
+                                'title' => 'Confirmar',
+                                'description' => 'Confirmar/Desconfirmar a inscrição do candidato.',
+                                'class' => 'fa fa-check bg-red',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ),
+                            array(
+                                'url' => '/recruitment/registration/convocation/$id',
+                                'id' => 'fn-convocation',
+                                'title' => 'Convocar',
+                                'description' => 'Convocar/Desconvocar o candidato para a pré-entrevista.',
+                                'class' => 'fa fa-users bg-blue fn-ajaxClick',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ),
+                            array(
+                                'url' => '/recruitment/registration/acceptance/$id',
+                                'title' => 'Aprovar Candidato',
+                                'id' => 'fn-acceptance',
+                                'description' => 'Aprova/remove aprovação do candidato. A aprovação é condição suficiente para a matrícula.',
+                                'class' => 'fa fa-graduation-cap bg-yellow',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ),
                         ),
                         'pages' => array(
                             array(
@@ -264,32 +290,6 @@ return array(
                                 'resource' => 'Recruitment\Controller\Interview',
                                 'privilege' => 'student',
                                 'icon' => 'fa fa-user',
-                                'toolbar' => array(
-                                    array(
-                                        'url' => '/recruitment/registration/confirmation',
-                                        'id' => 'fn-confirmation',
-                                        'title' => 'Confirmar',
-                                        'description' => 'Confirmar/Desconfirmar a inscrição do candidato.',
-                                        'class' => 'fa fa-check bg-red',
-                                        'fntype' => 'ajaxPostClick',
-                                    ),
-                                    array(
-                                        'url' => '/recruitment/registration/convocation',
-                                        'id' => 'fn-convocation',
-                                        'title' => 'Convocar',
-                                        'description' => 'Convocar/Desconvocar o candidato para a pré-entrevista.',
-                                        'class' => 'fa fa-users bg-blue fn-ajaxClick',
-                                        'fntype' => 'ajaxPostClick',
-                                    ),
-                                    array(
-                                        'url' => '/recruitment/registration/acceptance',
-                                        'title' => 'Aprovar Candidato',
-                                        'id' => 'fn-acceptance',
-                                        'description' => 'Aprova/remove aprovação do candidato. A aprovação é condição suficiente para a matrícula.',
-                                        'class' => 'fa fa-graduation-cap bg-yellow',
-                                        'fntype' => 'ajaxPostClick',
-                                    ),
-                                ),
                             ),
                         ),
                     ),
@@ -412,23 +412,54 @@ return array(
                         'resource' => 'Recruitment\Controller\PreInterview',
                         'privilege' => 'index',
                         'icon' => 'fa fa-check',
+                        'target' => '_blank',
                         'pages' => array(
                             array(
                                 'label' => 'Student pre-interview II',
                                 'route' => 'recruitment/pre-interview',
-                                'action' => 'studentPreInterviewFiles',
-                                'icon' => 'fa fa-file-pdf-o',
-                                'pages' => array(
-                                    array(
-                                        'label' => 'Student pre-interview III',
-                                        'route' => 'recruitment/pre-interview',
-                                        'action' => 'studentPreInterviewForm',
-                                        'icon' => 'fa fa-check-circle',
-                                    ),
-                                ),
+                                'action' => 'studentPreInterviewForm',
+                                'icon' => 'fa fa-check-circle',
                             ),
                         ),
                     ),
+                    [
+                        'label' => 'Student interview',
+                        'route' => 'recruitment/interview',
+                        'action' => 'student-list',
+                        'resource' => 'Recruitment\Controller\Interview',
+                        'privilege' => 'student-list',
+                        'icon' => 'fa fa-file-text-o',
+                        'toolbar' => [
+                            [
+                                'url' => '/recruitment/pre-interview',
+                                'id' => 'fn-pre-interview',
+                                'title' => 'Inscrição/Pré-entrevista',
+                                'description' => 'Permite editar informações de inscrição e pré-entrevista',
+                                'class' => 'fa fa-user bg-blue',
+                                'fntype' => 'httpClick',
+                                'target' => '_blank',
+                            ],
+                            [
+                                'url' => '/recruitment/interview/student-form/$id',
+                                'id' => 'fn-interview',
+                                'title' => 'Entrevista',
+                                'description' => 'Formulário de entrevista',
+                                'class' => 'fa fa-file-text-o bg-green',
+                                'fntype' => 'selectedHttpClick',
+                                'target' => '_blank',
+                            ],
+                        ],
+                        'pages' => [
+                            [
+                                'label' => 'Interview form',
+                                'route' => 'recruitment/interview',
+                                'action' => 'student-form',
+                                'resource' => 'Recruitment\Controller\Interview',
+                                'privilege' => 'student-form',
+                                'icon' => 'fa fa-file-text-o',
+                            ]
+                        ],
+                    ]
                 ),
             ),
         ),

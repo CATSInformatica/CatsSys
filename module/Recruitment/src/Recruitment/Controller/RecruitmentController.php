@@ -1,9 +1,19 @@
 <?php
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Recruitment\Controller;
@@ -15,7 +25,6 @@ use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\Repository\RecruitmentRepository;
-use Recruitment\Form\RecruitmentFilter;
 use Recruitment\Form\RecruitmentForm;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
@@ -23,14 +32,14 @@ use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
- * Description of RecruitmentController
+ * Permite Manipular processos seletivos de alunos
  *
- * @author marcio
+ * @author Márcio Dias <marciojr91@gmail.com>
  */
 class RecruitmentController extends AbstractEntityActionController
 {
 
-    const EDITAL_DIR = './data/edital/';
+    const PUBLIC_NOTICE_DIR = './public/docs/';
 
     public function indexAction()
     {
@@ -43,27 +52,21 @@ class RecruitmentController extends AbstractEntityActionController
         ));
     }
 
+    /**
+     * Redireciona para o edital do processo seletivo cujo identificador é $id.
+     * 
+     * @return Zend\Http\Response Redirecionamento para o pdf do edital.
+     */
     public function publicNoticeAction()
     {
-        $response = $this->getResponse();
-        $response->getHeaders()->addHeaderLine('Content-Type', 'application/pdf');
         $id = $this->params('id', false);
 
         if ($id) {
 
             $em = $this->getEntityManager();
             $recruitment = $em->getReference('Recruitment\Entity\Recruitment', $id);
-            $edital = self::EDITAL_DIR . $recruitment->getRecruitmentPublicNotice();
-
-            if (file_exists($edital) !== false) {
-                $editalContent = file_get_contents($edital);
-
-                $response->setStatusCode(200);
-                $response->setContent($editalContent);
-            }
+            return $this->redirect()->toUrl('/docs/' . $recruitment->getRecruitmentPublicNotice());
         }
-
-        return $response;
     }
 
     public function createAction()
@@ -81,14 +84,13 @@ class RecruitmentController extends AbstractEntityActionController
             );
 
             $form->setData($data);
-            $form->setInputFilter(new RecruitmentFilter());
 
             if ($form->isValid()) {
                 $data = $form->getData();
 
                 try {
 
-                    $targetDir = self::EDITAL_DIR;
+                    $targetDir = self::PUBLIC_NOTICE_DIR;
 
                     $filename = $data['recruitment_year']
                         . $data['recruitment_number']
@@ -105,8 +107,7 @@ class RecruitmentController extends AbstractEntityActionController
 
                     $uploadAdapter = new HttpAdapter();
 
-                    $uploadAdapter->addFilter('File\Rename',
-                        array(
+                    $uploadAdapter->addFilter('File\Rename', array(
                         'target' => $targetFile,
                         'overwrite' => false
                     ));
@@ -128,6 +129,14 @@ class RecruitmentController extends AbstractEntityActionController
                         ->setRecruitmentEndDate(new DateTime($data['recruitment_enddate']))
                         ->setRecruitmentPublicNotice($filename)
                         ->setRecruitmentType($data['recruitment_type']);
+                    
+                    if($data['recruitment_type'] == Recruitment::STUDENT_RECRUITMENT_TYPE) {
+                        $recruitment
+                            ->setRecruitmentSocioeconomicTarget($data['recruitmentSocioeconomicTarget'])
+                            ->setRecruitmentVulnerabilityTarget($data['recruitmentVulnerabilityTarget'])
+                            ->setRecruitmentStudentTarget($data['recruitmentStudentTarget'])
+                            ;
+                    }
 
                     $em->persist($recruitment);
                     $em->flush();
@@ -169,7 +178,7 @@ class RecruitmentController extends AbstractEntityActionController
                 $recruitment = $em->getReference('Recruitment\Entity\Recruitment', $id);
                 $currentDate = new DateTime('now');
                 if ($currentDate < $recruitment->getRecruitmentBeginDate()) {
-                    unlink(self::EDITAL_DIR . $recruitment->getRecruitmentPublicNotice());
+                    unlink(self::PUBLIC_NOTICE_DIR . $recruitment->getRecruitmentPublicNotice());
                     $em->remove($recruitment);
                     $em->flush();
 
@@ -262,5 +271,4 @@ class RecruitmentController extends AbstractEntityActionController
             ]);
         }
     }
-
 }

@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
  *
@@ -32,27 +31,32 @@ use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
- * Description of EnrollmentController
+ * Manipula matrículas de alunos.
  *
- * @author marcio
+ * @author Márcio Dias <marciojr91@gmail.com>
  */
 class EnrollmentController extends AbstractEntityActionController
 {
 
+    /**
+     * Exibe a tabela de candidatos que podem ser matriculados em uma turma
+     * @return ViewModel
+     */
     public function indexAction()
     {
         try {
             $em = $this->getEntityManager();
             $form = new SearchRegistrationsForm($em, Recruitment::STUDENT_RECRUITMENT_TYPE);
+
             $form->get('recruitment')
                 ->setAttribute('disabled', true);
+
             $form->get('registrationStatus')
                 ->setValue(RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED)
                 ->setAttribute('disabled', true);
             $form->remove('submit');
 
             $sclassForm = new SearchEnrollmentForm($em);
-
 
             return new ViewModel(array(
                 'message' => null,
@@ -63,6 +67,29 @@ class EnrollmentController extends AbstractEntityActionController
             return new ViewModel(array(
                 'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema',
                 'form' => null,
+            ));
+        }
+    }
+
+    /**
+     * Exibe a tabela de alunos matriculados em turmas ativas.
+     * @return ViewModel
+     */
+    public function manageAction()
+    {
+        try {
+            $em = $this->getEntityManager();
+
+            $sclassForm = new SearchEnrollmentForm($em);
+
+            return new ViewModel(array(
+                'message' => null,
+                'sclassForm' => $sclassForm,
+            ));
+        } catch (Exception $ex) {
+            return new ViewModel(array(
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema',
+                'sclassForm' => null,
             ));
         }
     }
@@ -143,9 +170,7 @@ class EnrollmentController extends AbstractEntityActionController
         $request = $this->getRequest();
 
         if ($sid && $request->isPost()) {
-
             try {
-
                 $data = $request->getPost();
 
                 if (!is_numeric($data['studentClass'])) {
@@ -154,20 +179,10 @@ class EnrollmentController extends AbstractEntityActionController
 
                 $em = $this->getEntityManager();
 
-                $enrollment = $em->getRepository('SchoolManagement\Entity\Enrollment')->findOneBy(array(
-                    'class' => $data['studentClass'],
-                    'registration' => $sid
-                ));
-
-                if ($enrollment !== null) {
-                    $em->remove($enrollment);
-                    $em->flush();
-                    $message = 'Matrícula desfeita com sucesso.';
-                } else {
-                    $message = 'O aluno não está matriculado na turma escolhida.'
-                        . ' Por favor verifique se o aluno e a turma'
-                        . ' foram escolhidos corretamente.';
-                }
+                $enrollment = $em->getReference('SchoolManagement\Entity\Enrollment', $sid);
+                $em->remove($enrollment);
+                $em->flush();
+                $message = 'Matrícula desfeita com sucesso.';
             } catch (Exception $ex) {
                 if ($ex instanceof ConstraintViolationException) {
                     $message = 'Não é possível remover este aluno. Ele possui listas de presença/abono ou alguma outra '
@@ -182,6 +197,9 @@ class EnrollmentController extends AbstractEntityActionController
 
         return new JsonModel(array(
             'message' => $message,
+            'callback' => [
+                'id' => $sid,
+            ]
         ));
     }
 
@@ -206,25 +224,18 @@ class EnrollmentController extends AbstractEntityActionController
                 }
 
                 $em = $this->getEntityManager();
+                $enrollment = $em->getReference('SchoolManagement\Entity\Enrollment', $sid);
 
-                $enrollment = $em->getRepository('SchoolManagement\Entity\Enrollment')->findOneBy(array(
-                    'class' => $data['studentClass'],
-                    'registration' => $sid
-                ));
-
-                if ($enrollment !== null) {
-                    $enrollment->setEnrollmentEndDate(new \DateTime());
-                    $em->merge($enrollment);
-                    $em->flush();
-                    $message = 'Matrícula encerrada com sucesso.';
-                } else {
-                    $message = 'O aluno não está matriculado na turma escolhida.'
-                        . ' Por favor verifique se o aluno e a turma'
-                        . ' foram escolhidos corretamente.';
-                }
+                $enrollment->setEnrollmentEndDate(new \DateTime());
+                $em->merge($enrollment);
+                $em->flush();
+                $message = 'Matrícula encerrada com sucesso.';
 
                 return new JsonModel([
                     'message' => $message,
+                    'callback' => [
+                        'id' => $sid,
+                    ]
                 ]);
             } catch (Exception $ex) {
                 return new JsonModel([
@@ -237,5 +248,4 @@ class EnrollmentController extends AbstractEntityActionController
             'message' => 'Nenhum aluno especificado',
         ]);
     }
-
 }

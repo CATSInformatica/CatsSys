@@ -207,5 +207,4 @@ class DepartmentController extends AbstractEntityActionController
             }
         }
     }
-
 }

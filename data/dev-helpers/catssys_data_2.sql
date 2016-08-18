@@ -64,8 +64,8 @@ INSERT INTO `privilege` VALUES
 UNLOCK TABLES;
 
 LOCK TABLES `recruitment` WRITE;
-INSERT INTO `recruitment` VALUES (1,2,2016,'2015-12-23 00:00:00','2016-06-18 00:00:00','201621.pdf',1);
-INSERT INTO `recruitment` VALUES (2,1,2016,'2016-01-23 00:00:00','2016-06-18 00:00:00','201612.pdf',2);
+INSERT INTO `recruitment` VALUES (1,2,2016,'2015-12-23 00:00:00','2016-12-18 00:00:00','201621.pdf',1, 3, 2, 3);
+INSERT INTO `recruitment` VALUES (2,1,2016,'2016-01-23 00:00:00','2016-12-18 00:00:00','201612.pdf',2, null, null, null);
 UNLOCK TABLES;
 
 LOCK TABLES `recruitment_know_about` WRITE;
@@ -78,16 +78,6 @@ INSERT INTO `recruitment_know_about` VALUES
 (5,'Internet'),
 (6,'Rádio, Televisão ou Jornais'),
 (8,'Voluntários do CATS');
-UNLOCK TABLES;
-
-LOCK TABLES `recruitment_live_with_you` WRITE;
-INSERT INTO `recruitment_live_with_you` VALUES 
-(1, 'Moro sozinho.'),
-(2, 'Filhos.'),
-(3, 'Moro com pai e/ou mãe.'),
-(4, 'Irmãos.'),
-(5, 'Esposa, marido, companheiro(a).'),
-(6, 'Outro.');
 UNLOCK TABLES;
 
 LOCK TABLES `class` WRITE;
@@ -118,6 +108,16 @@ INSERT INTO `recruitment_status` VALUES
 (14, 13);
 UNLOCK TABLES;
 
+LOCK TABLES `infrastructure_element` WRITE;
+INSERT INTO `infrastructure_element` VALUES
+(1, 'Rede de esgoto'),
+(2, 'Água tratada'),
+(3, 'Iluminação pública'),
+(4, 'Lixo recolhido'),
+(5, 'Rua pavimentadas'),
+(6, 'Internet');
+UNLOCK TABLES;
+
 LOCK TABLES `attendance_type` WRITE;
 INSERT INTO `attendance_type` VALUES
 (1, 'FREQUÊNCIA INÍCIO DO DIA'),
@@ -145,3 +145,4 @@ INSERT INTO `subject` VALUES
 (61,46,'POLINÔMIOS','Polinômios');
 /*!40000 ALTER TABLE `subject` ENABLE KEYS */;
 UNLOCK TABLES;
+

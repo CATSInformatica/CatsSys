@@ -1,9 +1,19 @@
 <?php
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Recruitment\Entity\Repository;
@@ -11,9 +21,9 @@ namespace Recruitment\Entity\Repository;
 use Doctrine\ORM\EntityRepository;
 
 /**
- * Description of RecruitmentRepository
+ * Contém consultas específicas para a entidade Recruitment.
  *
- * @author marcio
+ * @author Márcio Dias <marciojr91@gmail.com>
  */
 class RecruitmentRepository extends EntityRepository
 {
@@ -49,6 +59,7 @@ class RecruitmentRepository extends EntityRepository
                     'type' => $type,
                     'date' => $date,
                 ))
+                ->setMaxResults(1)
                 ->getOneOrNullResult();
     }
 
@@ -78,7 +89,28 @@ class RecruitmentRepository extends EntityRepository
                     'type' => $type,
                     'date' => $date,
                 ))
+                ->setMaxResults(1)
                 ->getOneOrNullResult();
     }
 
+    /**
+     * Busca o último processo seletivo do tipo $type já encerrado.
+     * 
+     * @param int $type Tipo de processo seletivo [aluno, voluntário]
+     * @return array|null Informações do processo seletivo encontrado ou null.
+     */
+    public function findLastClosed($type)
+    {
+        return $this->_em
+                ->createQuery('SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
+                    . 'r.recruitmentEndDate, r.recruitmentSocioeconomicTarget, r.recruitmentVulnerabilityTarget, r.recruitmentStudentTarget '
+                    . 'FROM Recruitment\Entity\Recruitment r '
+                    . 'WHERE r.recruitmentType = :type AND '
+                    . 'r.recruitmentEndDate < CURRENT_DATE() '
+                    . 'ORDER BY r.recruitmentId DESC'
+                )
+                ->setParameter('type', $type)
+                ->setMaxResults(1)
+                ->getOneOrNullResult();
+    }
 }

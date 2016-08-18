@@ -1,0 +1,56 @@
+<section class="content">
+
+    <p><?php echo $this->message; ?></p>
+
+    <?php if ($sclassForm !== null): ?>
+
+        <div class="row">
+            <div class="col-xs-12 col-md-8 col-md-offset-2">
+                <?php echo $this->form()->openTag($sclassForm); ?>
+                <div class="col-xs-12 col-md-12">
+                    <?php echo $this->formRow($sclassForm->get('studentClasses')); ?>
+                </div>
+                <div class="col-xs-12 col-md-12">
+                    <?php echo $this->formRow($sclassForm->get('submit')); ?>
+                </div>
+            </div>
+        </div>
+        <br>
+        <div class="row">
+            <div class="col-xs-12 col-md-8 col-md-offset-2">
+                <div class="table-responsive">
+                    <table class="table table-condensed table-bordered" id="manage-enrollment-table">
+                        <thead>
+                            <tr>
+                                <th>Matrícula</th>
+                                <th>Nascimento</th>
+                                <th>Nome</th>
+                                <th>Email</th>
+                                <th>Contato</th>
+                                <th>CPF</th>
+                                <th>RG</th>                                
+                            </tr>
+                        </thead>
+                        <tbody>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+
+    <?php endif; ?>
+
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/enrollment/Manage';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

@@ -1,0 +1,26 @@
+Todo
+    Entrevista:
+        > Calcular a nota no critério socioeconômico
+    Análise de candidatos:
+        > Concluir tela de análise de candidatos
+    Formulário de criação de processos seletivos
+        > Alterar formulário de criação de processos seletivos para adicionar
+        os pesos:
+            - vunerabilidade
+            - socioeconômico
+            - perfil de estudante
+        > Problemas de saúde
+            - Listar pessoas já cadastradas.
+        > Análise de candidatos
+            - Resultado sempre aparente.
+            - Aba entrevista em primeiro.
+
+
+    Campo de autodeclaração de etinia
+    Correção do cálculo dos pesos
+    Caixa de justificativa na vulnerabilidade
+    Alterar o nome de comentários gerais para justificativa da nota perfil de estudantes
+    Sinalizar as etapas da entrevista
+    Descrever melhor o título da descrição
+    * Campo salário mínimo adicionar valores
+    Adicionar os campos de justificativas na página de análise do candidato

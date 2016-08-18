@@ -1,0 +1,31 @@
+<section class="content">
+    <?php
+    $this->headTitle()->append('Criar Simulado')
+            ->setSeparator(' - ');
+    ?>
+    <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1 col-xs-12">
+            <?php if ($form !== null) :
+                echo $this->render('exam_config_template', array(
+                    'form' => $this->form,
+                    'baseSubjects' => $this->baseSubjects,
+                ));
+            endif; ?>
+        </div>
+    </div>
+
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/exam/create';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>
