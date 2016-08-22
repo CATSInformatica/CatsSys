@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (C) 2016 Gabriel Pereira <rickardch@gmail.com>
  *
@@ -32,7 +31,7 @@ use Zend\InputFilter\InputFilterProviderInterface;
  */
 class ExamFieldset extends Fieldset implements InputFilterProviderInterface
 {
-    
+
     public function __construct(ObjectManager $obj)
     {
         parent::__construct('exam-fieldset');
@@ -98,7 +97,6 @@ class ExamFieldset extends Fieldset implements InputFilterProviderInterface
                 'options' => array(
                     'label' => 'Hora de término',
                     'add-on-prepend' => '<i class="glyphicon glyphicon-time"></i>',
-                    'format' => 'H:i'
                 ),
                 'attributes' => array(
                     'class' => 'text-center datepicker',
@@ -106,11 +104,15 @@ class ExamFieldset extends Fieldset implements InputFilterProviderInterface
                 ),
             ))
             ->add(array(
+                'type' => 'DoctrineModule\Form\Element\ObjectSelect',
                 'name' => 'examContent',
-                'type' => 'select',
                 'options' => array(
                     'label' => 'Conteúdo',
-                    'value_options' => $this->getContents($obj)
+                    'object_manager' => $obj,
+                    'target_class' => 'SchoolManagement\Entity\ExamContent',
+                    'label_generator' => function($targetEntity) {
+                        return $targetEntity->getExamContentId() . ' - ' . substr($targetEntity->getDescription(), 0, 100);
+                    },
                 )
             ))
         ;
@@ -155,7 +157,7 @@ class ExamFieldset extends Fieldset implements InputFilterProviderInterface
                         ),
                     ),
                 ),
-            ), 
+            ),
             'startTime' => array(
                 'required' => false,
                 'filters' => array(
@@ -170,7 +172,7 @@ class ExamFieldset extends Fieldset implements InputFilterProviderInterface
                         ),
                     ),
                 ),
-            ),  
+            ),
             'endTime' => array(
                 'required' => false,
                 'filters' => array(
@@ -185,17 +187,7 @@ class ExamFieldset extends Fieldset implements InputFilterProviderInterface
                         ),
                     ),
                 ),
-            ),          
+            ),
         );
     }
-    
-    protected function getContents($em) {
-        $contents = $em->getRepository('SchoolManagement\Entity\ExamContent')->findAll();
-        $contentsList = [];
-        foreach ($contents as $content) {
-            $contentsList[$content->getExamContentId()] = $content->getExamContentId() . ' - ' . substr($content->getDescription(), 0, 100); 
-        }
-        return $contentsList;
-    }
-    
 }

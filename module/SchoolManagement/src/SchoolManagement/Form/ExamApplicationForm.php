@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (C) 2016 Gabriel Pereira <rickardch@gmail.com>
  *
@@ -23,14 +22,16 @@ use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use SchoolManagement\Form\Fieldset\ExamApplicationFieldset;
 use Zend\Form\Form;
+use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
  * Description of ExamApplicationForm
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class ExamApplicationForm extends Form
+class ExamApplicationForm extends Form implements InputFilterProviderInterface
 {
+
     /**
      * 
      * @param ObjectManager $obj
@@ -39,12 +40,12 @@ class ExamApplicationForm extends Form
     {
         parent::__construct('exam-application-form');
         $this->setHydrator(new DoctrineHydrator($obj));
-        
+
         $examApplicationFieldset = new ExamApplicationFieldset($obj);
         $examApplicationFieldset->setUseAsBaseFieldset(true);
         $this->add($examApplicationFieldset);
-      
-        $this 
+
+        $this
             ->add(array(
                 'name' => 'appExams',
                 'type' => 'Collection',
@@ -63,8 +64,16 @@ class ExamApplicationForm extends Form
                     'class' => 'btn btn-primary btn-block',
                     'value' => 'Criar Aplicação de Prova',
                 )
-            ))  
+            ))
         ;
     }
-    
+
+    public function getInputFilterSpecification()
+    {
+        return [
+            'appExams' => [
+                'required' => true,
+            ]
+        ];
+    }
 }
