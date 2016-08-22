@@ -22,9 +22,14 @@ namespace SchoolManagement\Controller;
 use Database\Controller\AbstractEntityActionController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Criteria;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use SchoolManagement\Entity\Exam;
+use SchoolManagement\Entity\ExamApplication;
+use SchoolManagement\Entity\ExamContent;
 use SchoolManagement\Form\ExamForm;
+use SchoolManagement\Form\ExamContentForm;
+use SchoolManagement\Form\ExamApplicationForm;
 use SchoolManagement\Entity\ExamQuestion;
 use SchoolManagement\Form\ExamQuestionForm;
 use SchoolManagement\Form\SearchQuestionsForm;
@@ -40,11 +45,217 @@ class SchoolExamController extends AbstractEntityActionController
 {
 
     /**
-     * Exibe uma tabela com todos os simulados gerados ou em desenvolvimento
+     * Exibe uma tabela com todas as provas aplicadas
      * 
      * @return ViewModel
      */
-    public function indexAction()
+    public function applicationsAction()
+    {
+        try {
+            $em = $this->getEntityManager();
+            $applications = $em->getRepository('SchoolManagement\Entity\ExamApplication')->findAll();
+
+            return new ViewModel(array(
+                'message' => null,
+                'applications' => $applications,
+            ));
+        } catch (Exception $ex) {
+            return new ViewModel(array(
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                'applications' => null,
+            ));
+        }
+    }
+    
+    /**
+     * Exibe um formulário para criação de uma aplicação de prova
+     * 
+     * @return ViewModel
+     */
+    public function createApplicationAction()
+    {
+        $em = $this->getEntityManager();
+        $request = $this->getRequest();
+        $application = new ExamApplication();
+        
+        try {
+            $exams = $em->getRepository('SchoolManagement\Entity\Exam')->findAll();
+            $form = new ExamApplicationForm($em);
+            $form->bind($application);
+            
+            if ($request->isPost()) {
+                $rawData = $request->getPost();
+                $form->setData($rawData); 
+                if ($form->isValid()) {
+                    $examIds = $rawData['appExams'];
+                    foreach ($examIds as $examId) {
+                        $exam = $em->find('SchoolManagement\Entity\Exam', $examId);
+                        $application->addExam($exam);
+                    }
+                    
+                    $em->persist($application);
+                    $em->flush();
+                    $this->redirect()->toRoute('school-management/school-exam', array('action' => 'applications'));
+                }
+            }
+                
+            return new ViewModel(array(
+                'message' => null,
+                'exams' => $exams,
+                'form' => $form,
+            ));
+        } catch (UniqueConstraintViolationException $ex) {
+            return new ViewModel(array(
+                'message' => 'Já existe uma aplicação com este nome.',
+                'exams' => null,
+                'form' => null,
+            ));
+        } catch (Exception $ex) {
+            return new ViewModel(array(
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                'exams' => null,
+                'form' => null,
+            ));
+        }
+    }
+    
+    /**
+     * Exibe um formulário para edição de uma aplicação de prova
+     * 
+     * @return ViewModel
+     */
+    public function editApplicationAction()
+    {
+        $applicationId = $this->params('id', false);
+        
+        if ($applicationId) {
+            $em = $this->getEntityManager();
+            $request = $this->getRequest();
+
+            try {
+                $exams = $em->getRepository('SchoolManagement\Entity\Exam')->findAll();
+                $application = $em->find('SchoolManagement\Entity\ExamApplication', $applicationId);
+                $selectedExams = $application->getExams()->toArray();
+                
+                $form = new ExamApplicationForm($em);
+                $form->bind($application);
+                $form->get('submit')->setAttribute('value', 'Editar Aplicação de Prova');
+                
+                if ($request->isPost()) {
+                    $rawData = $request->getPost();
+                    $form->setData($rawData); 
+                    if ($form->isValid()) {
+                        $examIds = $rawData['appExams'];
+                        $application->removeAllExams();
+                        foreach ($examIds as $examId) {
+                            $exam = $em->find('SchoolManagement\Entity\Exam', $examId);
+                            $application->addExam($exam);
+                        }
+                        $em->persist($application);
+                        $em->flush();
+                        $this->redirect()->toRoute('school-management/school-exam', array('action' => 'applications'));
+                    }
+                }
+
+                return new ViewModel(array(
+                    'message' => null,
+                    'exams' => $exams,
+                    'form' => $form,
+                    'selectedExams' => $selectedExams,
+                ));
+            } catch (UniqueConstraintViolationException $ex) {
+                return new ViewModel(array(
+                    'message' => 'Já existe uma aplicação com este nome.',
+                    'exams' => null,
+                    'form' => null,
+                    'selectedExams' => null,
+                ));
+            } catch (Exception $ex) {
+                return new ViewModel(array(
+                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                    'exams' => null,
+                    'form' => null,
+                    'selectedExams' => null
+                ));
+            }
+        }
+    }
+
+    /**
+     * Remove a aplicação de simulado selecionada
+     * 
+     * @return JsonModel
+     */
+    public function deleteApplicationAction()
+    {
+        $applicationId = $this->params('id', false);
+        
+        if ($applicationId) {
+            try {
+                $em = $this->getEntityManager();
+                $application = $em->getReference('SchoolManagement\Entity\ExamApplication', $applicationId);
+                foreach ($application->getExams() as $exam) {
+                    $application->removeAllExams();
+                    $exam->setApplication(null);
+                }
+                
+                $em->remove($application);
+                $em->flush();
+                
+                return new JsonModel(array(
+                    'message' => 'Aplicação de prova removida com sucesso.',
+                    'callback' => array(
+                        'applicationId' => $applicationId,
+                    ),
+                ));
+            } catch (Exception $ex) {
+                $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
+                    'Erro: ' . $ex->getMessage();
+            }
+        } else {
+            $message = 'Nenhuma aplicação de prova foi selecionada.';
+        }
+        return new JsonModel(array(
+            'message' => $message
+        ));
+    }
+    
+    /**
+     * Exibe uma interface para visualização e geração de PDFs referentes 
+     * a aplicação de prova
+     * 
+     * @return ViewModel
+     */
+    public function prepareApplicationAction()
+    {
+        $applicationId = $this->params('id', false);
+        
+        if ($applicationId) {
+            $em = $this->getEntityManager();
+            try {
+                $application = $em->find('SchoolManagement\Entity\ExamApplication', $applicationId);
+
+                return new ViewModel(array(
+                    'message' => null,
+                    'application' => $application,
+                    'applicationId' => $applicationId,
+                ));
+            } catch (Exception $ex) {
+                return new ViewModel(array(
+                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                    'application' => null,
+                    'applicationId' => null,
+                ));
+            }
+        }
+    }
+
+    /**
+     * Exibe uma tabela com todas as provas
+     * 
+     * @return ViewModel
+     */
+    public function examsAction()
     {
         try {
             $em = $this->getEntityManager();
@@ -63,191 +274,413 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * Exibe o formulário de criação do simulado.
-     * O formulário é salvo pela action saveConfig
+     * Exibe o formulário de criação de provas
      * 
      * @return ViewModel
      */
-    public function createAction()
+    public function createExamAction()
     {
         $em = $this->getEntityManager();
         $request = $this->getRequest();
         $exam = new Exam();
         
         try {
+            $form = new ExamForm($em);
+            $form->bind($exam);
+            
+            if ($request->isPost()) {
+                $rawFormData = $request->getPost();
+                $form->setData($rawFormData); 
+                
+                if ($form->isValid()) {
+                    $contentId = $rawFormData['exam-fieldset']['examContent'];
+                    $content = $em->find('SchoolManagement\Entity\ExamContent', $contentId);
+                    $content->addExam($exam);
+                    
+                    $em->persist($exam);
+                    $em->flush();
+                    $this->redirect()->toRoute('school-management/school-exam', array('action' => 'exams'));
+                }
+            }
+            return new ViewModel(array(
+                'message' => null,
+                'form' => $form,
+            ));
+        } catch (UniqueConstraintViolationException $ex) {
+            return new ViewModel(array(
+                'message' => 'Já existe um simulado com este nome.',
+                'form' => null,
+            ));
+        } catch (Exception $ex) {
+            return new ViewModel(array(
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                'form' => null,
+            ));
+        }
+    }
+
+    /**
+     * Exibe o formulário de edição de provas
+     * 
+     * @return ViewModel
+     */
+    public function editExamAction()
+    {
+        $examId = $this->params('id', false);
+        
+        if ($examId) {
+            $em = $this->getEntityManager();
+            $request = $this->getRequest();
+
+            try {
+                $exam = $em->find('SchoolManagement\Entity\Exam', $examId);
+                
+                $form = new ExamForm($em);
+                $form->bind($exam);
+                $form->get('submit')->setAttribute('value', 'Editar Prova');
+                $form->get('exam-fieldset')
+                        ->get('examContent')
+                        ->setValue($exam->getContent()->getExamContentId());
+
+                if ($request->isPost()) {
+                    $rawFormData = $request->getPost();
+                    $form->setData($rawFormData); 
+
+                    if ($form->isValid()) {
+                        $contentId = $rawFormData['exam-fieldset']['examContent'];
+                        $content = $em->find('SchoolManagement\Entity\ExamContent', $contentId);
+                        $content->addExam($exam);
+
+                        $em->persist($exam);
+                        $em->flush();
+                        $this->redirect()->toRoute('school-management/school-exam', array('action' => 'exams'));
+                    }
+                }
+                return new ViewModel(array(
+                    'message' => null,
+                    'form' => $form,
+                ));
+            } catch (UniqueConstraintViolationException $ex) {
+                return new ViewModel(array(
+                    'message' => 'Já existe um simulado com este nome.',
+                    'form' => null,
+                ));
+            } catch (Exception $ex) {
+                return new ViewModel(array(
+                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                    'form' => null,
+                ));
+            }
+        }
+    }
+
+    /**
+     * Remove o simulado selecionado
+     * 
+     * @return JsonModel
+     */
+    public function deleteExamAction()
+    {
+        $examId = $this->params('id', false);
+        
+        if ($examId) {
+            try {
+                $em = $this->getEntityManager();
+                $exam = $em->getReference('SchoolManagement\Entity\Exam', $examId);
+                
+                if ($exam->getApplication() !== null) {
+                    return new JsonModel(array(
+                        'message' => 'Essa prova não pode ser removida pois está associada a uma aplicação.',
+                    ));
+                }
+                
+                $em->remove($exam);
+                $em->flush();
+                
+                return new JsonModel(array(
+                    'message' => 'Simulado removido com sucesso.',
+                    'callback' => array(
+                        'examId' => $examId,
+                    ),
+                ));
+            } catch (Exception $ex) {
+                $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
+                    'Erro: ' . $ex->getMessage();
+            }
+        } else {
+            $message = 'Nenhum simulado foi selecionado.';
+        }
+        return new JsonModel(array(
+            'message' => $message
+        ));
+    }
+
+    /**
+     * Exibe uma tabela com todos os conteúdos
+     * 
+     * @return ViewModel
+     */
+    public function contentsAction()
+    {
+        try {
+            $em = $this->getEntityManager();
+            $contents = $em->getRepository('SchoolManagement\Entity\ExamContent')->findAll();
+            return new ViewModel(array(
+                'message' => null,
+                'contents' => $contents,
+            ));
+        } catch (Exception $ex) {
+            return new ViewModel(array(
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                'contents' => null,
+            ));
+        }
+    }
+    
+    /**
+     * Salva o conteúdo com 
+     * 
+     * @param ExamContent $examContent - entidade que deve ser atualizada e/ou salva
+     * @param Array $baseSubjects - Array com objetos de todas as disciplinas base
+     * @param Array $quantities - Array com as quantidades de questões por disciplina
+     *  Ex: 
+     *  $quantities = [
+     *      <base-subject-id> => [
+     *          <child-subject-id> => <child-subject-quantity>, 
+     *          .
+     *          .
+     *          .
+     *      ],
+     *      .
+     *      .
+     *      .
+     *  ]
+     * @param bool $editAllowed - Indica se o JSON deve ser atualizado ou não. 
+     *  O JSON não pode ser atualizado quando o conteúdo está associado a 
+     *  uma ou mais provas
+     * @throws Exception - Qualquer exceção que possa ser lançada é devolvida
+     *  para o método que invocou essa função
+     */
+    protected function saveContent($examContent, $baseSubjects = [], $quantities = [], $editAllowed = false) {
+        try {
+            $em = $this->getEntityManager();
+            if ($editAllowed) {
+                $areas = [];
+                $i = 0;
+                foreach ($baseSubjects as $baseSubject) {
+                    $areas[$baseSubject->getSubjectId()] = [];
+                    foreach ($baseSubject->getChildren() as $subject) {
+                        $areas[$baseSubject->getSubjectId()][$subject->getSubjectId()] = $quantities[$i++]['quantity'];
+                    }
+                }
+
+                $examContentConfig = [
+                    "header" => [
+                        "areas" => $areas,
+                    ],
+                    "questions" => null
+                ];
+
+                $examContent->setConfig(json_encode($examContentConfig));
+            }
+            $em->persist($examContent);
+            $em->flush();
+        } catch (Exception $ex) {
+            throw $ex;
+        }
+    }
+    
+    /**
+     * Exibe uma página para preparação do conteúdo de uma prova (conjunto de questões)
+     * 
+     * @return ViewModel
+     */
+    public function createContentAction()
+    {
+        $em = $this->getEntityManager();
+        $request = $this->getRequest();
+        $examContent = new ExamContent();
+        $editAllowed = true;
+        
+        try {
             $criteria = Criteria::create()
                     ->where(Criteria::expr()->neq("subjectName", "REDAÇÃO"))
                     ->andWhere(Criteria::expr()->isNull("parent"));
-            
+
             $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')
                     ->matching($criteria);
-            
-            $form = new ExamForm($em, $baseSubjects);
-            $form->bind($exam);
 
+            $form = new ExamContentForm($em, $baseSubjects);
+            $form->bind($examContent);
+            if ($request->isPost()) {
+                $raw = $request->getPost();
+                $quantities = $raw['examQuestionQuantity'];
+                $form->setData($raw);
+                
+                if ($form->isValid()) {
+                    $this->saveContent($examContent, $baseSubjects, $quantities, $editAllowed);
+                    $this->redirect()->toRoute('school-management/school-exam', array('action' => 'contents'));
+                }
+            }
+            
             return new ViewModel(array(
                 'message' => null,
                 'form' => $form,
                 'baseSubjects' => $baseSubjects,
+                'editAllowed' => $editAllowed
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
                 'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
                 'form' => null,
                 'baseSubjects' => null,
+                'editAllowed' => null
             ));
         }
     }
 
     /**
-     * Preparação do simulado. Inclui configuração, seleção de questões e geração de PDFs
+     * Formulário de edição de um conteúdo, se esse conteúdo já tiver sido 
+     * utilizado em alguma prova, permite editar apenas a descrição
      * 
      * @return ViewModel
      */
-    public function prepareAction()
+    public function editContentAction()
     {
-        $id = $this->params('id', false);
-        if ($id) {
+        $contentId = $this->params('id', false);
+        
+        if ($contentId) {
             try {
                 $em = $this->getEntityManager();
-                $exam = $em->find('SchoolManagement\Entity\Exam', $id);
-                $examConfig = json_decode($exam->getExamConfig(), true);
-                $quantities = [];
+                $request = $this->getRequest();
                 
-                $baseSubjects = [];
-                $baseSubjects[] = $em->getRepository('SchoolManagement\Entity\Subject')->findOneBy(array('subjectName' => 'REDAÇÃO'));
-                foreach ($examConfig['header']['areas'] as $baseSubjectId => $children) {
-                    $baseSubjects[] = $em->find('SchoolManagement\Entity\Subject', $baseSubjectId);
-                    foreach ($children as $subjectId => $quantity) {
-                       $quantities[] = $quantity;
+                $content = $em->find('SchoolManagement\Entity\ExamContent', $contentId);
+                $editAllowed = (count($content->getExams()) === 0) ? true : false;
+                $config = json_decode($content->getConfig(), true);
+                $subjectQuantities = $config['header']['areas'];
+
+                $criteria = Criteria::create()
+                        ->where(Criteria::expr()->neq("subjectName", "REDAÇÃO"))
+                        ->andWhere(Criteria::expr()->isNull("parent"));
+                $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')
+                        ->matching($criteria);
+
+                $form = new ExamContentForm($em, $baseSubjects);
+                $form->bind($content);
+                $form->get('submit')->setAttribute('value', 'Editar Conteúdo');
+                if ($request->isPost()) {
+                    $raw = $request->getPost();
+                    $quantities = $raw['examQuestionQuantity'];
+                    $form->setData($raw);
+
+                    if ($form->isValid()) {
+                        $this->saveContent($content, $baseSubjects, $quantities, $editAllowed);
+                        $this->redirect()->toRoute('school-management/school-exam', array('action' => 'contents'));
                     }
                 }
-                
-                $form = new ExamForm($em, $baseSubjects, ["REDAÇÃO"]);
-                
-                $form->get('examNumberingStart')->setValue($examConfig['examNumberingStart']);
-                $form->get('examBeginTime')->setValue($examConfig['header']['beginTime']);
-                $form->get('examEndTime')->setValue($examConfig['header']['endTime']);
-                $form->get('submit')->setValue('Salvar Configuração');
-                $form->bind($exam);
 
                 return new ViewModel(array(
                     'message' => null,
-                    'baseSubjects' => $baseSubjects,
-                    'quantities' => $quantities,
                     'form' => $form,
-                    'examId' => $exam->getExamId(),
+                    'baseSubjects' => $baseSubjects,
+                    'subjectQuantities' => $subjectQuantities,
+                    'editAllowed' => $editAllowed,
+                ));
+            } catch (Exception $ex) {
+                return new ViewModel(array(
+                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                    'form' => null,
+                    'baseSubjects' => null,
+                    'subjectQuantities' => null,
+                    'editAllowed' => null
+                ));
+            }
+        }
+    }
+
+    /**
+     * Remove o conteúdo selecionado
+     * 
+     * @return JsonModel
+     */
+    public function deleteContentAction()
+    {
+        $id = $this->params('id', false);
+        
+        if ($id) {
+            try {
+                $em = $this->getEntityManager();
+                $content = $em->getReference('SchoolManagement\Entity\ExamContent', $id);
+                
+                if (count($content->getExams()) !== 0) {
+                    return new JsonModel(array(
+                        'message' => 'Esse conteúdo não pode ser removido pois está associado a uma ou mais provas.',
+                    ));
+                }
+                        
+                $em->remove($content);
+                $em->flush();
+                
+                return new JsonModel(array(
+                    'message' => 'Conteúdo removido com sucesso.',
+                    'callback' => array(
+                        'contentId' => $id,
+                    ),
+                ));
+            } catch (Exception $ex) {
+                $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
+                    'Erro: ' . $ex->getMessage();
+            }
+        } else {
+            $message = 'Nenhum conteúdo foi selecionado.';
+        }
+        return new JsonModel(array(
+            'message' => $message
+        ));
+    }
+    
+    
+    /**
+     * 
+     * 
+     * @return ViewModel
+     */
+    public function prepareContentAction() {
+        $contentId = $this->params('id', false);
+        
+        if ($contentId) {
+            try {
+                $em = $this->getEntityManager();
+                $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')
+                        ->findBy(array("parent" => null));
+                
+                $content = $em->find('SchoolManagement\Entity\ExamContent', $contentId);
+                $config = json_decode($content->getConfig(), true);
+                $subjectQuantities = $config['header']['areas'];
+
+                $editAllowed = (count($content->getExams()) !== 0 
+                        ? false
+                        : true);
+                
+                return new ViewModel(array(
+                    'message' => null,
+                    'baseSubjects' => $baseSubjects,
+                    'subjectQuantities' => $subjectQuantities,
+                    'contentDescription' => $content->getDescription(),
+                    'contentId' => $contentId,
+                    'editAllowed' => $editAllowed,
                 ));
             } catch (Exception $ex) {
                 return new ViewModel(array(
                     'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
                     'baseSubjects' => null,
-                    'quantities' => null,
-                    'form' => null,
-                    'examId' => null,
+                    'subjectQuantities' => null,
+                    'contentDescription' => null,
+                    'contentId' => null,
+                    'editAllowed' => null,
                 ));
             }
         }
-    }
-    
-    /**
-     * Salva as configurações do simulado. 
-     * Não salva as questões selecionadas. Esta parte é feita pela action saveExamQuestions
-     * 
-     * @return JsonModel
-     */
-    public function saveConfigAction() 
-    {
-        $request = $this->getRequest();
-        $result = [
-            'message' => '',
-            'error' => false,
-        ];
-
-        if ($request->isPost()) {
-            try {
-                $em = $this->getEntityManager();
-                
-                $form = new ExamForm($em);
-                $form->setData($request->getPost());
-                $raw = $request->getPost();
-                if (isset($raw['examId'])) {
-                    $exam = $em->find('SchoolManagement\Entity\Exam', (int)$raw['examId']);
-                    $form->bind($exam);
-                }
-                
-                if ($form->isValid()) {
-                    if (!isset($exam)) {
-                        $exam = $form->getData();
-                    }
-                    
-                    $elements = $form->getElements();
-                    $baseSubjects = [];
-                    foreach ($raw['baseSubjects'] as $baseSubject) {
-                        $bSubject = $em->find('SchoolManagement\Entity\Subject', $baseSubject['sId']);
-                        $baseSubjects[] = $bSubject;
-                    }
-                    
-                    $examNumberingStart = (int)$elements['examNumberingStart']->getValue();
-                    $examBeginTime = $elements['examBeginTime']->getValue();
-                    if (\DateTime::createFromFormat('H:i', $examBeginTime) === false) {
-                        $examBeginTime = '00:00';
-                    }
-                    $examEndTime = $elements['examEndTime']->getValue();
-                    if (\DateTime::createFromFormat('H:i', $examEndTime) === false) {
-                        $examEndTime = '00:00';
-                    }
-                    
-                    $i = 0;
-                    $areas = [];
-                    foreach ($baseSubjects as $baseSubject) {
-                        $areas[$baseSubject->getSubjectId()] = [];
-                        foreach ($baseSubject->getChildren() as $j => $subject) {
-                            $areas[$baseSubject->getSubjectId()][$subject->getSubjectId()] = $raw['examQuestionQuantity'][$i++]['quantity'];
-                        }
-                    }
-                    
-                    $questions = null;
-                    if ($exam->getExamConfig() !== null) {
-                        $json = json_decode($exam->getExamConfig(), true);
-                        $questions = $json['questions'];
-                    }
-                    
-                    $examConfig = [
-                        "examNumberingStart" => $examNumberingStart,
-                        "header" => [
-                            "beginTime" => $examBeginTime,
-                            "endTime" => $examEndTime,
-                            "areas" => $areas,
-                        ],
-                        "questions" => $questions
-                    ];
-                    
-                    $exam->setExamStatus(Exam::STATUS_CREATED);
-                    $exam->setExamConfig(json_encode($examConfig));
-                    
-                    $em->persist($exam);
-                    $em->flush();
-                    
-                    
-                    $result = [
-                        'message' => 'Configuração salva com sucesso.',
-                        'error' => false,
-                    ];
-                    return new JsonModel($result);
-                }
-                $result = [
-                    'message' => 'Ocorreu um erro ao salvar o formulário. Verifique se os campos foram preenchidos corretamente.',
-                    'error' => true,
-                ];
-            } catch (Exception $ex) {
-                $result = [
-                    'message' => $ex->getMessage(),
-                    'error' => true,
-                ];
-            }
-        }
-        return new JsonModel($result);
     }
     
     /**
@@ -255,7 +688,7 @@ class SchoolExamController extends AbstractEntityActionController
      * 
      * @return JsonModel
      */
-    public function saveExamQuestionsAction() {
+    public function saveContentQuestionsAction() {
         $request = $this->getRequest();
         $result = [
             'message' => '',
@@ -265,20 +698,19 @@ class SchoolExamController extends AbstractEntityActionController
         if ($request->isPost()) {
             try {
                 $em = $this->getEntityManager();
-                
                 $data = $request->getPost();
-                $exam = $em->find('SchoolManagement\Entity\Exam', (int)$data['examId']);
-                $json = json_decode($exam->getExamConfig(), true);
-                unset($json['questions']);
-                $json['questions'] = $data['questions'];
-                $exam->setExamConfig(json_encode($json));
                 
-                $em->persist($exam);
+                $examContent = $em->find('SchoolManagement\Entity\ExamContent', (int)$data['contentId']);
+                $contentConfig = json_decode($examContent->getConfig(), true);
+                unset($contentConfig['questions']);
+                $contentConfig['questions'] = $data['questions'];
+                $examContent->setConfig(json_encode($contentConfig));
+                
+                $em->persist($examContent);
                 $em->flush();
-
-
+                
                 $result = [
-                    'message' => 'Configuração salva com sucesso.',
+                    'message' => 'Questões salvas com sucesso.',
                     'error' => false,
                 ];
                 return new JsonModel($result);
@@ -293,7 +725,7 @@ class SchoolExamController extends AbstractEntityActionController
     }
     
     /**
-     * Retorna todas as questões do simulado do id passado por parâmetro
+     * Retorna todas as questões do conteúdo do id passado por parâmetro
      * 
      * @return JsonModel
      *  Retorno do tipo: [
@@ -306,46 +738,52 @@ class SchoolExamController extends AbstractEntityActionController
      *          ],
      *          "answer": <integer>,
      *          "subjectId": <integer>, 
-     *          "baseSubjectId": <integer>
+                "subjectName": <string>,
+     *          "baseSubjectId": <integer>,
+                "baseSubjectName": <string>
      *      },
      *      ...
      *  ]
      */
-    public function getExamQuestionsAction() {
+    public function getContentQuestionsAction() {
         $request = $this->getRequest();
-        $result = ['questions' => []];
 
         if ($request->isPost()) {
             try {
                 $em = $this->getEntityManager();
-                
                 $data = $request->getPost();
-                $exam = $em->find('SchoolManagement\Entity\Exam', (int)$data['examId']);
-                $json = json_decode($exam->getExamConfig(), true);
-                $questions = $json['questions'];
                 
-                $questionsData = [];
-                foreach ($questions as $i => $question) {
+                $examContent = $em->find('SchoolManagement\Entity\ExamContent', (int)$data['contentId']);
+                $contentConfig = json_decode($examContent->getConfig(), true);
+                $contentQuestions = $contentConfig['questions'];
+                if ($contentQuestions === null) {
+                    return new JsonModel(['questions' => []]);
+                }
+                
+                $formattedContentQuestions = [];
+                foreach ($contentQuestions as $i => $question) {
                     $q = $em->find('SchoolManagement\Entity\ExamQuestion', $question['questionId']);
                     if ($q === null) {
-                        $questionsData[] = [
+                        $formattedContentQuestions[] = [
                             'id' => $question['questionId'], 
                             'enunciation' => 'A questão foi removida', 
                             'alternatives' => null,
                             'answer' => null,
                             'subjectId' => null, 
-                            'baseSubjectId' => null
+                            'subjectName' => null,
+                            'baseSubjectId' => null,
+                            'baseSubjectName' => null,
                         ];
                         
                         continue;
                     }
                     
-                    $answer = -1;
-                    $alternatives = [];
+                    $qAnswer = -1;
+                    $qAlternatives = [];
                     foreach ($q->getAnswerOptions() as $i => $alternative) {
-                        $alternatives[] = $alternative->getExamAnswerDescription();
+                        $qAlternatives[] = $alternative->getExamAnswerDescription();
                         if ($alternative->getIsCorrect()) {
-                            $answer = $i;
+                            $qAnswer = $i;
                         }
                     }
                     
@@ -354,59 +792,24 @@ class SchoolExamController extends AbstractEntityActionController
                         $baseSubject = $baseSubject->getParent();
                     }
                     
-                    $questionsData[] = [
+                    $formattedContentQuestions[] = [
                         'id' => $q->getExamQuestionId(), 
                         'enunciation' => $q->getExamQuestionEnunciation(), 
-                        'alternatives' => $alternatives,
-                        'answer' => $answer,
+                        'alternatives' => $qAlternatives,
+                        'answer' => $qAnswer,
                         'subjectId' => $q->getSubject()->getSubjectId(), 
-                        'baseSubjectId' => $baseSubject->getSubjectId()
+                        'subjectName' => $q->getSubject()->getSubjectName(),
+                        'baseSubjectId' => $baseSubject->getSubjectId(),
+                        'baseSubjectName' => $baseSubject->getSubjectName(),
                     ];
                 }
                 
-                $result = ['questions' => $questionsData];
-                return new JsonModel($result);
+                return new JsonModel(['questions' => $formattedContentQuestions]);
             } catch (Exception $ex) {
-                $result = ['questions' => []];
+                return new JsonModel(['questions' => []]);
             }
         }
-        return new JsonModel($result);
-    }
-
-    /**
-     * Remove o simulado selecionado
-     * 
-     * @return JsonModel
-     */
-    public function deleteAction()
-    {
-        $id = $this->params('id', false);
-        
-        if ($id) {
-            try {
-                $em = $this->getEntityManager();
-                $exam = $em->getReference('SchoolManagement\Entity\Exam', $id);
-                
-                $em->remove($exam);
-                $em->flush();
-                
-                $message = 'Simulado removido com sucesso.';
-                return new JsonModel(array(
-                    'message' => $message,
-                    'callback' => array(
-                        'examId' => $id,
-                    ),
-                ));
-            } catch (Exception $ex) {
-                $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
-                    'Erro: ' . $ex->getMessage();
-            }
-        } else {
-            $message = 'Nenhum simulado foi selecionado.';
-        }
-        return new JsonModel(array(
-            'message' => $message
-        ));
+        return new JsonModel(['questions' => []]);
     }
 
     /**
@@ -503,6 +906,47 @@ class SchoolExamController extends AbstractEntityActionController
                 'form' => null,
             ));
         }
+    }
+
+    /**
+     * Exibe um formulário para adição de uma questão da disciplina selecionada ao banco de questões
+     * 
+     * @return ViewModel
+     */
+    public function addQuestionAction()
+    {
+        $em = $this->getEntityManager();
+        $request = $this->getRequest();
+        $examQuestion = new ExamQuestion();
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
+            $numberOfOptions = count($data['exam-question']['answerOptions']);
+            $type = $data['exam-question']['examQuestionType'];
+            $form = new ExamQuestionForm($em, $type, $numberOfOptions);
+            $form->bind($examQuestion);
+            $form->setData($data);
+
+            if ($form->isValid()) {
+                $ao = $examQuestion->getAnswerOptions()->toArray();
+                $correctAnswer = (int) $data['exam-question']['correctAnswer'];
+                $ao[$correctAnswer]->setIsCorrect(true);
+                $em->persist($examQuestion);
+                $em->flush();
+
+                // Se o procedimento for bem sucedido, a página é redirecionada para o banco de questões
+                return $this->redirect()->toRoute('school-management/school-exam',
+                                array('action' => 'question'));
+            }
+        } else {
+            $form = new ExamQuestionForm($em);
+            $form->bind($examQuestion);
+        }
+
+        return new ViewModel(array(
+            'message' => null,
+            'form' => $form,
+        ));
     }
 
     /**
@@ -640,47 +1084,6 @@ class SchoolExamController extends AbstractEntityActionController
         }
         return new JsonModel(array(
             'message' => $message,
-        ));
-    }
-
-    /**
-     * Exibe um formulário para adição de uma questão da disciplina selecionada ao banco de questões
-     * 
-     * @return ViewModel
-     */
-    public function addQuestionAction()
-    {
-        $em = $this->getEntityManager();
-        $request = $this->getRequest();
-        $examQuestion = new ExamQuestion();
-
-        if ($request->isPost()) {
-            $data = $request->getPost();
-            $numberOfOptions = count($data['exam-question']['answerOptions']);
-            $type = $data['exam-question']['examQuestionType'];
-            $form = new ExamQuestionForm($em, $type, $numberOfOptions);
-            $form->bind($examQuestion);
-            $form->setData($data);
-
-            if ($form->isValid()) {
-                $ao = $examQuestion->getAnswerOptions()->toArray();
-                $correctAnswer = (int) $data['exam-question']['correctAnswer'];
-                $ao[$correctAnswer]->setIsCorrect(true);
-                $em->persist($examQuestion);
-                $em->flush();
-
-                // Se o procedimento for bem sucedido, a página é redirecionada para o banco de questões
-                return $this->redirect()->toRoute('school-management/school-exam',
-                                array('action' => 'question'));
-            }
-        } else {
-            $form = new ExamQuestionForm($em);
-            $form->bind($examQuestion);
-        }
-
-        return new ViewModel(array(
-            'message' => null,
-            'form' => $form,
         ));
     }
 

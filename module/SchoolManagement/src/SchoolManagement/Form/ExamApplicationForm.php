@@ -21,15 +21,15 @@ namespace SchoolManagement\Form;
 
 use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use SchoolManagement\Form\Fieldset\ExamFieldset;
+use SchoolManagement\Form\Fieldset\ExamApplicationFieldset;
 use Zend\Form\Form;
 
 /**
- * Description of ExamForm
+ * Description of ExamApplicationForm
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class ExamForm extends Form
+class ExamApplicationForm extends Form
 {
     /**
      * 
@@ -37,21 +37,34 @@ class ExamForm extends Form
      */
     public function __construct(ObjectManager $obj)
     {
-        parent::__construct('exam-form');
+        parent::__construct('exam-application-form');
         $this->setHydrator(new DoctrineHydrator($obj));
-        $examFieldset = new ExamFieldset($obj);
-        $examFieldset->setUseAsBaseFieldset(true);
-        $this->add($examFieldset);
+        
+        $examApplicationFieldset = new ExamApplicationFieldset($obj);
+        $examApplicationFieldset->setUseAsBaseFieldset(true);
+        $this->add($examApplicationFieldset);
       
-        $this
+        $this 
+            ->add(array(
+                'name' => 'appExams',
+                'type' => 'Collection',
+                'options' => array(
+                    'count' => 0,
+                    'should_create_template' => true,
+                    'allow_add' => true,
+                    'target_element' => new \Zend\Form\Element\Hidden(),
+                ),
+            ))
             ->add(array(
                 'name' => 'submit',
-                'type' => 'submit',
+                'type' => 'button',
                 'attributes' => array(
+                    'id' => 'submit-button',
                     'class' => 'btn btn-primary btn-block',
-                    'value' => 'Criar Prova',
+                    'value' => 'Criar Aplicação de Prova',
                 )
             ))  
         ;
     }
+    
 }
