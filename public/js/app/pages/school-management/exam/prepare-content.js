@@ -226,8 +226,7 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
          *  Ex:
          *  [
          *      {
-         *          questionId: <number>, 
-         *          questionCorrectAnswer: <number>,
+         *          questionId: <number>,
          *          questionNumber: <number>
          *      },
          *      ...
@@ -240,7 +239,7 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
                 $(this).find('.question-block').each(function () {
                     questions.push({
                         questionId: $(this).data('id'),
-                        questionCorrectAnswer: $(this).data('answer'),
+                        //questionCorrectAnswer: $(this).data('answer'),
                         questionNumber: +$(this).find('.q-number').html()
                     });
                 });

@@ -92,7 +92,7 @@ class StudentClassController extends AbstractEntityActionController
                     $em->persist($class);
                     $em->flush();
 
-                    $this->redirect()->toRoute('school-management/student-class', array('action' => 'index'));
+                    return $this->redirect()->toRoute('school-management/student-class', array('action' => 'index'));
                 } catch (Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
                         $message = 'já existe uma turma com este nome. Por favor utilize outro.';

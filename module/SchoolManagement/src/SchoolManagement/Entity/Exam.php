@@ -57,21 +57,21 @@ class Exam
     /**
      * 
      * @var \DateTime
-     * @ORM\Column(name="exam_start_time", type="datetime", nullable=true)
+     * @ORM\Column(name="exam_start_time", type="time", nullable=true)
      */
     private $startTime;
     
     /**
      * 
      * @var \DateTime
-     * @ORM\Column(name="exam_end_time", type="datetime", nullable=true)
+     * @ORM\Column(name="exam_end_time", type="time", nullable=true)
      */
     private $endTime;
     
     /**
-     * JSON com as respostas dos alunos
-     * @var string
-     * @ORM\Column(name="exam_answers", type="text", nullable=true)
+     * 
+     * @var string armazena o gabarito no momento da correção das respostas dos alunos em formato JSON.
+     * @ORM\Column(name="exam_answers", type="string", length=1000, nullable=true)
      */
     private $answers;
     
@@ -138,7 +138,7 @@ class Exam
 
     /**
      * 
-     * @return string - JSON
+     * @return array
      */
     public function getAnswers()
     {

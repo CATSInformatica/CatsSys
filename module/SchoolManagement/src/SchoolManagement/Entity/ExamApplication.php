@@ -57,9 +57,23 @@ class ExamApplication
      */
     private $exams;
     
+    
+    const AVAILABLE_STATUS = [
+        'Criado',
+        'Aplicado',
+    ];
+    
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="exam_application_status", type="string", length=50, nullable=false)
+     */
+    private $status;
+    
     public function __construct()
     {
         $this->exams = new ArrayCollection();
+        $this->status = self::AVAILABLE_STATUS[0];
     }
     
     /**
@@ -153,6 +167,26 @@ class ExamApplication
     public function hasChild($exam)
     {
         return $this->exams->contains($exam);
+    }
+    
+    /**
+     * 
+     * @return string Status da aplicação
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+    
+    /**
+     * 
+     * @param string $status Define o novo status da aplicação
+     * @return \SchoolManagement\Entity\ExamApplication
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+        return $this;
     }
 
 }

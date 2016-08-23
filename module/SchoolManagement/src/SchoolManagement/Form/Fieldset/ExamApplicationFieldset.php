@@ -56,7 +56,7 @@ class ExamApplicationFieldset extends Fieldset implements InputFilterProviderInt
     {
         return array(
             'name' => array(
-                'required' => false,
+                'required' => true,
                 'filters' => array(
                     array('name' => 'StringTrim'),
                     array('name' => 'StripTags'),
@@ -65,8 +65,9 @@ class ExamApplicationFieldset extends Fieldset implements InputFilterProviderInt
                     array(
                         'name' => 'StringLength',
                         'options' => array(
+                            'min' => 3,
                             'max' => 70,
-                            'inclusive' => true,
+                            'encoding' => 'UTF-8',
                         ),
                     ),
                 ),

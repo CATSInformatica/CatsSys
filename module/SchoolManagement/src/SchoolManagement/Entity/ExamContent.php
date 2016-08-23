@@ -71,7 +71,6 @@ class ExamContent
      *       "questions": [
      *           {
      *               "questionId": <number>,
-     *               "questionCorrectAnswer": <number|null>,
      *               "questionNumber": <number|null>,
      *           }
      *       ]
