@@ -164,7 +164,7 @@ class SchoolSubjectController extends AbstractEntityActionController
 
                         $em->merge($subject);
                         $em->flush();
-                        $this->redirect()->toRoute('school-management/school-subject', array('action' => 'index'));
+                        return $this->redirect()->toRoute('school-management/school-subject', array('action' => 'index'));
                     }
                 }
                 return new ViewModel(array(

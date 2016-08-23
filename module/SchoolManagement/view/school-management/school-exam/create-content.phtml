@@ -1,17 +1,20 @@
 <section class="content">
     <?php
-    $this->headTitle()->append('Criar Simulado')
+    $this->headTitle()->append('Criar Conteúdo')
             ->setSeparator(' - ');
     ?>
     <p><?php echo $this->message; ?></p>
     <div class="row">
-        <div class="col-md-10 col-md-offset-1 col-xs-12">
-            <?php if ($form !== null) :
-                echo $this->render('exam_config_template', array(
+        <div class="col-xs-10 col-xs-offset-1">
+            <?php if ($this->form !== null) :
+                echo $this->render('exam_content_template', array(
                     'form' => $this->form,
                     'baseSubjects' => $this->baseSubjects,
+                    'subjectQuantities' => null,
+                    'editAllowed' => $this->editAllowed,
                 ));
-            endif; ?>
+            endif;
+            ?>
         </div>
     </div>
 
@@ -20,7 +23,7 @@
 <script>
 
     appConfig = (function () {
-        var scriptSrc = 'app/pages/school-management/exam/create';
+        var scriptSrc = 'app/pages/school-management/exam/create-content';
         return {
             getScriptSrc: function () {
                 return scriptSrc;
