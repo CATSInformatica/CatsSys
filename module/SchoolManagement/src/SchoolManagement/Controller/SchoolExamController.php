@@ -164,7 +164,7 @@ class SchoolExamController extends AbstractEntityActionController
                         }
                         $em->persist($application);
                         $em->flush();
-                        $this->redirect()->toRoute('school-management/school-exam', array('action' => 'applications'));
+                        return $this->redirect()->toRoute('school-management/school-exam', array('action' => 'applications'));
                     }
                 }
 
@@ -310,7 +310,7 @@ class SchoolExamController extends AbstractEntityActionController
 
                     $em->persist($exam);
                     $em->flush();
-                    $this->redirect()->toRoute('school-management/school-exam', array('action' => 'exams'));
+                    return $this->redirect()->toRoute('school-management/school-exam', array('action' => 'exams'));
                 }
             }
             return new ViewModel(array(
@@ -364,7 +364,7 @@ class SchoolExamController extends AbstractEntityActionController
 
                         $em->persist($exam);
                         $em->flush();
-                        $this->redirect()->toRoute('school-management/school-exam', array('action' => 'exams'));
+                        return $this->redirect()->toRoute('school-management/school-exam', array('action' => 'exams'));
                     }
                 }
                 return new ViewModel(array(
@@ -531,7 +531,7 @@ class SchoolExamController extends AbstractEntityActionController
 
                 if ($form->isValid()) {
                     $this->saveContent($examContent, $baseSubjects, $quantities, $editAllowed);
-                    $this->redirect()->toRoute('school-management/school-exam', array('action' => 'contents'));
+                    return $this->redirect()->toRoute('school-management/school-exam', array('action' => 'contents'));
                 }
             }
 
@@ -587,7 +587,7 @@ class SchoolExamController extends AbstractEntityActionController
 
                     if ($form->isValid()) {
                         $this->saveContent($content, $baseSubjects, $quantities, $editAllowed);
-                        $this->redirect()->toRoute('school-management/school-exam', array('action' => 'contents'));
+                        return $this->redirect()->toRoute('school-management/school-exam', array('action' => 'contents'));
                     }
                 }
 
