@@ -34,18 +34,7 @@ class Exam
     /*
      * Status do simulado
      */
-    const STATUS_INVALID = -1;
-    const STATUS_CREATED = 0;
-    const STATUS_REVISED = 1;
-    const STATUS_GIVEN = 2;
-
-    /*
-     * Descrição dos status do simulado
-     */
-    const STATUSDESC_INVALID = 'INVÁLIDO';
-    const STATUSDESC_CREATED = 'CRIADO';
-    const STATUSDESC_REVISED = 'REVISADO';
-    const STATUSDESC_GIVEN = 'APLICADO';
+    const STATUS = [-1 => 'INVÁLIDO', 0 => 'CRIADO', 1 => 'REVISADO', 2 => 'APLICADO'];
     
     /**
      * 
@@ -59,7 +48,7 @@ class Exam
     /**
      * 
      * @var string
-     * @ORM\Column(name="exam_name", type="text", nullable=false)
+     * @ORM\Column(name="exam_name", type="string", unique=true, nullable=false)
      */
     private $examName;
     
@@ -121,31 +110,38 @@ class Exam
     
     /**
      * 
-     * @param integer $examStatus
+     * @param integer $examStatusNumber
+     * @return string - Nome do status ou '', se o status não existir
      */
-    public static function statusToString($examStatus)
+    public static function statusToString($examStatusNumber)
     {
-        switch ($examStatus) {
-            case self::STATUS_CREATED:
-                $status = self::STATUSDESC_CREATED;
-                break;
-            case self::STATUS_REVISED:
-                $status = self::STATUSDESC_REVISED;
-                break;
-            case self::STATUS_GIVEN:
-                $status = self::STATUSDESC_GIVEN;
-                break;
-            default:
-                $status = self::STATUSDESC_INVALID;
+        if (array_key_exists($examStatusNumber, self::STATUS)) {
+            $status = self::STATUS;
+            return $status[$examStatusNumber];
+        } else {
+            return '';
         }
-
-        return $status;
+    }
+    
+    /**
+     * 
+     * @param string $examStatusString
+     * @return null|integer - número do status ou null se o status não existir
+     */
+    public static function stringToStatus($examStatusString)
+    {
+        foreach (self::STATUS as $i => $statusString) { 
+            if ($examStatusString === $statusString) {
+                return $i;
+            }
+        }
+        return null;
     }
         
     /**
      * @return integer
      */
-    function getExamId()
+    public function getExamId()
     {
         return $this->examId;
     }
@@ -153,7 +149,7 @@ class Exam
     /**
      * @return string
      */
-    function getExamName()
+    public function getExamName()
     {
         return $this->examName;
     }
@@ -161,7 +157,7 @@ class Exam
     /**
      * @return \DateTime
      */
-    function getExamDate()
+    public function getExamDate()
     {
         return $this->examDate;
     }
@@ -169,7 +165,7 @@ class Exam
     /**
      * @return string
      */
-    function getExamConfig()
+    public function getExamConfig()
     {
         return $this->examConfig;
     }
@@ -177,7 +173,7 @@ class Exam
     /**
      * @return integer
      */
-    function getExamStatus()
+    public function getExamStatus()
     {
         return $this->examStatus;
     }
@@ -187,7 +183,7 @@ class Exam
      * @param string $examName
      * @return SchoolManagement\Entity\Exam
      */
-    function setExamName($examName)
+    public function setExamName($examName)
     {
         $this->examName = $examName;
         return $this;
@@ -198,7 +194,7 @@ class Exam
      * @param \Datetime $examDate
      * @return SchoolManagement\Entity\Exam
      */
-    function setExamDate($examDate)
+    public function setExamDate($examDate)
     {
         $this->examDate = $examDate;
         return $this;
@@ -209,7 +205,7 @@ class Exam
      * @param string $examConfig
      * @return SchoolManagement\Entity\Exam
      */
-    function setExamConfig($examConfig)
+    public function setExamConfig($examConfig)
     {
         $this->examConfig = $examConfig;
         return $this;
@@ -220,7 +216,7 @@ class Exam
      * @param integer $examStatus
      * @return SchoolManagement\Entity\Exam
      */
-    function setExamStatus($examStatus)
+    public function setExamStatus($examStatus)
     {
         $this->examStatus = $examStatus;
         return $this;
