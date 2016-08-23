@@ -62,7 +62,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                 var instructionsPage = '';
                 var wordingPage = '';
 
-                if ($('#exam-instructions').is(":checked")) {
+                if ($(this).closest('.exam').find('.exam-instructions').is(":checked")) {
                     var examName = $('#exam-name-input').text().trim() || "PROVA";
                     var examDate = $('#exam-day').text().trim();
                     var examBeginTime = $('#exam-start-time').text().trim();
@@ -178,12 +178,12 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                 }
                 
                 //  Prepara a div .print-page (columnizer) e imprimi no callback
-                var printDiv = $(this).parent().siblings('.print-page');
-                printDiv.attr('id', 'print-div');
-                generateExam(pageNumber, function() {
-                    MathJax.Hub.Queue(["Typeset", MathJax.Hub, 'print-div'], function () {
+                var printDivId = "print-page-" + $(this).closest('.application-content').data('content-id');
+                generateExam(pageNumber, printDivId, function() {
+                    MathJax.Hub.Queue(["Typeset", MathJax.Hub, printDivId], 
+                    function () {
                         //  Abre o diálogo de impressão da div .print-page usando jqueryprint
-                        printDiv.print({
+                        $("#" + printDivId).print({
                             globalStyles: true,
                             mediaPrint: true,
                             stylesheet: '/css/exam-print.css',
@@ -193,12 +193,11 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                             prepend: (firstPage.add(instructionsPage)).add(wordingPage),
                             manuallyCopyFormValues: true,
                             deferred: $.Deferred(),
-                            timeout: 250,
+                            timeout: 1000,
                             title: null,
                             doctype: '<!doctype html>'
                         });
-                        printDiv.attr('id', '');
-                        printDiv.html('');
+                        $("#" + printDivId).html('');
                     }); 
                 });
                
@@ -210,17 +209,17 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
          * na div #print-div
          * @param {int} pageNumber - número da primeira página de prova
          */
-        generateExam = function (pageNumber, printExam) {
+        generateExam = function (pageNumber, printDivId, printExam) {
 
             var contentHeight = 884.88;    // Número aproximado empiricamente
             var page = pageNumber;
 
-            $('#print-div').closest('.exam').append('<div id="exam-temp"></div>');
-            $('#exam-temp').html($('#print-div').siblings(".preview-page").html());
+            $("#" + printDivId).closest('.exam').append('<div id="exam-temp"></div>');
+            $('#exam-temp').html($("#" + printDivId).siblings(".preview-page").html());
             $('#exam-temp').find('.do-not-print').each(function () {
                 $(this).remove();
             });
-            $('#print-div').html('');
+            $("#" + printDivId).html('');
             
             function buildExamLayout() {
                 if ($('#exam-temp > .content-questions').contents().length > 0) {
@@ -240,7 +239,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                             .css("height", "297mm");
 
                     $page.find(".page-number").first().append(page++);
-                    $("#print-div").append($page);
+                    $("#" + printDivId).append($page);
 
                     $('#exam-temp > .content-questions').columnize({
                         columns: 2,
@@ -291,6 +290,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
             for (var i = 0; i < questions.length; ++i) {
                 addQuestion(questions[i], applicationContent);
             }
+            numberQuestions();
         };
 
         /*
@@ -393,7 +393,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                         + 'data-id="' + question.id + '" data-subject-id="' + subjectId + '" '
                         + 'data-answer="' + questionAnswer + '">' 
                         + '<p class="no-margin"><strong>QUESTÃO '
-                        + '<span class="q-number">' + 0 + '</span>'
+                        + '<span class="q-number"></span>'
                         + '</strong></p>' + questionEnunciation;
 
                 for (var i = 0; i < alternatives.length; ++i) {
@@ -405,7 +405,6 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                 q += '<hr class="q-divider"></div>';
             }
             $('#s-' + baseSubjectId).append(q);
-            numberQuestions();
         };
 
         /*
@@ -516,7 +515,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                     + '</span>' + questionEnunciation;
         
             $('#s-' + baseSubjectId).append(q);
-            numberQuestions();*/
+           */
         };
 
         /*
@@ -524,17 +523,16 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
          * 
          */
         numberQuestions = function () {
-            var questions = $('.content-questions > div');
-            var beginAt = questions.parent().find('.q-number').first();
-            
-            var number = beginAt;
-            questions.each(function () {
-                if ($(this).hasClass('spanish-block')) {
-                    number = beginAt;
+            var number = 1;
+            $('.q-number').each(function () {
+                if ($(this).closest('.spanish-block').length !== 0) {
+                    number = $(this)
+                            .closest('.content-questions')
+                            .find('.q-number')
+                            .first()
+                            .html();
                 }
-                $(this).find('.question-block .q-number').each(function () {
-                    $(this).html(number++);
-                });
+                $(this).html(number++);
             });
         };
 

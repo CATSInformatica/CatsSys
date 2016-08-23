@@ -518,7 +518,7 @@ return array(
                             array(
                                 'url' => '/school-management/school-exam/prepare-content/$id',
                                 'privilege' => 'prepare-content',
-                                'title' => 'Preparar',
+                                'title' => 'Montar',
                                 'id' => 'content-prepare',
                                 'description' => 'Permite selecionar questões para o conteúdo selecionado',
                                 'class' => 'fa fa-check-circle bg-green',
@@ -596,9 +596,9 @@ return array(
                             array(
                                 'url' => '/school-management/school-exam/prepare-application/$id',
                                 'privilege' => 'prepare-application',
-                                'title' => 'Preparar',
+                                'title' => 'Imprimir',
                                 'id' => 'application-prepare',
-                                'description' => 'Permite preparar a aplicação de prova selecionada',
+                                'description' => 'Permite visualizar e imprimir a aplicação de prova selecionada',
                                 'class' => 'fa fa-check-circle bg-green',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '__blank',

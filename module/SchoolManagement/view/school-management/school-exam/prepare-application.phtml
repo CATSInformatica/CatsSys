@@ -204,18 +204,23 @@
                     </div>
                     <div class="box-body exam">
                         <div class="do-not-print row">
+                            <div class="checkbox text-center">
+                                <label><input type="checkbox" class="exam-instructions" checked>Incluir cabeçalho com instruções</label>
+                            </div>
+                        </div>
+                        <div class="do-not-print row">
                             <button class="col-xs-6 col-xs-offset-3 btn btn-success print-exam">Gerar Prova (PDF)</button>
                             <br><br><br><br>
                         </div>
 
                         <!-- PREVIEW -->
-                        <div class="preview-page view-only">
+                        <div class="preview-page tex2jax_ignore">
                             <div class="content-questions">
                             </div>
                         </div>
 
                         <!-- DIV PARA IMPRESSÃO -->
-                        <div class="print-page">
+                        <div id="print-page-<?php echo $exam->getContent()->getExamContentId(); ?>">
 
                         </div> 
                     </div>
