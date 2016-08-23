@@ -277,7 +277,7 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
                     contentId: contentId
                 }
             }).done(function(response) {
-                return response.questions;
+                addLoadedQuestions(response.questions);
             });
             
         };
@@ -584,8 +584,7 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
                 });
                 setListeners();
                 initDataTable();
-                var questions = loadQuestions($('#contentId').val());
-                addLoadedQuestions(questions);
+                loadQuestions($('#contentId').val());
             }
         };
 
