@@ -17,12 +17,16 @@
 
 @import url("/vendor/AdminLTE/bootstrap/css/bootstrap.min.css");
 
-#print-page {
+.print-page {
     font-size: 10.5pt;
 }
 
+.print-page ol {
+    margin: 0;
+}
+
 /*  Preview  */
-#preview-page {
+.preview-page {
     width: 210mm;
     padding: 0;
     margin: 0 auto;
@@ -87,7 +91,7 @@ p {
     font-size: 13pt; 
     line-height: 6mm;
 }
-.exam-questions {
+.content-questions {
     height: 100%;
     padding: 4mm;
     column-count:2;

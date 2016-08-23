@@ -1,0 +1,62 @@
+
+<section class="content">
+    <?php
+    $this->headTitle()->append('Provas')
+            ->setSeparator(' - ');
+    ?>
+    <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">
+            <table class="table table-condensed table-bordered table-striped" id="exams-table">              
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Data e Hora</th>
+                        <th class="text-center">Nome</th>
+                        <th class="text-center">Conteúdo</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($this->exams !== null): ?>
+                        <?php foreach ($this->exams as $exam):?>
+                            <tr class="cats-row text-center" 
+                                data-id="<?php echo $exam->getExamId(); ?>" 
+                                id="exam-<?php echo $exam->getExamId(); ?>">
+                                <td><?php echo $exam->getExamId(); ?></td>
+                                <td>
+                                    <?php echo ($exam->getDate() !== null 
+                                            ? $exam->getDate()->format('d/m/Y') 
+                                            : '-'); 
+                                    ?>
+                                    <?php echo '<br>' . ($exam->getStartTime() !== null 
+                                            ? $exam->getStartTime()->format('H:i')
+                                            : ''); 
+                                    ?>
+                                    <?php echo ' - ' . ($exam->getEndTime() !== null 
+                                            ? $exam->getEndTime()->format('H:i')
+                                            : ''); 
+                                    ?>
+                                </td>
+                                <td><?php echo $exam->getName(); ?></td>
+                                <td><?php echo $exam->getContent()->getDescription(); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/exam/exams';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>
