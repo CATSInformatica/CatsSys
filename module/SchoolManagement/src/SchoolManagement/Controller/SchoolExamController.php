@@ -567,7 +567,9 @@ class SchoolExamController extends AbstractEntityActionController
                 $request = $this->getRequest();
 
                 $content = $em->find('SchoolManagement\Entity\ExamContent', $contentId);
-                $editAllowed = (count($content->getExams()) === 0) ? true : false;
+
+                $editAllowed = $this->isExamContentEditable($content);
+
                 $config = json_decode($content->getConfig(), true);
                 $subjectQuantities = $config['header']['areas'];
 
@@ -608,6 +610,28 @@ class SchoolExamController extends AbstractEntityActionController
                 ));
             }
         }
+    }
+
+    /**
+     * Verifica se é possível editar o conteúdo de prova.
+     * 
+     * Só permite edição se o conteúdo nunca foi aplicado antes.
+     * 
+     * @param ExamContent $content Conteúdo de prova
+     */
+    private function isExamContentEditable(ExamContent $content)
+    {
+        $editAllowed = true;
+        $associatedExams = $content->getExams();
+        foreach ($associatedExams as $exam) {
+            $application = $exam->getApplication();
+            if ($application !== null && $application->getStatus() === ExamApplication::EXAM_APP_APPLIED) {
+                $editAllowed = false;
+                break;
+            }
+        }
+        
+        return $editAllowed;
     }
 
     /**
@@ -652,7 +676,7 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * 
+     * Permite adicionar ou retirar questões do conteúdo de prova
      * 
      * @return ViewModel
      */
@@ -670,7 +694,7 @@ class SchoolExamController extends AbstractEntityActionController
                 $config = json_decode($content->getConfig(), true);
                 $subjectQuantities = $config['header']['areas'];
 
-                $editAllowed = (count($content->getExams()) !== 0 ? false : true);
+                $editAllowed = $this->isExamContentEditable($content);
 
                 return new ViewModel(array(
                     'message' => null,

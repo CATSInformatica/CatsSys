@@ -57,10 +57,12 @@ class ExamApplication
      */
     private $exams;
     
+    const EXAM_APP_CREATED = 'Criado';
+    const EXAM_APP_APPLIED = 'Aplicado';
     
     const AVAILABLE_STATUS = [
-        'Criado',
-        'Aplicado',
+        self::EXAM_APP_CREATED,
+        self::EXAM_APP_APPLIED,
     ];
     
     /**
