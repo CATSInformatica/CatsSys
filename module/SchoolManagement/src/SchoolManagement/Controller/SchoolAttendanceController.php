@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
  *
@@ -55,8 +54,7 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
     {
         try {
             $em = $this->getEntityManager();
-            $form = new SchoolAttendanceForm($em,
-                [
+            $form = new SchoolAttendanceForm($em, [
                 AttendanceType::TYPE_ATTENDANCE_BEGIN,
                 AttendanceType::TYPE_ATTENDANCE_END
                 ]
@@ -82,8 +80,7 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
     {
         try {
             $em = $this->getEntityManager();
-            $form = new SchoolAttendanceForm($em,
-                [
+            $form = new SchoolAttendanceForm($em, [
                 AttendanceType::TYPE_ATTENDANCE_BEGIN,
                 AttendanceType::TYPE_ATTENDANCE_END
                 ]
@@ -174,8 +171,7 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
         if ($request->isPost()) {
 
             $em = $this->getEntityManager();
-            $form = new SchoolAttendanceForm($em,
-                [
+            $form = new SchoolAttendanceForm($em, [
                 AttendanceType::TYPE_ATTENDANCE_BEGIN,
                 AttendanceType::TYPE_ATTENDANCE_END
             ]);
@@ -227,8 +223,7 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
             return $vm;
         }
 
-        return $this->redirect()->toRoute('school-management/school-attendance',
-                [
+        return $this->redirect()->toRoute('school-management/school-attendance', [
                 'action' => 'generateList'
                 ]
         );
@@ -245,10 +240,16 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
 
         if ($request->isPost()) {
 
-            $data = $request->getPost();
-            $date = new DateTime($data['date']);
-            $conn = $this->getDbalConnection();
             try {
+
+                $data = $request->getPost();
+                
+                if(empty($data['date'])) {
+                    throw new \Exception('Nenhuma data foi escolhida.');
+                }
+                
+                $date = new \DateTime($data['date']);
+                $conn = $this->getDbalConnection();
 
                 if (!empty($data['students'])) {
                     AttendanceRepository::insertNewList(
@@ -262,7 +263,7 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
 
                 $message = 'Lista de ' . $date->format('d/m/Y') . ' enviada com sucesso.';
             } catch (\Exception $ex) {
-                $message = "Erro inesperado: " . $ex->getMessage();
+                $message = "Erro: " . $ex->getMessage();
             }
 
             return new JsonModel([
@@ -274,7 +275,6 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
             'message' => 'Esta url só pode ser acessada via post',
         ]);
     }
-
     /*
      * Gera a lista de chamada para a turma selecionada.
      * 
@@ -526,5 +526,4 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
             'classes' => $classes,
         ]);
     }
-
 }
