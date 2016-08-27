@@ -394,16 +394,12 @@ return array(
                         ),
                     ),
                     array(
-                        'label' => 'Formulário de Inscrição',
+                        'label' => 'Formulários',
                         'route' => 'recruitment/registration',
-                        'action' => 'registrationForm',
-                        'params' => array(
-                            'id' => 2,
-                        ),
+                        'action' => 'registration-forms',
                         'resource' => 'Recruitment\Controller\Registration',
-                        'privilege' => 'registrationForm',
-                        'icon' => 'fa fa-user-plus',
-                        'target' => '_blank',
+                        'privilege' => 'registration-forms',
+                        'icon' => 'fa fa-file-text-o',
                     ),
                     array(
                         'label' => 'Student pre-interview I',
