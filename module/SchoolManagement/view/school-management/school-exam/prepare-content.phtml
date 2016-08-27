@@ -106,7 +106,7 @@
                 </div>
                 <div class="box-body">
                     <?php if ($this->editAllowed) : ?> 
-                        <div class="col-md-3 col-sm-12 no-padding" id="subjects">
+                        <div class="col-md-3 col-xs-12 no-padding" id="subjects">
                             <dl class="col-xs-12 no-padding">
                                 <?php foreach ($this->baseSubjects as $baseSubject) : ?>
                                     <div class="base-subject-info no-margin no-padding" 
@@ -166,10 +166,15 @@
                                 <?php endforeach; ?>
                             </dl>
                         </div>
-                        <div class="col-md-9 col-sm-12" id="questions">
+                        <div class="col-md-9 col-xs-12" id="questions">
                             <div class="row">
-                                <span class="pull-right"> <span class="text-bold text-sm" style="padding-right: 10%;">RECARREGAR</span>
-                                <i class="fa fa-refresh text-purple" style="font-size: 17px;" id="refresh-button" aria-hidden="true"></i></span>
+                                <div class="col-xs-4 col-xs-offset-4"> 
+                                    <button class="btn-primary btn-block btn btn-success add-question"><span class="glyphicon glyphicon-plus"></span></button>           
+                                </div> 
+                                <div class="pull-right no-padding"> 
+                                    <span class="text-bold text-sm" style="padding-right: 5%;">RECARREGAR QUESTÕES</span>
+                                    <i class="fa fa-refresh text-purple" style="font-size: 17px;" id="refresh-button" aria-hidden="true"></i>               
+                                </div>
                             </div>
                             <div class="table-responsive">
                                 <table class="table table-condensed table-bordered" id="question-table">
@@ -180,8 +185,8 @@
                                     </tbody>
                                 </table>
                             </div>
-                            <div class="col-xs-6 col-xs-offset-3">
-                                <button class="btn-primary btn-block btn" id="add-question">Adicionar</button>                            
+                            <div class="col-xs-4 col-xs-offset-4"> 
+                                <button class="btn-primary btn-block btn btn-success add-question"><span class="glyphicon glyphicon-plus"></span></button>           
                             </div>
                         </div>
                     <?php else : ?> 
