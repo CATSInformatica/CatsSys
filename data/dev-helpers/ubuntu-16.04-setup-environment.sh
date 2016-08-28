@@ -1,39 +1,96 @@
 #!/bin/bash
+if [ "$(whoami)" = "root" ]; then
+    clear	
+	echo 'Do not execute this script as superuser.'
+	exit
+	else 
+	clear
+	
+fi
 
-echo 'Before installing CatsSys please run "sudo apt-get update && sudo apt-get dist-upgrade" to keep your system up-to-date.
-Do not execute this script as superuser. Do you wish to install (y/n)?'
+echo 'Before installing CatsSys please run "sudo apt-get update && sudo apt-get dist-upgrade" to keep your system up-to-date.'
+
+echo 'Do you wish to update your system (y/n) ?'
+read answer
+if echo "$answer" | grep -iq "^y" ; then
+	echo 'Updating system ...';
+	sudo apt-get update && sudo apt-get dist-upgrade
+else clear
+fi
+
+clear
+echo 'Do you wish to install CATSSys (y/n)?'
 read answer
 if echo "$answer" | grep -iq "^y" ;then
     clear
     echo 'Starting script ...';
+    
+    # Read user http server preference
+	while :
+	do
+		echo
+		echo 'Which http server do you want to install (apache/nginx)?'
+		read serverPicked
+		if [ "$serverPicked" = "apache" ] || [ "$serverPicked" = "nginx" ]; then
+			echo
+			echo "Picked $serverPicked server"
+			break;
+		else 
+			echo
+			echo "Server not identified. Please try again!"
+		fi
+	done
+	
+	# Read user repository
+	while :
+	do
+		echo
+        echo "***Warning!***
+CATSSys uses a branch named 'develop'! Make sure that your forked repository has one!"
+		read -p "Please insert the link of your forked repository
+(Example: https://github.com/marciodojr/CatsSys.git)
+Make sure that your forked repository is updated!: 
+" repository;
+        echo
+		echo "Insert the link again to confirm: "
+		read repositoryagain
+		if [ "$repository" = "$repositoryagain" ]; then	
+			echo
+			break;
+		else
+			echo
+			echo "Repositories do not match, please retype"
+		fi
+	done
+	
+	# Read mysql user and password
+	echo "Remenber your username and password!
+	You will be asked again if you don't have MySQL installed yet"
+    echo -n 'Please insert your mysql user: '
+    read mysqluser
+    stty -echo
+    while :
+     do
+        echo -n 'Please insert your mysql password: '
+        read mysqlpass
+        echo
+        echo -n 'Please insert your mysql password again: '
+        read mysqlpassagain
+        echo
+        if [ "$mysqlpass" = "$mysqlpassagain" ]; then
+            break;
+        else
+            echo "Passwords do not match, please retype"
+        fi
+    done
+    
+    stty echo
 else
     exit;
 fi
-
-echo 'Installing Required Packages: PHP, Composer Apache, MySql';
-sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom composer npm
-
-# Read mysql user and password
-echo -n 'Please insert your mysql user: '
-read mysqluser
-stty -echo
-
-while :
- do
-    echo -n 'Please insert your mysql password: '
-    read mysqlpass
-    echo
-    echo -n 'Please insert your mysql password again: '
-    read mysqlpassagain
-    echo
-    if [ "$mysqlpass" = "$mysqlpassagain" ]; then
-        break;
-    else
-        echo "Passwords do not match, please retype"
-    fi
-done
-
-stty echo
+echo
+echo 'Installing Required Packages: PHP, Composer Apache, MySql, Git';
+sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom composer npm git
 
 echo 'Installing php-apcu-bc';
 
@@ -54,9 +111,6 @@ sudo npm install -g bower
 echo 'Creating symbolic link for nodejs /usr/bin/nodejs ~> /usr/bin/node';
 sudo ln -s /usr/bin/nodejs /usr/bin/node
 
-echo 'Which http server do you want to install (apache/nginx)?'
-read serverPicked
-echo "Picked $serverPicked"
 case "$serverPicked" in
 apache)
     echo "installing Apache"
@@ -127,10 +181,6 @@ EOF
 
     sudo service nginx restart;
     ;;
-*)
-    echo 'invalid option'
-    exit
-    ;;
 esac
 
 echo 'Binding domain http://cats-lab.lan to 127.1.1.100'
@@ -144,10 +194,10 @@ sudo rm -rf $HOME/vhosts/cats-lab
 
 echo 'Starting git clone'
 mkdir $HOME/vhosts
-read -p "Please insert the link of your forked repository
-(Example: https://github.com/marciodojr/CatsSys.git):
-" repository;
+
 git clone $repository $HOME/vhosts/cats-lab
+
+git checkout develop
 
 echo 'Configuring https://github.com/CATSInformatica/CatsSys as a remote for your forked repository'
 cd $HOME/vhosts/cats-lab
