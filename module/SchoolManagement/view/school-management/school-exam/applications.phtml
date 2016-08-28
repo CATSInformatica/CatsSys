@@ -1,0 +1,55 @@
+<section class="content">
+    <?php
+    $this->headTitle()->append('Aplicações de Prova')
+        ->setSeparator(' - ');
+
+    ?>
+    <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">
+            <table class="table table-condensed table-bordered table-striped" id="applications-table">              
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Nome</th>
+                        <th class="text-center">Provas</th>
+                        <th class="text-center">Situação</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($this->applications !== null): ?>
+                        <?php foreach ($this->applications as $app): ?>
+                            <tr class="cats-row text-center" 
+                                data-id="<?php echo $app->getExamApplicationId(); ?>" 
+                                id="application-<?php echo $app->getExamApplicationId(); ?>">
+                                <td><?php echo $app->getExamApplicationId(); ?></td>
+                                <td><?php echo $app->getName(); ?></td>
+                                <td>
+                                    <ol type="i">
+                                        <?php foreach ($app->getExams() as $exam): ?>
+                                            <li><?php echo $exam->getName(); ?></li>
+                                        <?php endforeach; ?>
+                                    </ol>
+                                </td>
+                                <td><?php echo $app->getStatus(); ?></td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/exam/applications';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

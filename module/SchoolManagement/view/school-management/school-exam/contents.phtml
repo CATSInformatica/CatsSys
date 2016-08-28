@@ -1,0 +1,54 @@
+<section class="content">
+    <?php
+    $this->headTitle()->append('Conteúdos')
+            ->setSeparator(' - ');
+    ?>
+    <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">
+            <table class="table table-condensed table-bordered table-striped" id="contents-table">              
+                <thead>
+                    <tr>
+                        <th class="text-center">#</th>
+                        <th class="text-center">Data de criação</th>
+                        <th class="text-center">Descrição</th>
+                        <th class="text-center">Provas que utilizam</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($this->contents !== null): ?>
+                        <?php foreach ($this->contents as $content):?>
+                            <tr class="cats-row text-center" 
+                                data-id="<?php echo $content->getExamContentId(); ?>" 
+                                id="content-<?php echo $content->getExamContentId(); ?>">
+                                <td><?php echo $content->getExamContentId(); ?></td>
+                                <td> 
+                                <?php echo $content->getCreatedDate()->format('d/m/Y'); ?>
+                                </td>
+                                <td><?php echo $content->getDescription(); ?></td>
+                                <td>
+                                <?php foreach ($content->getExams() as $exam): ?>
+                                    <?php echo '- ' . $exam->getName(); ?><br>
+                                <?php endforeach; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/exam/contents';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

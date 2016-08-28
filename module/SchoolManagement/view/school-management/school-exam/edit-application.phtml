@@ -1,0 +1,93 @@
+<section class="content">
+    <?php
+    $this->headTitle()->append('Editar Aplicação de Prova')
+            ->setSeparator(' - ');
+    ?>
+    <p><?php echo $this->message; ?></p>
+    
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">
+            <?php
+                $form->prepare();
+                echo $this->form()->openTag($form);
+            ?>
+            <div class="col-xs-12 no-padding">
+                <?php echo $this->formRow($form->get('exam-application-fieldset')->get('name')); ?>
+            </div>   
+            <div class="col-xs-12 no-padding">
+                <?php echo $this->formCollection($form->get('appExams')); ?>
+            </div> 
+            
+            <label class="control-label" for="exams-table">Provas</label>
+            <p>Selecione as provas que vão compor a aplicação.</p>
+            <table class="table table-condensed table-hover table-bordered" id="exams-table">
+                <thead>
+                    <th class="text-center">#</th>
+                    <th class="text-center">Data e Hora</th>
+                    <th class="text-center">Nome</th>
+                    <th class="text-center">Conteúdo</th>
+                </thead>
+                <tbody>
+                    <?php foreach ($this->exams as $exam) : ?>
+                        <?php 
+                            if (in_array($exam, $this->selectedExams)) {
+                                $trClass = 'cats-selected-row';
+                                $tdClass = 'cats-selected-bg';
+                            } else {
+                                $trClass = '';
+                                $tdClass = '';
+                            }                    
+                        ?>
+                        <tr class="cats-row text-center 
+                            <?php echo $trClass; ?>" 
+                            data-id="<?php echo $exam->getExamId(); ?>" 
+                            id="exam-<?php echo $exam->getExamId(); ?>">
+                            <td class="<?php echo $tdClass; ?>">
+                                <?php echo $exam->getExamId(); ?>
+                            </td>
+                            <td class="<?php echo $tdClass; ?>">
+                                <?php echo ($exam->getDate() !== null 
+                                        ? $exam->getDate()->format('d/m/Y') 
+                                        : '-'); 
+                                ?>
+                                <?php echo '<br>' . ($exam->getStartTime() !== null 
+                                        ? $exam->getStartTime()->format('H:i')
+                                        : ''); 
+                                ?>
+                                <?php echo ' - ' . ($exam->getEndTime() !== null 
+                                        ? $exam->getEndTime()->format('H:i')
+                                        : ''); 
+                                ?>
+                            </td>
+                            <td class="<?php echo $tdClass; ?>">
+                                <?php echo $exam->getName(); ?>
+                            </td>
+                            <td class="<?php echo $tdClass; ?>">
+                                <?php echo $exam->getContent()->getDescription(); ?>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+            
+            <div class="col-md-12">
+                <?php echo $this->formSubmit($form->get('submit')); ?>
+            </div>
+            <?php echo $this->form()->closeTag(); ?>
+        </div>
+    </div>
+    
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/exam/create-application';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

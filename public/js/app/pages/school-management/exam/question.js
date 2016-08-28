@@ -19,30 +19,14 @@ define(['jquery', 'datatable', 'mathjax'], function () {
          */
         formatAlternatives = function (alternatives, correctAlternative) {
             var html = '<div class="row">' +
-                '<div class="col-md-12">' +
-                    '<div class="nav-tabs-custom no-margin">' +
-                        '<ul class="nav nav-tabs bg-gray">' + 
-                            '<li class="active"><a href="#alternative-0" data-toggle="tab" aria-expanded="true">' +
-                                '<strong class="' + ((correctAlternative === 0) ? 'text-green' : '') + '">Alternativa 1</strong>' +
-                            '</a></li>';
-                            for (var i = 1; i < alternatives.length; ++i) {
-                                html += '<li class=""><a href="#alternative-' + i + '" data-toggle="tab" aria-expanded="false">' +
-                                    '<strong class="' + ((correctAlternative === i) ? 'text-green' : '') + '">Alternativa ' + (i + 1) + '</strong>' +
-                                '</a></li>';
-                            }
-                        html += '</ul>' +
-                        '<div class="tab-content">' + 
-                            '<div class="tab-pane active" id="alternative-0">' +
-                                alternatives[0] +
-                            '</div>';
-                            for (var i = 1; i < alternatives.length; ++i) {
-                                html += '<div class="tab-pane" id="alternative-' + (i + 1) + '">' +
-                                    alternatives[i] +
-                                '</div>';
-                            }
-                        html += '</div>' +
-                    '</div>' +
-                '</div>' +
+                '<div class="col-md-12">' + 
+                    '<strong>Alternativas</strong><br>';
+                    for (var i = 0; i < alternatives.length; ++i) {
+                        html += '<span class="' + ((correctAlternative === i) ? 'text-green' : '') + 
+                                ' pull-left" style="padding-right: 5px"> &#' + (9398 + i) + ';</span> ' + 
+                                alternatives[i] + '<br>';
+                    }
+                html += '</div>' +
             '</div>';
             return html;
         };

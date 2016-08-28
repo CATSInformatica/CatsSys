@@ -31,22 +31,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Exam
 {
     
-    /*
-     * Status do simulado
-     */
-    const STATUS_INVALID = -1;
-    const STATUS_CREATED = 0;
-    const STATUS_REVISED = 1;
-    const STATUS_GIVEN = 2;
-
-    /*
-     * Descrição dos status do simulado
-     */
-    const STATUSDESC_INVALID = 'INVÁLIDO';
-    const STATUSDESC_CREATED = 'CRIADO';
-    const STATUSDESC_REVISED = 'REVISADO';
-    const STATUSDESC_GIVEN = 'APLICADO';
-    
     /**
      * 
      * @var integer 
@@ -59,173 +43,201 @@ class Exam
     /**
      * 
      * @var string
-     * @ORM\Column(name="exam_name", type="text", nullable=false)
+     * @ORM\Column(name="exam_name", type="string", length=120, unique=true, nullable=false)
      */
-    private $examName;
+    private $name;
     
     /**
      * 
      * @var \DateTime
-     * @ORM\Column(name="exam_date", type="datetime", nullable=true)
+     * @ORM\Column(name="exam_date", type="datetime", nullable=false)
      */
-    private $examDate;
-    
-    /**
-     * Json contendo metadados sobre o simulado
-     * Ex: 
-     * exam_config = {
-     *      "startQuestionNumber": <number>,
-     *       "header": {
-     *           "startTime": "<HH:MM>",
-     *           "endDate": "<HH:MM>",
-     *           "areas": [
-     *               "area1": {
-     *                   "subarea1": <quantity>,
-     *                   "subarea2": <quantity>,
-     *                   .
-     *                   .
-     *                   .
-     *               },
-     *               "area2": {
-     *                   "subarea1": <quantity>,
-     *                   "subarea2": <quantity>,
-     *                   "subarea3": <quantity>,
-     *                   .
-     *                   .
-     *                   .
-     *               },
-     *               .
-     *               .
-     *               .
-     *           ]
-     *       },
-     *       "questions": [
-     *           {
-     *               "questionId": <number>,
-     *               "questionCorrectAnswer": <number|null>,
-     *               "questionNumber": <number|null>,
-     *           }
-     *       ]
-     *  }
-     * @var string
-     * @ORM\Column(name="exam_config", type="text", nullable=true)
-     */
-    private $examConfig;
+    private $date;
     
     /**
      * 
-     * @var integer
-     * @ORM\Column(name="exam_status", type="integer", nullable=false)
+     * @var \DateTime
+     * @ORM\Column(name="exam_start_time", type="time", nullable=true)
      */
-    private $examStatus;
+    private $startTime;
     
     /**
      * 
-     * @param integer $examStatus
+     * @var \DateTime
+     * @ORM\Column(name="exam_end_time", type="time", nullable=true)
      */
-    public static function statusToString($examStatus)
-    {
-        switch ($examStatus) {
-            case self::STATUS_CREATED:
-                $status = self::STATUSDESC_CREATED;
-                break;
-            case self::STATUS_REVISED:
-                $status = self::STATUSDESC_REVISED;
-                break;
-            case self::STATUS_GIVEN:
-                $status = self::STATUSDESC_GIVEN;
-                break;
-            default:
-                $status = self::STATUSDESC_INVALID;
-        }
-
-        return $status;
-    }
-        
+    private $endTime;
+    
     /**
+     * 
+     * @var string armazena o gabarito no momento da correção das respostas dos alunos em formato JSON.
+     * @ORM\Column(name="exam_answers", type="string", length=1000, nullable=true)
+     */
+    private $answers;
+    
+    /**
+     * 
+     * @var ExamContent
+     * @ORM\ManyToOne(targetEntity="ExamContent", inversedBy="exams")
+     * @ORM\JoinColumn(name="exam_content_id", referencedColumnName="exam_content_id")
+     */
+    private $content;
+    
+    /**
+     * 
+     * @var ExamApplication
+     * @ORM\ManyToOne(targetEntity="ExamApplication", inversedBy="exams")
+     * @ORM\JoinColumn(name="exam_application_id", referencedColumnName="exam_application_id")
+     */
+    private $application;
+    
+    /**
+     * 
      * @return integer
      */
-    function getExamId()
+    public function getExamId()
     {
         return $this->examId;
     }
 
     /**
+     * 
      * @return string
      */
-    function getExamName()
+    public function getName()
     {
-        return $this->examName;
+        return $this->name;
     }
 
     /**
+     * 
      * @return \DateTime
      */
-    function getExamDate()
+    public function getDate()
     {
-        return $this->examDate;
-    }
-
-    /**
-     * @return string
-     */
-    function getExamConfig()
-    {
-        return $this->examConfig;
-    }
-
-    /**
-     * @return integer
-     */
-    function getExamStatus()
-    {
-        return $this->examStatus;
+        return $this->date;
     }
 
     /**
      * 
-     * @param string $examName
-     * @return SchoolManagement\Entity\Exam
+     * @return \DateTime
      */
-    function setExamName($examName)
+    public function getStartTime()
     {
-        $this->examName = $examName;
+        return $this->startTime;
+    }
+
+    /**
+     * 
+     * @return \DateTime
+     */
+    public function getEndTime()
+    {
+        return $this->endTime;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public function getAnswers()
+    {
+        return $this->answers;
+    }
+
+    /**
+     * 
+     * @return ExamContent
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * 
+     * @return ExamApplication
+     */
+    public function getApplication()
+    {
+        return $this->application;
+    }
+       
+    /**
+     * 
+     * @param string $name
+     * @return Exam
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
         return $this;
     }
 
     /**
      * 
-     * @param \Datetime $examDate
-     * @return SchoolManagement\Entity\Exam
+     * @param \Datetime $date
+     * @return Exam
      */
-    function setExamDate($examDate)
+    public function setDate($date)
     {
-        $this->examDate = $examDate;
+        $this->date = $date;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param \Datetime $startTime
+     * @return Exam
+     */
+    public function setStartTime($startTime)
+    {
+        $this->startTime = $startTime;
         return $this;
     }
 
     /**
      * 
-     * @param string $examConfig
-     * @return SchoolManagement\Entity\Exam
+     * @param \Datetime $endTime
+     * @return Exam
      */
-    function setExamConfig($examConfig)
+    public function setEndTime($endTime)
     {
-        $this->examConfig = $examConfig;
+        $this->endTime = $endTime;
         return $this;
     }
 
     /**
      * 
-     * @param integer $examStatus
-     * @return SchoolManagement\Entity\Exam
+     * @param string $answers
+     * @return Exam
      */
-    function setExamStatus($examStatus)
+    public function setAnswers($answers)
     {
-        $this->examStatus = $examStatus;
+        $this->answers = $answers;
+        return $this;
+    }  
+    
+    /**
+     * 
+     * @param ExamContent $content
+     * @return Exam
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
         return $this;
     }
-
-
+    
+    /**
+     * 
+     * @param ExamApplication $application
+     * @return Exam
+     */
+    public function setApplication($application)
+    {
+        $this->application = $application;
+        return $this;
+    }
     
 }

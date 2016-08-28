@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (C) 2016 Gabriel Pereira <rickardch@gmail.com>
  *
@@ -32,7 +31,7 @@ use Zend\InputFilter\InputFilterProviderInterface;
  */
 class ExamFieldset extends Fieldset implements InputFilterProviderInterface
 {
-    
+
     public function __construct(ObjectManager $obj)
     {
         parent::__construct('exam-fieldset');
@@ -42,7 +41,7 @@ class ExamFieldset extends Fieldset implements InputFilterProviderInterface
 
         $this
             ->add(array(
-                'name' => 'examName',
+                'name' => 'name',
                 'type' => 'text',
                 'options' => array(
                     'label' => 'Nome do simulado',
@@ -50,11 +49,11 @@ class ExamFieldset extends Fieldset implements InputFilterProviderInterface
                 'attributes' => array(
                     'id' => 'exam-name-input',
                     'class' => 'form-control',
-                    'placeholder' => 'Ex: 1º Simulado Oficial do CATS - 2016',
+                    'placeholder' => 'Ex: 1º Vestibulinho 2016 - Prova do Dia 1',
                 ),
             ))
             ->add(array(
-                'name' => 'examDate',
+                'name' => 'date',
                 'type' => 'DateTime',
                 'options' => array(
                     'label' => 'Data do simulado',
@@ -66,13 +65,63 @@ class ExamFieldset extends Fieldset implements InputFilterProviderInterface
                     'id' => 'exam-day',
                 ),
             ))
+            ->add(array(
+                'name' => 'startTime',
+                'type' => 'DateTime',
+                'options' => array(
+                    'label' => 'Hora de início',
+                    'add-on-prepend' => '<i class="glyphicon glyphicon-time"></i>',
+                    'format' => 'H:i'
+                ),
+                'attributes' => array(
+                    'class' => 'text-center datepicker',
+                    'id' => 'exam-start-time',
+                ),
+            ))
+            ->add(array(
+                'name' => 'endTime',
+                'type' => 'DateTime',
+                'options' => array(
+                    'label' => 'Hora de término',
+                    'add-on-prepend' => '<i class="glyphicon glyphicon-time"></i>',
+                    'format' => 'H:i'
+                ),
+                'attributes' => array(
+                    'class' => 'text-center datepicker',
+                    'id' => 'exam-end-time',
+                ),
+            ))
+            ->add(array(
+                'name' => 'examContent',
+                'type' => 'checkbox',
+                'options' => array(
+                    'label' => 'Hora de término',
+                    'add-on-prepend' => '<i class="glyphicon glyphicon-time"></i>',
+                ),
+                'attributes' => array(
+                    'class' => 'text-center datepicker',
+                    'id' => 'exam-end-time',
+                ),
+            ))
+            ->add(array(
+                'type' => 'DoctrineModule\Form\Element\ObjectSelect',
+                'name' => 'examContent',
+                'options' => array(
+                    'label' => 'Conteúdo',
+                    'object_manager' => $obj,
+                    'target_class' => 'SchoolManagement\Entity\ExamContent',
+                    'label_generator' => function($targetEntity) {
+                        return $targetEntity->getExamContentId() . ' - ' . substr($targetEntity->getDescription(), 0, 100);
+                    },
+                )
+            ))
         ;
     }
 
     public function getInputFilterSpecification()
     {
         return array(
-            'examName' => array(
+            'name' => array(
                 'required' => true,
                 'filters' => array(
                     array('name' => 'StripTags'),
@@ -87,7 +136,7 @@ class ExamFieldset extends Fieldset implements InputFilterProviderInterface
                     ),
                 ),
             ),
-            'examDate' => array(
+            'date' => array(
                 'required' => false,
                 'filters' => array(
                     array('name' => 'StripTags'),
@@ -108,8 +157,37 @@ class ExamFieldset extends Fieldset implements InputFilterProviderInterface
                         ),
                     ),
                 ),
-            ),            
+            ),
+            'startTime' => array(
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'Date',
+                        'options' => array(
+                            'format' => 'H:i',
+                        ),
+                    ),
+                ),
+            ),
+            'endTime' => array(
+                'required' => false,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'Date',
+                        'options' => array(
+                            'format' => 'H:i',
+                        ),
+                    ),
+                ),
+            ),
         );
     }
-    
 }
