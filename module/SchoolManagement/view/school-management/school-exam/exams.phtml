@@ -1,6 +1,7 @@
+
 <section class="content">
     <?php
-    $this->headTitle()->append('Simulados')
+    $this->headTitle()->append('Provas')
             ->setSeparator(' - ');
     ?>
     <p><?php echo $this->message; ?></p>
@@ -10,9 +11,9 @@
                 <thead>
                     <tr>
                         <th class="text-center">#</th>
-                        <th class="text-center">Data</th>
+                        <th class="text-center">Data e Hora</th>
                         <th class="text-center">Nome</th>
-                        <th class="text-center">Status</th>
+                        <th class="text-center">Conteúdo</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -22,9 +23,22 @@
                                 data-id="<?php echo $exam->getExamId(); ?>" 
                                 id="exam-<?php echo $exam->getExamId(); ?>">
                                 <td><?php echo $exam->getExamId(); ?></td>
-                                <td><?php echo ($exam->getExamDate() !== null ? $exam->getExamDate()->format('d/m/Y') : '-'); ?></td>
-                                <td><?php echo $exam->getExamName(); ?></td>
-                                <td><?php echo ($exam->getExamStatus() !== null ? SchoolManagement\Entity\Exam::statusToString($exam->getExamStatus()) : '-'); ?></td>
+                                <td>
+                                    <?php echo ($exam->getDate() !== null 
+                                            ? $exam->getDate()->format('d/m/Y') 
+                                            : '-'); 
+                                    ?>
+                                    <?php echo '<br>' . ($exam->getStartTime() !== null 
+                                            ? $exam->getStartTime()->format('H:i')
+                                            : ''); 
+                                    ?>
+                                    <?php echo ' - ' . ($exam->getEndTime() !== null 
+                                            ? $exam->getEndTime()->format('H:i')
+                                            : ''); 
+                                    ?>
+                                </td>
+                                <td><?php echo $exam->getName(); ?></td>
+                                <td><?php echo $exam->getContent()->getDescription(); ?></td>
                             </tr>
                         <?php endforeach; ?>
                     <?php endif; ?>
@@ -37,7 +51,7 @@
 <script>
 
     appConfig = (function () {
-        var scriptSrc = 'app/pages/school-management/exam/index';
+        var scriptSrc = 'app/pages/school-management/exam/exams';
         return {
             getScriptSrc: function () {
                 return scriptSrc;

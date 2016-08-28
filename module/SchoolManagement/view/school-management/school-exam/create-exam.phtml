@@ -1,0 +1,27 @@
+<section class="content">
+    <?php
+    $this->headTitle()->append('Criar Prova')
+            ->setSeparator(' - ');
+    ?>
+    <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">
+            <?php if ($this->form !== null) :
+                echo $this->form($form);
+            endif; ?>
+        </div>
+    </div>
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/exam/create-exam';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

@@ -203,6 +203,7 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
                     students: listModel
                 };
             }
+            return {};
         };
 
         setAttendanceActionListenersV2 = function () {

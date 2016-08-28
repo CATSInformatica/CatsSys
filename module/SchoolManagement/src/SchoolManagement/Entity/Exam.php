@@ -31,11 +31,6 @@ use Doctrine\ORM\Mapping as ORM;
 class Exam
 {
     
-    /*
-     * Status do simulado
-     */
-    const STATUS = [-1 => 'INVÁLIDO', 0 => 'CRIADO', 1 => 'REVISADO', 2 => 'APLICADO'];
-    
     /**
      * 
      * @var integer 
@@ -48,97 +43,56 @@ class Exam
     /**
      * 
      * @var string
-     * @ORM\Column(name="exam_name", type="string", unique=true, nullable=false)
+     * @ORM\Column(name="exam_name", type="string", length=120, unique=true, nullable=false)
      */
-    private $examName;
+    private $name;
     
     /**
      * 
      * @var \DateTime
-     * @ORM\Column(name="exam_date", type="datetime", nullable=true)
+     * @ORM\Column(name="exam_date", type="datetime", nullable=false)
      */
-    private $examDate;
-    
-    /**
-     * Json contendo metadados sobre o simulado
-     * Ex: 
-     * exam_config = {
-     *      "startQuestionNumber": <number>,
-     *       "header": {
-     *           "startTime": "<HH:MM>",
-     *           "endDate": "<HH:MM>",
-     *           "areas": [
-     *               "area1": {
-     *                   "subarea1": <quantity>,
-     *                   "subarea2": <quantity>,
-     *                   .
-     *                   .
-     *                   .
-     *               },
-     *               "area2": {
-     *                   "subarea1": <quantity>,
-     *                   "subarea2": <quantity>,
-     *                   "subarea3": <quantity>,
-     *                   .
-     *                   .
-     *                   .
-     *               },
-     *               .
-     *               .
-     *               .
-     *           ]
-     *       },
-     *       "questions": [
-     *           {
-     *               "questionId": <number>,
-     *               "questionCorrectAnswer": <number|null>,
-     *               "questionNumber": <number|null>,
-     *           }
-     *       ]
-     *  }
-     * @var string
-     * @ORM\Column(name="exam_config", type="text", nullable=true)
-     */
-    private $examConfig;
+    private $date;
     
     /**
      * 
-     * @var integer
-     * @ORM\Column(name="exam_status", type="integer", nullable=false)
+     * @var \DateTime
+     * @ORM\Column(name="exam_start_time", type="time", nullable=true)
      */
-    private $examStatus;
+    private $startTime;
     
     /**
      * 
-     * @param integer $examStatusNumber
-     * @return string - Nome do status ou '', se o status não existir
+     * @var \DateTime
+     * @ORM\Column(name="exam_end_time", type="time", nullable=true)
      */
-    public static function statusToString($examStatusNumber)
-    {
-        if (array_key_exists($examStatusNumber, self::STATUS)) {
-            $status = self::STATUS;
-            return $status[$examStatusNumber];
-        } else {
-            return '';
-        }
-    }
+    private $endTime;
     
     /**
      * 
-     * @param string $examStatusString
-     * @return null|integer - número do status ou null se o status não existir
+     * @var string armazena o gabarito no momento da correção das respostas dos alunos em formato JSON.
+     * @ORM\Column(name="exam_answers", type="string", length=1000, nullable=true)
      */
-    public static function stringToStatus($examStatusString)
-    {
-        foreach (self::STATUS as $i => $statusString) { 
-            if ($examStatusString === $statusString) {
-                return $i;
-            }
-        }
-        return null;
-    }
-        
+    private $answers;
+    
     /**
+     * 
+     * @var ExamContent
+     * @ORM\ManyToOne(targetEntity="ExamContent", inversedBy="exams")
+     * @ORM\JoinColumn(name="exam_content_id", referencedColumnName="exam_content_id")
+     */
+    private $content;
+    
+    /**
+     * 
+     * @var ExamApplication
+     * @ORM\ManyToOne(targetEntity="ExamApplication", inversedBy="exams")
+     * @ORM\JoinColumn(name="exam_application_id", referencedColumnName="exam_application_id")
+     */
+    private $application;
+    
+    /**
+     * 
      * @return integer
      */
     public function getExamId()
@@ -147,81 +101,143 @@ class Exam
     }
 
     /**
+     * 
      * @return string
      */
-    public function getExamName()
+    public function getName()
     {
-        return $this->examName;
+        return $this->name;
     }
 
     /**
+     * 
      * @return \DateTime
      */
-    public function getExamDate()
+    public function getDate()
     {
-        return $this->examDate;
-    }
-
-    /**
-     * @return string
-     */
-    public function getExamConfig()
-    {
-        return $this->examConfig;
-    }
-
-    /**
-     * @return integer
-     */
-    public function getExamStatus()
-    {
-        return $this->examStatus;
+        return $this->date;
     }
 
     /**
      * 
-     * @param string $examName
-     * @return SchoolManagement\Entity\Exam
+     * @return \DateTime
      */
-    public function setExamName($examName)
+    public function getStartTime()
     {
-        $this->examName = $examName;
+        return $this->startTime;
+    }
+
+    /**
+     * 
+     * @return \DateTime
+     */
+    public function getEndTime()
+    {
+        return $this->endTime;
+    }
+
+    /**
+     * 
+     * @return array
+     */
+    public function getAnswers()
+    {
+        return $this->answers;
+    }
+
+    /**
+     * 
+     * @return ExamContent
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * 
+     * @return ExamApplication
+     */
+    public function getApplication()
+    {
+        return $this->application;
+    }
+       
+    /**
+     * 
+     * @param string $name
+     * @return Exam
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
         return $this;
     }
 
     /**
      * 
-     * @param \Datetime $examDate
-     * @return SchoolManagement\Entity\Exam
+     * @param \Datetime $date
+     * @return Exam
      */
-    public function setExamDate($examDate)
+    public function setDate($date)
     {
-        $this->examDate = $examDate;
+        $this->date = $date;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param \Datetime $startTime
+     * @return Exam
+     */
+    public function setStartTime($startTime)
+    {
+        $this->startTime = $startTime;
         return $this;
     }
 
     /**
      * 
-     * @param string $examConfig
-     * @return SchoolManagement\Entity\Exam
+     * @param \Datetime $endTime
+     * @return Exam
      */
-    public function setExamConfig($examConfig)
+    public function setEndTime($endTime)
     {
-        $this->examConfig = $examConfig;
+        $this->endTime = $endTime;
         return $this;
     }
 
     /**
      * 
-     * @param integer $examStatus
-     * @return SchoolManagement\Entity\Exam
+     * @param string $answers
+     * @return Exam
      */
-    public function setExamStatus($examStatus)
+    public function setAnswers($answers)
     {
-        $this->examStatus = $examStatus;
+        $this->answers = $answers;
+        return $this;
+    }  
+    
+    /**
+     * 
+     * @param ExamContent $content
+     * @return Exam
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
         return $this;
     }
-
-
+    
+    /**
+     * 
+     * @param ExamApplication $application
+     * @return Exam
+     */
+    public function setApplication($application)
+    {
+        $this->application = $application;
+        return $this;
+    }
     
 }

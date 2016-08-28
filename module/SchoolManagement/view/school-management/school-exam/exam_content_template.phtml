@@ -1,0 +1,96 @@
+<?php
+    $form->prepare();
+    $examContent = $form->get('exam-content-fieldset');
+    echo $this->form()->openTag($form);
+?>
+<p><?php echo $this->message; ?></p>
+<div class="row">
+    <?php if ($this->form !== null) : ?>
+        <div class="col-xs-12 no-padding">
+            <div class="col-xs-12">
+                <?php echo $this->formRow($examContent->get('description')); ?>
+            </div>
+        </div>
+        <div class="col-xs-12 no-padding">
+            <table class="table table-bordered table-condensed" 
+                   <?php if (!$this->editAllowed) : ?>
+                       style="opacity: 0.5"
+                   <?php endif; ?>
+            >
+                <tr>
+                    <?php foreach ($this->baseSubjects as $baseSubject) : ?>
+                        <?php
+                        if ($baseSubject->getSubjectName() === "REDAÇÃO"):
+                            continue;
+                        endif;
+                        ?>
+
+                        <th>
+                            <h4 class="text-uppercase"><?php echo $baseSubject->getSubjectName(); ?></h4>
+                        </th>
+                    <?php endforeach; ?>
+                </tr>
+                <tr>
+                <?php if ($this->editAllowed) : ?>
+                    <?php 
+                        $i = 0;
+                    ?>
+                    <?php foreach ($this->baseSubjects as $baseSubject) : ?>
+                        <?php 
+                            $baseSubjectId = $baseSubject->getSubjectId();
+                            if ($baseSubject->getSubjectName() === "REDAÇÃO"):
+                                continue;
+                            endif;
+                        ?>
+
+                        <td class="base-subject col-xs-3" 
+                            id="base-subject-<?php echo $baseSubjectId; ?>" 
+                            data-id="<?php echo $baseSubjectId; ?>" 
+                            data-name="<?php echo $baseSubject->getSubjectName(); ?>">
+
+                            <?php foreach ($baseSubject->getChildren() as $subject) : ?>
+                                <?php 
+                                    $subjectId = $subject->getSubjectId();
+                                ?>    
+
+                                <div class="col-xs-12">
+                                    <?php echo $subject->getSubjectName(); ?>
+                                </div>
+                                <div class="col-xs-12 quantity-block" 
+                                     data-s-id="<?php echo $subjectId; ?>" 
+                                     data-quantity="<?php  
+                                        if ($this->subjectQuantities !== null   /*Edição*/
+                                                && isset($this->subjectQuantities[$baseSubjectId]) /*Base subject existe no array*/
+                                                && isset($this->subjectQuantities[$baseSubjectId][$subjectId])) : /*Subject existe no array*/
+                                            echo $this->subjectQuantities[$baseSubjectId][$subjectId];
+                                        endif;
+                                        ?>">
+                                        <?php echo $this
+                                                ->formRow($form
+                                                        ->get('examQuestionQuantity')
+                                                        ->get($i)
+                                                        ->get('quantity')); 
+                                        ?>
+                                </div>
+                                <?php ++$i; ?>
+
+                            <?php endforeach; ?>
+                        </td>
+
+                    <?php endforeach; ?>
+                <?php else : ?>
+                    <td colspan="4" style="padding: 25px 10px">
+                        <h4 class="text-bold text-uppercase text-center">
+                            Não é possível editar o número de questões pois esse conteúdo está associado a uma ou mais provas.
+                        </h4>
+                    </td>
+                <?php endif; ?>
+                </tr>
+            </table>
+            <div class="col-md-12"><strong>Total: <span id="question-count">0</span></strong></div>
+            <!-- /.col -->
+        </div>
+        <?php echo $this->formButton($form->get('submit')); ?>
+        <?php echo $this->form()->closeTag(); ?>
+    <?php endif; ?>
+</div>
