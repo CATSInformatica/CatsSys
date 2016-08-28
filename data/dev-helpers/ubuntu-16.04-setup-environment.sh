@@ -9,7 +9,7 @@ if [ "$(whoami)" = "root" ]; then
 fi
 
 echo 'Before installing CatsSys please run "sudo apt-get update && sudo apt-get dist-upgrade" to keep your system up-to-date.'
-
+echo
 echo 'Do you wish to update your system (y/n) ?'
 read answer
 if echo "$answer" | grep -iq "^y" ; then
@@ -46,7 +46,9 @@ if echo "$answer" | grep -iq "^y" ;then
 	do
 		echo
         echo "***Warning!***
-CATSSys uses a branch named 'develop'! Make sure that your forked repository has one!"
+CATSSys uses a branch named 'develop'!
+Make sure that your forked repository has one!
+"
 		read -p "Please insert the link of your forked repository
 (Example: https://github.com/marciodojr/CatsSys.git)
 Make sure that your forked repository is updated!: 
@@ -86,6 +88,11 @@ Make sure that your forked repository is updated!:
     
     stty echo
 else
+	echo "Selected 'no'
+
+Exiting...
+"
+
     exit;
 fi
 echo
