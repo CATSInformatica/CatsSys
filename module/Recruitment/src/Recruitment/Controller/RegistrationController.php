@@ -115,6 +115,12 @@ class RegistrationController extends AbstractEntityActionController
         }
     }
 
+    public function registrationFormsAction()
+    {
+        return new ViewModel([
+        ]);
+    }
+
     /**
      * 
      * @todo
@@ -347,7 +353,7 @@ class RegistrationController extends AbstractEntityActionController
                 $em->persist($registration);
                 $em->flush();
 
-               $dt = new \DateTime();
+                $dt = new \DateTime();
 
                 return new JsonModel(array(
                     'message' => 'Candidato confirmado com sucesso.',
