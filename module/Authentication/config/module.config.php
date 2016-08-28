@@ -105,7 +105,7 @@ return array(
         'config' => array(
             'class' => 'Zend\Session\Config\SessionConfig',
             'options' => array(
-                'name' => 'system',
+                'name' => 'User',
                 'use_cookies' => true,
                 'cookie_lifetime' => 3600,
                 'cookie_httponly' => true,
