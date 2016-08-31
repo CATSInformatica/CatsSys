@@ -88,7 +88,7 @@ class SchoolWarningController extends AbstractEntityActionController
                     $em->persist($warningType);
                     $em->flush();
 
-                    $this->redirect()->toRoute('school-management/school-warning', array('action' => 'index'));
+                    return $this->redirect()->toRoute('school-management/school-warning', array('action' => 'index'));
                 } catch (Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
                         $message = 'Já existe uma advertência com este nome. Por favor escolha outro.';
@@ -268,7 +268,7 @@ class SchoolWarningController extends AbstractEntityActionController
                     $em->persist($warning);
                     $em->flush();
 
-                    $this->redirect()->toRoute('school-management/school-warning', array('action' => 'given'));
+                    return $this->redirect()->toRoute('school-management/school-warning', array('action' => 'given'));
                 } catch (Exception $ex) {
                     $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                             'Erro: ' . $ex->getMessage();

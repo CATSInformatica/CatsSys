@@ -18,12 +18,13 @@
 define(['jquery', 'datatable'], function () {
     var index = (function () {
 
-        var examsTable = $('#exams-table');
+        var contentsTable = $('#contents-table');
 
         initDataTable = function () {
-            examsTable.DataTable({
+            contentsTable.DataTable({
                 dom: 'lftip',
-                autoWidth: false
+                autoWidth: false,
+                order: [0, 'desc'] 
             });
         };
 
@@ -35,9 +36,9 @@ define(['jquery', 'datatable'], function () {
                 
                 return {
                     exec: function (data) {
-                        examsTable
+                        contentsTable
                                 .DataTable()
-                                .row('#exam-' + data.examId)
+                                .row('#content-' + data.contentId)
                                 .remove()
                                 .draw();
                     }

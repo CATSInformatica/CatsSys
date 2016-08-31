@@ -37,7 +37,6 @@ class QuestionQuantityFieldset extends Fieldset implements InputFilterProviderIn
             'name' => 'quantity',
             'type' => 'number',
             'attributes' => array(
-                'id' => 'exam-name-input',
                 'class' => 'col-md-5 col-xs-12 pull-right amount-input',
                 'data-old-value' => '',
                 'min' => 0,
