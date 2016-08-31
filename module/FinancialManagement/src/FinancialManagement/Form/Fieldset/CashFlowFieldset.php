@@ -105,7 +105,7 @@ class CashFlowFieldset extends Fieldset implements InputFilterProviderInterface
         $activeDepartments = $obj->getRepository('AdministrativeStructure\Entity\Department')
                 ->findBy(array('isActive' => true));
         $activeDepartmentsNames = [];
-        $activeDepartmentsNames[0] = '';
+        $activeDepartmentsNames[0] = 'SEM DEPARTAMENTO ESPECÍFICO';
         foreach ($activeDepartments as $department) {
             $activeDepartmentsNames[$department->getDepartmentId()] = $department->getDepartmentName();
         }
