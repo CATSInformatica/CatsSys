@@ -62,7 +62,7 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
              * Adiciona todas as questões selecionadas
              * 
              */
-            $('#add-question').click(function () {
+            $('.add-question').click(function () {
                 $('#question-table > tbody > .cats-selected-row').each(function () {
                     $(this).removeClass('cats-selected-row');
                     $(this).removeClass('cats-row');

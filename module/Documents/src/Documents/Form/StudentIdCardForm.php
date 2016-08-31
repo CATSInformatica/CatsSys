@@ -21,13 +21,14 @@ class StudentIdCardForm extends StudentsBoardForm
     public function __construct($configIds = array(), $classNames = array())
     {
         parent::__construct($configIds, $classNames);
-                
+        $nextyear=date("Y")+1;
+        
         $this->add(array(
                 'name' => 'expiry_date',
                 'attributes' => array(
                     'type' => 'text',
                     'class' => 'datepicker text-center',
-                    'placeholder' => 'Ex: 22/04/1500', 
+                    'value' => '01/03/'.$nextyear, 
                 ),
                 'options' => array(
                     'label' => 'Data de expiração',
