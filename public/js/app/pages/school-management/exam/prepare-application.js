@@ -525,7 +525,8 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
         numberQuestions = function () {
             var number = 1;
             $('.q-number').each(function () {
-                if ($(this).closest('.spanish-block').length !== 0) {
+                if ($(this).closest('.spanish-block').length !== 0 
+                        && $(this).closest('.question-block').prev('div').length === 0) {
                     number = $(this)
                             .closest('.content-questions')
                             .find('.q-number')
