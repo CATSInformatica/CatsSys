@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
  *
@@ -20,6 +19,7 @@
 namespace SchoolManagement\Controller;
 
 use Database\Controller\AbstractEntityActionController;
+use SchoolManagement\Entity\ExamApplication;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -27,11 +27,17 @@ use Zend\View\Model\ViewModel;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class SchoolExamPreviewController extends AbstractEntityActionController
+class SchoolExamResultController extends AbstractEntityActionController
 {
 
-    
-    public function indexAction()
+    /**
+     * Faz dos acertos a partir das planilhas de respostas dos alunos e do
+     * gabarito oficial. Esta função está obsoleta
+     * 
+     * 
+     * @return ViewModel
+     */
+    public function previewAction()
     {
         try {
 
@@ -44,7 +50,36 @@ class SchoolExamPreviewController extends AbstractEntityActionController
                 'classes' => $classes,
                 'message' => null,
             ]);
-            
+        } catch (\Exception $ex) {
+            return new ViewModel([
+                'message' => $ex->getMessage(),
+                'classes' => null,
+            ]);
+        }
+    }
+
+    public function uploadAnswersByClassAction()
+    {
+
+        try {
+
+            $em = $this->getEntityManager();
+
+            $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')
+                ->findByEndDateGratherThan(new \DateTime());
+
+            $applications = $em->getRepository('SchoolManagement\Entity\ExamApplication')
+                ->findBy([
+                'status' => ExamApplication::EXAM_APP_CREATED
+            ], [
+                'examApplicationId' => 'desc',
+            ]);
+
+            return new ViewModel([
+                'classes' => $classes,
+                'apps' => $applications,
+                'message' => null,
+            ]);
         } catch (Exception $ex) {
             return new ViewModel([
                 'message' => $ex->getMessage(),
@@ -53,4 +88,9 @@ class SchoolExamPreviewController extends AbstractEntityActionController
         }
     }
 
+    public function uploadAnswersByStdRecruitmentAction()
+    {
+        return new ViewModel([
+        ]);
+    }
 }

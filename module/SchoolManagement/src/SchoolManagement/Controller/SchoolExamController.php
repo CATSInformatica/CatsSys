@@ -21,16 +21,18 @@ namespace SchoolManagement\Controller;
 use Database\Controller\AbstractEntityActionController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 use Exception;
 use SchoolManagement\Entity\Exam;
 use SchoolManagement\Entity\ExamApplication;
 use SchoolManagement\Entity\ExamContent;
-use SchoolManagement\Form\ExamForm;
-use SchoolManagement\Form\ExamContentForm;
-use SchoolManagement\Form\ExamApplicationForm;
 use SchoolManagement\Entity\ExamQuestion;
+use SchoolManagement\Form\ExamApplicationForm;
+use SchoolManagement\Form\ExamContentForm;
+use SchoolManagement\Form\ExamForm;
 use SchoolManagement\Form\ExamQuestionForm;
 use SchoolManagement\Form\SearchQuestionsForm;
+use SchoolManagement\Hydrator\Strategy\ExamContentStrategy;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -597,7 +599,7 @@ class SchoolExamController extends AbstractEntityActionController
                 break;
             }
         }
-        
+
         return $editAllowed;
     }
 
@@ -1111,5 +1113,74 @@ class SchoolExamController extends AbstractEntityActionController
         return new JsonModel(array(
             'message' => $message,
         ));
+    }
+
+    /**
+     * Retorna todas as provas associadas à applicação de prova $appId.
+     * 
+     * @return JsonModel
+     */
+    public function getExamsAction()
+    {
+        $appId = $this->params('id', false);
+
+        if ($appId) {
+
+            $em = $this->getEntityManager();
+
+            $app = $em->getReference('SchoolManagement\Entity\ExamApplication', $appId);
+            $exams = $em->getRepository('SchoolManagement\Entity\Exam')->findBy([
+                'application' => $app,
+            ]);
+
+            if ($exams) {
+                $hydrator = new DoctrineObject($em, false);
+                // força o carregamento do conteúdo do simulado
+                $hydrator->addStrategy('content', new ExamContentStrategy());
+                $examArray = [];
+                foreach ($exams as $exam) {
+                    $examArray[] = $hydrator->extract($exam);
+                }
+                return new JsonModel($examArray);
+            }
+
+            return new JsonModel([
+            ]);
+        }
+        $this->getResponse()->setStatusCode(400);
+    }
+
+    public function getQuestionSubjectsAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
+            $em = $this->getEntityManager();
+            $subjects = [];
+
+            foreach ($data['questions'] as $id) {
+                $subjects[$id] = [];
+                $question = $em->getReference('SchoolManagement\Entity\ExamQuestion', $id);
+
+                $subject = $question->getSubject();
+
+                while ($subject !== null) {
+
+                    $subjects[$id][] = [
+                        'subjectId' => $subject->getSubjectId(),
+                        'subjectName' => $subject->getSubjectName(),
+                    ];
+
+                    $subject = $subject->getParent();
+                }
+
+                $subjects[$id] = array_reverse($subjects[$id]);
+            }
+
+            return new JsonModel($subjects);
+        }
+
+        $this->response()->setStatusCode(400);
     }
 }
