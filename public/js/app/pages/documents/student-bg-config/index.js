@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-define(['jquery', 'datatable'], function () {
+define(['jquery', 'datatable', 'ekkolightbox'], function () {
     var index = (function () {
 
         var configTable = $('#config-table');
@@ -16,10 +16,20 @@ define(['jquery', 'datatable'], function () {
                 paging: false
             });
         };
+        
+        initLightbox = function () {
+            $(document).delegate('*[data-toggle="lightbox"]', 'click', function (event) {
+                event.preventDefault();
+                $(this).ekkoLightbox({
+                    loadingMessage: "Carregando..."
+                });
+            });
+        };
 
         return {
             init: function () {
                 initDataTable();
+                initLightbox();
             },
             getCallbackOf: function (element) {
                 

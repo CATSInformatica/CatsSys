@@ -60,7 +60,7 @@ class SchoolExamController extends AbstractEntityActionController
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
-                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                 'applications' => null,
             ));
         }
@@ -120,7 +120,7 @@ class SchoolExamController extends AbstractEntityActionController
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
-                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                 'exams' => null,
                 'form' => null,
             ));
@@ -183,7 +183,7 @@ class SchoolExamController extends AbstractEntityActionController
                 ));
             } catch (Exception $ex) {
                 return new ViewModel(array(
-                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                     'exams' => null,
                     'form' => null,
                     'selectedExams' => null
@@ -253,7 +253,7 @@ class SchoolExamController extends AbstractEntityActionController
                 ));
             } catch (Exception $ex) {
                 return new ViewModel(array(
-                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                     'application' => null,
                     'applicationId' => null,
                 ));
@@ -278,7 +278,7 @@ class SchoolExamController extends AbstractEntityActionController
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
-                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                 'exams' => null,
             ));
         }
@@ -324,7 +324,7 @@ class SchoolExamController extends AbstractEntityActionController
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
-                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                 'form' => null,
             ));
         }
@@ -378,7 +378,7 @@ class SchoolExamController extends AbstractEntityActionController
                 ));
             } catch (Exception $ex) {
                 return new ViewModel(array(
-                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                     'form' => null,
                 ));
             }
@@ -442,7 +442,7 @@ class SchoolExamController extends AbstractEntityActionController
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
-                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                 'contents' => null,
             ));
         }
@@ -543,7 +543,7 @@ class SchoolExamController extends AbstractEntityActionController
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
-                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                 'form' => null,
                 'baseSubjects' => null,
                 'editAllowed' => null
@@ -602,7 +602,7 @@ class SchoolExamController extends AbstractEntityActionController
                 ));
             } catch (Exception $ex) {
                 return new ViewModel(array(
-                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                     'form' => null,
                     'baseSubjects' => null,
                     'subjectQuantities' => null,
@@ -706,7 +706,7 @@ class SchoolExamController extends AbstractEntityActionController
                 ));
             } catch (Exception $ex) {
                 return new ViewModel(array(
-                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.' . 'Erro: ' . $ex->getMessage(),
+                    'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                     'baseSubjects' => null,
                     'subjectQuantities' => null,
                     'contentDescription' => null,

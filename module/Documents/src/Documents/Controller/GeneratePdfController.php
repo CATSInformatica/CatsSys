@@ -1,21 +1,29 @@
 <?php
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Gabriel Pereira <rickardch@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Documents\Controller;
 
 use Database\Controller\AbstractEntityActionController;
 use DateTime;
-use Documents\Form\StudentIdCardFilter;
 use Documents\Form\StudentIdCardForm;
 use Documents\Form\StudentsBoardFilter;
 use Documents\Form\StudentsBoardForm;
 use Documents\Model\StudentIdCardPdf;
-use Exception as Exception2;
 use SebastianBergmann\RecursionContext\Exception;
 use Zend\View\Model\ViewModel;
 
@@ -29,55 +37,73 @@ class GeneratePdfController extends AbstractEntityActionController
 { 
         
     /**
-     * Busca as informações de todas as configurações de fundo e as retorna num array
+     * Retorna um array com dois arrays. Um contendo as configurações de fundo 
+     * formatadas e o outro contendo as ids das configurações
      * 
      * @return array
+     *  [
+     *      'formattedBgConfigs' => [
+     *          <bgConfig-id> => [
+     *              'phrase' => <bgConfig-phrase>,
+     *              'author' => <bgConfig-author>,
+     *              'bg_img_url' => <bgConfig-img>,
+     *          ], 
+     *          ...
+     *      ],
+     *      'bgConfigIds' => [
+     *          <bgConfig-id> => <bgConfig-id>,
+     *          ...
+     *      ]
+     *  ]
      */
-    public function getBackgroundConfigs($message) {
-        try {
-            $em = $this->getEntityManager();
-            $configs = $em->getRepository('Documents\Entity\StudentBgConfig')
-                    ->findAll();            
-        } catch (Exception2 $ex) {
-            $message = $ex->getMessage();
-        }
+    protected function getBgConfigsInfo($configs) {
+        $bgConfigIds = [];
+        $formattedBgConfigs = [];
         
-        $bgConfigs = array();
         foreach ($configs as $config) {
-            $bgConfigs[$config->getStudentBgConfigId()] = array(
-                'id' => $config->getStudentBgConfigId(),
+            $bgConfigIds[$config->getStudentBgConfigId()] = $config->getStudentBgConfigId();
+            $formattedBgConfigs[$config->getStudentBgConfigId()] = [
                 'phrase' => $config->getStudentBgConfigPhrase(),
                 'author' => $config->getStudentBgConfigAuthor(),
-                'img' => $config->getStudentBgConfigImg(),
-            );
+                'bg_img_url' => $config->getStudentBgConfigImg(),
+            ];
         }
-        return $bgConfigs;
+        
+        return [
+            'formattedBgConfigs' => $formattedBgConfigs,
+            'bgConfigIds' => $bgConfigIds
+        ];
     }
     
     /**
-     * Busca as informações de todas as turmas e as retorna num array
+     * Retorna um array com dois arrays. Um contendo os alunos matriculados 
+     * na turma e o outro contendo os ids das turmas
      * 
      * @return array
+     *  [
+     *      'classEnrollments' => [
+     *          <class-id> => <class-enrollments-array>
+     *          ...
+     *      ],
+     *      'classNames' => [
+     *          <class-id> => <class-name>,
+     *          ...
+     *      ]
+     *  ]
      */
-    public function getStudentClasses($message) {
-        try {
-            $em = $this->getEntityManager();
-            $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')
-                    ->findAll();
-            
-        } catch (Exception2 $ex) {
-            $message = $ex->getMessage();
+    protected function getClassesInfo($classes) {
+        $classNames = [];
+        $classEnrollments = [];
+        
+        foreach ($classes as $class) {
+            $classNames[$class->getClassId()] = $class->getClassName();
+            $classEnrollments[$class->getClassId()] = $class->getEnrollments()->toArray();
         }
         
-        $studentClasses = array();
-        foreach ($classes as $class) {
-            $studentClasses[$class->getClassId()] = array(
-                'id' => $class->getClassId(),
-                'name' => $class->getClassName(),
-                'enrollments' => $class->getEnrollments()->toArray(),
-            );
-        }
-        return $studentClasses;
+        return [
+            'classEnrollments' => $classEnrollments,
+            'classNames' => $classNames
+        ]; 
     }    
     
     /**
@@ -87,103 +113,92 @@ class GeneratePdfController extends AbstractEntityActionController
      * @return ViewModel
      */
     public function studentIdCardAction()
-    {      
-        $message = null;
-        $pdf = null;
-        $form = null;
-        $request = $this->getRequest();  
+    {
+        $request = $this->getRequest(); 
+        $em = $this->getEntityManager();
         
         try {
             //  Pega todas as configurações de fundo cadastradas e seleciona os id's 
             //  para mandar para o formulário
-            $bgConfigs = $this->getBackgroundConfigs($message);
-            $configsIds = array();
-            foreach ($bgConfigs as $bgConfig) {
-                $configsIds[$bgConfig['id']] = $bgConfig['id'];
-            }
-
+            $bgConfigs = $em->getRepository('Documents\Entity\StudentBgConfig')
+                    ->findAll();
+            $bgConfigsInfo = $this->getBgConfigsInfo($bgConfigs);
+            $bgConfigIds = $bgConfigsInfo['bgConfigIds'];
+            $formattedBgConfigs = $bgConfigsInfo['formattedBgConfigs'];
+            
             //  Pega todas as turmas cadastradas e seleciona os nomes para mandar
             //  para o formulário
-            $studentClasses = $this->getStudentClasses($message);
-            $classNames = array();
-            foreach ($studentClasses as $studentClass) {
-                $classNames[$studentClass['id']] = $studentClass['name'];
-            }
-        } catch (Exception $ex) {
-            $message = $message . '<br>Erro na conexão com o banco de dados.' . 
-                    ' Entre com contato com o administrador do sistema.<br>' .
-                    'Erro: ' . $ex->getMessage();
-            return new ViewModel(array(
-                'message' => $message,
-                'form' => $form,
-                'pdf' => $pdf
-            )); 
-        }
-        
-        //  Cria o formulário e o processa
-        $form = new StudentIdCardForm($configsIds, $classNames);               
-        if ($request->isPost()) {            
-            $post = array_merge_recursive(
-                $request->getPost()->toArray(),
-                $request->getFiles()->toArray()
-            );
-            $form->setData($post);
-            $form->setInputFilter(new StudentIdCardFilter());
+            $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')
+                    ->findAll();
+            $classesInfo = $this->getClassesInfo($classes);
+            $classNames = $classesInfo['classNames'];
+            $classEnrollments = $classesInfo['classEnrollments'];
             
-            if ($form->isValid()) {
-                $data = $form->getData();
-                
-                try {
+            //  Cria o formulário e o processa
+            $form = new StudentIdCardForm($bgConfigIds, $classNames);
+            if ($request->isPost()) {
+                $form->setData($request->getPost()->toArray());
+
+                if ($form->isValid()) {
+                    $data = $form->getData();
+                    
                     $people = [];
                     
                     //  Obtém as informações dos alunos da turma selecionada
-                    $enrolls = $studentClasses[$data['class_id']]['enrollments'];
+                    $enrolls = $classEnrollments[$data['class_id']];
                     foreach($enrolls as $enroll) {
                         //  Aluno não encerrou matrícula
                         if ($enroll->getEnrollmentEndDate() === null) {
                             $people[] = $enroll->getRegistration()->getPerson();
                         }
                     } 
+                    // Turma vazia
                     if (empty($people)) {
-                        $message = 'A turma selecionada não possui alunos cadastrados.';
                         return new ViewModel(array(
-                            'message' => $message,
+                            'message' => 'A turma selecionada não possui alunos cadastrados.',
                             'form' => $form,
-                            'pdf' => $pdf
+                            'pdf' => null
                         ));                         
                     }
-                    
                     // Agrupa as informações dos alunos da turma
                     foreach($people as $person) {
-                        $students[] = array(
-                                'name' => $person->getPersonName(),
-                                'rg' => $person->getPersonRg(),
-                                'img_url' => $person->getPersonPhoto()
-                        );
+                        $students[] = [
+                            'name' => $person->getPersonName(),
+                            'rg' => $person->getPersonRg(),
+                            'img_url' => $person->getPersonPhoto()
+                        ];
                     }
                     
-                    //  Agrupa as informações da config de fundo selecionada
-                    $config = array(
-                        'phrase' => $bgConfigs[$data['config_id']]['phrase'],
-                        'author' => $bgConfigs[$data['config_id']]['author'],
-                        'expiry' => new DateTime($data['expiry_date']),
-                        'bg_img_url' => $bgConfigs[$data['config_id']]['img'],
+                    //  Concatena a data de validade da carteirinha às configurações
+                    $config = array_merge_recursive(
+                        $formattedBgConfigs[$data['config_id']],
+                        ['expiry' => new DateTime($data['expiry_date'])]
                     );
                     
                     // Instancia um objeto da classe StudentIdPdf e gera as carteirinhas
                     $pdfHandler = new StudentIdCardPdf($config, $students);
                     $pdf = $pdfHandler->generatePdf();
-                } catch (Exception2 $ex) {
-                    $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
-                    'Erro: ' . $ex->getMessage();
-                } 
+                    return new ViewModel(array(
+                        'message' => null,
+                        'form' => null,
+                        'pdf' => $pdf
+                    ));
+                }
+            
             }
+            return new ViewModel(array(
+                'message' => null,
+                'form' => $form,
+                'pdf' => null
+            )); 
+        } catch (\Exception $ex) {
+            return new ViewModel(array(
+                'message' => 'Erro inesperado. Entre com contato com o administrador do sistema.<br>Erro: ' 
+                        . $ex->getMessage(),
+                'form' => null,
+                'pdf' => null
+            )); 
         }
-        return new ViewModel(array(
-            'message' => $message,
-            'form' => $form,
-            'pdf' => $pdf
-        )); 
    }
     
     /**
@@ -275,7 +290,7 @@ class GeneratePdfController extends AbstractEntityActionController
                     
                     // Gera PDF...
                     
-                } catch (Exception2 $ex) {
+                } catch (\Exception $ex) {
                     $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                     'Erro: ' . $ex->getMessage();
                 } 
