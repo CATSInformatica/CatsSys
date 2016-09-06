@@ -1,9 +1,20 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Gabriel Pereira <rickardch@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Documents\Entity;
@@ -13,7 +24,7 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Description of StudentCardIdConfig
  *
- * @author catsinformatica
+ * @author Gabriel Pereira <rickardch@gmail.com>
  * @ORM\Table(name="student_bg_config")
  * @ORM\Entity
  */
@@ -31,14 +42,14 @@ class StudentBgConfig
     /**
      *
      * @var string 
-     * @ORM\Column(name="student_bg_config_phrase", type="string", length=150, nullable=false)
+     * @ORM\Column(name="student_bg_config_phrase", type="string", length=160, nullable=false)
      */
     private $studentBgConfigPhrase;
     
     /**
      *
      * @var string 
-     * @ORM\Column(name="student_bg_config_author", type="string", length=30, nullable=false)
+     * @ORM\Column(name="student_bg_config_author", type="string", length=50, nullable=false)
      */
     private $studentBgConfigAuthor;
     

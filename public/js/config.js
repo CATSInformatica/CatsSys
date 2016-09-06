@@ -32,7 +32,8 @@ requirejs.config({
         chart: 'Chart.js/dist/Chart.min',
         filesaver: 'file-saver.js/FileSaver',
         jqueryprint: 'jQuery.print/jQuery.print',
-        jszip: 'jszip/dist/jszip.min'
+        jszip: 'jszip/dist/jszip.min',
+        ekkolightbox: 'ekko-lightbox/dist/ekko-lightbox.min'
     },
     shim: {
         bootstrap: {
