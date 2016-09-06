@@ -1,9 +1,19 @@
 <?php
-
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Gabriel Pereira <rickardch@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace Documents\Model;
@@ -17,20 +27,51 @@ use fpdf\FPDF;
  */
 class StudentIdCardPdf
 {
-
-    const FONT = 'Arial';
-    const TOP_MARGIN = 6;
-    const LEFT_MARGIN = 17;
-
+    
+    const BASE_PATH = __DIR__ . '/../../../../..';    
+    const MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+        "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"];
+    
+    /* Configurações da página */
+    // Dimensões da margem (mm)
+    const VERTICAL_MARGIN   = 12;
+    const HORIZONTAL_MARGIN = 17;
+    
+    /* Configurações da carteirinha */
+    // Dimensões da carteirinha (mm)
+    const CARD_PADDING      = 3.6;
+    const CARD_WIDTH        = 88;
+    const CARD_HEIGHT       = 54;
+    const GAP_BETWEEN_CARDS = 0.5;
+    // Texto
+    const TITLE = "Curso Assistencial Theodomiro Santiago";
+    const SIGNATURE = "Assinatura do Presidente";
+    const FONT  = 'Arial';
+    // Tamanho do texto (pt)
+    const TITLE_TEXT_SIZE   = 9.5;  // Nome do cursinho
+    const LABEL_TEXT_SIZE   = 7.5;  // Campo do nome e do RG
+    const PHRASE_TEXT_SIZE  = 7.0;  // Frase e autor
+    const REGULAR_TEXT_SIZE = 6.5;  // Nome, RG e assinatura
+    const EXPIRY_TEXT_SIZE  = 6.0;  // Data de validade
+    // Dimensões do logo (mm)
+    const LOGO_WIDTH    = 16;
+    const LOGO_HEIGHT   = 0; // 0 = automático
+    // Dimensões dos campos da frente da carteirinha (mm)
+    const FRONT_FIELDS_WIDTH   = 54.5;
+    const FRONT_FIELDS_HEIGHT   = 3.9;
+    // Dimensões do campo da frase (mm)
+    const PHRASE_FIELD_HEIGHT = 22.12;
+    const PHRASE_FIELD_PADDING = 3;
+    const PHRASE_FIELD_ROW_HEIGHT = 4;
+    
+    
     private $config;
     private $students;
-    private $basePath;
-
+    
     public function __construct($config, $students)
-    {
+    {           
         $this->config = $config;
-        $this->students = $students;
-        $this->basePath = __DIR__ . '/../../..';
+        $this->students = $students;exit;
     }
 
     /**
@@ -40,96 +81,204 @@ class StudentIdCardPdf
     public function generatePdf()
     {
         $pdf = new FPDF('P', 'mm', 'A4');
-        $y = self::TOP_MARGIN;
-        // Map para imprimir os meses a partir do indice
-        $months = array(
-            "Janeiro",
-            "Fevereiro",
-            "Março",
-            "Abril",
-            "Maio",
-            "Junho",
-            "Julho",
-            "Agosto",
-            "Setembro",
-            "Outubro",
-            "Novembro",
-            "Dezembro"
-        );
-
-        foreach ($this->students as $i => $student) {
-            /*
-             * Variáveis que controlam a aparência da carteirinha
-             */
-            $width = 88;
-            $height = 54;
-            // Distância entre as laterais correspondentes da frente e do verso da carteirinha
-            $lateralDistance = $width + 0.5;
-
-            if ($i % 5 == 0) {  // Na configuracao atual cabem apenas 5 carteirinhas em cada página
-                $y = self::TOP_MARGIN;
+        
+        // Variáveis auxiliares
+        $yCoordinate = self::VERTICAL_MARGIN;
+        $cardVerseX = self::HORIZONTAL_MARGIN + self::GAP_BETWEEN_CARDS + self::CARD_WIDTH;
+        $cardsPerPage = (int)((297/*altura do papel A4*/ - 2 * self::VERTICAL_MARGIN) 
+                / (self::CARD_HEIGHT + self::GAP_BETWEEN_CARDS));
+        $frontFieldsX = self::HORIZONTAL_MARGIN + self::CARD_WIDTH - self::CARD_PADDING - self::FRONT_FIELDS_WIDTH;
+        
+        foreach ($this->students as $i => $student) {            
+            if ($i % $cardsPerPage === 0) {
                 $pdf->AddPage('P', 'A4');
+                $yCoordinate = self::VERTICAL_MARGIN;
             }
-            $pdf->SetDrawColor(255);
-            $pdf->SetFillColor(95, 124, 138);
+            
+            $pdf->SetDrawColor(255);  // Branco 
+            $pdf->SetFillColor(255);  // Branco 
 
-            // Utiliza o background da configuracao selecionada
-            $pdf->Image($this->basePath . '/../../public/img/' . $this->config['bg_img_url'], self::LEFT_MARGIN, $y,
-                $width, $height);  // frente
-            $pdf->Image($this->basePath . '/../../public/img/' . $this->config['bg_img_url'],
-                self::LEFT_MARGIN + $lateralDistance, $y, $width, $height);  // verso
+            // Posiciona o background selecionado na frente da carteirinha
+            $pdf->Image(
+                    self::BASE_PATH . '/public/img/' . $this->config['bg_img_url'],  // url
+                    self::HORIZONTAL_MARGIN,// x
+                    $yCoordinate,           // y
+                    self::CARD_WIDTH,       // largura
+                    self::CARD_HEIGHT       // altura
+            );
+            // Posiciona o background selecionado no verso da carteirinha
+            $pdf->Image(
+                    self::BASE_PATH . '/public/img/' . $this->config['bg_img_url'],  // url
+                    $cardVerseX,        // x
+                    $yCoordinate,       // y
+                    self::CARD_WIDTH,   // largura
+                    self::CARD_HEIGHT   // altura
+            );
                 
-            // Logo
-            $pdf->Image($this->basePath . '/../../public/img/' . 'logo_branco.png', self::LEFT_MARGIN + 3.6, $y + 3.48,
-                15.92, 9.64);
-            $pdf->Image($this->basePath . '/../../public/img/' . 'logo_branco.png',
-                self::LEFT_MARGIN + 3.6 + $lateralDistance, $y + 3.48, 15.92, 9.64);
+            // Posiciona o logo 
+            $pdf->Image(
+                    self::BASE_PATH . '/public/img/' . 'logo_branco.png',  // url
+                    self::HORIZONTAL_MARGIN + self::CARD_PADDING,   // x
+                    $yCoordinate + self::CARD_PADDING,              // y
+                    self::LOGO_WIDTH,  // largura 
+                    self::LOGO_HEIGHT  // altura 
+            );
+            $pdf->Image(
+                    self::BASE_PATH . '/public/img/' . 'logo_branco.png',  // url
+                    $cardVerseX + self::CARD_PADDING,   // x
+                    $yCoordinate + self::CARD_PADDING,  // y
+                    self::LOGO_WIDTH,  // largura 
+                    self::LOGO_HEIGHT  // altura 
+            );
 
-            // CATS
-            $pdf->SetFont(self::FONT, '', 9.5);
-            $pdf->SetTextColor(255);
-            $pdf->Text(self::LEFT_MARGIN + ($width - $pdf->GetStringWidth("Curso Assistencial Theodomiro Santiago")) / 2 + 9.76, $y + 9.09, "Curso Assistencial Theodomiro Santiago");
-            $pdf->Text(self::LEFT_MARGIN + ($width - $pdf->GetStringWidth("Curso Assistencial Theodomiro Santiago")) / 2 + 9.76 + $lateralDistance, $y + 9.09, "Curso Assistencial Theodomiro Santiago");
+            // Define a fonte, o tamanho e a cor do texto
+            $pdf->SetFont(self::FONT, '', self::TITLE_TEXT_SIZE);
+            $pdf->SetTextColor(255);  // Branco
+            
+            // Posiciona o nome do cursinho na frente
+            $titleWidth = $pdf->GetStringWidth(self::TITLE);
+            $pdf->Text(
+                    self::HORIZONTAL_MARGIN + self::CARD_WIDTH - $titleWidth - self::CARD_PADDING, // x
+                    $yCoordinate + 9.09, self::TITLE  // y
+            );
+            
+            // Posiciona o nome do cursinho no verso
+            $pdf->Text(
+                    $cardVerseX + self::CARD_WIDTH - $titleWidth - self::CARD_PADDING, // x
+                    $yCoordinate + 9.09, self::TITLE  // y
+            );
 
-            // Foto
-            $pdf->Image($this->basePath . '/../../data/profile/' . $student['img_url'], self::LEFT_MARGIN + 3.6, $y + 19.40, 23.44);
+            // Posiciona a foto do aluno
+            $pdf->Image(
+                    self::BASE_PATH . '/data/profile/' . $student['img_url'], // url
+                    self::HORIZONTAL_MARGIN + self::CARD_PADDING,    // x
+                    $yCoordinate + 19.40,       // y (mm)
+                    23.44                       // largura (mm)
+                    // altura redimensionada automaticamente
+            );
 
-            // Campos NOME e RG
-            $pdf->SetTextColor(20);
-            $pdf->SetFillColor(255);
-            $pdf->SetFont(self::FONT, '', 7.5);
-            $pdf->Text(self::LEFT_MARGIN + 30.1, $y + 22.65, "NOME");
-            $pdf->Rect(self::LEFT_MARGIN + 30.1, $y + 24, 54.43, 3.83, 'DF');
-            $pdf->Text(self::LEFT_MARGIN + 30.1, $y + 33.47, "RG");
-            $pdf->Rect(self::LEFT_MARGIN + 30.1, $y + 34.80, 54.43, 3.83, 'DF');
-            $pdf->SetFont(self::FONT, '', 6.5);
-            $pdf->Text(self::LEFT_MARGIN + 31.8, $y + 26.78, utf8_decode($student['name']));
-            $pdf->Text(self::LEFT_MARGIN + 31.8, $y + 37.55, $student['rg']);
+            // Define a fonte, o tamanho e a cor do texto
+            $pdf->SetFont(self::FONT, '', self::LABEL_TEXT_SIZE);
+            $pdf->SetTextColor(20);   // Cinza
+            
+            // Posiciona o rótulo e o campo do NOME do aluno
+            $nameFieldY = $yCoordinate + 24; 
+            $pdf->Text(
+                    $frontFieldsX,      // x
+                    $nameFieldY - 1.35, // y (mm)
+                    "NOME"  
+            );
+            $pdf->Rect(
+                    $frontFieldsX,      // x
+                    $nameFieldY,        // y
+                    self::FRONT_FIELDS_WIDTH,  // largura
+                    self::FRONT_FIELDS_HEIGHT, // altura
+                    'DF'  // draw & fill (desenha e preenche)
+            );
+            
+            // Posiciona o rótulo e o campo do RG do aluno
+            $rgFieldY = $yCoordinate + 34.85;
+            $pdf->Text(
+                    $frontFieldsX,      // x
+                    $rgFieldY - 1.35,   // y (mm)
+                    "RG"
+            );
+            $pdf->Rect(
+                    $frontFieldsX,      // x
+                    $rgFieldY,          // y 
+                    self::FRONT_FIELDS_WIDTH,  // largura
+                    self::FRONT_FIELDS_HEIGHT, // altura
+                    'DF'  // draw & fill (desenha e preenche)
+            );
+            
+            // Define a fonte e o tamanho do texto
+            $pdf->SetFont(self::FONT, '', self::REGULAR_TEXT_SIZE);
+            
+            // Posiciona o NOME do aluno
+            $pdf->Text(
+                    $frontFieldsX + 1.5,    // x (mm)
+                    $nameFieldY + 2.78,     // y (mm)
+                    utf8_decode($student['name'])  // texto
+            );
+            
+            // Posiciona o RG do aluno  
+            $pdf->Text(
+                    $frontFieldsX + 1.5,    // x (mm)
+                    $rgFieldY + 2.7,        // y (mm)
+                    $student['rg']          // texto
+            );
 
-            // Assinatura
-            $pdf->Text(self::LEFT_MARGIN + $lateralDistance + ($width - $pdf->GetStringWidth("Assinatura do Presidente")) / 2, $y + 50, "Assinatura do Presidente");
-            $pdf->Line(self::LEFT_MARGIN + $lateralDistance + ($width - 50) / 2, $y + 46, 
-                    self::LEFT_MARGIN + $lateralDistance + ($width - 50) / 2 + 50, $y + 46, 'DF');
+            // Posiciona a assinatura do presidente
+            $signatureTxt = self::SIGNATURE;
+            $ySignatureTxt = $yCoordinate + self::CARD_HEIGHT - self::CARD_PADDING;
+            $pdf->Text(
+                    $cardVerseX + (self::CARD_WIDTH - $pdf->GetStringWidth($signatureTxt)) / 2, // x
+                    $ySignatureTxt, // y
+                    $signatureTxt   // texto
+            );
+            
+            // Posiciona uma linha acima do texto da assinatura
+            $pdf->Line(
+                    $cardVerseX + self::CARD_WIDTH * 0.2,   // x inicial (20% da largura)
+                    $ySignatureTxt - 4,                     // y inicial (4mm acima do texto da assinatura)
+                    $cardVerseX + self::CARD_WIDTH * 0.8,   // x final (80% da largura)
+                    $ySignatureTxt - 4,                     // y final = y inicial
+                    'DF'  // draw & fill (desenha e preenche)
+            );
 
-            // Frase
-            $pdf->Rect(self::LEFT_MARGIN + 3.6 + $lateralDistance, $y + 17, 80.93, 22.12, 'DF');
-            $pdf->SetFont(self::FONT, '', 7);
-            $pdf->SetXY(self::LEFT_MARGIN + 95.2, $y + 20.49);
-            $pdf->MultiCell(74.72, 4, utf8_decode($this->config['phrase']));
+            $phraseFieldY = $yCoordinate + 17;
+            // Posiciona o campo da frase
+            $pdf->Rect(
+                    $cardVerseX + self::CARD_PADDING,   // x 
+                    $phraseFieldY,                      // y (mm)
+                    self::CARD_WIDTH - 2 * self::CARD_PADDING,  // largura
+                    self::PHRASE_FIELD_HEIGHT,          // altura
+                    'DF'    // draw & fill (desenha e preenche)
+            );
+            
+            // Define a fonte e o tamanho do texto
+            $pdf->SetFont(self::FONT, '', self::PHRASE_TEXT_SIZE);
+            
+            // Posiciona a frase no verso da carteirinha
+            $pdf->SetXY(
+                    $cardVerseX + self::CARD_PADDING + self::PHRASE_FIELD_PADDING, // x (mm)
+                    $phraseFieldY + self::PHRASE_FIELD_PADDING  // y (mm)
+            );
+            $pdf->MultiCell(
+                    self::CARD_WIDTH - 2 * self::CARD_PADDING - 2 * self::PHRASE_FIELD_PADDING,  // largura de cada celula
+                    self::PHRASE_FIELD_ROW_HEIGHT,          // altura de cada celula
+                    utf8_decode($this->config['phrase'])    // texto
+            );
 
-            // Autor
-            $pdf->Text(self::LEFT_MARGIN + $lateralDistance + $width - ($width - 80.93) / 2 - 4 - $pdf->GetStringWidth(utf8_decode($this->config['author'])), $y + 36,
-                utf8_decode($this->config['author']));
+            // Posiciona o autor
+            $pdf->Text(
+                    $cardVerseX + self::CARD_WIDTH - self::CARD_PADDING - self::PHRASE_FIELD_PADDING - $pdf->GetStringWidth(utf8_decode($this->config['author'])), 
+                    $phraseFieldY + self::PHRASE_FIELD_HEIGHT - self::PHRASE_FIELD_PADDING,
+                    utf8_decode($this->config['author'])
+            );
 
-            // Data de validade
-            $pdf->SetFont(self::FONT, '', 6);
-            $str = utf8_decode('Válido até ' . $this->config['expiry']->format('d') . ' de '
-                . $months[(int) ($this->config['expiry']->format('n')) - 1] . ' de '
-                . $this->config['expiry']->format('Y'));
-            $pdf->Text(self::LEFT_MARGIN + 84.54 - $pdf->GetStringWidth($str), $y + 50, $str);
-
-            $y += 58;  // Distancia entre a borda superior das carteirinhas
+            // Define a fonte e o tamanho do texto
+            $pdf->SetFont(self::FONT, '', self::EXPIRY_TEXT_SIZE);
+            
+            // Posiciona a mensagem da data de validade (Válido até <dia> de <mês> de <ano>)
+            $str = utf8_decode(
+                    'Válido até ' 
+                    . $this->config['expiry']->format('d') 
+                    . ' de '
+                    . self::MONTHS[(int) ($this->config['expiry']->format('n')) - 1] 
+                    . ' de '
+                    . $this->config['expiry']->format('Y')
+            );
+            $pdf->Text(
+                    self::HORIZONTAL_MARGIN + self::CARD_WIDTH - self::CARD_PADDING - $pdf->GetStringWidth($str), 
+                    $yCoordinate + self::CARD_HEIGHT - self::CARD_PADDING, 
+                    $str
+            );
+            
+            // coordenada y para construção da próxima carteirinha
+            $yCoordinate += self::CARD_HEIGHT + self::GAP_BETWEEN_CARDS;  
         }
+        
         return $pdf->Output('Carteirinhas', 'I', true);
     }
 
