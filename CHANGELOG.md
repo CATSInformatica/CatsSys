@@ -2,6 +2,15 @@
 
 Todas as mudanças notáveis serão documentadas neste arquivo em ordem cronológica inversa.
 
+## 2.0.0-alpha.3 - 2016-09-01
+
+### Adicionado
+
+### Corrigido
+- Correções na geração de provas.
+- Melhorias diversas no script de instalação.
+- Melhorias na geração de carteirinhas.
+
 ## 2.0.0-alpha.2 - 2016-08-01
 
 ### Adicionado
@@ -20,6 +29,9 @@ Todas as mudanças notáveis serão documentadas neste arquivo em ordem cronoló
 - Borda inferior nas linhas da tabela de mensalidade para facilitar a diferenciação dos campos de pagamento.
 - Envio de email para candidatos inscritos em processos seletivos de alunos.
 - Funcionalidades de pré-entrevista, entrevista e análise de candidatos para processos seletivos de alunos.
+- Adição de opção de utilização do sistema com Nginx
+- Criação de novas telas para gestão de matrículas de alunos.
+- 
 
 ### Removido
 - *Action* edital do controller Recruitment foi renomeada para *publicNotice* sendo necessário alterar o privilégio do *guest* de `edital` para `public-notice`
@@ -38,6 +50,9 @@ Todas as mudanças notáveis serão documentadas neste arquivo em ordem cronoló
 - [#125](https://github.com/CATSInformatica/CatsSys/issues/125) Nomear a não escolha de um departamento específico ao cadastrar uma despesa/receita.
 - [#126](https://github.com/CATSInformatica/CatsSys/issues/126) Aumentar a data final de processos seletivos de alunos e voluntários para desenvolvedores.
 - [#127](https://github.com/CATSInformatica/CatsSys/issues/127) Resposta correta não é salva ao cadastrar ou editar questões.
+- Disponibilizada a versão completa da [licença](https://github.com/CATSInformatica/CatsSys/blob/master/LICENSE) GPL no repositório
+- Botões utilizados para alteração da situação dos candidatos de processos seletivos de alunos foram retirados da página do perfil do candidato e colocados na página de inscrições.
+- Melhoria na geração de provas, permitindo que as provas sejam salvas e modificadas.
 
 ## 2.0.0-alpha.1 - 2015-07-25
 - Primeiro *commit*
