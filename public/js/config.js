@@ -86,5 +86,75 @@ requirejs.config({
 });
 
 define(['jquery', 'bootstrap', 'adminlte'], function () {
+    // for file inputs
+    $(document).on('change', '.btn-file :file', function () {
+        var input = $(this),
+                numFiles = input.get(0).files ? input.get(0).files.length : 1,
+                label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
+        input.trigger('fileselect', [numFiles, label]);
+    });
 
+    $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
+        $(this).siblings('.btn-file-name').text(label);
+    });
+
+    // show footer
+    $(".main-footer").toggle("slide");
+
+    $("section.content").on("click", "td.details-control", function (e) {
+        e.stopPropagation();
+    });
+
+    //                $('.role').on('click', function () {
+    //                    var role = $(this);
+    //                    var jsonRole = JSON.stringify({
+    //                        'role': role.text().toLowerCase()
+    //                    });
+    //                    $.ajax({
+    //                        url: '/authorization/role/changeActiveUserRole',
+    //                        type: 'POST',
+    //                        dataType: 'json',
+    //                        async: true,
+    //                        data: jsonRole,
+    //                        success: function (msg) {
+    //
+    //                            // change role in menu
+    //                            if (msg.success) {
+    //                                var newActiveRole = role.text();
+    //                                role.text($('.active-role').text());
+    //                                $('.active-role').text(newActiveRole);
+    //                            }
+    //
+    //                            console.log(msg);
+    //                        },
+    //                        error: function (msg) {
+    //                            console.log(msg);
+    //                        }
+    //                    });
+    //                });
+
+    require(['app/models/Main', 'pace'], function (Main) {
+
+        $(document).ajaxStart(function () {
+            Pace.restart();
+        });
+
+        var config = {
+            toolbarElement: '.system-toolbar',
+            toolbarItem: 'li',
+            toolbarSelectedItem: '.cats-selected-row',
+            toolbarContainer: '.control-sidebar',
+            toolbarContainerOpen: 'control-sidebar-open'
+        };
+
+        if (typeof appConfig !== 'undefined') {
+            require([appConfig.getScriptSrc()], function (pageScript) {
+                Main.setPageConfig(pageScript);
+                pageScript.init();
+            });
+        }
+
+        Main.setConfig(config);
+        Main.init();
+    });
 });

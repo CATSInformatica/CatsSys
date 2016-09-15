@@ -18,6 +18,7 @@
 define(['bootbox', 'jquerycsv'], function (bootbox) {
 
     var loadedExams;
+    var applicationId;
     var chosenExam;
     var loadedSubjects;
     var questionSubjects;
@@ -105,6 +106,10 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
                 studentRow.find('td.filename').text(loadedAnswers[filename].filename);
                 studentRow.find('td.op-status').text(status.loaded);
+                if (!studentRow.hasClass('cats-selected-row')) {
+                    studentRow.trigger('click');
+                }
+
             });
         };
 
@@ -227,7 +232,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         };
 
         getExams = function () {
-            var applicationId = $("#application").val();
+            applicationId = $("#application").val();
             loadedExams = [];
             $.getJSON('/school-management/school-exam/get-exams/' + applicationId).then(function (exams) {
                 loadedExams = exams;
@@ -247,7 +252,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
             loadedStudents = [];
             var classId = $("#studentClass").val();
-            var applicationId = $("#application").val();
+            applicationId = $("#application").val();
             var examId = parseInt($("#exam").val());
 
             chosenExam = loadedExams.find(function (element) {
@@ -277,6 +282,18 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         };
 
         getQuestionSubjects = function () {
+            var valueA, valueB;
+            chosenExam.content.questions.sort(function (a, b) {
+                valueA = parseInt(a.questionNumber);
+                valueB = parseInt(b.questionNumber);
+                if (valueA < valueB) {
+                    return -1;
+                }
+                if (valueA > valueB) {
+                    return 1;
+                }
+                return 0;
+            });
 
             var questions = chosenExam.content.questions.map(function (q) {
                 return q.questionId;
@@ -327,7 +344,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
             var partialId;
             var tbody = students.map(function (student) {
                 partialId = "" + student.enrollmentId;
-                return '<tr class="student-' + student.enrollmentId + '"><td class="text-center">' + ("00000" + partialId).substring(partialId.length) +
+                return '<tr class="student-' + student.enrollmentId + ' cats-row"><td class="text-center">' + ("00000" + partialId).substring(partialId.length) +
                         '</td><td>' + student.personFirstName + ' ' + student.personLastName +
                         '</td><td class="text-center filename"></td><td class="text-center language-option">---</td><td class="text-center op-status"> ' +
                         status.empty + ' </td></tr>';
@@ -355,11 +372,52 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
             });
         };
 
+        getSelectedStudents = function () {
+
+            var data = {
+                application: applicationId,
+                students: []
+            };
+
+            var filename;
+            studentsTable.find('tbody tr.cats-selected-row').each(function () {
+                filename = $(this).find('td.filename').text();
+                data.students.push(loadedAnswers[filename]);
+            });
+
+            return data;
+        };
 
         return {
             init: function () {
                 initListeners();
                 getExams();
+            },
+            getDataOf: function (element) {
+                switch (element) {
+                    case 'save-student-answers':
+                        return getSelectedStudents();
+                        break;
+                    default:
+                        return {};
+                }
+            },
+            getCallbackOf: function (element) {
+                switch (element) {
+                    case 'save-student-answers':
+                        return {
+                            exec: function (param) {
+                                console.log('param', param);
+                            }
+                        };
+                        break;
+                    default:
+                        return {
+                            exec: function () {
+
+                            }
+                        };
+                }
             }
         };
 

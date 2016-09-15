@@ -638,17 +638,33 @@ return array(
                         'icon' => 'fa fa-file-text-o',
                     ],
                     [
+                        'label' => 'Upload answers template',
+                        'route' => 'school-management/school-exam-result',
+                        'action' => 'upload-answers-template',
+                        'icon' => 'fa fa-cloud-upload',
+                    ],
+                    [
                         'label' => 'Upload answers (class)',
                         'route' => 'school-management/school-exam-result',
                         'action' => 'upload-answers-by-class',
                         'icon' => 'fa fa-cloud-upload',
+                        'toolbar' => [
+                            [
+                                'url' => '/school-management/school-exam-result/save-student-answers',
+                                'title' => 'Salvar',
+                                'id' => 'save-student-answers',
+                                'description' => 'Salva as respostas dos alunos selecionados',
+                                'class' => 'fa fa-hdd-o bg-green',
+                                'fntype' => 'ajaxPostClick',
+                            ]
+                        ],
                     ],
-                    [
-                        'label' => 'Upload answers (std rec)',
-                        'route' => 'school-management/school-exam-result',
-                        'action' => 'upload-answers-by-std-recruitment',
-                        'icon' => 'fa fa-cloud-upload',
-                    ],
+//                    [
+//                        'label' => 'Upload answers (std rec)',
+//                        'route' => 'school-management/school-exam-result',
+//                        'action' => 'upload-answers-by-std-recruitment',
+//                        'icon' => 'fa fa-cloud-upload',
+//                    ],
                 ],
             ],
             array(

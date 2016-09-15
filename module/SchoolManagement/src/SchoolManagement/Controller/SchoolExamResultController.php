@@ -19,7 +19,13 @@
 namespace SchoolManagement\Controller;
 
 use Database\Controller\AbstractEntityActionController;
+use DateTime;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Exception;
+use SchoolManagement\Entity\ApplicationResult;
 use SchoolManagement\Entity\ExamApplication;
+use Zend\Json\Json;
+use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
 /**
@@ -31,7 +37,7 @@ class SchoolExamResultController extends AbstractEntityActionController
 {
 
     /**
-     * Faz dos acertos a partir das planilhas de respostas dos alunos e do
+     * Faz os cálculos a partir das planilhas de respostas dos alunos e do
      * gabarito oficial. Esta função está obsoleta
      * 
      * 
@@ -44,13 +50,13 @@ class SchoolExamResultController extends AbstractEntityActionController
             $em = $this->getEntityManager();
 
             $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')
-                ->findByEndDateGratherThan(new \DateTime('now'));
+                ->findByEndDateGratherThan(new DateTime('now'));
 
             return new ViewModel([
                 'classes' => $classes,
                 'message' => null,
             ]);
-        } catch (\Exception $ex) {
+        } catch (Exception $ex) {
             return new ViewModel([
                 'message' => $ex->getMessage(),
                 'classes' => null,
@@ -58,6 +64,11 @@ class SchoolExamResultController extends AbstractEntityActionController
         }
     }
 
+    /**
+     * Exibe a interface para persistência de respostas de alunos em aplicações de prova
+     * 
+     * @return ViewModel
+     */
     public function uploadAnswersByClassAction()
     {
 
@@ -66,12 +77,12 @@ class SchoolExamResultController extends AbstractEntityActionController
             $em = $this->getEntityManager();
 
             $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')
-                ->findByEndDateGratherThan(new \DateTime());
+                ->findByEndDateGratherThan(new DateTime());
 
             $applications = $em->getRepository('SchoolManagement\Entity\ExamApplication')
                 ->findBy([
                 'status' => ExamApplication::EXAM_APP_CREATED
-            ], [
+                ], [
                 'examApplicationId' => 'desc',
             ]);
 
@@ -87,10 +98,122 @@ class SchoolExamResultController extends AbstractEntityActionController
             ]);
         }
     }
+    /**
+     * Salva as respostas dos candidatos em uma prova de uma aplicação de psa.
+     * 
+     * @return \SchoolManagement\Controller\JsonModel
+     */
+//    public function uploadAnswersByStdRecruitmentAction()
+//    {
+//        return new ViewModel([
+//        ]);
+//    }
 
-    public function uploadAnswersByStdRecruitmentAction()
+    /**
+     * Salva as respostas dos alunos em uma prova de uma aplicação de simulados.
+     * 
+     * @return \SchoolManagement\Controller\JsonModel
+     */
+    public function saveStudentAnswersAction()
     {
-        return new ViewModel([
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
+            try {
+
+                $em = $this->getEntityManager();
+                $application = $em->getReference('SchoolManagement\Entity\ExamApplication', $data['application']);
+
+                foreach ($data['students'] as $st) {
+
+                    $enrollment = $em->getReference('SchoolManagement\Entity\Enrollment', $st['enrollment']);
+                    $encodedAnswers = Json::encode([
+                            'answers' => $st['answers'],
+                            'languageOption' => $st['languageOption'],
+                    ]);
+
+                    $answerEntity = $em->getRepository('SchoolManagement\Entity\ApplicationResult')->findOneBy([
+                        'enrollment' => $enrollment->getEnrollmentId(),
+                        'application' => $application->getExamApplicationId(),
+                    ]);
+
+                    if ($answerEntity === null) {
+                        $answerEntity = new ApplicationResult();
+                        $answerEntity
+                            ->setApplication($application)
+                            ->setEnrollment($enrollment);
+                    }
+                    $answerEntity->setAnswers($encodedAnswers);
+                    $em->persist($answerEntity);
+                }
+
+                $em->flush();
+
+                return new JsonModel([
+                    'message' => 'Respostas salvas com sucesso',
+                    'callback' => $data,
+                ]);
+            } catch (Exception $ex) {
+                return new JsonModel([
+                    'message' => $ex->getMessage(),
+                ]);
+            }
+        }
+    }
+
+    /**
+     * Lista todas as aplicações de prova para escolha.
+     * 
+     * @return ViewModel
+     */
+    public function uploadAnswersTemplateAction()
+    {
+
+
+        $em = $this->getEntityManager();
+
+        $applications = $em->getRepository('SchoolManagement\Entity\ExamApplication')
+            ->findBy([
+            'status' => ExamApplication::EXAM_APP_CREATED
+            ], [
+            'examApplicationId' => 'desc',
         ]);
+
+        return new ViewModel([
+            'apps' => $applications,
+        ]);
+    }
+
+    /**
+     * Busca todas as respostas das provas em $data['exams']
+     * @throws Exception
+     */
+    public function getAnswersAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
+            try {
+
+                if (empty($data['exams'])) {
+                    throw new \Exception('Nenhuma prova foi informada');
+                }
+
+                $em = $this->getEntityManager();
+                $answers = [];
+                foreach ($data['exams'] as $examId) {
+                    $exam = $em->find('SchoolManagement\Entity\Exam', $examId);
+                    $answers[$examId] = $exam->getName();
+                }
+
+                return new JsonModel($answers);
+            } catch (\Exception $ex) {
+                $this->getResponse()->setStatusCode(400);
+            }
+        }
+
+        $this->getResponse()->setStatusCode(400);
     }
 }

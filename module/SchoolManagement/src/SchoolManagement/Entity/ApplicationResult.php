@@ -23,7 +23,12 @@ use Doctrine\ORM\Mapping as ORM;
 /**
  * Description of ApplicationResult
  *
- * @ORM\Table(name="exam_application_result")
+ * @ORM\Table(name="exam_application_result", 
+ *      uniqueConstraints={
+ *          @ORM\UniqueConstraint(name="enrollment_application_unique", columns={"enrollment_id", "exam_application_id"}),
+ *          @ORM\UniqueConstraint(name="registration_application_unique", columns={"registration_id", "exam_application_id"})
+ *      }
+ * )
  * @ORM\Entity
  * @author Márcio Dias <marciojr91@gmail.com>
  */
@@ -45,7 +50,7 @@ class ApplicationResult
      * @ORM\ManyToOne(targetEntity="Enrollment")
      * @ORM\JoinColumn(name="enrollment_id", referencedColumnName="enrollment_id", nullable=true)
      */
-    private $resultEnrollment;
+    private $enrollment;
 
     /**
      *
@@ -53,7 +58,7 @@ class ApplicationResult
      * @ORM\ManyToOne(targetEntity="Recruitment\Entity\Registration")
      * @ORM\JoinColumn(name="registration_id", referencedColumnName="registration_id", nullable=true)
      */
-    private $resultRegistration;
+    private $registration;
 
     /**
      *
@@ -80,14 +85,14 @@ class ApplicationResult
         return $this->resultId;
     }
 
-    public function getResultEnrollment()
+    public function getEnrollment()
     {
-        return $this->resultEnrollment;
+        return $this->enrollment;
     }
 
-    public function getResultRegistration()
+    public function getRegistration()
     {
-        return $this->resultRegistration;
+        return $this->registration;
     }
 
     public function getAnswers()
@@ -100,15 +105,15 @@ class ApplicationResult
         return $this->application;
     }
 
-    public function setResultEnrollment($resultEnrollment)
+    public function setEnrollment($enrollment)
     {
-        $this->resultEnrollment = $resultEnrollment;
+        $this->enrollment = $enrollment;
         return $this;
     }
 
-    public function setResultRegistration($resultRegistration)
+    public function setRegistration($registration)
     {
-        $this->resultRegistration = $resultRegistration;
+        $this->registration = $registration;
         return $this;
     }
 
