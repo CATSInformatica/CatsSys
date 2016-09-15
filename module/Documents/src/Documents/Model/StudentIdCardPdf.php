@@ -71,7 +71,7 @@ class StudentIdCardPdf
     public function __construct($config, $students)
     {           
         $this->config = $config;
-        $this->students = $students;exit;
+        $this->students = $students;
     }
 
     /**
