@@ -68,25 +68,6 @@ class ExamContent
      *               .
      *           ]
      *       },
-     *       "parallelSubjects": {
-     *          "parallelGroup1": [
-     *              <subject-id>,
-     *              .
-     *              .
-     *              . 
-     *          ], 
-     *          .
-     *          .
-     *          .
-     *       },
-     *       "singleColumnSubjects": {
-     *          [
-     *              <subject-id>,
-     *              .
-     *              .
-     *              . 
-     *          ]
-     *       },
      *       "questions": [
      *           {
      *               "questionId": <number>,
