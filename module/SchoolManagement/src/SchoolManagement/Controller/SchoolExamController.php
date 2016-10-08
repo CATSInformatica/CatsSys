@@ -449,9 +449,9 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * Salva o conteúdo com 
+     * Salva o conteúdo 
      * 
-     * @param ExamContent $examContent - entidade que deve ser atualizada e/ou salva
+     * @param ExamContent $examContent - Entidade que deve ser atualizada e/ou salva
      * @param Array $baseSubjects - Array com objetos de todas as disciplinas base
      * @param Array $quantities - Array com as quantidades de questões por disciplina
      *  Ex: 
@@ -676,7 +676,7 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * Permite adicionar ou retirar questões do conteúdo de prova
+     * Permite adicionar ou remover questões de um conteúdo
      * 
      * @return ViewModel
      */
@@ -760,7 +760,7 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * Retorna todas as questões do conteúdo do id passado por parâmetro
+     * Retorna todas as questões do conteúdo que possui o id passado por parâmetro
      * 
      * @return JsonModel
      *  Retorno do tipo: [
@@ -944,7 +944,7 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * Exibe um formulário para adição de uma questão da disciplina selecionada ao banco de questões
+     * Exibe um formulário para adicionar uma questão ao banco de questões
      * 
      * @return ViewModel
      */
@@ -984,7 +984,7 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * Exibe um formulário de edição para a questão selecionada
+     * Exibe um formulário para edição da questão selecionada
      * 
      * @return ViewModel
      */
@@ -1085,7 +1085,7 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * Remove do banco de dados a questão selecionada
+     * Remove a questão selecionada do banco de dados
      * 
      * @return JsonModel
      */
