@@ -10,16 +10,16 @@ define(['jquery', 'datatable', 'mathjax'], function () {
         var questionTable = $('#question-table');
 
         /*
-         * Retorna o código HTML da área onde serão exibidas as alternativas 
-         * da questão
+         * Retorna o template em HTML da área onde serão exibidas as alternativas da 
+         * questão
          * 
          * @param {array} alternatives - alternativas da questão
          * @param {int} correctAlternative - índice da alternativa correta
-         * @returns {String}
+         * @returns {string}
          */
         formatAlternatives = function (alternatives, correctAlternative) {
             var html = '<div class="row">' +
-                '<div class="col-md-12">' + 
+                '<div class="col-xs-12" style="padding-left: 2%">' + 
                     '<strong>Alternativas</strong><br>';
                     for (var i = 0; i < alternatives.length; ++i) {
                         html += '<span class="' + ((correctAlternative === i) ? 'text-green' : '') + 
@@ -35,7 +35,7 @@ define(['jquery', 'datatable', 'mathjax'], function () {
          *  Listeners da tabela de questões
          */
         initDatatableListeners = function () {
-            // Exibe as alternativas da questão
+            // Exibe as alternativas da questão quando o ícone (?) é clicado
             $('#question-table tbody').on('click', 'td.details-control', function () {
                 var tr = $(this).closest('tr');
                 var row = questionTable.DataTable().row(tr);

@@ -21,7 +21,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
         prepareApplicationListeners = function () {
 
             /*
-             * Salva todo a prova
+             * Salva toda a prova
              * 
              */
             $('#save-exam').click(function () {
@@ -29,7 +29,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
             });
 
             /*
-             * Mostra o diálogo de impressão do gabarito
+             * Abre a janela de impressão do gabarito
              * 
              */
             $('#print-answer-key').click(function () {
@@ -52,16 +52,15 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
             });
 
             /*
-             * Mostra o diálogo de impressão do simulado
+             * Abre a janela de impressão da prova
              * 
              */
             $('.print-exam').click(function () {
                 var pageNumber = 1;
 
-                var firstPage = jQuery();
                 var instructionsPage = '';
                 var wordingPage = '';
-
+                
                 if ($(this).closest('.exam').find('.exam-instructions').is(":checked")) {
                     var examName = $('#exam-name-input').text().trim() || "PROVA";
                     var examDate = $('#exam-day').text().trim();
@@ -89,6 +88,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                     instructionsPageTemplate.find('.exam-content').html(instructionsTemplate.html());
                     */
                    
+                    // HTML da página com instruções
                     var instructions = '<div id="instructions"><div class="text-center"><h3>'
                             + '<strong>' + examName + '</strong></h3>'
                             + examDate + ' - ' + examBeginTime
@@ -182,7 +182,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                 generateExam(pageNumber, printDivId, function() {
                     MathJax.Hub.Queue(["Typeset", MathJax.Hub, printDivId], 
                     function () {
-                        //  Abre o diálogo de impressão da div .print-page usando jqueryprint
+                        //  Abre a janela de impressão da div .print-page usando jqueryprint
                         $("#" + printDivId).print({
                             globalStyles: true,
                             mediaPrint: true,
@@ -190,7 +190,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                             noPrintSelector: null,
                             iframe: true,
                             append: null,
-                            prepend: (firstPage.add(instructionsPage)).add(wordingPage),
+                            prepend: (jQuery().add(instructionsPage)).add(wordingPage),
                             manuallyCopyFormValues: true,
                             deferred: $.Deferred(),
                             timeout: 1000,
@@ -205,22 +205,31 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
         };
 
         /*
-         * Configura (cabeçalho, duas colunas, rodapé) e gera a versão de impressão 
-         * na div #print-div
-         * @param {int} pageNumber - número da primeira página de prova
+         * Configura (cabeçalho, duas colunas, rodapé) a prova e gera a versão 
+         * de impressão na div com id printDivId
+         * 
+         * @param {int} pageNumber - número da primeira página dessa prova
+         * @param {string} printDivId - id da div que será usada para impressão
+         * @param {function} callback
+         * 
          */
-        generateExam = function (pageNumber, printDivId, printExam) {
-
+        generateExam = function (pageNumber, printDivId, callback) {
             var contentHeight = 884.88;    // Número aproximado empiricamente
             var page = pageNumber;
-
+            
+            // Cria um div temporária que possuirá todo o conteúdo e servirá de 
+            // fonte para o jquerycolumnizer gerar a div para impressão
             $("#" + printDivId).closest('.exam').append('<div id="exam-temp"></div>');
             $('#exam-temp').html($("#" + printDivId).siblings(".preview-page").html());
             $('#exam-temp').find('.do-not-print').each(function () {
                 $(this).remove();
             });
+            
             $("#" + printDivId).html('');
             
+            // A div para impressão assume o template da prova (cabeçalho, 
+            // corpo com duas colunas e rodapé) e é preenchida com o conteúdo 
+            // da div temporária, que fica vazia.
             function buildExamLayout() {
                 if ($('#exam-temp > .content-questions').contents().length > 0) {
                     // Impede que uma página vazia seja gerada no fim do simulado
@@ -256,13 +265,19 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
             }
             buildExamLayout();
             
+            // A div temporária é removida
             $('#exam-temp').remove();
-            // Chama o printExam
-            if (printExam && typeof printExam === 'function') {
-                printExam();
+            
+            // O callback é chamado
+            if (callback && typeof callback === 'function') {
+                callback();
             }
         };
 
+        /*
+         *  Carrega todas as questões da aplicação em suas respectivas provas
+         * 
+         */
         loadExams = function () {
             $('.application-content').each(function () {
                 getContentQuestions($(this), addFetchedQuestions);
@@ -270,8 +285,11 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
         };
 
         /*
+         * Obtém as questões de um conteúdo e as passa como parâmetro para o callback
          * 
-         * 
+         * @param {jQuery object} applicationContent - Elemento do DOM que 
+         *      possui as informações de uma prova
+         * @param {type} callback
          */
         getContentQuestions = function(applicationContent, callback) {
             $.ajax({
@@ -286,6 +304,29 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
             
         };
         
+        /*
+         * Adiciona as questões na prova
+         * 
+         * @param {array} questions - array de questões 
+         *      questions = [
+         *          {
+         *              id: <number>
+         *              subjectId: <number>,
+         *              baseSubjectId: <number>,
+         *              enunciation: <string>, 
+         *              alternatives: [
+         *                  <string>,
+         *                  ...
+         *              ]
+         *              answer: <number>,
+         *          },
+         *          .
+         *          .
+         *          .          
+         *      ]
+         * @param {jQuery object} applicationContent - Elemento do DOM que 
+         *      possui as informações de uma prova
+         */
         addFetchedQuestions = function (questions, applicationContent) {
             for (var i = 0; i < questions.length; ++i) {
                 addQuestion(questions[i], applicationContent);
@@ -408,7 +449,8 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
         };
 
         /*
-         * Gera o gabarito do simulado
+         * Gera o gabarito do simulado (.pdf e .csv) e abre a janela de 
+         * impressão para o pdf
          * 
          */
         generateAnswerKey = function () {
@@ -519,7 +561,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
         };
 
         /*
-         * Numera as questões 
+         * Numera as questões de todas as provas, sequencialmente
          * 
          */
         numberQuestions = function () {
