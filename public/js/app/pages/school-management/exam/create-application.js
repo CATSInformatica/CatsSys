@@ -47,7 +47,7 @@ define(['jquery', 'datatable'], function () {
             init: function () {
                 initDataTable();
                 createApplicationListeners();
-            },
+            }
         };
 
     }());

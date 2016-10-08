@@ -7,42 +7,43 @@
 define(['jquery', 'datatable'], function () {
 
     var addQuestion = (function () {
+        var LETTERS_IN_THE_ALPHABET = 26;
 
         //  Tipos de questão
         var CLOSED_QUESTION = "1";
         var OPEN_QUESTION = "2";
+        
         var preview = null;
-        var alternativeListStyle = ['A', 'B', 'C', 'D', 'E', 'F', 'G', 'H', 'I'];
 
         /*
          *  Adiciona uma alternativa para a questão (textarea e radio button) 
          */
         addAlternative = function () {
-            // Adiciona um campo para inserir a alternativa
             var currentCount = $("#question-panel")
                     .find(".answer-tab")
                     .length;
-
-            if (currentCount > alternativeListStyle.length - 1) {
+            
+            if (currentCount >= LETTERS_IN_THE_ALPHABET) {
                 return;
             }
-
+            
+            var alternativeLetter = String.fromCharCode('A'.charCodeAt(0) + +currentCount);
             var template = $("#question-panel > span").data("template");
-
             template = template.replace(/__placeholder__/g, currentCount);
 
             // Adiciona um radio button para selecionar esta alternativa como a correta
             var radioBtn = '<label class="radio-inline">' +
                     '<input type="radio" name="exam-question[correctAnswer]" value="' +
-                    currentCount + '">' + alternativeListStyle[currentCount] + '</label>';
-
+                    currentCount + '">' + alternativeLetter + '</label>';
+            
             $("#correct-answer")
                     .append(radioBtn);
 
+            // Adiciona uma aba para a alternativa
             var header = $('<li class="answer-tab-header">' +
                     '<a href="#answer_' + currentCount + '" ' +
                     'data-toggle="tab"> Resp. ' +
-                    alternativeListStyle[currentCount] +
+                    alternativeLetter +
                     '</a></li>');
 
             var tab = $('<div class="tab-pane answer-tab" id="answer_' +
@@ -56,18 +57,18 @@ define(['jquery', 'datatable'], function () {
                     .find("div.tab-content")
                     .append(tab);
 
+            // Ativa o Trumbowyg no textarea da alternativa
             setTrumbowyg($("#question-panel")
                     .find(".answer-tab")
                     .last()
                     .find('textarea')
-                    );
+            );
         };
-
+        
         /*
          *  Remove a última alternativa da questão (radio button e tab)
          */
         removeAlternative = function () {
-
             if ($("#question-panel")
                     .find(".answer-tab")
                     .length > 0) {
@@ -87,19 +88,20 @@ define(['jquery', 'datatable'], function () {
         };
 
         /*
-         * 
          *  Configura o comportamento do formulário 
          *      *   Em relação ao campo de seleção "Tipo de questão", mostrando 
          *          diferentes elementos baseados no tipo de questão selecionada
-         *      *   Em relação aos botões de controle Adicionar/Remover Alternativa
+         *      *   Em relação aos botões de controle Adicionar/Remover Alternativa,
+         *          relevantes somente para questões fechadas
          */
-        setFormBehavior = function () {
-            // Impede que o usuário selecione o tipo de questão como aberta se 
-            // houver ao menos um campo de alternativas
+        setFormBehavior = function () {            
+            // O usuário é alertado ao tentar mudar o tipo de questão. Se desejada, 
+            // a ação pode ser executada mediante a confirmação do usuário, por um modal.
             $("#question-type").change(function () {
+                // Abre o modal
                 $('#modal-question-type').modal('show');
 
-                //  Volta o tipo da questão para o anterior, até que se 
+                //  Volta o select do tipo de questão para o anterior, até que se 
                 //  confirme o desejo de mundança
                 if ($("#question-type").val() === OPEN_QUESTION) {
                     $("#question-type").val(CLOSED_QUESTION);
@@ -107,26 +109,39 @@ define(['jquery', 'datatable'], function () {
                     $("#question-type").val(OPEN_QUESTION);
                 }
 
-                //  Mensagem do modal dependendo do tipo anterior da questão
+                //  Exibe a mensagem para o usuário
                 if ($("#question-type").val() === OPEN_QUESTION) {
                     $('#change-type-text').html('O conteúdo da resposta será perdido.<br>Tem certeza que deseja mudar o tipo da questão para FECHADA?');
                 } else {
                     $('#change-type-text').html('O conteúdo das alternativas será perdido.<br>Tem certeza que deseja mudar o tipo da questão para ABERTA?');
                 }
 
+                // Fecha o modal e executa as mudanças
                 $('#btn-change-type').unbind().click(function () {
                     $('#modal-question-type').modal('hide');
 
                     if ($("#question-type").val() === CLOSED_QUESTION) {
+                        // Efetiva a mudança de tipo de questão
+                        $("#question-type").val(OPEN_QUESTION);
+                        
+                        // Remove todas as alternativas
                         $("#question-panel")
                                 .find(".answer-tab")
                                 .each(removeAlternative);
-                        $("#question-type").val(OPEN_QUESTION);
+                        
+                        // Adiciona o campo de resposta 
+                        // e esconde os botões Adicionar/Remover Alternativa
                         addAlternative();
                         $('#answers-blah').hide();
                     } else {
-                        removeAlternative();
+                        // Efetiva a mudança de tipo de questão
                         $("#question-type").val(CLOSED_QUESTION);
+                        
+                        // Remove o campo de resposta
+                        removeAlternative();
+                                            
+                        // Adiciona 5 alternativas (padrão) 
+                        // e mostra os botões Adicionar/Remover Alternativa
                         while ($("#question-panel")
                                 .find(".answer-tab").length < 5) {
                             addAlternative();
@@ -138,36 +153,23 @@ define(['jquery', 'datatable'], function () {
 
             });
 
+            // Dá a funcionalidade desejada aos botões Adicionar/Remover Alternativa
             $('#add-alternative-btn').click(addAlternative);
             $('#remove-alternative-btn').click(removeAlternative);
         };
 
-        /*
-         * 
-         *  Validação parcial do formulário quando a pergunta é do tipo fechada
-         *      *   Verifica se uma resposta correta foi escolhida
+        /**
+         *  Cria o campo de pré-visualização da questão e o listener que 
+         *  o atualiza a cada mudança
          */
-        partialValidation = function () {
-            $('#add-question-btn').click(function () {
-                if ($("#question-type").val() === CLOSED_QUESTION &&
-                        (!$("input[name='exam-question[correctAnswer]']:checked").val() || $("input[name='exam-question[correctAnswer]']:checked").val() === '-1')) {
-                    if ($('ul#no-selection-err').length === 0) {
-                        $('#correct-answer').append('<ul id="no-selection-err" class="help-block text-red"><li>Você deve selecionar a alternativa correta</li></ul>');
-                        $('ul#no-selection-err').delay(5000).fadeOut(400, function () {
-                            $('ul#no-selection-err').remove();
-                        });
-                    }
-                } else {
-                    $('#add-question-btn').attr('type', 'submit');
-                }
-            });
-        };
-
         initPreview = function () {
             $("#exam-question-form").on("keyup", ".trumbowyg-editor", showPreview);
             showPreview();
         };
 
+        /*
+         *  Atualiza o campo de pré-visualização
+         */
         showPreview = function () {
             var value = "";
 
@@ -191,6 +193,9 @@ define(['jquery', 'datatable'], function () {
             value = "";
         };
 
+        /*
+         *  Carrega o MathJax e o inicializa na equação teste e na pré-visualização
+         */
         initMathJax = function () {
             require(['mathjax'], function () {
 
@@ -206,54 +211,53 @@ define(['jquery', 'datatable'], function () {
         };
 
         /*
-         *  elem === null
-         *      Transforma todo textarea da página em um Trumbowyg (editor wysiwyg HTML)
-         *      com as configurações definidas abaixo
-         *  elem === string (id, class...)
-         *      Transforma os elementos encontrados em um Trumbowyg
-         *      Exemplo: '.edit-textarea' Transforma todos os elementos da classe 
-         *                                .edit-textarea em um Trumbowyg
-         *      
+         *  Ativa o Trumbowyg nos campos selecionados
          *  Configuração Trumbowyg:
-         *  -   Trumbowyg padrão
-         *  -   Plugin Colors - Permite editar a cor do texto
-         *  -   Plugin Upload - Permite fazer upload de imagens
-         *  -   Localização em português
-         *      
-         * @param mixed elem
+         *  -   Plugin Base64 - Permite fazer o upload de imagens como base64
+         *  -   Localização em português  
+         *  
+         *  @param string elem - selector
+         *      Exemplo: '.edit-textarea' Transforma todos os elementos da classe 
+         *                                .edit-textarea em um campo Trumbowyg
          */
         setTrumbowyg = function (elem) {
-
-            if (elem === null) { // ALL
-                elem = 'textarea';
-            }
+            $.trumbowyg.langs.pt.base64 = "Inserir Imagem";
+            
             $(elem).trumbowyg({
                 removeformatPasted: true,
                 lang: 'pt',
                 btnsDef: {
-                    image: {
-                        dropdown: ['base64'],
-                        ico: 'insertImage'
+                    justify: {
+                        dropdown: ['justifyLeft', 'justifyCenter', 'justifyRight', 'justifyFull'],                        
+                        ico: 'justifyCenter'
                     }
                 },
-                btns: ['formatting',
-                    '|', 'btnGrp-design',
-                    '|', 'image',
-                    '|', 'btnGrp-justify',
-                    '|', 'btnGrp-lists',
-                    '|', 'horizontalRule']
+                btnsGrps: {
+                    semantic: ['strong', 'em', 'underline']
+                },
+                btns: [
+                    ['undo', 'redo'],
+                    'formatting',
+                    'btnGrp-semantic',
+                    ['removeformat'],
+                    'base64',
+                    'btnGrp-justify',
+                    'btnGrp-lists',
+                    'horizontalRule',
+                    ['fullscreen']
+                ]
             });
         };
 
         return {
             init: function () {
+                setFormBehavior();
+                
                 require(['trumbowyg'], function () {
-                    require(['trumbowygpt', 'trumbowygbase64'], function () {
-                        setTrumbowyg(null);
+                    require(['trumbowygpt', 'trumbowygbase64'], function () {                
+                        setTrumbowyg('textarea');
                         $(".trumbowyg-editor").addClass("tex2jax_ignore");
-                        setFormBehavior();
                         initMathJax();
-                        partialValidation();
                     });
                 });
             }

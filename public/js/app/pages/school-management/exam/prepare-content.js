@@ -33,7 +33,9 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
         //  Número de questões adicionadas
         var questionCount = 0;
 
-        setListeners = function () {            
+        initSelectionFunctionality = function () {
+            initDataTable();
+            
             /*
              * Carrega as questões da disciplina selecionada no DataTable
              * 
@@ -57,7 +59,7 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
             $('#refresh-button').click(function () {
                 questionTable.DataTable().ajax.reload();
             });
-
+            
             /*
              * Adiciona todas as questões selecionadas
              * 
@@ -78,13 +80,15 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
                     });
                 });
                 
-                if ($('#autosaving').is(':checked')) {
+                if (autosaveIsOn()) {
                     saveContent();
                 }
             });
-
+        };
+        setListeners = function () {
             /*
-             * Salva o conteúdo.
+             * Evento: clique no botão #save-content
+             * Salva o conteúdo
              * 
              */
             $('#save-content').click(function () {
@@ -92,7 +96,8 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
             });
 
             /*
-             * Remove a questão a qual está associado o ícone
+             * Evento: clique sobre o ícone de remoção
+             * Remove a questão associada ao ícone
              * 
              */
             $('.content-questions').on('click', '.rm-question', function () {
@@ -102,13 +107,15 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
                 question.css('opacity', 1);
                 removeQuestion(+$(this).parents('.question-block').data('id'));
                 
-                if ($('#autosaving').is(':checked')) {
+                if (autosaveIsOn()) {
                     saveContent();
                 }
             });
 
             /*
-             * Troca de posição com a questão de cima, se existir e for da mesma disciplina.
+             * Evento: clique sobre o ícone de "mover para cima"
+             * Troca a posição da questão associada ao ícone com a questão de 
+             * cima, se ela existir e for da mesma disciplina.
              * 
              */
             $('.content-questions').on('click', '.move-up', function () {
@@ -121,13 +128,15 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
                     qBlock.detach().insertBefore(previous);
                 }
                 
-                if ($('#autosaving').is(':checked')) {
+                if (autosaveIsOn()) {
                     saveContent();
                 }
             });
 
             /*
-             * Troca de posição com a questão de baixo, se existir e for da mesma disciplina.
+             * Evento: clique sobre o ícone de "mover para baixo"
+             * Troca a posição da questão associada ao ícone com a questão de 
+             * baixo, se ela existir e for da mesma disciplina.
              * 
              */
             $('.content-questions').on('click', '.move-down', function () {
@@ -140,12 +149,26 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
                     qBlock.detach().insertAfter(next);
                 }
                 
-                if ($('#autosaving').is(':checked')) {
+                if (autosaveIsOn()) {
                     saveContent();
                 }
             });
         };
+        
+        /*
+         * Retorna true se o conteúdo estiver configurado para ser salvo automaticamente
+         * 
+         * @returns {boolean}
+         */
+        autosaveIsOn = function () {
+            return $('#autosaving').is(':checked');
+        };
 
+        /*
+         * Atualiza o número de questões restantes, conforme questões vão sendo
+         * adicionadas
+         * 
+         */
         updateRemainingQuestions = function () {
             $('#added-questions').html(questionCount);
             $('#remaining-questions')
@@ -155,7 +178,8 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
         /*
          * Remove os dados do DataTable e insere os contidos em 'data'
          * 
-         * @param {array} data - Array de objetos contendo as informações a serem carregadas na tabela
+         * @param {array} data - Array de objetos contendo as informações a 
+         * serem carregadas na tabela
          * 
          * data contém:
          *      DT_RowAttr: (Objeto que determina os atributos de cada linha da tabela)
@@ -169,7 +193,8 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
         };
 
         /*
-         * Inicializa a tabela e define a forma de obtenção de dados por ajax em 'dataSrc'
+         * Inicializa a tabela e define a forma de obtenção de dados por ajax 
+         * em 'dataSrc'
          * 
          */
         initDataTable = function () {
@@ -282,6 +307,27 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
             
         };
         
+        /**
+         * Carrega as questões
+         * 
+         * @param {array} questions
+         *      questions = [
+         *          {
+         *              id: <number>
+         *              subjectId: <number>,
+         *              baseSubjectId: <number>,
+         *              enunciation: <string>, 
+         *              alternatives: [
+         *                  <string>,
+         *                  ...
+         *              ]
+         *              answer: <number>,
+         *          },
+         *          .
+         *          .
+         *          .          
+         *      ]
+         */
         addLoadedQuestions = function (questions) {
             var total = questions.length;
             var invokeAddQuestion = function (i) {
@@ -582,8 +628,8 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
                     initSubjectCounters();
                     updateRemainingQuestions();
                 });
+                initSelectionFunctionality();
                 setListeners();
-                initDataTable();
                 loadQuestions($('#contentId').val());
             }
         };

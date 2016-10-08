@@ -4,7 +4,7 @@
  * and open the template in the editor.
  */
 
-define(['jquery'], function () {
+define([], function () {
     var edit = (function () {
         
         return {

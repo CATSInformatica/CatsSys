@@ -17,13 +17,15 @@ class ExamQuestionFieldset extends Fieldset implements InputFilterProviderInterf
 {
 
     const DEFAULT_NUMBER_OF_ANSWERS = 5;
+    private $questionType;
 
     public function __construct(ObjectManager $obj, $questionType = ExamQuestion::QUESTION_TYPE_CLOSED,
         $numberOfAnswers = self::DEFAULT_NUMBER_OF_ANSWERS, $name = null, $options = []
     )
     {
         parent::__construct($name, $options);
-
+        
+        $this->questionType = $questionType;
         $this->setHydrator(new DoctrineHydrator($obj))
             ->setObject(new ExamQuestion());
 
@@ -132,6 +134,7 @@ class ExamQuestionFieldset extends Fieldset implements InputFilterProviderInterf
 
     public function getInputFilterSpecification()
     {
+        $correctAnswerIsRequired = $this->questionType == ExamQuestion::QUESTION_TYPE_CLOSED ? true : false;
         return array(
             'subject' => array(
                 'required' => true,
@@ -143,7 +146,7 @@ class ExamQuestionFieldset extends Fieldset implements InputFilterProviderInterf
                 'required' => true,
             ),
             'correctAnswer' => array(
-                'required' => false,
+                'required' => $correctAnswerIsRequired,
             ),
         );
     }
