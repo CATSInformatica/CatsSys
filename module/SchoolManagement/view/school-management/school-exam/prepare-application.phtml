@@ -58,17 +58,17 @@
                         <ul>
                             <?php foreach ($this->application->getExams() as $exam) : ?>
                                 <li>
-                                    <span id="exam-name-input"><?php echo $exam->getName() ?></span>
+                                    <span id="content-<?php echo $exam->getContent()->getExamContentId()?>-name"><?php echo $exam->getName() ?></span>
                                 </li>
                                     <?php echo 'Dia: '; ?>
-                                    <span id="exam-day">
+                                    <span id="content-<?php echo $exam->getContent()->getExamContentId()?>-day">
                                         <?php echo $exam->getDate()->format('d/m/Y'); ?>    
                                     </span><br>
                                     <?php echo 'Hora: '; ?>
-                                    <span id="exam-start-time">
+                                    <span id="content-<?php echo $exam->getContent()->getExamContentId()?>-start-time">
                                         <?php echo $exam->getStartTime()->format('H:i'); ?>    
                                     </span> - 
-                                    <span id="exam-end-time">
+                                    <span id="content-<?php echo $exam->getContent()->getExamContentId()?>-end-time">
                                         <?php echo $exam->getEndTime()->format('H:i'); ?>    
                                     </span><br> 
                             <?php endforeach; ?>
