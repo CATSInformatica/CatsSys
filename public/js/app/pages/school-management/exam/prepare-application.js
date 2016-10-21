@@ -57,15 +57,16 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
              */
             $('.print-exam').click(function () {
                 var pageNumber = 1;
-
+                var contentId = $(this).closest('.application-content').data('content-id');
+                
                 var instructionsPage = '';
                 var wordingPage = '';
                 
                 if ($(this).closest('.exam').find('.exam-instructions').is(":checked")) {
-                    var examName = $('#exam-name-input').text().trim() || "PROVA";
-                    var examDate = $('#exam-day').text().trim();
-                    var examBeginTime = $('#exam-start-time').text().trim();
-                    var examEndTime = $('#exam-end-time').text().trim();
+                    var examName = $('#content-' + contentId + '-name').text().trim() || "PROVA";
+                    var examDate = $('#content-' + contentId + '-day').text().trim();
+                    var examBeginTime = $('#content-' + contentId + '-start-time').text().trim();
+                    var examEndTime = $('#content-' + contentId + '-end-time').text().trim();
 
                     /*
                      * TODO: Usar template disponível na página
