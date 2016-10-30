@@ -1,0 +1,15 @@
+<section class="content">
+    <?php 
+        $this->headTitle()->append('Editar configuração de fundo')
+            ->setSeparator(' - ');
+    ?>
+    <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <?php if ($form !== null): ?>
+            <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
+                <?php echo $this->form($form); ?>
+            </div>
+        <?php endif; ?>
+    </div>
+
+</section>

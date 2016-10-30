@@ -106,7 +106,15 @@ return array(
                         'resource' => 'Documents\Controller\StudentBgConfig',
                         'privilege' => 'index',
                         'icon' => 'fa fa-files-o',
-                        'toolbar' => array(
+                        'toolbar' => array(                                                      
+                            array(
+                                'url' => '/documents/student-bg-config/edit/$id',
+                                'id' => 'student-bg-config-edit',
+                                'title' => 'Editar',
+                                'description' => 'Permite editar a configuração de fundo selecionada',
+                                'class' => 'fa fa-pencil-square-o bg-blue',
+                                'fntype' => 'selectedHttpClick',
+                            ),
                             array(
                                 'url' => '/documents/student-bg-config/delete/$id',
                                 'id' => 'student-bg-config-delete',
@@ -115,7 +123,7 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                                 'hideOnSuccess' => true,
-                            )
+                            ),  
                         ),
                     ),
                     array(
@@ -127,7 +135,7 @@ return array(
                         'icon' => 'fa fa-file-o'
                     ),
                     array(
-                        'label' => 'Generate Student Card Id\'s',
+                        'label' => 'Generate Student Card IDs',
                         'route' => 'documents/generate-pdf',
                         'action' => 'student-id-card',
                         'resource' => 'Documents\Controller\GeneratePdf',
