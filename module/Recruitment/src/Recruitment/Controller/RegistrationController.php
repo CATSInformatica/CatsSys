@@ -204,6 +204,7 @@ class RegistrationController extends AbstractEntityActionController
                     // salva no banco
                     $em->persist($registration);
                     $em->flush();
+                    
                     // redirecionar para a página que gera o comprovante de inscrição e envia o email.
                     if ($type == Recruitment::STUDENT_RECRUITMENT_TYPE) {
 
@@ -237,6 +238,7 @@ class RegistrationController extends AbstractEntityActionController
                             ->setIsHtml(true)
                             ->addTo($registration->getPerson()->getPersonEmail());
 
+                        // síncrona ---> assíncrono
                         $this->emailService->send();
 
                         return new ViewModel([
