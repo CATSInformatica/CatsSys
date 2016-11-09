@@ -20,6 +20,10 @@ class StudentClassRepository extends EntityRepository
 
     public function findByEndDateGratherThan(\DateTime $endDate)
     {
+        // offset para que seja possível realizar operações com uma turma já encerrada
+        // durante um período
+        $endDate->sub(new \DateInterval('P90D'));
+        
         return $this->_em
                         ->createQuery('SELECT sc FROM SchoolManagement\Entity\StudentClass sc '
                                 . 'WHERE sc.classEndDate > :date ORDER BY sc.classId DESC'
