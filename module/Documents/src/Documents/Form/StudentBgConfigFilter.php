@@ -21,58 +21,24 @@ class StudentBgConfigFilter extends InputFilter
     public function __construct()
     {
         $this->add(array(
-                    'name' => 'bg_phrase',
-                    'required' => true,
-                    'filters' => array(
-                        array('name' => 'StringTrim'),
-                        array('name' => 'StripTags'),
-                    ),
-                    'validators' => array(
-                        array(
-                            'name' => 'Zend\Validator\StringLength',
-                            'options' => array(
-                                'min' => '5',
-                                'max' => '300',
+                'name' => 'bg_img',
+                'required' => true,
+                'validators' => array(
+                    array(
+                        'name' => 'Zend\Validator\File\Extension',
+                        'options' => array(
+                            'extension' => array(
+                                'png',
                             ),
                         ),
                     ),
-                ))
-                ->add(array(
-                    'name' => 'bg_author',
-                    'required' => true,
-                    'filters' => array(
-                        array('name' => 'StringTrim'),
-                        array('name' => 'StripTags'),
-                    ),
-                    'validators' => array(
-                        array(
-                            'name' => 'Zend\Validator\StringLength',
-                            'options' => array(
-                                'min' => '5',
-                                'max' => '100',
-                            ),
-                        ),
-                    ),
-                ))
-                ->add(array(
-                    'name' => 'bg_img',
-                    'required' => true,
-                    'validators' => array(
-                        array(
-                            'name' => 'Zend\Validator\File\Extension',
-                            'options' => array(
-                                'extension' => array(
-                                    'png',
-                                ),
-                            ),
-                        ),
-                        array(
-                            'name' => 'Zend\Validator\File\Size',
-                            'options' => array(
-                                'min' => '1000',
-                                'max' => '5000000',
-                            )
+                    array(
+                        'name' => 'Zend\Validator\File\Size',
+                        'options' => array(
+                            'min' => '1000',
+                            'max' => '5000000',
                         )
+                    )
                 ),
         ));
     }

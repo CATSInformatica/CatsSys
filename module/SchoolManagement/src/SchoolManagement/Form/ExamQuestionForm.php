@@ -50,7 +50,7 @@ class ExamQuestionForm extends Form
             ))
             ->add(array(
                 'name' => 'submit',
-                'type' => 'button',
+                'type' => 'submit',
                 'attributes' => array(
                     'class' => 'btn btn-primary btn-block',
                     'id' => 'add-question-btn',

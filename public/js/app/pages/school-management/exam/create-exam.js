@@ -21,18 +21,18 @@ define(['jquery', 'datetimepicker'], function () {
         initDatepickers = function () {            
             $('#exam-day').closest('.input-group').datetimepicker({
                 format: 'DD/MM/YYYY',
-                defaultDate: ($('#exam-day').closest('.input-group').val() == '' ? new Date() : false),
+                defaultDate: ($('#exam-day').closest('.input-group').val() === '' ? new Date() : false),
                 locale: 'pt-br',
                 viewMode: 'days'
             });
             $('#exam-start-time').closest('.input-group').datetimepicker({
                 format: 'HH:mm',
-                defaultDate: ($('#exam-start-time').closest('.input-group').val() == '' ? '2015-10-21 13:30:00' : false),
+                defaultDate: ($('#exam-start-time').closest('.input-group').val() === '' ? '2015-10-21 13:30:00' : false),
                 locale: 'pt-br'
             });
             $('#exam-end-time').closest('.input-group').datetimepicker({
                 format: 'HH:mm',
-                defaultDate: ($('#exam-end-time').closest('.input-group').val() == '' ? '2015-10-21 17:30:00' : false),
+                defaultDate: ($('#exam-end-time').closest('.input-group').val() === '' ? '2015-10-21 17:30:00' : false),
                 locale: 'pt-br'
             });
         };

@@ -24,3 +24,25 @@ Todo
     Descrever melhor o título da descrição
     * Campo salário mínimo adicionar valores
     Adicionar os campos de justificativas na página de análise do candidato
+
+    [04/11/2016]
+            
+        config/autoload/local.php
+            trocar as credenciais do email
+        
+        Service: Authentication/Service/EmailSenderService (linha 133)
+        
+        Template: Recruitment/view/templates/registration-card.ptml
+
+        /recruitment/pre-interview ~~> /recruitment/access
+            -> (opcional) adicionar data de nascimento no formulário de acesso
+            -> no aviso da home adicionar link para a área do candidato
+        /recruitment/candidate
+            -> Timeline da situação do candidato
+                - Inscrito
+                - Confirmado
+            -> Editar dados preenchidos
+            -> Ver cartão de inscrição
+        
+        /recruitment/registration/registrationForm/1
+            -> Requisitar envio de email e redirecionar para a área do candidato.
