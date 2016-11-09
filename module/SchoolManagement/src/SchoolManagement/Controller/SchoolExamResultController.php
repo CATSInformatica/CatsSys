@@ -20,7 +20,6 @@ namespace SchoolManagement\Controller;
 
 use Database\Controller\AbstractEntityActionController;
 use DateTime;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use SchoolManagement\Entity\ApplicationResult;
 use SchoolManagement\Entity\ExamApplication;
@@ -170,7 +169,6 @@ class SchoolExamResultController extends AbstractEntityActionController
     public function uploadAnswersTemplateAction()
     {
 
-
         $em = $this->getEntityManager();
 
         $applications = $em->getRepository('SchoolManagement\Entity\ExamApplication')
@@ -186,29 +184,24 @@ class SchoolExamResultController extends AbstractEntityActionController
     }
 
     /**
-     * Busca todas as respostas das provas em $data['exams']
+     * Busca todas as respostas da prova $id;
      * @throws Exception
      */
     public function getAnswersAction()
     {
-        $request = $this->getRequest();
+        $id = $this->params('id', false);
 
-        if ($request->isPost()) {
-            $data = $request->getPost();
+        if ($id) {
             try {
 
-                if (empty($data['exams'])) {
-                    throw new \Exception('Nenhuma prova foi informada');
-                }
-
                 $em = $this->getEntityManager();
-                $answers = [];
-                foreach ($data['exams'] as $examId) {
-                    $exam = $em->find('SchoolManagement\Entity\Exam', $examId);
-                    $answers[$examId] = $exam->getName();
-                }
 
-                return new JsonModel($answers);
+                $exam = $em->find('SchoolManagement\Entity\Exam', $id);
+                $answers = Json::decode($exam
+                            ->getContent()
+                            ->getConfig());
+
+                return new JsonModel([$answers]);
             } catch (\Exception $ex) {
                 $this->getResponse()->setStatusCode(400);
             }

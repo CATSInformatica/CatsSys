@@ -15,64 +15,101 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(['moment'], function (moment) {
+define(['moment', 'datatable'], function (moment) {
     UploadAnswersTemplate = (function () {
 
         var examsTable = $("#exams-table");
+        var dtExamsTable;
         var selectedExams;
+        var cachedAnswers;
 
         initListeners = function () {
-            $("#fetch-data").click(loadData);
-            loadData();
+
+            dtExamsTable = examsTable.DataTable({
+                dom: '',
+                paging: false,
+                ajax: {
+                    url: "/school-management/school-exam/get-exams/" + getChosenApplication(),
+                    type: "GET",
+                    dataType: "json",
+                    dataSrc: function (exams) {
+                        var result = [];
+                        for (var i = 0; i < exams.length; i++) {
+                            result.push({
+                                DT_RowClass: "cats-row",
+                                DT_RowAttr: {
+                                    "data-id": exams[i].examId
+                                },
+                                0: '',
+                                1: exams[i].name,
+                                2: moment(exams[i].date.date).format("DD/MM/YYYY"),
+                                3: moment(exams[i].startTime.date).format("HH:mm"),
+                                4: moment(exams[i].endTime.date).format("HH:mm")
+                            });
+                        }
+
+                        return result;
+                    }
+                },
+                columnDefs: [
+                    {
+                        className: "text-center",
+                        targets: [2, 3, 4]
+                    },
+                    {
+                        className: "details-control",
+                        targets: [0]
+                    }
+                ]
+            });
+            
+            
+            $("#fetch-data").click(function () {
+                dtExamsTable.ajax.reload();
+            });
+
+            examsTable.on("click", "tr td.details-control", function () {
+                var tr = $(this).closest("tr");
+                var row = dtExamsTable.row(tr);
+                if (row.child.isShown()) {
+                    tr.removeClass("details");
+                    row.child.hide();
+                } else {
+                    tr.addClass("details");
+                    var detailContent = getDetailsOf();
+                    row.child(detailContent).show();
+                    loadAnswers(tr.data('id')).then(function(answers) {
+                        setTimeout(function(){
+                            tr.next('tr').find('.spinner-feedback').remove();
+                        }, 500);
+                    });
+                }
+            });
+        };
+        
+        getChosenApplication = function() {
+            return $("#application").val();
         };
 
-        loadData = function () {
-            loadExams().then(loadAnswers).then(function (examAnswers) {
-                console.log('examAnswers', examAnswers);
-                //createExamTable(selectedExams);
+        loadAnswers = function (examId) {
+            return $.ajax('/school-management/school-exam-result/get-answers/' + examId, {
+                type: 'GET',
+                dataType: 'json'
             });
         };
 
         /**
+         * Calcula o gabarito das questões da prova selecionada
          * 
-         * @returns {jqXHR}
+         * @returns string
          */
-        loadExams = function () {
-            var application = $("#application").val();
-            return $.ajax('/school-management/school-exam/get-exams/' + application, {
-                dataType: 'json'
-            });
-        };
+        getDetailsOf = function () {
 
-        loadAnswers = function (exams) {
-            selectedExams = exams;
-            examIds = exams.map(function (exam) {
-                return exam.examId;
-            });
-            return $.ajax('/school-management/school-exam-result/get-answers', {
-                type: 'POST',
-                data: {
-                    exams: examIds
-                },
-                dataType: 'json'
-            });
-        };
+            var content = "<h3 class='text-center'>Gabarito</h3><hr><div class='container'>";
+            content += "<h4 class='text-center spinner-feedback'><i class='fa fa-refresh fa-spin fa-5x'></i></h4>";
+            content += "</div>";
 
-        createExamTable = function (exams) {
-
-            var tbody;
-
-            exams.forEach(function (exam) {
-                tbody += "<tr class='cats-row' data-id='" + exam.examId + "'>" +
-                        "<td class='details-control'></td>" +
-                        "<td class='text-center'>" + exam.name + "</td>" +
-                        "<td class='text-center'>" + moment(exam.date.date).format("DD/MM/YYYY") + "</td>" +
-                        "<td class='text-center'>" + moment(exam.startTime.date).format("HH:mm") + "</td>" +
-                        "<td class='text-center'>" + moment(exam.endTime.date).format("HH:mm") + "</td>" +
-                        "</tr>";
-            });
-
-            examsTable.find("tbody").html(tbody);
+            return content;
         };
 
         return {
