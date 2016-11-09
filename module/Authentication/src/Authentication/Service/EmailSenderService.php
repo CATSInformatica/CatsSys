@@ -130,13 +130,18 @@ class EmailSenderService implements EmailSenderServiceInterface
             $this->message->setBody($this->body);
         }
 
+        try {
+            $transport = new Smtp($this->smtpOptions);
+            $transport->send($this->message);
+            return true;
+        } catch (\Exception $ex) {
+            echo $ex->getMessage();
+            return false;
+        }
         // faz o envio.
         try  {
-        
-            $scriptDir = '';
-            $filename = microtime();
-            //file_put_contents('/data/emails/' . $filename, serialize([$this->smtpOptions, $this->message)]);
-            shell_exec('php /path/to/sendemail.php &' . $filename);     
+            
+            shell_exec('php sendemail.php &' . serialize($this->smtpOptions) . serialize($this->message));     
             return true;
         } catch (\Exception $ex) {
             echo $ex->getMessage();

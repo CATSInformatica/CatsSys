@@ -1,16 +1,14 @@
 <?php
 
-// include composer autoloader
+use Zend\Mail\Transport\Smtp;
+    try{
 
-user Zend/bla/bla/smtp
+        $options = unserialize(argv[1]);
+        $message = unserialize(argv[2]);
 
-Receber parametros iguais no c (argv)
-$filename = argv[1];
-
-$content = unserialize(file_get_contents($filename));
-
-//            $transport = new Smtp($content[0]);
-//            $transport->send($content[1]);
-
-
-
+        $transport = new Smtp($options);
+        $transport->send($message);
+    } catch (\Exception $ex) {
+            echo $ex->getMessage();
+            return false;
+    }
