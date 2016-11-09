@@ -39,7 +39,7 @@ class EnrollmentRepository extends EntityRepository
         $orderBy = !$sortByName ? 'e.enrollmentId' : 'p.personFirstName asc, p.personLastName asc';
 
         return $this->_em
-                ->createQuery('SELECT p.personId, e.enrollmentId, '
+                ->createQuery('SELECT p.personId, e.enrollmentId, e.enrollmentBeginDate, '
                     . 'CONCAT(CONCAT(p.personFirstName, \' \'), p.personLastName) as '
                     . 'personFullName, p.personGender, p.personCpf, p.personEmail, p.personPhone, p.personSocialMedia, '
                     . 'p.personBirthday, p.personRg '
