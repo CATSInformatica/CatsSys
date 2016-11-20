@@ -201,10 +201,10 @@ return array(
                         'icon' => 'fa fa-users',
                         'toolbar' => array(
                             array(
-                                'url' => '/recruitment/recruitment/public-notice/$id',
-                                'title' => 'Edital',
-                                'description' => 'Ler edital',
-                                'class' => 'fa fa-file-pdf-o bg-green',
+                                'url' => '/recruitment/recruitment/edit/$id',
+                                'title' => 'Editar',
+                                'description' => 'Edita o processo seletivo selecionado',
+                                'class' => 'fa fa-edit bg-green',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '_blank',
                             ),

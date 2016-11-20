@@ -24,24 +24,34 @@ define(['moment', 'masks', 'jquery', 'datetimepicker', 'bootstrapslider'], funct
 
         initMasks = function () {
             masks.bind({
-                date: "input[name='recruitment_begindate'], input[name='recruitment_enddate']"
+                date: 'input[name$="Date]"]'
             });
         };
 
         initSliders = function () {
+
+            var val;
+
+            $('input[name$="Target]"]').each(function () {
+                val = $(this).val();
+                if (val !== "") {
+                    $(this).attr('data-slider-value', val);
+                }
+            });
+
             $('.input-slider').slider({
                 tooltip: 'always'
             });
-            
-            $('select[name=recruitment_type]').on('change', function(){
+
+            $('select[name$="recruitmentType]"]').on('change', function () {
                 disableSliderIfNeeded($(this).val());
             });
-            
-            disableSliderIfNeeded($('select[name=recruitment_type]').val());
+
+            disableSliderIfNeeded($('select[name$="recruitmentType]"]').val());
         };
-        
-        disableSliderIfNeeded = function(value){
-            if(parseInt(value) !== PSA) {
+
+        disableSliderIfNeeded = function (value) {
+            if (parseInt(value) !== PSA) {
                 console.log();
                 $(".input-slider").slider('disable');
             } else {
