@@ -1,15 +1,31 @@
 
 Funções do processo seletivo de alunos
 
-    Lançamento do edital  - Concluído
-    Inscrição - (Falta o envio de email)
-    Confirmação - (Falta o envio de email)
-    Prova - Fora do sistema ?
-    Resultado da prova ~> Convocação para pré-entrevista - Concluído
-    Pré-entrevista ~> formulário de pré-entrevista - Iniciado ... (falta a busca por cpf e campos para menores de 18 anos)
-    Avaliação da pré-entrevista ~> ???
-    Entrevistas ~> ???
-    Resultado da entrevista ~> ???
-    Matrícula - Concluído
+    Lançamento do edital  - (v)
+    Inscrição - (v)
+    Confirmação - (v)
+    Prova - Fora do sistema (v)
+    Resultado da prova ~> Convocação para pré-entrevista - (v)
+    Pré-entrevista ~> formulário de pré-entrevista (v)
+    Avaliação da pré-entrevista (v)
+    Entrevistas (v)
+    Resultado da entrevista (v)
+    Matrícula (v)
 
-
+15/11/2016
+    criar novos campos no formulário de processo seletivo
+        - Data de abertura e fechamento das inscrições
+        - Descrição da data. Ex: Período em que o candidato realiza sua inscrição pelo site
+        - Data de início e fechamento da confirmação. Ex: Período em que o candidato deve confirmar sua inscrição de acordo com o edital
+        - Descrição da data
+        - Data da prova e liberação do resultado. Ex: Data da prova.
+        - Descrição da prova
+        - Data de início da pré-entrevista.
+        - Descrição da pré-entrevista.
+        - Data de início e término das entrevistas.
+        - Descrição das entrevistas.
+        - Data do resultado final
+        - Descrição do resultado final
+        - Data de matrícula.
+        - Descrição da matrícula
+        

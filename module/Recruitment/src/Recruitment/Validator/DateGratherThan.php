@@ -237,12 +237,12 @@ class DateGratherThan extends AbstractValidator
         $dateValue = \DateTime::createFromFormat($this->format, $value);
 
         if ($this->inclusive) {
-            if ($dateMin > $dateValue) {
+            if ($dateMin >= $dateValue) {
                 $this->error(self::NOT_GREATER_INCLUSIVE);
                 return false;
             }
         } else {
-            if ($dateMin >= $dateValue) {
+            if ($dateMin > $dateValue) {
                 $this->error(self::NOT_GREATER);
                 return false;
             }
