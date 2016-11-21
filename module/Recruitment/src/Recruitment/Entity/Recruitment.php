@@ -118,6 +118,136 @@ class Recruitment
      */
     private $recruitmentStudentTarget;
 
+    // new
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="recruitment_subdesc", type="string", length=800, nullable=true)
+     */
+    private $subscriptionDescription;
+
+    /**
+     *
+     * @var \DateTime
+     * @ORM\Column(name="recruitment_consdate", type="datetime", nullable=true)
+     */
+    private $confirmationStartDate;
+
+    /**
+     *
+     * @var \DateTime
+     * @ORM\Column(name="recruitment_conedate", type="datetime", nullable=true)
+     */
+    private $confirmationEndDate;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="recruitment_condesc", type="string", length=800, nullable=true)
+     */
+    private $confirmationDescription;
+
+    /**
+     *
+     * @var \DateTime
+     * @ORM\Column(name="recruitment_exadate", type="datetime", nullable=true)
+     */
+    private $examDate;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="recruitment_exadesc", type="string", length=800, nullable=true)
+     */
+    private $examDescription;
+
+    /**
+     *
+     * @var \DateTime
+     * @ORM\Column(name="recruitment_exrdate", type="datetime", nullable=true)
+     */
+    private $examResultDate;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="recruitment_exrdesc", type="string", length=800, nullable=true)
+     */
+    private $examResultDescription;
+
+    /**
+     *
+     * @var \DateTime
+     * @ORM\Column(name="recruitment_presdate", type="datetime", nullable=true)
+     */
+    private $preInterviewStartDate;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="recruitment_predesc", type="string", length=800, nullable=true)
+     */
+    private $preInterviewDescription;
+
+    /**
+     *
+     * @var \DateTime
+     * @ORM\Column(name="recruitment_intsdate", type="datetime", nullable=true)
+     */
+    private $interviewStartDate;
+
+    /**
+     *
+     * @var \DateTime
+     * @ORM\Column(name="recruitment_intedate", type="datetime", nullable=true)
+     */
+    private $interviewEndDate;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="recruitment_intdesc", type="string", length=800, nullable=true)
+     */
+    private $interviewDescription;
+
+    /**
+     *
+     * @var \DateTime
+     * @ORM\Column(name="recruitment_resdate", type="datetime", nullable=true)
+     */
+    private $resultDate;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="recruitment_resdesc", type="string", length=800, nullable=true)
+     */
+    private $resultDescription;
+
+    /**
+     *
+     * @var \DateTime
+     * @ORM\Column(name="recruitment_enrsdate", type="datetime", nullable=true)
+     */
+    private $enrollmentStartDate;
+
+    /**
+     *
+     * @var \DateTime
+     * @ORM\Column(name="recruitment_enredate", type="datetime", nullable=true)
+     */
+    private $enrollmentEndDate;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="recruitment_enrdesc", type="string", length=800, nullable=true)
+     */
+    private $enrollmentDescription;
+
+    // /new
+
     /**
      *
      * @var Collection
@@ -179,22 +309,20 @@ class Recruitment
         return $this;
     }
 
-    /**
-     * 
-     * @return \DateTime
-     */
-    public function getRecruitmentBeginDate()
+    public function getRecruitmentBeginDate($fmt = 'd/m/Y')
     {
-        return $this->recruitmentBeginDate;
+        if ($this->recruitmentBeginDate instanceof \DateTime) {
+            return $this->recruitmentBeginDate->format($fmt);
+        }
+        return null;
     }
 
-    /**
-     * 
-     * @return \DateTime
-     */
-    public function getRecruitmentEndDate()
+    public function getRecruitmentEndDate($fmt = 'd/m/Y')
     {
-        return $this->recruitmentEndDate;
+        if ($this->recruitmentEndDate instanceof \DateTime) {
+            return $this->recruitmentEndDate->format($fmt);
+        }
+        return null;
     }
 
     /**
@@ -241,7 +369,7 @@ class Recruitment
     {
         return $this->recruitmentStudentTarget;
     }
-   
+
     /**
      * 
      * @param \DateTime $recruitmentBeginDate
@@ -284,8 +412,7 @@ class Recruitment
      */
     public function setRecruitmentType($recruitmentType)
     {
-        if (!in_array($recruitmentType,
-                array(self::STUDENT_RECRUITMENT_TYPE,
+        if (!in_array($recruitmentType, array(self::STUDENT_RECRUITMENT_TYPE,
                 self::VOLUNTEER_RECRUITMENT_TYPE))) {
             throw new \InvalidArgumentException("Invalid recruitment type");
         }
@@ -293,7 +420,7 @@ class Recruitment
         $this->recruitmentType = $recruitmentType;
         return $this;
     }
-    
+
     /**
      * 
      * @param float $recruitmentSocioeconomicTarget
@@ -369,4 +496,363 @@ class Recruitment
         return $this;
     }
 
+    /**
+     * 
+     * @return string
+     */
+    public function getSubscriptionDescription()
+    {
+        return $this->subscriptionDescription;
+    }
+
+    /**
+     * 
+     * @return \DateTime
+     */
+    public function getConfirmationStartDate($fmt = 'd/m/Y')
+    {
+
+        if ($this->confirmationStartDate instanceof \DateTime) {
+            return $this->confirmationStartDate->format($fmt);
+        }
+
+        return null;
+    }
+
+    public function getConfirmationEndDate($fmt = 'd/m/Y')
+    {
+        if ($this->confirmationEndDate instanceof \DateTime) {
+            return $this->confirmationEndDate->format($fmt);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getConfirmationDescription()
+    {
+        return $this->confirmationDescription;
+    }
+
+    public function getExamDate($fmt = 'd/m/Y')
+    {
+        if ($this->examDate instanceof \DateTime) {
+            return $this->examDate->format($fmt);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getExamDescription()
+    {
+        return $this->examDescription;
+    }
+
+    public function getExamResultDate($fmt = 'd/m/Y')
+    {
+        if ($this->examResultDate instanceof \DateTime) {
+            return $this->examResultDate->format($fmt);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getExamResultDescription()
+    {
+        return $this->examResultDescription;
+    }
+
+    public function getPreInterviewStartDate($fmt = 'd/m/Y')
+    {
+        if ($this->preInterviewStartDate instanceof \DateTime) {
+            return $this->preInterviewStartDate->format($fmt);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getPreInterviewDescription()
+    {
+        return $this->preInterviewDescription;
+    }
+
+    /**
+     * 
+     * @return \DateTime
+     */
+    public function getInterviewStartDate($fmt = 'd/m/Y')
+    {
+        if ($this->interviewStartDate instanceof \DateTime) {
+            return $this->interviewStartDate->format($fmt);
+        }
+        return null;
+    }
+
+    public function getInterviewEndDate($fmt = 'd/m/Y')
+    {
+        if ($this->interviewEndDate instanceof \DateTime) {
+            return $this->interviewEndDate->format($fmt);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewDescription()
+    {
+        return $this->interviewDescription;
+    }
+
+    public function getResultDate($fmt = 'd/m/Y')
+    {
+        if ($this->resultDate instanceof \DateTime) {
+            return $this->resultDate->format($fmt);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getResultDescription()
+    {
+        return $this->resultDescription;
+    }
+
+    public function getEnrollmentStartDate($fmt = 'd/m/Y')
+    {
+        if ($this->enrollmentStartDate instanceof \DateTime) {
+            return $this->enrollmentStartDate->format($fmt);
+        }
+        return null;
+    }
+
+    public function getEnrollmentEndDate($fmt = 'd/m/Y')
+    {
+        if ($this->enrollmentEndDate instanceof \DateTime) {
+            return $this->enrollmentEndDate->format($fmt);
+        }
+        return null;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getEnrollmentDescription()
+    {
+        return $this->enrollmentDescription;
+    }
+
+    /**
+     * 
+     * @param string $subscriptionDescription
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setSubscriptionDescription($subscriptionDescription)
+    {
+        $this->subscriptionDescription = $subscriptionDescription;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \DateTime $confirmationStartDate
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setConfirmationStartDate(\DateTime $confirmationStartDate)
+    {
+        $this->confirmationStartDate = $confirmationStartDate;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \DateTime $confirmationEndDate
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setConfirmationEndDate(\DateTime $confirmationEndDate)
+    {
+        $this->confirmationEndDate = $confirmationEndDate;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $confirmationDescription
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setConfirmationDescription($confirmationDescription)
+    {
+        $this->confirmationDescription = $confirmationDescription;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \DateTime $examDate
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setExamDate(\DateTime $examDate)
+    {
+        $this->examDate = $examDate;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param type $examDescription
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setExamDescription($examDescription)
+    {
+        $this->examDescription = $examDescription;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \DateTime $examResultDate
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setExamResultDate(\DateTime $examResultDate)
+    {
+        $this->examResultDate = $examResultDate;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $examResultDescription
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setExamResultDescription($examResultDescription)
+    {
+        $this->examResultDescription = $examResultDescription;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \DateTime $preInterviewStartDate
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setPreInterviewStartDate(\DateTime $preInterviewStartDate)
+    {
+        $this->preInterviewStartDate = $preInterviewStartDate;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $preInterviewDescription
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setPreInterviewDescription($preInterviewDescription)
+    {
+        $this->preInterviewDescription = $preInterviewDescription;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \DateTime $interviewStartDate
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setInterviewStartDate(\DateTime $interviewStartDate)
+    {
+        $this->interviewStartDate = $interviewStartDate;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \DateTime $interviewEndDate
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setInterviewEndDate(\DateTime $interviewEndDate)
+    {
+        $this->interviewEndDate = $interviewEndDate;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $interviewDescription
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setInterviewDescription($interviewDescription)
+    {
+        $this->interviewDescription = $interviewDescription;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \DateTime $resultDate
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setResultDate(\DateTime $resultDate)
+    {
+        $this->resultDate = $resultDate;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $resultDescription
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setResultDescription($resultDescription)
+    {
+        $this->resultDescription = $resultDescription;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \DateTime $enrollmentStartDate
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setEnrollmentStartDate(\DateTime $enrollmentStartDate)
+    {
+        $this->enrollmentStartDate = $enrollmentStartDate;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param \DateTime $enrollmentEndDate
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setEnrollmentEndDate(\DateTime $enrollmentEndDate)
+    {
+        $this->enrollmentEndDate = $enrollmentEndDate;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $enrollmentDescription
+     * @return \Recruitment\Entity\Recruitment
+     */
+    public function setEnrollmentDescription($enrollmentDescription)
+    {
+        $this->enrollmentDescription = $enrollmentDescription;
+        return $this;
+    }
 }

@@ -16,7 +16,7 @@
  */
 
 define(['jquery', 'datatable'], function () {
-    var index = (function () {
+    var contents = (function () {
 
         var contentsTable = $('#contents-table');
 
@@ -49,5 +49,5 @@ define(['jquery', 'datatable'], function () {
 
     }());
 
-    return index;
+    return contents;
 });

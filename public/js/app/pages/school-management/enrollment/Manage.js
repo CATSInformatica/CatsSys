@@ -44,12 +44,13 @@ define(['moment', 'datatable'], function (moment) {
                                     "data-id": students[i].enrollmentId
                                 },
                                 0: students[i].enrollmentId,
-                                1: moment(students[i].personBirthday.date).format('DD/MM/YYYY'),
-                                2: students[i].personFullName,
-                                3: students[i].personEmail,
-                                4: students[i].personPhone,
-                                5: students[i].personCpf,
-                                6: students[i].personRg
+                                1: moment(students[i].enrollmentBeginDate.date).format('DD/MM/YYYY'),
+                                2: moment(students[i].personBirthday.date).format('DD/MM/YYYY'),
+                                3: students[i].personFullName,
+                                4: students[i].personEmail,
+                                5: students[i].personPhone,
+                                6: students[i].personCpf,
+                                7: students[i].personRg
                             });
                         }
 

@@ -12,6 +12,8 @@
                     <th class="text-center">Data de Início</th>
                     <th class="text-center">Data de Término</th>
                     <th class="text-center">Tipo</th>
+                    <th class="text-center">Critérios</th>
+                    <th class="text-center">Edital</th>
                 </tr>
             </thead>
             <tbody>
@@ -20,20 +22,39 @@
                         <td class="text-center"> <?php echo $this->escapeHtml($recruitment->getRecruitmentId()); ?></td>
                         <td class="text-center"> <?php echo $this->escapeHtml($recruitment->getRecruitmentNumber()); ?></td>
                         <td class="text-center"> <?php echo $this->escapeHtml($recruitment->getRecruitmentYear()); ?></td>
-                        <td class="text-center"> <?php echo $recruitment->getRecruitmentBeginDate()->format('d/m/Y'); ?></td>
-                        <td class="text-center"> <?php echo $recruitment->getRecruitmentEndDate()->format('d/m/Y'); ?></td>
+                        <td class="text-center"> <?php echo $recruitment->getRecruitmentBeginDate(); ?></td>
+                        <td class="text-center"> <?php echo $recruitment->getRecruitmentEndDate(); ?></td>
                         <td class="text-center"> <?php
                             echo ($recruitment->getRecruitmentType() == Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE) ? 'PSA' : 'PSV';
+
                             ?>
                         </td>
-                        <td class="text-center">
+                        <td>
                             <?php if ($recruitment->getRecruitmentType() == Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE): ?>
-                                <div class="btn-group">
-                                    <button class="btn btn-warning"><?php echo $recruitment->getRecruitmentSocioeconomicTarget(); ?></button>
-                                    <button class="btn btn-danger"><?php echo $recruitment->getRecruitmentVulnerabilityTarget(); ?></button>
-                                    <button class="btn btn-success"><?php echo $recruitment->getRecruitmentStudentTarget(); ?></button>
+
+                                <div class="text-center">
+                                    <div class="btn-group">
+                                        <button class="btn btn-warning"><?php echo $recruitment->getRecruitmentSocioeconomicTarget(); ?></button>
+                                        <button class="btn btn-danger"><?php echo $recruitment->getRecruitmentVulnerabilityTarget(); ?></button>
+                                        <button class="btn btn-success"><?php echo $recruitment->getRecruitmentStudentTarget(); ?></button>
+                                    </div>
                                 </div>
+                                <p></p>
+                                <ul class="list-unstyled">
+                                    <li>Confirmação: <?php echo $recruitment->getConfirmationStartDate() . ' - ' . $recruitment->getConfirmationEndDate(); ?> </li>
+                                    <li>Prova: <?php echo $recruitment->getExamDate(); ?> </li>
+                                    <li>Resultado: <?php echo $recruitment->getExamResultDate(); ?> </li>
+                                    <li>Pré-entrevista: <?php echo $recruitment->getPreInterviewStartDate(); ?> </li>
+                                    <li>Entrevista: <?php echo $recruitment->getInterviewStartDate() . ' - ' . $recruitment->getInterviewEndDate(); ?> </li>
+                                    <li>Resultado Final: <?php echo $recruitment->getResultDate(); ?> </li>
+                                    <li>Matrícula: <?php echo $recruitment->getEnrollmentStartDate() . ' - ' . $recruitment->getEnrollmentEndDate(); ?> </li>
+                                </ul>
+
                             <?php endif; ?>
+                        </td>
+                        <td>
+                            <br>
+                            <a href="/docs/<?php echo $recruitment->getRecruitmentPublicNotice(); ?>"><i class="fa fa-file-pdf-o fa-2x"></i></a>
                         </td>
                     </tr>
                 <?php endforeach; ?>
