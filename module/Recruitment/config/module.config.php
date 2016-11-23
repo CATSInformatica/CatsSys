@@ -201,10 +201,10 @@ return array(
                         'icon' => 'fa fa-users',
                         'toolbar' => array(
                             array(
-                                'url' => '/recruitment/recruitment/edit/$id',
-                                'title' => 'Editar',
-                                'description' => 'Edita o processo seletivo selecionado',
-                                'class' => 'fa fa-edit bg-green',
+                                'url' => '/recruitment/recruitment/public-notice/$id',
+                                'title' => 'Edital',
+                                'description' => 'Ler edital',
+                                'class' => 'fa fa-file-pdf-o bg-green',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '_blank',
                             ),
@@ -399,6 +399,14 @@ return array(
                         'action' => 'registration-forms',
                         'resource' => 'Recruitment\Controller\Registration',
                         'privilege' => 'registration-forms',
+                        'icon' => 'fa fa-file-text-o',
+                    ),
+                    array(
+                        'label' => 'Access',
+                        'route' => 'recruitment/registration',
+                        'action' => 'access',
+                        'resource' => 'Recruitment\Controller\Registration',
+                        'privilege' => 'access',
                         'icon' => 'fa fa-file-text-o',
                     ),
                     array(
