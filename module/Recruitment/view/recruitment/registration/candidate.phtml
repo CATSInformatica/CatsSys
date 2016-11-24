@@ -177,6 +177,16 @@
                             $enrollment = $processing;
                         }
                     }
+                    //dia da pré entrevista
+                    if ($interview == $completed) {
+                        if (strtotime($registration->getRecruitment()->getPreInterviewStartDate()) < strtotime('now')) {
+                            $preInterview = $processing;
+                        } elseif (strtotime($registration->getRecruitment()->getPreInterviewStartDate()) == strtotime('now')) {
+                            $preInterview = $summoned;
+                        } elseif (strtotime($registration->getRecruitment()->getPreInterviewStartDate()) > strtotime('now')) {
+                            $preInterview = $completed;
+                        }
+                    }
                     //fim do tratamento dos blocos em cores
 
                     //Links tratados por tempo.
