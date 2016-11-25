@@ -58,6 +58,13 @@ class EmailSenderService implements EmailSenderServiceInterface
      * @var string Corpo da mensagem.
      */
     protected $body = null;
+    
+     /**
+     *
+     * @cofig string Config do email. *criado na bim
+     */
+    
+    protected $config = null;
 
     /**
      *
@@ -76,6 +83,12 @@ class EmailSenderService implements EmailSenderServiceInterface
      * @var bool Define se o corpo do email aceitará conteúdo html ou apenas texto.
      */
     protected $isHtml = false;
+    
+    /**
+     *
+     * @name string Nome a ser colocado no envio do email. *criado BIM
+     */
+    protected $name = false;
 
     /**
      * {@inheritDoc}
@@ -130,18 +143,30 @@ class EmailSenderService implements EmailSenderServiceInterface
             $this->message->setBody($this->body);
         }
 
-        // faz o envio.
-        try  {
         
-            $scriptDir = '';
-            $filename = microtime();
-            //file_put_contents('/data/emails/' . $filename, serialize([$this->smtpOptions, $this->message)]);
-            shell_exec('php /path/to/sendemail.php &' . $filename);     
-            return true;
-        } catch (\Exception $ex) {
-            echo $ex->getMessage();
-            return false;
-        }
+        // faz o envio.
+            try  {
+                //Seta o path e arquivo para escrita
+                $path = __DIR__ . '/../../../../../data/';
+                $fileOption = $path . 'email/' . microtime(true) . '.option';
+                
+                //Passa os parametros necessarios para o array do file
+                $encoding = json_encode([$this->config, $this->body, $this->subject, $this->to, $this->from, $this->name]);
+                
+                //Coloca o array no arquivo
+                file_put_contents($fileOption, $encoding);
+                
+                $script = $path . 'script/sendEmail.php';
+                
+                //Chama a thread de execuçao de email.
+                $result = shell_exec("php $script $fileOption  > /dev/null 2>/dev/null & ");
+                
+                return true;
+            } catch (\Exception $ex) {
+                echo $ex->getMessage();
+                return false;
+            }
+        
     }
 
     /**
@@ -172,7 +197,8 @@ class EmailSenderService implements EmailSenderServiceInterface
         if (!key_exists('ssl', $config['config'])) {
             throw new InvalidArgumentException('A configuração de email deve possuir a chave [config][ssl]');
         }
-
+        $this->config = $config;
+        
         $smtpOptions = new SmtpOptions();
         $smtpOptions
             ->setHost($config['host'])
@@ -227,7 +253,7 @@ class EmailSenderService implements EmailSenderServiceInterface
         } else {
             $this->message->setFrom($this->from = $from);
         }
-
+        $this->name = $name;
         return $this;
     }
 

@@ -298,8 +298,15 @@ class RegistrationController extends AbstractEntityActionController {
                                 ->setIsHtml(true)
                                 ->addTo($registration->getPerson()->getPersonEmail());
 
-                        // síncrona ---> assíncrono
+                        
                         $this->emailService->send();
+                        
+                        //Pegar id do candidato
+                        $id = $registration->getRegistrationId();
+                        
+                        //Instanciar o container e salvar ID
+                        
+                        //Redirecionar para area do candidato
 
                         return new ViewModel([
                             'message' => 'Inscrição para o processo seletivo de alunos efetuada com sucesso.',
