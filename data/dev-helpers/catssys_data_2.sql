@@ -64,8 +64,8 @@ INSERT INTO `privilege` VALUES
 UNLOCK TABLES;
 
 LOCK TABLES `recruitment` WRITE;
-INSERT INTO `recruitment` VALUES (1,2,2016,'2015-12-23 00:00:00','2016-12-18 00:00:00','201621.pdf',1, 3, 2, 3);
-INSERT INTO `recruitment` VALUES (2,1,2016,'2016-01-23 00:00:00','2016-12-18 00:00:00','201612.pdf',2, null, null, null);
+INSERT INTO `recruitment` VALUES (1,2,2016,'2015-12-23 00:00:00','2016-05-11 00:00:00','201621.pdf',1,3,2,3,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+INSERT INTO `recruitment` VALUES (4,1,2017,'2016-11-20 00:00:00','2017-01-25 23:59:59','201711.pdf',1,4,5,6,'aaaaaaaaaaaaaaaaaabbbbbbbbbbbb','2017-01-19 00:00:00','2017-01-26 00:00:00','asa sdasdasdasdasd','2017-01-28 00:00:00','asd asdfg hgfhfghfghfgrtyrtyrt','2017-01-30 00:00:00','zaxdf saddfdghfgh  sfwserr etrt yeyhfg hfg hfghfh','2017-02-06 00:00:00','gh hjkl   kilui ui o78oii  uiu iuil uilul','2017-02-06 00:00:00','2017-02-10 00:00:00','fg fg rtert ertbhfhfghfg jhgj gh jg','2017-02-11 00:00:00','asd fsdf sdfsdg dfgdf wter tfg dfgdf g fff','2017-02-11 00:00:00','2017-02-20 00:00:00','fd sdfsdf sdfsdfsdfsds dsdf');
 UNLOCK TABLES;
 
 LOCK TABLES `recruitment_know_about` WRITE;

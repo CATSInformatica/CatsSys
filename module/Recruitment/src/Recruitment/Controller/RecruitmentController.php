@@ -319,8 +319,8 @@ class RecruitmentController extends AbstractEntityActionController
             $interval = new DateInterval('P' . RecruitmentRepository::RECRUITMENT_DAYOFFSET . 'D');
 
             $studentRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-                ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::STUDENT_RECRUITMENT_TYPE, $date);
-            $srHasOffset = false;
+                ->findNotEndedByTypeAsArray(Recruitment::STUDENT_RECRUITMENT_TYPE, $date);
+            $srHasOffset = false;            
 
             $volunteerRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
                 ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::VOLUNTEER_RECRUITMENT_TYPE, $date);
@@ -330,9 +330,8 @@ class RecruitmentController extends AbstractEntityActionController
             // abertos dentro dos próximos dias
             if ($studentRecruitment === null) {
                 $date->add($interval);
-
                 $studentRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-                    ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::STUDENT_RECRUITMENT_TYPE, $date);
+                    ->findNotEndedByTypeAsArray(Recruitment::STUDENT_RECRUITMENT_TYPE, $date);
                 $srHasOffset = true;
             }
 
@@ -351,12 +350,18 @@ class RecruitmentController extends AbstractEntityActionController
                     'recruitments' => null,
                 ]);
             }
+            
+            $srSubscriptionLink = false;
+            if(!$srHasOffset && $date <= $studentRecruitment['recruitmentEndDate']) {
+                $srSubscriptionLink = true;
+            }
 
             return new JsonModel([
                 'recruitments' => [
                     'student' => [
                         'content' => $studentRecruitment,
                         'offset' => $srHasOffset,
+                        'showSubscriptionLink' => $srSubscriptionLink,
                     ],
                     'volunteer' => [
                         'content' => $volunteerRecruitment,

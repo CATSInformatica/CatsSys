@@ -402,29 +402,22 @@ return array(
                         'icon' => 'fa fa-file-text-o',
                     ),
                     array(
-                        'label' => 'Access',
+                        'label' => 'Candidate Access',
                         'route' => 'recruitment/registration',
                         'action' => 'access',
                         'resource' => 'Recruitment\Controller\Registration',
                         'privilege' => 'access',
                         'icon' => 'fa fa-file-text-o',
-                    ),
-                    array(
-                        'label' => 'Student pre-interview I',
-                        'route' => 'recruitment/pre-interview',
-                        'action' => 'index',
-                        'resource' => 'Recruitment\Controller\PreInterview',
-                        'privilege' => 'index',
-                        'icon' => 'fa fa-check',
-                        'target' => '_blank',
-                        'pages' => array(
-                            array(
-                                'label' => 'Student pre-interview II',
-                                'route' => 'recruitment/pre-interview',
-                                'action' => 'studentPreInterviewForm',
-                                'icon' => 'fa fa-check-circle',
-                            ),
-                        ),
+                        'pages' => [
+                            [
+                                'label' => 'Área do Candidato',
+                                'route' => 'recruitment/registration',
+                                'action' => 'candidate',
+                                'resource' => 'Recruitment\Controller\Registration',
+                                'privilege' => 'candidate',
+                                'icon' => 'fa fa-user',
+                            ]
+                        ],
                     ),
                     [
                         'label' => 'Student interview',

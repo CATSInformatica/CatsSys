@@ -21,7 +21,6 @@ namespace Recruitment\Controller;
 use Database\Controller\AbstractEntityActionController;
 use Exception;
 use Recruitment\Entity\RecruitmentStatus;
-use Recruitment\Form\CpfForm;
 use Recruitment\Form\PreInterviewForm;
 use Recruitment\Service\AddressService;
 use Recruitment\Service\RegistrationStatusService;
@@ -43,76 +42,6 @@ class PreInterviewController extends AbstractEntityActionController
         RegistrationStatusService;
 
     /**
-     * Obtém o cpf e verifica se o candidato poderá acessar o formulário 
-     * de pré-entrevista.
-     * 
-     * @return ViewModel
-     */
-    public function indexAction()
-    {
-        $this->layout('application-clean/layout');
-        $request = $this->getRequest();
-        $form = new CpfForm();
-
-        if ($request->isPost()) {
-            $data = $request->getPost();
-            $form->setData($data);
-
-            if ($form->isValid()) {
-                $data = $form->getData();
-
-                try {
-                    $em = $this->getEntityManager();
-
-                    $registration = $em->getRepository('Recruitment\Entity\Registration')
-                        ->findOneByPersonCpf($data['person_cpf']);
-
-                    if ($registration !== null) {
-
-                        $status = (int) $registration
-                                ->getCurrentRegistrationStatus()
-                                ->getRecruitmentStatus()
-                                ->getNumericStatusType();
-
-                        // se o status do candidato for um desses três 
-                        // ele poderá acessar o formulário de pré-entrevista
-                        // para preencher ou editar.
-                        if (in_array($status, [
-                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW,
-                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
-                                RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE,
-                            ])) {
-
-                            $studentContainer = new Container('pre_interview');
-                            $studentContainer->offsetSet('regId', $registration->getRegistrationId());
-
-                            return $this->redirect()->toRoute('recruitment/pre-interview', array(
-                                    'action' => 'studentPreInterviewForm'
-                            ));
-                        }
-
-                        $message = 'Candidato não convocado.';
-                    } else {
-                        $message = 'Candidato não encontrado.';
-                    }
-                } catch (Exception $ex) {
-                    $message = 'Erro inesperado. Não foi possível encontrar uma inscrição associada a este cpf.'
-                        . $ex->getMessage();
-                }
-            } else {
-                $message = null;
-            }
-        } else {
-            $message = null;
-        }
-
-        return new ViewModel(array(
-            'message' => $message,
-            'form' => $form,
-        ));
-    }
-
-    /**
      * Formulário de pré-entrevista
      * 
      * Se a sessão de pré-entrevista não foi criada redireciona para o início da pré-entrevista (indexAction)
@@ -124,7 +53,7 @@ class PreInterviewController extends AbstractEntityActionController
     public function studentPreInterviewFormAction()
     {
         $this->layout('application-clean/layout');
-        $studentContainer = new Container('pre_interview');
+        $studentContainer = new Container('candidate');
 
         // id de inscrição não está na sessão redireciona para o início
         if (!$studentContainer->offsetExists('regId')) {
@@ -169,7 +98,7 @@ class PreInterviewController extends AbstractEntityActionController
 
                     $em->persist($registration);
                     $em->flush();
-                    $studentContainer->getManager()->getStorage()->clear('pre_interview');
+                    $studentContainer->getManager()->getStorage()->clear('candidate');
 
                     return new ViewModel(array(
                         'registration' => null,
@@ -209,7 +138,7 @@ class PreInterviewController extends AbstractEntityActionController
     public function keepAliveAction()
     {
 
-        $studentContainer = new Container('pre_interview');
+        $studentContainer = new Container('candidate');
 
         $alive = true;
         
