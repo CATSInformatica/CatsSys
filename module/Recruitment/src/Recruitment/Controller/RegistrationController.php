@@ -132,11 +132,28 @@ class RegistrationController extends AbstractEntityActionController {
         $id = $studentContainer->offsetGet('regId');
         $em = $this->getEntityManager();
         $registration = $em->find('Recruitment\Entity\Registration', $id);
+
+        
+        // para o formulário de edição de dados do candidato
+        $request = $this->getRequest();
+        $form = new RegistrationForm($em);
+        $form->bind($registration);
+        if($request->isPost()) {
+            
+            $form->setData($request->getPost());
+            
+            if($form->isValid()) {
+                $em->merge($registration);
+                $em->flush();
+            }
+        }
+        
         return new ViewModel([
-            'registration' => $registration
+            'registration' => $registration,
+            'recruitment' => $registration->getRecruitment(),
+            'form' => $form,
         ]);
     }
-    
 
     public function accessAction() {
         $this->layout('application-clean/layout');
@@ -156,7 +173,7 @@ class RegistrationController extends AbstractEntityActionController {
                     $registration = $em->getRepository('Recruitment\Entity\Registration')
                             ->findOneByPersonCpf($data['person_cpf']);
                     
-                    if ($registration !== null) {                                             
+                    if ($registration !== null) {
                         $studentContainer = new Container('candidate');
                         $studentContainer->offsetSet('regId', $registration->getRegistrationId());
 
@@ -274,12 +291,9 @@ class RegistrationController extends AbstractEntityActionController {
                         $person = $registration->getPerson();
 
                         $registrationCardContent = [
-                            'recruitment' => $registration->getRecruitment()->getRecruitmentId(),
-                            'title' => 'Comprovante de Inscrição',
-                            'subtitle' => $subject,
+                            'publicNotice' => $registration->getRecruitment()->getRecruitmentPublicNotice(),
                             'registrationNumber' => $registration->getRegistrationNumber(),
                             'name' => $person->getPersonName(),
-                            'email' => $person->getPersonEmail(),
                             'rg' => $person->getPersonRg(),
                             'cpf' => $person->getPersonCpf(),
                         ];
@@ -304,15 +318,12 @@ class RegistrationController extends AbstractEntityActionController {
                         //Pegar id do candidato
                         $id = $registration->getRegistrationId();
                         
-                        //Instanciar o container e salvar ID
-                        
-                        //Redirecionar para area do candidato
+                        $studentContainer = new Container('candidate');
+                        $studentContainer->offsetSet('regId', $id);
 
-                        return new ViewModel([
-                            'message' => 'Inscrição para o processo seletivo de alunos efetuada com sucesso.',
-                            'form' => null,
-                            'registrationCardContent' => $registrationCardContent,
-                        ]);
+                        return $this->redirect()->toRoute('recruitment/registration', array(
+                            'action' => 'candidate'
+                        ));
                     }
 
                     return new ViewModel(array(
@@ -322,7 +333,7 @@ class RegistrationController extends AbstractEntityActionController {
                     ));
                 } catch (Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
-                        $message = 'Não é possível fazer mais de uma inscrição em um mesmo processo seletivo.';
+                        $message = 'Já existe uma inscrição associada ao CPF informado. Por favor, consulte a área do candidato';
                         $form = null;
                     } else {
                         $message = 'Erro inesperado. Por favor, tente novamente ou'

@@ -81,8 +81,16 @@ define(['app/pages/administrative-structure/department/departments', 'moment'], 
                                 studentWrapper
                                         .find(".recruitment-form-wrapper-closed").show();
                             } else {
-                                studentWrapper
+                                
+                                if(studentData.showSubscriptionLink) {
+                                    studentWrapper
                                         .find(".recruitment-form-wrapper-opened").show();
+                                }
+                                
+                                studentWrapper
+                                        .find(".recruitment-form-wrapper-candidate").show();
+                                
+                                
                             }
 
                             type += recruitmentTypes.STUDENT;
