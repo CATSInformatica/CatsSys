@@ -89,7 +89,7 @@ class RecruitmentController extends AbstractEntityActionController
                 $file = $fileContainer['recruitment']['recruitmentPublicNotice'];
                 $data = $request->getPost();
                 $form->setData($data);
-                
+
                 if ($form->isValid() && !$file['error'] && $file['size']) {
 
                     try {
@@ -314,33 +314,30 @@ class RecruitmentController extends AbstractEntityActionController
         try {
 
             $em = $this->getEntityManager();
-
-            $date = new \DateTime();
-            $interval = new DateInterval('P' . RecruitmentRepository::RECRUITMENT_DAYOFFSET . 'D');
+            $currentDate = new \DateTime();
+            $date = clone $currentDate;
+            $date->add(new \DateInterval('P' . RecruitmentRepository::RECRUITMENT_DAYOFFSET . 'D'));
 
             $studentRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-                ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::STUDENT_RECRUITMENT_TYPE, $date);
+                ->findNotEndedByTypeAsArray(Recruitment::STUDENT_RECRUITMENT_TYPE, $currentDate);
+
             $srHasOffset = false;
 
             $volunteerRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-                ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::VOLUNTEER_RECRUITMENT_TYPE, $date);
+                ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::VOLUNTEER_RECRUITMENT_TYPE, $currentDate);
             $vrHasOffiset = false;
 
             // nenhum processo seletivo de alunos aberto, buscar por processos seletivos de alunos 
             // abertos dentro dos próximos dias
             if ($studentRecruitment === null) {
-                $date->add($interval);
-
                 $studentRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-                    ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::STUDENT_RECRUITMENT_TYPE, $date);
+                    ->findNotEndedByTypeAsArray(Recruitment::STUDENT_RECRUITMENT_TYPE, $date);
                 $srHasOffset = true;
             }
 
             // nenhum processo seletivo de voluntários aberto, buscar por processos seletivos de voluntários 
-            // abertos dentro dos próximos dias
+            // abertos dentro de self::RECRUITMENT_DAYOFFSET dias
             if ($volunteerRecruitment === null) {
-                $date->add($interval);
-
                 $volunteerRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
                     ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::VOLUNTEER_RECRUITMENT_TYPE, $date);
                 $vrHasOffiset = true;
@@ -352,11 +349,17 @@ class RecruitmentController extends AbstractEntityActionController
                 ]);
             }
 
+            $srSubscriptionLink = false;
+            if (!$srHasOffset && $currentDate <= $studentRecruitment['recruitmentEndDate']) {
+                $srSubscriptionLink = true;
+            }
+
             return new JsonModel([
                 'recruitments' => [
                     'student' => [
                         'content' => $studentRecruitment,
                         'offset' => $srHasOffset,
+                        'showSubscriptionLink' => $srSubscriptionLink,
                     ],
                     'volunteer' => [
                         'content' => $volunteerRecruitment,

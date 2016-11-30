@@ -265,6 +265,7 @@ sudo chmod 777 $HOME/vhosts/cats-lab/data/fonts
 sudo chmod 777 $HOME/vhosts/cats-lab/data/profile
 sudo chmod 777 $HOME/vhosts/cats-lab/data/captcha
 sudo chmod 777 $HOME/vhosts/cats-lab/data/session
+sudo chmod 777 $HOME/vhosts/cats-lab/data/email
 
 echo 'Creating database CatsSys.'
 mysql -u $mysqluser -p$mysqlpass -e 'drop database if exists catssys; create database catssys'

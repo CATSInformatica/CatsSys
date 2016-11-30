@@ -1,4 +1,5 @@
 <?php
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -25,6 +26,7 @@ use Recruitment\Service\RegistrationStatusService;
 use RuntimeException;
 use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\Form\View\Helper\Captcha\Image;
+use Zend\Session\Container;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as ViewRenderer;
@@ -35,8 +37,7 @@ use Zend\View\Renderer\PhpRenderer as ViewRenderer;
  * Description of RegistrationController
  * @author marcio
  */
-class RegistrationController extends AbstractEntityActionController
-{
+class RegistrationController extends AbstractEntityActionController {
 
     /**
      * Helpers que ajudam a salvar os dados pessoais, de endereço e status de inscrição.
@@ -62,8 +63,7 @@ class RegistrationController extends AbstractEntityActionController
      */
     protected $viewRenderer;
 
-    public function __construct(EmailSenderServiceInterface $emailService, ViewRenderer $vr)
-    {
+    public function __construct(EmailSenderServiceInterface $emailService, ViewRenderer $vr) {
         $this->emailService = $emailService;
         $this->viewRenderer = $vr;
     }
@@ -77,8 +77,7 @@ class RegistrationController extends AbstractEntityActionController
      * 
      * @return ViewModel
      */
-    public function indexAction()
-    {
+    public function indexAction() {
         try {
             $em = $this->getEntityManager();
             $form = new SearchRegistrationsForm($em, Recruitment::STUDENT_RECRUITMENT_TYPE);
@@ -95,8 +94,7 @@ class RegistrationController extends AbstractEntityActionController
         }
     }
 
-    public function volunteerRegistrationsAction()
-    {
+    public function volunteerRegistrationsAction() {
         try {
             $em = $this->getEntityManager();
             $form = new SearchRegistrationsForm($em, Recruitment::VOLUNTEER_RECRUITMENT_TYPE);
@@ -115,10 +113,90 @@ class RegistrationController extends AbstractEntityActionController
         }
     }
 
-    public function registrationFormsAction()
-    {
+    public function registrationFormsAction() {
         return new ViewModel([
         ]);
+    }
+
+    public function candidateAction() {
+        $this->layout('application-clean/layout');
+        $studentContainer = new Container('candidate');
+        
+        //se o id não estiver na sessão, redireciona para a página de acesso
+        if (!$studentContainer->offsetExists('regId')) {
+            return $this->redirect()->toRoute('recruitment/registration', array(
+                    'action' => 'access',
+            ));
+        }
+        
+        $id = $studentContainer->offsetGet('regId');
+        $em = $this->getEntityManager();
+        $registration = $em->find('Recruitment\Entity\Registration', $id);
+
+        
+        // para o formulário de edição de dados do candidato
+        $request = $this->getRequest();
+        $form = new RegistrationForm($em);
+        $form->bind($registration);
+        if($request->isPost()) {
+            
+            $form->setData($request->getPost());
+            
+            if($form->isValid()) {
+                $em->merge($registration);
+                $em->flush();
+            }
+        }
+        
+        return new ViewModel([
+            'registration' => $registration,
+            'recruitment' => $registration->getRecruitment(),
+            'form' => $form,
+        ]);
+    }
+
+    public function accessAction() {
+        $this->layout('application-clean/layout');
+        $request = $this->getRequest();
+        $form = new \Recruitment\Form\CpfForm();
+        
+        if ($request->isPost()) {
+            $data = $request->getPost();
+            $form->setData($data);           
+            
+            if ($form->isValid()) {
+                $data = $form->getData();
+                
+                try {                   
+                    $em = $this->getEntityManager();
+
+                    $registration = $em->getRepository('Recruitment\Entity\Registration')
+                            ->findOneByPersonCpf($data['person_cpf']);
+                    
+                    if ($registration !== null) {
+                        $studentContainer = new Container('candidate');
+                        $studentContainer->offsetSet('regId', $registration->getRegistrationId());
+
+                        return $this->redirect()->toRoute('recruitment/registration', array(
+                                    'action' => 'candidate'
+                        ));
+                    }
+                } catch (Exception $ex) {
+                    $message = 'Erro inesperado. Não foi possível encontrar uma inscrição associada a este cpf.'
+                            . $ex->getMessage();
+                }
+                $message = 'Cpf não encontrado';
+            } else {
+                $message = null;
+            }
+        } else {
+            $message = null;
+        }
+
+        return new ViewModel(array(
+            'message' => $message,
+            'form' => $form,
+        ));
     }
 
     /**
@@ -145,8 +223,7 @@ class RegistrationController extends AbstractEntityActionController
      * 
      * @return ViewModel Formulário de inscrição
      */
-    public function registrationFormAction()
-    {
+    public function registrationFormAction() {
         $this->layout('application-clean/layout');
 
         $type = (int) $this->params('id', Recruitment::STUDENT_RECRUITMENT_TYPE);
@@ -155,7 +232,7 @@ class RegistrationController extends AbstractEntityActionController
             $em = $this->getEntityManager();
             // Busca por um processo seletivo aberto
             $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-                ->findByTypeAndBetweenBeginAndEndDates($type, new DateTime('now'));
+                    ->findByTypeAndBetweenBeginAndEndDates($type, new DateTime('now'));
             if ($recruitment === null) {
                 return new ViewModel(array(
                     'message' => 'Não existe nenhum processo seletivo vigente no momento.',
@@ -195,7 +272,7 @@ class RegistrationController extends AbstractEntityActionController
                     $this->adjustPerson($registration);
 
                     $this->updateRegistrationStatus(
-                        $registration, RecruitmentStatus::STATUSTYPE_REGISTERED, $registration->getRegistrationDateAsDateTime()
+                            $registration, RecruitmentStatus::STATUSTYPE_REGISTERED, $registration->getRegistrationDateAsDateTime()
                     );
 
                     // atribui a qual processo seletivo a inscrição pertence
@@ -204,7 +281,7 @@ class RegistrationController extends AbstractEntityActionController
                     // salva no banco
                     $em->persist($registration);
                     $em->flush();
-                    
+
                     // redirecionar para a página que gera o comprovante de inscrição e envia o email.
                     if ($type == Recruitment::STUDENT_RECRUITMENT_TYPE) {
 
@@ -214,12 +291,9 @@ class RegistrationController extends AbstractEntityActionController
                         $person = $registration->getPerson();
 
                         $registrationCardContent = [
-                            'recruitment' => $registration->getRecruitment()->getRecruitmentId(),
-                            'title' => 'Comprovante de Inscrição',
-                            'subtitle' => $subject,
+                            'publicNotice' => $registration->getRecruitment()->getRecruitmentPublicNotice(),
                             'registrationNumber' => $registration->getRegistrationNumber(),
                             'name' => $person->getPersonName(),
-                            'email' => $person->getPersonEmail(),
                             'rg' => $person->getPersonRg(),
                             'cpf' => $person->getPersonCpf(),
                         ];
@@ -233,19 +307,23 @@ class RegistrationController extends AbstractEntityActionController
 
                         // envia email para o candidato
                         $this->emailService
-                            ->setSubject($subject . ' 🚀')
-                            ->setBody($emailBody)
-                            ->setIsHtml(true)
-                            ->addTo($registration->getPerson()->getPersonEmail());
+                                ->setSubject($subject . ' 🚀')
+                                ->setBody($emailBody)
+                                ->setIsHtml(true)
+                                ->addTo($registration->getPerson()->getPersonEmail());
 
-                        // síncrona ---> assíncrono
+                        
                         $this->emailService->send();
+                        
+                        //Pegar id do candidato
+                        $id = $registration->getRegistrationId();
+                        
+                        $studentContainer = new Container('candidate');
+                        $studentContainer->offsetSet('regId', $id);
 
-                        return new ViewModel([
-                            'message' => 'Inscrição para o processo seletivo de alunos efetuada com sucesso.',
-                            'form' => null,
-                            'registrationCardContent' => $registrationCardContent,
-                        ]);
+                        return $this->redirect()->toRoute('recruitment/registration', array(
+                            'action' => 'candidate'
+                        ));
                     }
 
                     return new ViewModel(array(
@@ -255,11 +333,11 @@ class RegistrationController extends AbstractEntityActionController
                     ));
                 } catch (Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
-                        $message = 'Não é possível fazer mais de uma inscrição em um mesmo processo seletivo.';
+                        $message = 'Já existe uma inscrição associada ao CPF informado. Por favor, consulte a área do candidato';
                         $form = null;
                     } else {
                         $message = 'Erro inesperado. Por favor, tente novamente ou'
-                            . ' entre em contato com o administrador do sistema: ' . $ex->getMessage();
+                                . ' entre em contato com o administrador do sistema: ' . $ex->getMessage();
                     }
                     return new ViewModel(array(
                         'message' => $message,
@@ -282,8 +360,7 @@ class RegistrationController extends AbstractEntityActionController
      * 
      * @return JsonModel
      */
-    public function getRegistrationsAction()
-    {
+    public function getRegistrationsAction() {
 
         $request = $this->getRequest();
 
@@ -340,8 +417,7 @@ class RegistrationController extends AbstractEntityActionController
      * 
      * @return JsonModel
      */
-    public function confirmationAction()
-    {
+    public function confirmationAction() {
         $id = $this->params('id', false);
 
         if ($id) {
@@ -382,8 +458,7 @@ class RegistrationController extends AbstractEntityActionController
      * 
      * @return JsonModel
      */
-    public function convocationAction()
-    {
+    public function convocationAction() {
         $id = $this->params('id', false);
 
         if ($id) {
@@ -427,8 +502,7 @@ class RegistrationController extends AbstractEntityActionController
      * 
      * @return JsonModel
      */
-    public function acceptanceAction()
-    {
+    public function acceptanceAction() {
         $id = $this->params('id', false);
 
         if ($id) {
@@ -466,8 +540,7 @@ class RegistrationController extends AbstractEntityActionController
         ));
     }
 
-    public function updateStatusAction()
-    {
+    public function updateStatusAction() {
 
         $rid = $this->params('id', false);
         $sid = $this->params('sid', false);
@@ -540,8 +613,7 @@ class RegistrationController extends AbstractEntityActionController
      * 
      * @return Image Foto do perfil do usuário. Caso não haja uma específica, utiliza as imagens padrões
      */
-    public function photoAction()
-    {
+    public function photoAction() {
         $response = $this->getResponse();
         $response->getHeaders()->addHeaderLine('Content-Type', "image/png");
         $id = $this->params('id', false);
@@ -575,8 +647,7 @@ class RegistrationController extends AbstractEntityActionController
      * @return ViewModel
      * @throws RuntimeException
      */
-    public function changePhotoAction()
-    {
+    public function changePhotoAction() {
         $id = $this->params('id', false);
         $request = $this->getRequest();
         if ($id && $request->isPost()) {
@@ -640,4 +711,5 @@ class RegistrationController extends AbstractEntityActionController
             }
         }
     }
+
 }

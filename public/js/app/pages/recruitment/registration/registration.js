@@ -25,19 +25,6 @@ define(['moment', 'masks', 'app/models/Service', 'jquery', 'datetimepicker'], fu
             });
         };
 
-//        initCaptchaOperations = function () {
-//            $('#captcha_input-refresh').click(function () {
-//                $.ajax({
-//                    url: '/recruitment/captcha/refresh',
-//                    dataType: 'json',
-//                    success: function (data) {
-//                        $('#captcha_input-image').attr('src', data.src);
-//                        $('#captcha_input-hidden').attr('value', data.id);
-//                    }
-//                });
-//            });
-//        };
-
         initMasks = function () {
             masks.bind({
                 phone: "input[name='registration[person][personPhone]']",
@@ -56,7 +43,6 @@ define(['moment', 'masks', 'app/models/Service', 'jquery', 'datetimepicker'], fu
         return {
             init: function () {
                 initDatepickers();
-//                initCaptchaOperations();
                 initMasks();
                 initServices();
             }

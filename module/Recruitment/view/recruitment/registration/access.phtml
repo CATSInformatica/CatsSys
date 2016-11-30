@@ -1,0 +1,27 @@
+<section class="content">
+    <div class="ccol-xs-12 col-md-6 col-md-offset-3">
+
+        <p><?php echo $message; ?></p>
+        
+        <h3>Acesso à área do candidato
+            <small> insira o cpf utilizado na inscrição</small>
+        </h3>
+
+        <?php echo $this->form($form); ?>
+    </div>
+</section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/recruitment/registration/cpfform';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+
+</script>

@@ -62,6 +62,38 @@ class RecruitmentRepository extends EntityRepository
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
     }
+    
+    /**
+     * Busca um processo seletivo existente do tipo $type na data especificada $date.
+     * 
+     * $type é um dos valores:
+     *  - Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE
+     *  - Recruitment\Entity\Recruitment::VOLUNTEER_RECRUITMENT_TYPE
+     * 
+     * @param integer $type é um dos seguintes valores:
+     *  - Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE
+     *  - Recruitment\Entity\Recruitment::VOLUNTEER_RECRUITMENT_TYPE
+     * @param \DateTime $date data de consulta
+     * @return array|null
+     */
+    public function findNotEndedByTypeAsArray($type, \DateTime $date) {
+        $edate = clone $date;
+        $edate->sub(new \DateInterval('P30D'));
+        return $this->_em
+                ->createQuery('SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
+                    . 'r.recruitmentEndDate, r.recruitmentPublicNotice '
+                    . 'FROM Recruitment\Entity\Recruitment r '
+                    . 'WHERE r.recruitmentType = :type AND '
+                    . ':sdate >= r.recruitmentBeginDate and :edate <= r.resultDate'
+                )
+                ->setParameters(array(
+                    'type' => $type,
+                    'sdate' => $date,
+                    'edate' => $edate,
+                ))
+                ->setMaxResults(1)
+                ->getOneOrNullResult();
+    }
 
     /**
      * Busca um processo seletivo aberto do tipo $type na data especificada $date.
@@ -73,7 +105,7 @@ class RecruitmentRepository extends EntityRepository
      * @param integer $type é um dos seguintes valores:
      *  - Recruitment\Entity\Recruitment::STUDENT_RECRUITMENT_TYPE
      *  - Recruitment\Entity\Recruitment::VOLUNTEER_RECRUITMENT_TYPE
-     * @param \DateTime $date
+     * @param \DateTime $date data de consulta
      * @return array|null
      */
     public function findByTypeAndBetweenBeginAndEndDatesAsArray($type, \DateTime $date)

@@ -201,10 +201,10 @@ return array(
                         'icon' => 'fa fa-users',
                         'toolbar' => array(
                             array(
-                                'url' => '/recruitment/recruitment/edit/$id',
-                                'title' => 'Editar',
-                                'description' => 'Edita o processo seletivo selecionado',
-                                'class' => 'fa fa-edit bg-green',
+                                'url' => '/recruitment/recruitment/public-notice/$id',
+                                'title' => 'Edital',
+                                'description' => 'Ler edital',
+                                'class' => 'fa fa-file-pdf-o bg-green',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '_blank',
                             ),
@@ -402,21 +402,22 @@ return array(
                         'icon' => 'fa fa-file-text-o',
                     ),
                     array(
-                        'label' => 'Student pre-interview I',
-                        'route' => 'recruitment/pre-interview',
-                        'action' => 'index',
-                        'resource' => 'Recruitment\Controller\PreInterview',
-                        'privilege' => 'index',
-                        'icon' => 'fa fa-check',
-                        'target' => '_blank',
-                        'pages' => array(
-                            array(
-                                'label' => 'Student pre-interview II',
-                                'route' => 'recruitment/pre-interview',
-                                'action' => 'studentPreInterviewForm',
-                                'icon' => 'fa fa-check-circle',
-                            ),
-                        ),
+                        'label' => 'Candidate Access',
+                        'route' => 'recruitment/registration',
+                        'action' => 'access',
+                        'resource' => 'Recruitment\Controller\Registration',
+                        'privilege' => 'access',
+                        'icon' => 'fa fa-file-text-o',
+                        'pages' => [
+                            [
+                                'label' => 'Área do Candidato',
+                                'route' => 'recruitment/registration',
+                                'action' => 'candidate',
+                                'resource' => 'Recruitment\Controller\Registration',
+                                'privilege' => 'candidate',
+                                'icon' => 'fa fa-user',
+                            ]
+                        ],
                     ),
                     [
                         'label' => 'Student interview',
