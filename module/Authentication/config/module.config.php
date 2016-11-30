@@ -107,11 +107,11 @@ return array(
             'options' => array(
                 'name' => 'User',
                 'use_cookies' => true,
-                'cookie_lifetime' => 3600,
+                'cookie_lifetime' => 7200, // session alive for 2 hours
                 'cookie_httponly' => true,
                 'cookie_secure' => false,
                 'remember_me_seconds' => 3600, // remember me for 1 hour
-                'gc_maxlifetime' => 3600,
+                'gc_maxlifetime' => 7200, // session alive for 2 hours
             )
         ),
         'storage' => 'Zend\Session\Storage\SessionArrayStorage',
