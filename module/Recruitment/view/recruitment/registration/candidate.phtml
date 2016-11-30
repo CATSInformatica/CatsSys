@@ -59,8 +59,6 @@
                 <div class="tab-content">
                     <!--PAINEL DE STATUS DO CANDIDATO-->
                     <?php
-                    $status = $registration->getCurrentRegistrationStatus()->getRecruitmentStatus()->getStatusType();
-
                     //INICIO tratamento dos blocos em cores
                     //candidato passou pela etapa
                     $completed = "green-active";
@@ -142,74 +140,92 @@
                         }
                     endforeach;
 
-                    //tratamento para blocos que mudam com o tempo (processando=amarelo; 
-                    //dia da prova/resultados = azul; finalizado=verde)
-                    //só modifca a cor se o candidato foi devidamente confirmado/entrevistado
-                    //dia da prova
+                    //tratamento para blocos que mudam com o tempo 
+                    //só modifca a cor se o candidato foi devidamente confirmado/entrevistad
+                    $currentDate = new \DateTime();
+                    $examDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getExamDate());
+                    $examResultDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getExamResultDate());
+                    $finalResultDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getResultDate());
+                    $preInterviewDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getPreInterviewStartDate());
+                    $enrollmentStartDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getEnrollmentStartDate());
+                    $enrollmentEndDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getEnrollmentEndDate());
+                    
+                    //dia da prova  
                     if ($confirmation == $completed) {
-                        if (strtotime($recruitment->getExamDate()) < strtotime('now')) {
+                        if ($examDate > $currentDate) {
                             $exam = $processing;
-                        } elseif (strtotime($recruitment->getExamDate()) == strtotime('now')) {
+                        } elseif ($examDate == $currentDate) {
                             $exam = $summoned;
-                        } elseif (strtotime($recruitment->getExamDate()) > strtotime('now')) {
+                        } elseif ($examDate < $currentDate) {
                             $exam = $completed;
                         }
                     }
 
                     //dia do resultado da prova
                     if ($confirmation == $completed) {
-                        if (strtotime($recruitment->getExamResultDate()) < strtotime('now') && strtotime($recruitment->getExamDate()) < strtotime($recruitment->getExamResultDate())) {
+                        if ($examResultDate > $currentDate && $examDate < $currentDate) {
                             $examResult = $processing;
-                        } elseif (strtotime($recruitment->getExamResultDate()) == strtotime('now')) {
+                        } elseif ($examResultDate == $currentDate)  {
                             $examResult = $summoned;
-                        } elseif (strtotime($recruitment->getExamResultDate()) > strtotime('now')) {
+                        } elseif ($examResultDate < $currentDate) {
                             $examResult = $completed;
                         }
                     }
                     //dia do resultado Final
                     if ($interview == $completed) {
-                        if (strtotime($recruitment->getResultDate()) < strtotime('now')) {
+                        if ($finalResultDate > $currentDate) {
                             $finalResult = $processing;
-                        } elseif (strtotime($recruitment->getResultDate()) == strtotime('now')) {
+                        } elseif ($finalResultDate == $currentDate)  {
                             $finalResult = $summoned;
-                        } elseif (strtotime($recruitment->getResultDate()) > strtotime('now')) {
+                        } elseif ($finalResultDate < $currentDate) {
                             $finalResult = $completed;
                             $enrollment = $processing;
                         }
                     }
                     //dia da pré entrevista
                     if ($interview == $completed) {
-                        if (strtotime($recruitment->getPreInterviewStartDate()) < strtotime('now')) {
+                        if ($preInterviewDate > $currentDate) {
                             $preInterview = $processing;
-                        } elseif (strtotime($recruitment->getPreInterviewStartDate()) == strtotime('now')) {
+                        } elseif ($preInterviewDate == $currentDate)  {
                             $preInterview = $summoned;
-                        } elseif (strtotime($recruitment->getPreInterviewStartDate()) > strtotime('now')) {
+                        } elseif ($preInterviewDate < $currentDate) {
                             $preInterview = $completed;
                         }
                     }
+                    
+                    //dia da matrícula
+                    if ($interview == $completed) {
+                        if ($enrollmentStartDate > $currentDate) {
+                            $enrollment = $processing;
+                        } elseif ($enrollmentStartDate <= $currentDate && $currentDate <= $enrollmentEndDate)  {
+                            $enrollment = $summoned;
+                        } elseif ($enrollmentEndDate < $currentDate) {
+                            $enrollment = $completed;
+                        }
+                    }
+                    
                     //fim do tratamento dos blocos em cores
                     //Links tratados por tempo.
                     //LINK para resultado do exame 
-                    if (strtotime($recruitment->getResultDate()) >= strtotime('now')) {
+                    if ($examResultDate <= $currentDate) {
                         $examResultLink = 'href="www.google.com" ';
                     } else {
                         $examResultLink = " ";
                     }
 
                     //LINK para Resultado Final 
-                    if (strtotime($recruitment->getResultDate()) >= strtotime('now')) {
+                    if ($finalResultDate <= $currentDate) {
                         $finalResultLink = 'href="www.google.com"';
                     } else {
                         $finalResultLink = " ";
                     }
 
                     //LINK Pré Entrevista 
-                    if (strtotime($recruitment->getPreInterviewStartDate()) == strtotime('now')) {
+                    if ($preInterviewDate == $currentDate)  {
                         $preInterviewLink = 'href="www.google.com"';
                     } else {
                         $preInterviewLink = " ";
                     }
-
                     ?>
                     <!--
                         Os blocos: Confirmação; Pré-Entrevista; e Entrevista, contém
@@ -365,7 +381,7 @@
                             <div class="col-lg-6 col-xs-12">
                                 <div <?php echo $finalResultLink ?> class="small-box bg-<?php echo $finalResult ?>">
                                     <div class="inner">
-                                        <h3>Resultado Final </h3
+                                        <h3>Resultado Final </h3>
                                         <p>Dia <?php echo $recruitment->getResultDate() ?></p>
                                     </div>
                                     <div class="icon">
@@ -403,7 +419,7 @@
                         <?php if ($this->form !== null): ?>
                             <?php $form->prepare(); ?>
                             <div class="row">
-                                <div class="col-xs-12 col-md-10 col-md-offset-1">
+                                <div class="col-xs-12 col-md-10 col-md-offset-1"
                                     <?php echo $this->form()->openTag($form); ?>
                                     <?php
                                     $registration = $form->get('registration');
