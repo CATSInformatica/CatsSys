@@ -44,6 +44,7 @@ define(['app/pages/administrative-structure/department/departments', 'moment'], 
             $.ajax({
                 type: "GET",
                 url: "/recruitment/recruitment/get-last-opened",
+                cache: false,
                 success: function (data) {
 
                     if (data.recruitments !== null) {
