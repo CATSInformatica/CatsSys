@@ -1,83 +1,68 @@
 <?php
-
 if (file_exists(__DIR__ . '/../../../vendor/autoload.php')) {
     $loader = include __DIR__ . '/../../../vendor/autoload.php';
 }
-
 use Zend\Mail\Message;
-use Zend\Mail\Transport\Smtp;
-use Zend\Mail\Transport\SmtpOptions;
+use Zend\Mail\Transport\Sendmail;
 use Zend\Mime\Message as MimeMessage;
 use Zend\Mime\Part as MimePart;
 
-$fileOption = $argv[1];
+$inputFile = $argv[1];
+$logFile = __DIR__ . '/sendEmail.log';
+file_put_contents($logFile, "Reading file ".  basename($inputFile)."\n", FILE_APPEND);
 
-
-$contentOption = file_get_contents($fileOption);
-
-$decode = json_decode($contentOption, true);
-
-//Recebendo parametros
-$config = $decode[0];
-$messageContent = $decode[1];
-$messageSubject = $decode[2];
-$toArray = $decode[3];
-$from = $decode[4];
-$name = $decode[5];
-
+$contentOption = file_get_contents($inputFile);
+$parameters = json_decode($contentOption, true);
 
 
 
 try {
 
-    //Colocar no log
-    file_put_contents(__DIR__ . '/sendEmail.log', "\n Email sendo enviado para " . $toArray[0], FILE_APPEND);
-
-    $smtpOptions = new SmtpOptions();
-    
-    //Set configs
-    $smtpOptions
-            ->setHost($config['host'])
-            ->setConnectionClass($config['connection_class'])
-            ->setName($config['host'])
-            ->setConnectionConfig(array(
-                'username' => $config['config']['username'],
-                'password' => $config['config']['password'],
-                'ssl' => $config['config']['ssl'],
-    ));
-
-    $message = new Message();
-    $message->setEncoding('UTF-8');
+    $mail = new Message();
+    $mail->setEncoding('UTF-8');
 
     //Assunto
-    $message->setSubject($messageSubject);
+    $mail->setSubject($parameters['subject']);
 
-    //Corpo da mensagem
-    $html = new MimePart($messageContent);
-    $html->type = "text/html";
-    $body = new MimeMessage();
-    $body->addPart($html);
-    $message->setBody($body);
-
-    //Destinatarios
-    foreach ($toArray as $to) {
-        $message->addTo($to);
+    // se o conteúdo for texto html
+    if ($parameters['isHtml']) {
+        $html = new MimePart($parameters['body']);
+        $html->type = "text/html";
+        $body = new MimeMessage();
+        $body->addPart($html);
+    } else {
+        $body = $parameters['body'];
     }
+    
+    $mail->setBody($body);
+
+    $logTo = "Enviando email para:";
+    
+    //Destinatarios
+    foreach ($parameters['to'] as $to) {
+        $logTo .= " " . $to['name'] . "<". $to['email'] . ">";
+        $mail->addTo($to['email'], $to['name']);
+    }
+    
+    file_put_contents($logFile, "\t" . $logTo . "\n", FILE_APPEND);
 
     //Remetente
-    $message->setFrom($from, $name);
-    
-    //Enviar
-    $transport = new Smtp($smtpOptions);
-    $isSent = $transport->send($message);
+    $from = $parameters['from'];
+    $mail->setFrom($from['email'], $from['name']);
 
-    file_put_contents(__DIR__ . '/sendEmail.log', "Terminado. \n", FILE_APPEND);
+    foreach ($parameters['replyTo'] as $replyTo) {
+        $mail->addReplyTo($replyTo['email'], $replyTo['name']);
+    }
+
+    //Enviar
+    $transport = new Sendmail();
+    $transport->send($mail);
+
+    file_put_contents($logFile, "\tOperação concluída \n", FILE_APPEND);
 
     return true;
 } catch (\Exception $ex) {
-
-    file_put_contents(__DIR__ . '/sendEmail.log', $ex->getMessage() . "\n", FILE_APPEND);
-
+    file_put_contents($logFile, "\t" . $ex->getMessage() . "\n", FILE_APPEND);
     return false;
 }
        

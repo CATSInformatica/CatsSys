@@ -239,17 +239,13 @@ return [
            ],
        ],
    ],
-   'email_config' => [
-      'from_recruitment' => 'email@hostname',
-      'from_recruitment_name' => '<nome do remetente>',
-      'smtp_options' => [
-         'host' => 'smtp.gmail.com',
-         'connection_class' => 'login',
-         'config' => [
-            'username' => 'email@hostname',
-            'password' => '<colocar a senha do email>',
-            'ssl' => 'tls',
-         ],
+   'email' => [
+      'recruitment' => [
+            'from' => 'name@yourdomain.com',
+            'from_name' => 'Your Name',
+            'replyTo' => [
+                'replyto@yourdomain.com' => 'Reply name',
+            ],
       ],
    ],
 ];
@@ -266,6 +262,7 @@ sudo chmod 777 $HOME/vhosts/cats-lab/data/profile
 sudo chmod 777 $HOME/vhosts/cats-lab/data/captcha
 sudo chmod 777 $HOME/vhosts/cats-lab/data/session
 sudo chmod 777 $HOME/vhosts/cats-lab/data/email
+sudo chmod a+w $HOME/vhosts/cats-lab/data/script
 
 echo 'Creating database CatsSys.'
 mysql -u $mysqluser -p$mysqlpass -e 'drop database if exists catssys; create database catssys'

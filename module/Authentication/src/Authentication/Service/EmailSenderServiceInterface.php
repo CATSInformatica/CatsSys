@@ -28,38 +28,7 @@ namespace Authentication\Service;
  */
 interface EmailSenderServiceInterface
 {
-
-    /**
-     * Verifica se o serviço de email já está configurado.
-     * 
-     * @return bool Retorna true se estiver configurado, caso contrário, false.
-     */
-    public function hasConfig();
-
-    /**
-     * Configura o serviço de email com os parâmetros em config/autoload/local.php.
-     * 
-     * $config = [
-     *     'host' => 'smtp.gmail.com',
-     *     'connection_class' => 'login',
-     *     'config' => [
-     *          'username' => 'myemail@gmail.com',
-     *          'password' => 'mypassword',
-     *          'ssl' => 'tls',
-     *     ],
-     * ]
-     * 
-     * @param array $config Parâmetros de configuração para o envio de emails.
-     * @throws \InvalidArgumentException
-     * @return EmailSenderServiceInterface Interface fluente.
-     */
-    public function setConfig(array $config);
-
-    /**
-     * Envia o email.
-     * 
-     * @return bool Retorna true se o email foi enviado com sucesso, caso contrário, false.
-     */
+    
     public function send();
 
     /**
@@ -82,10 +51,19 @@ interface EmailSenderServiceInterface
     /**
      * Adiciona um destinatário.
      * 
-     * @param string $to Endereço de email do destinatário.
+     * @param string $email Endereço de email do destinatário.
+     * @param string $name Nome do destinatário.
      * @return EmailSenderServiceInterface Interface fluente.
      */
-    public function addTo($to);
+    public function addTo($email, $name);
+    
+    /**
+     * Define os emails de resposta que serão exibidos para o(s) destinatários.
+     * 
+     * @param string $email Email de resposta
+     * @param string $name
+     */
+    public function addReplyTo($email, $name = null);
 
     /**
      * Define o corpo da menssagem.

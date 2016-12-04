@@ -9,11 +9,7 @@
 namespace Authentication;
 
 return array(
-    'service_manager' => array(
-        'factories' => [
-            'Authentication\Service\EmailSenderServiceInterface' => Factory\Service\EmailSenderServiceFactory::class,
-        ],
-     ),
+//    'service_manager' => [],
     'controllers' => array(
         'factories' => array(
             'Authentication\Controller\Login' => Factory\Controller\LoginControllerFactory::class,
