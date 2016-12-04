@@ -19,6 +19,7 @@
 
 namespace Recruitment\Factory\Controller;
 
+use Authentication\Service\EmailSenderService;
 use Recruitment\Controller\RegistrationController;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
@@ -34,7 +35,17 @@ class RegistrationControllerFactory implements FactoryInterface
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $sl = $serviceLocator->getServiceLocator();
-        $emailService = $sl->get('Authentication\Service\EmailSenderServiceInterface');
+        
+        $emailOptions = $sl->get('config')['email']['recruitment'];
+        $emailService = new EmailSenderService();
+        $emailService
+            ->setFrom($emailOptions['from'], $emailOptions['from_name']);
+        
+        foreach($emailOptions['replyTo'] as $email => $name) {
+            $emailService
+                ->addReplyTo($email, $name);
+        }
+        
         $viewRenderer = $sl->get('ViewRenderer');
         $controller = new RegistrationController($emailService, $viewRenderer);
         $em = $sl->get('Doctrine\ORM\EntityManager');

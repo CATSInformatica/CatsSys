@@ -1,5 +1,4 @@
 <?php
-
 /*
  * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
  *
@@ -19,14 +18,6 @@
 
 namespace Authentication\Service;
 
-use InvalidArgumentException;
-use RuntimeException;
-use Zend\Mail\Message;
-use Zend\Mail\Transport\Smtp;
-use Zend\Mail\Transport\SmtpOptions;
-use Zend\Mime\Message as MimeMessage;
-use Zend\Mime\Part as MimePart;
-
 /**
  * Implementa a funcionalidade de envio de emails.
  *
@@ -34,18 +25,6 @@ use Zend\Mime\Part as MimePart;
  */
 class EmailSenderService implements EmailSenderServiceInterface
 {
-
-    /**
-     *
-     * @var SmtpOptions Configurações para o envio do email
-     */
-    protected $smtpOptions = null;
-
-    /**
-     *
-     * @var Message Configuração da mensagem.
-     */
-    protected $message;
 
     /**
      *
@@ -58,19 +37,18 @@ class EmailSenderService implements EmailSenderServiceInterface
      * @var string Corpo da mensagem.
      */
     protected $body = null;
-    
-     /**
-     *
-     * @cofig string Config do email. *criado na bim
-     */
-    
-    protected $config = null;
 
     /**
      *
      * @var string Endereço de email.
      */
     protected $from = null;
+    
+    /**
+     *
+     * @name string Nome a ser colocado no envio do email. *criado BIM
+     */
+    protected $name = false;
 
     /**
      *
@@ -80,23 +58,16 @@ class EmailSenderService implements EmailSenderServiceInterface
 
     /**
      *
+     * @var array Pares endereço de email e nomes para resposta.
+     */
+    protected $replyTo = [];
+
+    /**
+     *
      * @var bool Define se o corpo do email aceitará conteúdo html ou apenas texto.
      */
     protected $isHtml = false;
-    
-    /**
-     *
-     * @name string Nome a ser colocado no envio do email. *criado BIM
-     */
-    protected $name = false;
 
-    /**
-     * {@inheritDoc}
-     */
-    public function hasConfig()
-    {
-        return $this->smtpOptions === null;
-    }
 
     /**
      * {@inheritDoc}
@@ -104,126 +75,57 @@ class EmailSenderService implements EmailSenderServiceInterface
     public function send()
     {
 
-        if ($this->smtpOptions === null) {
-            throw new RuntimeException('Os parâmetros de configuração do email não foram definidos.');
-        }
-
-        if ($this->message === null) {
-            throw new RuntimeException('A mensagem do email não foi configurada.');
-        }
-
         if ($this->subject === null) {
-            throw new RuntimeException('O assunto da mensagem não foi definido.');
-        }
-
-        if (empty($this->to)) {
-            throw new RuntimeException('Nenhum destinatário foi definido.');
-        }
-
-        if ($this->from === null) {
-            throw new RuntimeException('Nenhum remetente foi definido.');
+            throw new \RuntimeException('O assunto da mensagem não foi definido.');
         }
 
         if ($this->body === null) {
-            throw new RuntimeException('O corpo da mensagem não foi definido.');
+            throw new \RuntimeException('O corpo da mensagem não foi definido.');
         }
-
-        foreach ($this->to as $to) {
-            $this->message->addTo($to);
-        }
-
-        // define se utilizará html ou não no corpo do texto.
-        if ($this->isHtml) {
-            $html = new MimePart($this->body);
-            $html->type = "text/html";
-            $body = new MimeMessage();
-            $body->addPart($html);
-            $this->message->setBody($body);
-        } else {
-            $this->message->setBody($this->body);
-        }
-
         
-        // faz o envio.
-            try  {
-                //Seta o path e arquivo para escrita
-                $path = __DIR__ . '/../../../../../data/';
-                $fileOption = $path . 'email/' . microtime(true) . '.option';
-                
-                //Passa os parametros necessarios para o array do file
-                $encoding = json_encode([$this->config, $this->body, $this->subject, $this->to, $this->from, $this->name]);
-                
-                //Coloca o array no arquivo
-                file_put_contents($fileOption, $encoding);
-                
-                $script = $path . 'script/sendEmail.php';
-                
-                //Chama a thread de execuçao de email.
-                $result = shell_exec("php $script $fileOption  > /dev/null 2>/dev/null & ");
-                
-                return true;
-            } catch (\Exception $ex) {
-                echo $ex->getMessage();
-                return false;
-            }
-        
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setConfig(array $config)
-    {
-
-        if (!key_exists('host', $config)) {
-            throw new InvalidArgumentException('A configuração de email deve possuir a chave [host]');
+        if ($this->from === null) {
+            throw new \RuntimeException('Nenhum remetente foi definido.');
         }
 
-        if (!key_exists('connection_class', $config)) {
-            throw new InvalidArgumentException('A configuração de email deve possuir a chave [connection_class]');
-        }
-        if (!key_exists('config', $config) || !is_array($config['config'])) {
-            throw new InvalidArgumentException('A configuração de email deve possuir a chave [config]');
+        if (empty($this->to)) {
+            throw new \RuntimeException('Nenhum destinatário foi definido.');
         }
 
-        if (!key_exists('username', $config['config'])) {
-            throw new InvalidArgumentException('A configuração de email deve possuir a chave [config][username]');
+        // faz a requisição de envio.
+        try {
+            //define o caminho do conteúdo da requisição de email
+            $path = __DIR__ . '/../../../../../data/';
+            $fileOption = $path . 'email/' . microtime(true) . '.json';
+            //
+            $encodedContent = json_encode([
+                'subject' => $this->subject,
+                'from' => [
+                    'email' => $this->from,
+                    'name' => $this->name,
+                ],
+                'to' => $this->to,
+                'replyTo' => $this->replyTo,
+                'isHtml' => $this->isHtml,
+                'body' => $this->body,
+            ], JSON_PRETTY_PRINT);
+
+            //Coloca o array no arquivo
+            file_put_contents($fileOption, $encodedContent);
+
+            $script = $path . 'script/sendEmail.php';
+
+            //Chama a thread de execuçao de email.
+            shell_exec("php $script $fileOption  > /dev/null 2>/dev/null & ");
+
+            return true;
+        } catch (\Exception $ex) {
+            return false;
         }
-
-        if (!key_exists('password', $config['config'])) {
-            throw new InvalidArgumentException('A configuração de email deve possuir a chave [config][password]');
-        }
-
-        if (!key_exists('ssl', $config['config'])) {
-            throw new InvalidArgumentException('A configuração de email deve possuir a chave [config][ssl]');
-        }
-        $this->config = $config;
-        
-        $smtpOptions = new SmtpOptions();
-        $smtpOptions
-            ->setHost($config['host'])
-            ->setConnectionClass($config['connection_class'])
-            ->setName($config['host'])
-            ->setConnectionConfig(array(
-                'username' => $config['config']['username'],
-                'password' => $config['config']['password'],
-                'ssl' => $config['config']['ssl'],
-        ));
-
-        $this->smtpOptions = $smtpOptions;
-
-        return $this;
     }
 
     public function setSubject($subject)
     {
-        if ($this->message === null) {
-            $this->message = new Message();
-            $this->message->setEncoding('UTF-8');
-        }
-
-        $this->message->setSubject($this->subject = $subject);
-
+        $this->subject = $subject;
         return $this;
     }
 
@@ -233,7 +135,6 @@ class EmailSenderService implements EmailSenderServiceInterface
     public function setBody($body)
     {
         $this->body = $body;
-
         return $this;
     }
 
@@ -242,17 +143,7 @@ class EmailSenderService implements EmailSenderServiceInterface
      */
     public function setFrom($from, $name = null)
     {
-
-        if ($this->message === null) {
-            $this->message = new Message();
-            $this->message->setEncoding('UTF-8');
-        }
-
-        if ($name !== null) {
-            $this->message->setFrom($this->from = $from, $name);
-        } else {
-            $this->message->setFrom($this->from = $from);
-        }
+        $this->from = $from;
         $this->name = $name;
         return $this;
     }
@@ -260,9 +151,25 @@ class EmailSenderService implements EmailSenderServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function addTo($to)
+    public function addTo($email, $name)
     {
-        $this->to[] = $to;
+        $this->to[] = [
+            'email' => $email,
+            'name' => $name,
+        ];
+
+        return $this;
+    }
+
+    /**
+     * {@inheritDoc}
+     */
+    public function addReplyTo($email, $name = null)
+    {
+        $this->replyTo[] = [
+            'email' => $email,
+            'name' => $name
+        ];
 
         return $this;
     }
@@ -276,5 +183,4 @@ class EmailSenderService implements EmailSenderServiceInterface
 
         return $this;
     }
-
 }

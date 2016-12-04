@@ -305,12 +305,14 @@ class RegistrationController extends AbstractEntityActionController {
                         $view->setTerminal(true);
                         $emailBody = $this->viewRenderer->render($view);
 
+                        $person = $registration->getPerson();
+                        
                         // envia email para o candidato
                         $this->emailService
                                 ->setSubject($subject . ' 🚀')
                                 ->setBody($emailBody)
                                 ->setIsHtml(true)
-                                ->addTo($registration->getPerson()->getPersonEmail());
+                                ->addTo($person->getPersonEmail(), $person->getPersonFirstName());
 
                         
                         $this->emailService->send();
