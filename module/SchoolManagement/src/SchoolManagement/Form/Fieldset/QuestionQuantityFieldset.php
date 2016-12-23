@@ -37,9 +37,10 @@ class QuestionQuantityFieldset extends Fieldset implements InputFilterProviderIn
             'name' => 'quantity',
             'type' => 'number',
             'attributes' => array(
-                'class' => 'col-md-5 col-xs-12 pull-right amount-input',
+                'class' => 'col-md-5 col-xs-12 pull-right amount-input text-center',
                 'data-old-value' => '',
                 'min' => 0,
+                'style' => 'width: 100%; color: black;',
             ),
         ));
     }
@@ -49,6 +50,17 @@ class QuestionQuantityFieldset extends Fieldset implements InputFilterProviderIn
         return array(
             'quantity' => array(
                 'required' => true,
+                'validators' => array(
+                    array(
+                        'name' => 'Int',
+                    ),
+                    array(
+                        'name' => 'GreaterThan',
+                        'options' => array(
+                            'min' => 0
+                        )
+                    ),
+                ),
             ),
         );
     }

@@ -69,7 +69,7 @@ define(['jquery', 'datatable', 'mathjax'], function () {
                 }],
                 order: [],
                 ajax: {
-                    url: "/school-management/school-exam/get-questions",
+                    url: "/school-management/school-exam/get-subject-questions",
                     type: "POST",
                     data: function () {
                         return {

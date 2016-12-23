@@ -30,13 +30,13 @@
                 <tbody>
                     <?php foreach ($this->exams as $exam) : ?>
                         <?php 
-                            if (in_array($exam, $this->selectedExams)) {
+                            if (in_array($exam, $this->selectedExams)) :
                                 $trClass = 'cats-selected-row';
                                 $tdClass = 'cats-selected-bg';
-                            } else {
+                            else :
                                 $trClass = '';
                                 $tdClass = '';
-                            }                    
+                            endif;               
                         ?>
                         <tr class="cats-row text-center 
                             <?php echo $trClass; ?>" 

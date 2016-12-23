@@ -17,85 +17,12 @@
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <?php echo $this->contentDescription; ?>
+                    <?php echo $this->description; ?>
+                    <span class="hide" id="questions-start-at-number">
+                        <?php echo $this->questionsStartAtNumber; ?>
+                    </span>
                 </div><!-- /.box-body -->
-            </div><!-- /.box -->
-            
-            <div class="box box-primary collapsed-box color-palette-box">
-                <div class="box-header with-border">
-                    <h3 class="box-title text-uppercase"><i class="fa fa-cogs"></i> CONFIGURAÇÃO DO SIMULADO</h3>
-                    <div class="box-tools pull-right">
-                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
-                    </div><!-- /.box-tools -->
-                </div>
-                <input type="hidden" name="contentId" id="contentId" value="<?php echo $this->contentId; ?>">
-                <div class="box-body">
-                    <div class="col-xs-12 no-padding">
-                        <table class="table table-bordered table-condensed" style="opacity: 0.5">
-                            <tr>
-                                <?php foreach ($this->baseSubjects as $baseSubject) : ?>
-                                    <?php
-                                    if ($baseSubject->getSubjectName() === "REDAÇÃO") :
-                                        continue;
-                                    endif;
-                                    ?>
-                                    <th>
-                                        <h4 class="text-uppercase"><?php echo $baseSubject->getSubjectName(); ?></h4>
-                                    </th>
-                                <?php endforeach; ?>
-                            </tr>
-                            <tr>
-                            <?php 
-                                $i = 0;
-                            ?>
-                            <?php foreach ($this->baseSubjects as $baseSubject) : ?>
-                                <?php 
-                                    $baseSubjectId = $baseSubject->getSubjectId();
-                                    if ($baseSubject->getSubjectName() === "REDAÇÃO") :
-                                        continue;
-                                    endif;
-                                ?>
-
-                                <td class="base-subject col-xs-3" 
-                                    id="base-subject-<?php echo $baseSubjectId; ?>" 
-                                    data-id="<?php echo $baseSubjectId; ?>" 
-                                    data-name="<?php echo $baseSubject->getSubjectName(); ?>">
-
-                                    <?php foreach ($baseSubject->getChildren() as $subject) : ?>
-                                        <?php 
-                                            $subjectId = $subject->getSubjectId();
-                                        ?>    
-
-                                        <div class="col-xs-12">
-                                            <?php echo $subject->getSubjectName(); ?>
-                                        </div>
-                                        <div class="col-xs-12 quantity-block" 
-                                             data-s-id="<?php echo $subjectId; ?>" 
-                                             data-quantity="<?php  
-                                                if ($this->subjectQuantities !== null 
-                                                        && isset($this->subjectQuantities[$baseSubjectId]) /*Base subject existe no array*/
-                                                        && isset($this->subjectQuantities[$baseSubjectId][$subjectId])) : /*Subject existe no array*/
-                                                    echo $this->subjectQuantities[$baseSubjectId][$subjectId];
-                                                endif;
-                                                ?>">                                        
-                                            <div class="form-group ">
-                                                <input type="number" class="col-md-5 col-xs-12 pull-right amount-input form-control" data-old-value="" min="0" value="" disabled>
-                                            </div>
-                                        </div>
-                                        <?php ++$i; ?>
-
-                                    <?php endforeach; ?>
-                                </td>
-
-                            <?php endforeach; ?>
-                            </tr>
-                        </table>
-                        <div class="col-md-12"><strong>Total: <span id="question-count">0</span></strong></div>
-                        <!-- /.col -->
-                    </div>
-                </div>
-                <!-- /.box-body -->
-            </div>
+            </div><!-- /.box -->            
             
             <div class="box box-success color-palette-box">
                 <div class="box-header with-border">
@@ -105,29 +32,59 @@
                     </div><!-- /.box-tools -->
                 </div>
                 <div class="box-body">
-                    <?php if ($this->editAllowed) : ?> 
-                        <div class="col-md-3 col-xs-12 no-padding" id="subjects">
-                            <dl class="col-xs-12 no-padding">
-                                <?php foreach ($this->baseSubjects as $baseSubject) : ?>
-                                    <div class="base-subject-info no-margin no-padding" 
-                                         data-name="<?php echo $baseSubject->getSubjectName(); ?>"
-                                         data-id="<?php echo $baseSubject->getSubjectId(); ?>">
-
-                                        <?php foreach ($baseSubject->getChildren() as $subject) : ?>
-                                            <dt id="select-<?php echo $subject->getSubjectId(); ?>"
-                                                data-name="<?php echo $subject->getSubjectName(); ?>">
-                                                    <?php echo $subject->getSubjectName(); ?>
-                                                <span class="pull-right">
-                                                    <span class="q-added text-green">0</span>
-                                                    <?php if ($baseSubject->getSubjectName() !== "REDAÇÃO"): ?>
-                                                        /
-                                                        <span class="q-amount text-blue"></span>
-                                                    <?php endif; ?>
-                                                </span>
-                                            </dt>
-                                            <dd class="col-xs-12" id="subject-<?php echo $subject->getSubjectId() ?>">
-                                                <select name="subject" class="col-xs-12 no-padding no-border" multiple>
-
+                    <?php if ($this->editAllowed) : ?>                     
+                        <?php $colors = ['purple', 'orange', 'navy', 'maroon', 'teal']; ?>
+                        <style>
+                            .nav-tabs-custom>.nav-tabs>li.active  {
+                                border-top-color: #4c4c4c;
+                            }
+                        </style>
+                        <div class="col-xs-12 no-padding" id="content-info" data-id="<?php echo $this->contentId; ?>">
+                            <?php foreach ($this->baseSubjects as $i => $baseSubject) : ?> 
+                                <?php
+                                $baseSubjectName = $baseSubject->getSubjectName();
+                                $baseSubjectId = $baseSubject->getSubjectId();                                       
+                                ?>
+                                <div class="base-subject-info nav-tabs-custom" 
+                                     id="base-subject-info-<?php echo $baseSubjectId; ?>"
+                                     data-name="<?php echo $baseSubjectName; ?>"
+                                     data-id="<?php echo $baseSubjectId; ?>"
+                                     style="border: thin lightgray solid; 
+                                            border-right: thick <?php echo $colors[$i % count($colors)]; ?> solid">
+                                    
+                                    <ul class="nav nav-tabs">  
+                                        <?php foreach ($baseSubject->getChildren() as $j => $subject) : ?>
+                                            <li class="
+                                                <?php 
+                                                if ($j === 0) :
+                                                    echo " active ";
+                                                endif; 
+                                                ?>">
+                                                <a href="#subject-info-<?php echo $subject->getSubjectId(); ?>" 
+                                                   data-toggle="tab">
+                                                       <?php echo $subject->getSubjectName(); ?>
+                                                </a>
+                                            </li>                                           
+                                        <?php endforeach; ?>
+                                    </ul>
+                                    
+                                    <div class="tab-content">
+                                        <?php foreach ($baseSubject->getChildren() as $j => $subject) : ?>
+                                            <?php
+                                            $subjectId = $subject->getSubjectId();
+                                            $subjectName = $subject->getSubjectName();
+                                            ?>
+                                            <div class="tab-pane subject-info row
+                                                <?php 
+                                                if ($j === 0) :
+                                                    echo " active ";
+                                                endif; 
+                                                ?>
+                                                " 
+                                                data-id="<?php echo $subjectId; ?>"
+                                                data-name="<?php echo $subjectName; ?>"
+                                                id="subject-info-<?php echo $subjectId; ?>">        
+                                                <div class="col-xs-11">
                                                     <?php
                                                     foreach ($subject->getChildren() as $topic) :
 
@@ -144,9 +101,18 @@
                                                                     = true;
                                                             if (empty($current->getChildren()->toArray())) :
                                                                 ?>
-                                                                <option value="<?php echo $current->getSubjectId(); ?>">
-                                                                    <?php echo $current->getSubjectName(); ?>
-                                                                </option>
+                                                                <?php
+                                                                $topicName = $current->getSubjectName();
+                                                                $topicId = $current->getSubjectId();
+                                                                ?>
+                                                                <button class="btn btn-flat topic-info
+                                                                        bg-<?php echo $colors[$i % count($colors)]; ?>"
+                                                                        style="cursor: pointer;"
+                                                                        data-id="<?php echo $topicId; ?>"
+                                                                        data-name="<?php echo $topicName; ?> - <?php echo $subjectName; ?>"
+                                                                        id="topic-info-<?php echo $topicId; ?>">
+                                                                    <?php echo $topicName;  ?>
+                                                                </button>
                                                                 <?php
                                                             endif;
 
@@ -156,38 +122,62 @@
                                                         endwhile;
 
                                                     endforeach;
-                                                    ?>    
-                                                    <option value="<?php echo $subject->getSubjectId(); ?>">SEM TÓPICO DEFINIDO</option>
-
-                                                </select>
-                                            </dd>
+                                                    ?> 
+                                                    <button class="btn btn-flat topic-info
+                                                            bg-<?php echo $colors[$i % count($colors)]; ?>"
+                                                            style="cursor: pointer;"
+                                                            data-id="<?php echo $subjectId; ?>"
+                                                            data-name="SEM TÓPICO - <?php echo $subjectName; ?>"
+                                                            id="topic-info-<?php echo $subjectId; ?>">
+                                                        SEM TÓPICO
+                                                    </button>
+                                                </div>
+                                                <div class="col-xs-1 no-padding">
+                                                    <div class="info-box-content no-margin">
+                                                        <span class="info-box-number">
+                                                            <span class="q-added">0</span> 
+                                                            / 
+                                                            <span class="q-amount text-blue">0</span>                                                                
+                                                        </span>                                                            
+                                                    </div>
+                                                </div>
+                                            </div>
                                         <?php endforeach; ?>
                                     </div>
-                                <?php endforeach; ?>
-                            </dl>
+                                </div>
+                            <?php endforeach; ?>
+
                         </div>
-                        <div class="col-md-9 col-xs-12" id="questions">
-                            <div class="row">
-                                <div class="col-xs-4 col-xs-offset-4"> 
-                                    <button class="btn-primary btn-block btn btn-success add-question"><span class="glyphicon glyphicon-plus"></span></button>           
-                                </div> 
+                        
+                        <div class="col-xs-12" id="questions">
+                            <div class="row text-center">
+                                <h4 id="table-content-title">TÍTULO</h4>
                                 <div class="pull-right no-padding"> 
                                     <span class="text-bold text-sm" style="padding-right: 5%;">RECARREGAR QUESTÕES</span>
                                     <i class="fa fa-refresh text-purple" style="font-size: 17px;" id="refresh-button" aria-hidden="true"></i>               
                                 </div>
                             </div>
-                            <div class="table-responsive">
-                                <table class="table table-condensed table-bordered" id="question-table">
-                                    <thead>
-                                    <th>Questões</th>
-                                    </thead>
-                                    <tbody>
-                                    </tbody>
-                                </table>
-                            </div>
-                            <div class="col-xs-4 col-xs-offset-4"> 
-                                <button class="btn-primary btn-block btn btn-success add-question"><span class="glyphicon glyphicon-plus"></span></button>           
-                            </div>
+                            <div class="row"> 
+                                <div class="col-xs-4 col-xs-offset-4"> 
+                                    <button class="btn-block btn btn-flat btn-success add-question"><span class="glyphicon glyphicon-plus"></span></button>
+                                </div>    
+                            </div>  
+                            <div class="row">
+                                <div class="table-responsive">
+                                    <table class="table table-condensed table-bordered" id="question-table">
+                                        <thead>
+                                        <th>Questões</th>
+                                        </thead>
+                                        <tbody>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div> 
+                            <div class="row"> 
+                                <div class="col-xs-4 col-xs-offset-4"> 
+                                    <button class="btn-block btn btn-flat btn-success add-question"><span class="glyphicon glyphicon-plus"></span></button>
+                                </div>    
+                            </div>  
                         </div>
                     <?php else : ?> 
                         <h4 class="text-bold text-uppercase text-center" style="opacity: 0.5">
@@ -207,13 +197,15 @@
                     </div><!-- /.box-tools -->
                 </div>
                 <div class="box-body">
-                    <div class="progress" id="content-load-progress" style="display: none;">
-                        <div class="progress-bar progress-bar-green" role="progressbar" style="width: 0%"><span class="sr-only" style="position: static;">0%</span></div>
-                    </div>
                     <?php if ($this->editAllowed) : ?> 
                         <div class="do-not-print col-xs-12">
-                            <strong><span id="added-questions" class="text-green"></span></strong> questões adicionadas.<br>
-                            <strong><span id="remaining-questions" class="text-red"></span></strong> questões restantes.
+                            <div class="info-box-content no-margin">
+                                <span class="info-box-number">
+                                    <span id="added-questions">0</span> 
+                                    / 
+                                    <span id="questions-count" class="text-blue">0</span>
+                                </span>                                                            
+                            </div>
                         </div>
 
                         <div class="do-not-print row">  
@@ -221,12 +213,12 @@
                             <br><br><br><br>
                             <label class="col-xs-12 text-center"><input type='checkbox' id="autosaving" style="margin-right: 5px">Salvar automaticamente a cada mudança</label>
                         </div>
-                    <?php endif; ?> 
-
+                    <?php endif; ?>                     
+                    
+                    <?php echo $this->render('exam_content_structure_templates', array()); ?>
+                    
                     <!-- PREVIEW -->
-                    <div id="preview-page" 
-                         class=" <?php echo ($this->editAllowed ? '' : 'view-only'); ?>"
-                    >
+                    <div class="preview-page <?php echo ($this->editAllowed ? '' : 'view-only'); ?>">
                         <div class="content-questions">
                         </div>
                     </div>

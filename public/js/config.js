@@ -9,6 +9,7 @@ requirejs.config({
     baseUrl: '/vendor',
     paths: {
         jquery: 'AdminLTE/plugins/jQuery/jquery-2.2.3.min',
+        jqueryui: 'AdminLTE/plugins/jQueryUI/jquery-ui.min',
         jquerycsv: 'jquery-csv/src/jquery.csv',
         jquerycolumnizer: 'jquery.columnizer/src/jquery.columnizer.min',
         bootstrap: 'AdminLTE/bootstrap/js/bootstrap.min',
@@ -60,6 +61,12 @@ requirejs.config({
         jquerycsv: {
             deps: ['jquery']
         },
+        jquerycolumnizer: {
+            deps: ['jquery']
+        },
+        jqueryprint: {
+            deps: ['jquery']
+        },
         mathjax: {
             exports: "MathJax",
             init: function () {
@@ -74,9 +81,6 @@ requirejs.config({
                 MathJax.Hub.Startup.onload();
                 return MathJax;
             }
-        },
-        jqueryprint: {
-            deps: ['jquery']
         }
     }
 });

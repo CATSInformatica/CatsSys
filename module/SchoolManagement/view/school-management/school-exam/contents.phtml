@@ -12,6 +12,7 @@
                         <th class="text-center">#</th>
                         <th class="text-center">Data de criação</th>
                         <th class="text-center">Descrição</th>
+                        <th class="text-center">Número de questões</th>
                         <th class="text-center">Provas que utilizam</th>
                     </tr>
                 </thead>
@@ -26,6 +27,8 @@
                                 <?php echo $content->getCreatedDate()->format('d/m/Y'); ?>
                                 </td>
                                 <td><?php echo $content->getDescription(); ?></td>
+                                
+                                <td><?php echo json_decode($content->getConfig(), true)['numberOfQuestions']; ?></td>
                                 <td>
                                 <?php foreach ($content->getExams() as $exam): ?>
                                     <?php echo '- ' . $exam->getName(); ?><br>

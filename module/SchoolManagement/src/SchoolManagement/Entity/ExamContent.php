@@ -45,36 +45,43 @@ class ExamContent
     /**
      * Json com o conteúdo da prova
      * Ex: 
-     * config = {
-     *       "header": {
-     *           "areas": [
-     *               "area1": {
-     *                   "subarea1": <quantity>,
-     *                   "subarea2": <quantity>,
-     *                   .
-     *                   .
-     *                   .
-     *               },
-     *               "area2": {
-     *                   "subarea1": <quantity>,
-     *                   "subarea2": <quantity>,
-     *                   "subarea3": <quantity>,
-     *                   .
-     *                   .
-     *                   .
-     *               },
-     *               .
-     *               .
-     *               .
-     *           ]
-     *       },
-     *       "questions": [
-     *           {
-     *               "questionId": <number>,
-     *               "questionNumber": <number|null>,
-     *           }
-     *       ]
+     *  config = {
+     *      questionsStartAtNumber: <number>,
+     *      numberOfQuestions: <number>,
+     *      groups: [
+     *          {
+     *              id: <number>,
+     *              groupName: <string>,
+     *              subgroups: [
+     *                  {
+     *                      id: <number>,
+     *                      subgroupName: <string>,
+     *                      singleColumn: <boolean>,
+     *                      numberOfProposedQuestions: <number>,
+     *                      questions: [
+     *                          {
+     *                              id: <number>,
+     *                              subjectId: <number>,
+     *                              subjectName: <string>
+     *                          },
+     *                          ...
+     *                      ],
+     *                  },
+     *                  // se for um array, as disciplinas contidas nele são
+     *                  // paralelas
+     *                  [
+     *                      <subgroup>,
+     *                      ...
+     *                  ]
+     *                  ...
+     *              ]
+     *          },
+     *          ...
+     *      ]
      *  }
+     * 
+     * 
+     * 
      * @var string
      * @ORM\Column(name="exam_content_config", type="text", nullable=false)
      */
