@@ -46,8 +46,8 @@ if echo "$answer" | grep -iq "^y" ;then
 	do
 		echo
         echo "***Warning!***
-CATSSys uses a branch named 'develop'!
-Make sure that your forked repository has one!
+The 'devmode' requires a branch named 'develop'!
+Make sure your forked repository has one!
 "
 		read -p "Please insert the link of your forked repository
 (Example: https://github.com/marciodojr/CatsSys.git)
@@ -204,6 +204,7 @@ mkdir $HOME/vhosts
 
 git clone $repository $HOME/vhosts/cats-lab
 
+cd $HOME/vhosts/cats-lab
 git checkout develop
 
 echo 'Configuring https://github.com/CATSInformatica/CatsSys as a remote for your forked repository'
