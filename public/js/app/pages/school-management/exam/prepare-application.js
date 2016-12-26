@@ -106,6 +106,13 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
             });
         };
 
+        /*
+         * Ajusta o tamanho das imagens do conteúdo para que sua largura seja, 
+         * no máximo, igual a largura da(s) coluna(s) da prova
+         * 
+         * @param {object} contentInfoBlock - DOM Object do bloco de informações
+         *      do conteúdo da prova
+         */
         ajustImages = function(contentInfoBlock) {
             if (contentInfoBlock.hasClass('adjustment-done')) {
                 return;
@@ -122,26 +129,39 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
             contentInfoBlock.addClass('adjustment-done');
         };
         
+        /*
+         * Altera a mensagem da barra de carregamento
+         * 
+         * @param {object} contentInfoBlock - DOM Object do bloco de informações
+         *      do conteúdo da prova
+         * @param {string} message - conteúdo da mensagem 
+         */
         setLoadingText = function(contentInfoBlock, message) {
             contentInfoBlock.find('.loading-message').text(message);
         };
         
+        /*
+         * Altera a alerta da barra de carregamento 
+         * 
+         * @param {object} contentInfoBlock - DOM Object do bloco de informações
+         *      do conteúdo da prova
+         * @param {string} message - conteúdo da mensagem 
+         */
         setAlertText = function(contentInfoBlock, message) {
             contentInfoBlock.find('.alert-message').text(message);
         };
 
 
         /*
-         * Configura (cabeçalho, duas colunas, rodapé) a prova e gera a versão 
+         * Configura a prova (cabeçalho, colunas, rodapé) e gera a versão 
          * de impressão na div com id printDivId
          * 
-         * @param {int} pageNumber - número da primeira página dessa prova
-         * @param {string} printDivId - id da div que será usada para impressão
+         * @param {object} contentInfoBlock - DOM Object do bloco de informações
+         *      do conteúdo da prova
+         * @param {object} printDiv - DOM Object da div que será usada para impressão
+         * @param {int} initialPageNumber - número da primeira página dessa prova
          * @param {function} callback
-         * 
          */
-        
-        
         generateExam = function (contentInfoBlock, printDiv, initialPageNumber, callback) {
             var pageNumber = initialPageNumber;
             var totalQuestions = printDiv
@@ -212,9 +232,6 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
             buildExamLayout(contentInfoBlock, printDiv, totalQuestions, callback);
             
             
-            
-            
-            
             // A div para impressão assume o template da prova (cabeçalho, 
             // corpo com duas colunas e rodapé) e é preenchida com o conteúdo 
             // da div temporária, que fica vazia.
@@ -250,6 +267,9 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
 
                                     // volta a barra de progresso para 0% após alguns segundos
                                     updateProgressBar(totalQuestions, totalQuestions, printDiv);
+                                    // Remove as mensagens
+                                    setLoadingText(contentInfoBlock, '');
+                                    setAlertText(contentInfoBlock, '');
 
                                     // A div temporária é removida
                                     $('#exam-temp').remove();  
@@ -263,6 +283,12 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                 }
             }
             
+            /*
+             * 
+             * @param {int} questionsLeft - questões restantes para o columnizer
+             * @param {int} totalQuestions - total de questões da prova
+             * @param {object} printDiv - DOM Object da div que será usada para impressão
+             */
             function updateProgressBar(questionsLeft, totalQuestions, printDiv) {
                 if (totalQuestions > 0) {
                     var percentage = 100 - ((questionsLeft * 100) / totalQuestions);
@@ -365,6 +391,10 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
             $("#save-answers-csv").attr("download", 'gabarito.csv');
             
             
+            /*
+             * Adiciona uma linha a tabela do gabarito e ao .csv
+             * 
+             */
             function addRow(number, correctAlternative, baseSubjectName) {
                 $('.answers-table').last().append(
                     '<tr>' + 

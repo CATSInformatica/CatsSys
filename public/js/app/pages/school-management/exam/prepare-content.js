@@ -31,8 +31,10 @@
 define(['jquery', 'datatable', 'datetimepicker'], function () {
     var prepare = (function () {
 
-        /**
+        /*
          * Cópia do JSON do conteúdo
+         * O objeto é atualizado a cada mudança do conteúdo e é usado para 
+         * salvar as mudanças
          * 
          * {
          *       questionsStartAtNumber: <number>,
@@ -73,10 +75,12 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
         
         /*
          * Array de objetos com as questões carregadas por ajax
+         * 
+         * Usado para evitar que seja necessário carregar as mesmas questões 
+         * diversas vezes
+         * 
          * índice = id da questão
-         * 
          * Objeto do tipo:
-         * 
          *  examQuestions = [
          *      {
          *          enunciation: <string>,
@@ -95,10 +99,15 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
         var examQuestions = [];
         
         /*
-         *  Array de objetos com formatação para inserir no DataTable as questões de uma disciplina 
-         *  índice = id da disciplina
+         * Array de objetos com formatação adequada para carregar as questões
+         * no DataTable
+         * 
+         * Ao carregar as questões de uma disciplina uma cópia dos dados da 
+         * tabela é inserida no array. Se a mesma disciplina é selecionada 
+         * posteriormente, basta acessar o índice do array e obter as questões
          *  
-         *  sQuestionsDatatable = [
+         * índice = id da disciplina
+         * sQuestionsDatatable = [
          *      {
          *          DT_RowClass: <string>,
          *          DT_RowAttr: {
@@ -108,19 +117,19 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          *          0: <string>
          *      },
          *      ...
-         *  ]
+         * ]
          * 
          */
         var sQuestionsDatatable = [];
                 
         /*
-         *  Array de bool com as questões selecionadas (adicionadas ao conteúdo)
-         *  índice = id da questão
+         * Array de bool com as questões selecionadas (adicionadas ao conteúdo)
          *  
-         *  selectedQuestions = [
+         * índice = id da questão
+         * selectedQuestions = [
          *      <bool>,
          *      ...  
-         *  ]
+         * ]
          * 
          */
         var selectedQuestions = [];
@@ -135,7 +144,6 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
         /*
          * Inicializa os listeners que permitem ao usuário selecionar e 
          * adicionar questões ao conteúdo
-         *  
          * 
          */
         initSelectionFunctionality = function () {
@@ -143,6 +151,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             initDataTable();
             
             /*
+             * Evento: clique no botão de uma disciplina
              * Carrega as questões da disciplina selecionada no DataTable
              * 
              */
@@ -160,6 +169,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             });
 
             /*
+             * Evento: clique no ícone de recarregar questões
              * Recarrega as questões da disciplina selecionada no DataTable
              * 
              */
@@ -168,6 +178,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             });
             
             /*
+             * Evento: clique no botão + (adicionar)
              * Adiciona todas as questões selecionadas
              * 
              */
@@ -314,18 +325,38 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 }
             });
             
+            /*
+             * Incrementa o número de uma questão 
+             * 
+             * @param {object} qBlock - DOM Object do bloco da questão
+             */
             function incrementQuestionNumber(qBlock) {
                 var qNumberBlock = qBlock.find('.q-number').first();
 
                 qNumberBlock.text(+qNumberBlock.text() + 1);
             }
             
+            /*
+             * Decrementa o número de uma questão 
+             * 
+             * @param {object} qBlock - DOM Object do bloco da questão
+             */
             function decrementQuestionNumber(qBlock) {
                 var qNumberBlock = qBlock.find('.q-number').first();
 
                 qNumberBlock.text(+qNumberBlock.text() - 1);              
             }
             
+            /*
+             * Atualiza o objeto que representa o conteúdo quando duas questões
+             * são trocadas de lugar
+             *  
+             * @param {int} baseSubjectId - id da disciplina base
+             * @param {int} subjectAId - id da disciplina a qual a questão A pertence
+             * @param {int} questionAId - id da questão A
+             * @param {int} subjectBId - id da disciplina a qual a questão B pertence
+             * @param {int} questionBId - id da questão B
+             */
             function updateConfig(
                     baseSubjectId, 
                     subjectAId, questionAId,
@@ -368,13 +399,17 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
         /*
          * Remove os dados do DataTable e insere os contidos em 'data'
          * 
-         * @param {array} data - Array de objetos contendo as informações a 
+         * @param {object} data - Array de objetos contendo as informações a 
          * serem carregadas na tabela
          * 
-         * data contém:
-         *      DT_RowAttr: (Objeto que determina os atributos de cada linha da tabela)
-         *      0: (Primeira coluna - checkbox com o id da questão)
-         *      1: (Segunda coluna - Descrição da questão)
+         * data = {
+         *      DT_RowClass: <string>,
+         *      DT_RowAttr: {
+         *          "id": <string>,
+         *          "data-id": <number, string>
+         *      },
+         *      0: <string>,
+         *      ...
          * }
          */
         setDatatable = function (data) {
@@ -462,10 +497,15 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
         };
 
         /*
+         * Carrega um conteúdo
          * 
-         * @param {integer} contentId - id do conteúdo
+         * @param {int} contentId - id do conteúdo 
+         * @param {object} divObj - DOM Object da div com a classe 
+         *      'content-questions' na qual o conteúdo deve ser exibido
+         * @param {boolean} prepareContent - flag que indica se a função está 
+         *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
          */
-        loadContent = function(contentId, divObj, updateStats) {
+        loadContent = function(contentId, divObj, prepareContent) {
             $.ajax({
                 method: "POST",
                 url: '/school-management/school-exam/get-content',
@@ -487,9 +527,8 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                             addParallelSubjectBlock(groups[i].subgroups[j]);
                             
                             for (var k = 0; k < groups[i].subgroups[j].length; ++k) {
-                                if (updateStats) {
+                                if (prepareContent) {
                                     setSubjectInfo(
-                                            groups[i], 
                                             groups[i].subgroups[j][k], 
                                             parallelSubject
                                     );
@@ -503,13 +542,12 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                                         },
                                         groups[i].subgroups[j][k],
                                         parallelSubject,
-                                        updateStats
+                                        prepareContent
                                 );
                             }
                         } else {
-                            if (updateStats) {
+                            if (prepareContent) {
                                 setSubjectInfo(
-                                        groups[i], 
                                         groups[i].subgroups[j], 
                                         parallelSubject
                                 );
@@ -526,7 +564,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                                     },
                                     groups[i].subgroups[j],
                                     parallelSubject,
-                                    updateStats
+                                    prepareContent
                             );
                         }
                     }
@@ -535,17 +573,31 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 $('#questions-count').text(contentConfig.numberOfQuestions);
             });
             
-            function addBaseSubjectBlock(group, divObj) {
+            /*
+             * Adiciona um bloco de disciplina base
+             * 
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             * @param {object} divObj - DOM Object da div com a classe 
+             *      'content-questions' na qual o conteúdo deve ser exibido 
+             */
+            function addBaseSubjectBlock(subject, divObj) {
                 var baseSubjectTemplate = $('#base-subject-template > div').clone();
 
-                baseSubjectTemplate.addClass('s-' + group.id);
-                baseSubjectTemplate.attr('data-id', group.id);
-                baseSubjectTemplate.attr('data-name', group.groupName);
-                baseSubjectTemplate.find('.title').text(group.groupName);
+                baseSubjectTemplate.addClass('s-' + subject.id);
+                baseSubjectTemplate.attr('data-id', subject.id);
+                baseSubjectTemplate.attr('data-name', subject.groupName);
+                baseSubjectTemplate.find('.title').text(subject.groupName);
 
                 divObj.append(baseSubjectTemplate);
             }
             
+            /*
+             * Adiciona um bloco de disciplinas paralelas
+             * 
+             * @param {object} parallelSubjects - objeto que representa 
+             *      disciplinas paralelas no JSON do conteúdo
+             */
             function addParallelSubjectBlock(parallelSubjects) {
                 var parallelSubjectsTemplate = $('#parallel-subjects-template > div').clone();
                 
@@ -561,8 +613,34 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 divObj.find('.base-subject-block').last().append(parallelSubjectsTemplate);
             }
             
+            /*
+             * Adiciona um bloco de disciplina de coluna única
+             * 
+             * @param {object} baseSubject - objeto que representa a disciplina base no JSON 
+             *      do conteúdo
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             * @param {object} divObj - DOM Object da div com a classe 
+             *      'content-questions' na qual o conteúdo deve ser exibido 
+             */
+            function addSingleColumnSubjectBlock(baseSubject, subject, divObj) {
+                var singleColumnSubjectTemplate = $('#single-column-subject-template > div').clone();
+                
+                singleColumnSubjectTemplate.addClass('s-' + subject.id);
+                singleColumnSubjectTemplate.data('id', subject.id);
+                divObj.find('.s-' + baseSubject.id).first().append(singleColumnSubjectTemplate);
+            }
             
-            function setSubjectInfo(baseSubject, subject, parallel) {
+            /*
+             * Na preparação do conteúdo, adiciona ao bloco de informações de 
+             * determinada disciplina as informações de: quantidade de questões, 
+             * se a disciplina é paralela e se a disciplina é de coluna única
+             * 
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             * @param {boolean} parallel - flag que indica se 
+             */
+            function setSubjectInfo(subject, parallel) {
                 var subjectInfoBlock = $('#subject-info-' + subject.id);
                 
                 var amount = +subject.numberOfProposedQuestions;
@@ -575,39 +653,62 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 }
             }
             
-            function addSingleColumnSubjectBlock(baseSubject, subject, divObj) {
-                var singleColumnSubjectTemplate = $('#single-column-subject-template > div').clone();
-                
-                singleColumnSubjectTemplate.addClass('s-' + subject.id);
-                singleColumnSubjectTemplate.data('id', subject.id);
-                divObj.find('.s-' + baseSubject.id).first().append(singleColumnSubjectTemplate);
-            }
-            
-            function loadSubject(context, subgroup, parallelSubject, updateStats) {
+            /*
+             * Carrega as questões de uma disciplina
+             * 
+             * @param {object} context - objeto com informações sobre a disciplina a ser adicionada
+             *  context = {
+             *      baseSubjectId: <int>,
+             *      numberingStart: <int>,
+             *      divObj: <object>
+             *  }
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             * @param {boolean} parallelSubject - flag que indica se a disciplina 
+             *      é paralela
+             * @param {boolean} prepareContent - flag que indica se a função está 
+             *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
+             */
+            function loadSubject(context, subject, parallelSubject, prepareContent) {
                 var questionsIds = [];
                 
-                for (var i = 0; i < subgroup.questions.length; ++i) {
-                    questionsIds.push(subgroup.questions[i].id);
+                for (var i = 0; i < subject.questions.length; ++i) {
+                    questionsIds.push(subject.questions[i].id);
                 }
                 
                 loadQuestions(
                         questionsIds,
                         context,
                         {
-                            id: subgroup.id,
-                            name: subgroup.subgroupName,
+                            id: subject.id,
+                            name: subject.subgroupName,
                             parallel: parallelSubject,
-                            singleColumn: subgroup.singleColumn,
+                            singleColumn: subject.singleColumn,
                         },
-                        updateStats
+                        prepareContent
                 );
             }
             
             /*
-            * Carrega todas as questões do conteúdo
-            * 
-            */
-            function loadQuestions(questionsIds, context, subject, updateStats) {
+             * Carrega as questões pedidas
+             * 
+             * @param {array} questionsIds - ids das questões a serem carregadas
+             *  questionsIds = [
+             *      <int>,
+             *      ...
+             *  ]
+             * @param {object} context - objeto com informações sobre a disciplina a ser adicionada
+             *  context = {
+             *      baseSubjectId: <int>,
+             *      numberingStart: <int>,
+             *      divObj: <object>
+             *  }
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             * @param {boolean} prepareContent - flag que indica se a função está 
+             *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
+             */
+            function loadQuestions(questionsIds, context, subject, prepareContent) {
                 $.ajax({
                      method: "POST",
                      url: '/school-management/school-exam/get-questions',
@@ -619,33 +720,43 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                             questions,
                             context, 
                             subject, 
-                            updateStats
+                            prepareContent
                     );
                 });
             }
             
-            /**
-            * Carrega as questões
-            * 
-            * @param {array} questions
-            *      questions = [
-            *          {
-            *              id: <number>
-            *              subjectId: <number>,
-            *              baseSubjectId: <number>,
-            *              enunciation: <string>, 
-            *              alternatives: [
-            *                  <string>,
-            *                  ...
-            *              ]
-            *              answer: <number>,
-            *          },
-            *          .
-            *          .
-            *          . 
-            *      ]
-            */
-            addLoadedQuestions = function (questions, context, subject, updateStats) {
+            /*
+             * Carrega as questões
+             * 
+             * @param {array} questions - questões a serem adicionadas
+             *      questions = [
+             *          {
+             *              questionId: <number>
+             *              questionEnunciation: <number>,
+             *              questionSubjectId: <number>,
+             *              questionCorrectAlternative: <string>, 
+             *              questionAlternatives: [
+             *                  <string>,
+             *                  ...
+             *              ]
+             *          },
+             *          .
+             *          .
+             *          . 
+             *      ]
+             * 
+             * @param {object} context - objeto com informações sobre a disciplina a ser adicionada
+             *  context = {
+             *      baseSubjectId: <int>,
+             *      numberingStart: <int>,
+             *      divObj: <object>
+             *  }
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             * @param {boolean} prepareContent - flag que indica se a função está 
+             *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
+             */
+            addLoadedQuestions = function (questions, context, subject, prepareContent) {
                 var total = questions.length;
                 for (var i = 0; i < total; ++i) {
                     examQuestions[questions[i].questionId] = {
@@ -667,7 +778,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                                     name: subject.name,
                                     parallel: subject.parallel, 
                                     singleColumn: subject.singleColumn
-                                },
+                                }
                             },
                             {
                                 divObj: context.divObj,
@@ -685,8 +796,6 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          * Adiciona uma questão ao conteúdo
          * 
          * @param {object} question - objeto com os dados da questão
-         *  questionId
-         *  
          *  question = {
          *      id: <number>,
          *      enunciation: <string>,
@@ -701,15 +810,18 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          *          name: <string>,
          *          parallel: <boolean>,
          *          singleColumn: <boolean>
-         *      },
-         *      baseSubject: {
-         *          id: <number>
-         *      }
-         *      
+         *      },         *      
          *  }
-         * 
+         * @param {type} context - objeto com informações sobre a disciplina a ser adicionada
+         *  context = {
+         *      divObj: <object>,
+         *      baseSubjectId: <number>,
+         *      numberingStart: <number>
+         *  }
+         * @param {boolean} prepareContent - flag que indica se a função está 
+         *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
          */
-        addQuestion = function (question, context, updateStats) {
+        addQuestion = function (question, context, prepareContent) {
             //  questão já adicionada
             if (selectedQuestions[question.id]) {
                 return;
@@ -772,7 +884,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 numberQuestions(context.numberingStart, context.divObj);
             }
             
-            if (updateStats) {
+            if (prepareContent) {
                 flagQuestionAsSelected(question.id);
                 incrementSubjectCounter(subjectId);
                 updateAddedQuestions();
@@ -782,25 +894,39 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 }
             }
             
-            
+            /*
+             * Marca a questão como adicionada
+             * @param {int} questionId - id da questão
+             */
             function flagQuestionAsSelected(questionId) {
                 selectedQuestions[questionId] = true;
             }
             
+            /*
+             * Incrementa o contador de questões adicionadas
+             */
             function incrementQuestionCounter() {
                 ++questionCount;
             }
             
             /*
-            * Incrementa o valor do contador de questões da disciplina de id=subjectId
-            * 
-            * @param {int} subjectId - id da disciplina
-            */
+             * Incrementa o valor do contador de questões da disciplina de id=subjectId
+             * 
+             * @param {int} subjectId - id da disciplina
+             */
             function incrementSubjectCounter(subjectId) {
                var qAdded = $('#subject-info-' + subjectId).find('.q-added');
                qAdded.text(+qAdded.text() + 1);
             }
             
+            /*
+             * Atualiza o JSON do conteúdo com a nova questão
+             * 
+             * @param {int} baseSubjectId - id da disciplina base
+             * @param {int} subjectId - id da disciplina
+             * @param {string} subjectName - nome da disciplina 
+             * @param {int} questionId - id da questão
+             */
             function addToConfig(baseSubjectId, subjectId, subjectName, questionId) {                
                 var subgroup = findSubgroup(baseSubjectId, subjectId);
                 
@@ -816,13 +942,16 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          * Atualiza o número de questões adicionadas
          * 
          */
-        function updateAddedQuestions() {
+        updateAddedQuestions = function() {
             $('#added-questions').text(questionCount);
         };
 
         /*
          * Numera as questões 
          * 
+         * @param {int} beginAt - número de ínicio da numeração
+         * @param {object} divObj - DOM Object da div com a classe 
+         *      'content-questions' na qual o conteúdo deve ser exibido 
          */
         numberQuestions = function (beginAt, divObj) {
             var baseSubjects = divObj.find('.base-subject-block');
@@ -871,21 +1000,34 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             );
             
             removeFromConfig(baseSubjectId, subjectId, qId);
+            
             /*
-            * 
-            * 
-            * @param {int} subjectId - id da disciplina
-            */
+             * Decrementa o valor do contador de questões da disciplina de id=subjectId
+             * 
+             * @param {int} subjectId - id da disciplina
+             */
             function decrementSubjectCounter(subjectId) {
                var qAdded = $('#subject-info-' + subjectId).find('.q-added');
                qAdded.text(qAdded.text() - 1);
-            };
+            }
             
+            /*
+             * Descrementa o contador de questões
+             * Atualiza o contador de questões adicionadas
+             */
             function decrementQuestionCounter() {
                 --questionCount; 
                 updateAddedQuestions();
             }
             
+            /*
+             * Atualiza o JSON do conteúdo com a questão removida
+             * 
+             * @param {int} baseSubjectId - id da disciplina base
+             * @param {int} subjectId - id da disciplina
+             * @param {string} subjectName - nome da disciplina 
+             * @param {int} questionId - id da questão
+             */
             function removeFromConfig(baseSubjectId, subjectId, questionId) {                
                 var subgroup = findSubgroup(baseSubjectId, subjectId);
                 
@@ -898,7 +1040,13 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             }
         };
         
-        findSubgroup = function(baseSubjectId, subjectId) {
+        /*
+         * Retorna o objeto de uma disciplina no JSON do conteúdo
+         * 
+         * @param {int} baseSubjectId - id da disciplina base
+         * @param {int} subjectId - id da disciplina
+         */
+        findSubgroup = function (baseSubjectId, subjectId) {
             var subgroup = {
                 questions: []
             };

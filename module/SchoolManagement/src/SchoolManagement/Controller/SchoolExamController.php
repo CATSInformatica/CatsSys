@@ -720,97 +720,13 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * Retorna todas as questões do conteúdo que possui o id passado por parâmetro
+     * Retorna o conteúdo que possui o id passado por parâmetro
      * 
      * @return JsonModel
-     *  Retorno do tipo: [
-     *      {
-     *          "id": <integer>, 
-     *          "enunciation": <string>, 
-     *          "alternatives": [
-     *              0: <string>,
-     *              ...
-     *          ],
-     *          "answer": <integer>,
-     *          "subjectId": <integer>, 
-      "subjectName": <string>,
-     *          "baseSubjectId": <integer>,
-      "baseSubjectName": <string>
-     *      },
-     *      ...
-     *  ]
-     */
-    public function getContentQuestionsAction()
-    {
-        $request = $this->getRequest();
-
-        if ($request->isPost()) {
-            try {
-                $em = $this->getEntityManager();
-                $data = $request->getPost();
-
-                $examContent = $em->find('SchoolManagement\Entity\ExamContent', (int) $data['contentId']);
-                $contentConfig = json_decode($examContent->getConfig(), true);
-                $contentQuestions = $contentConfig['questions'];
-                if ($contentQuestions === null) {
-                    return new JsonModel(['questions' => []]);
-                }
-
-                $formattedContentQuestions = [];
-                foreach ($contentQuestions as $i => $question) {
-                    $q = $em->find('SchoolManagement\Entity\ExamQuestion', $question['questionId']);
-                    if ($q === null) {
-                        $formattedContentQuestions[] = [
-                            'id' => $question['questionId'],
-                            'enunciation' => 'A questão foi removida',
-                            'alternatives' => null,
-                            'answer' => null,
-                            'subjectId' => null,
-                            'subjectName' => null,
-                            'baseSubjectId' => null,
-                            'baseSubjectName' => null,
-                        ];
-
-                        continue;
-                    }
-
-                    $qAnswer = -1;
-                    $qAlternatives = [];
-                    foreach ($q->getAnswerOptions() as $i => $alternative) {
-                        $qAlternatives[] = $alternative->getExamAnswerDescription();
-                        if ($alternative->getIsCorrect()) {
-                            $qAnswer = $i;
-                        }
-                    }
-
-                    $baseSubject = $q->getSubject();
-                    while ($baseSubject->getParent() !== null) {
-                        $baseSubject = $baseSubject->getParent();
-                    }
-
-                    $formattedContentQuestions[] = [
-                        'id' => $q->getExamQuestionId(),
-                        'enunciation' => $q->getExamQuestionEnunciation(),
-                        'alternatives' => $qAlternatives,
-                        'answer' => $qAnswer,
-                        'subjectId' => $q->getSubject()->getSubjectId(),
-                        'subjectName' => $q->getSubject()->getSubjectName(),
-                        'baseSubjectId' => $baseSubject->getSubjectId(),
-                        'baseSubjectName' => $baseSubject->getSubjectName(),
-                    ];
-                }
-
-                return new JsonModel(['questions' => $formattedContentQuestions]);
-            } catch (Exception $ex) {
-                return new JsonModel(['questions' => []]);
-            }
-        }
-        return new JsonModel(['questions' => []]);
-    }
-    
-    /**
-     * 
-     * @return JsonModel
+     *  {
+     *      description => <string>,
+     *      config => <string>
+     *  }
      */
     public function getContentAction()
     {
@@ -834,7 +750,28 @@ class SchoolExamController extends AbstractEntityActionController
         }
         return new JsonModel(['questions' => []]);
     }
-
+    
+    /**
+     * Extrai as informações sobre as questões passadas por parâmetro
+     * 
+     * 
+     * @param array $questions array de objetos do tipo ExamQuestion
+     * 
+     * @return array
+     *  [
+     *      [
+     *          'questionId' => <integer>,
+     *          'questionEnunciation' => <string>,
+     *          'questionAlternatives' => [
+     *              <string>,
+     *              ...
+     *          ],
+     *          'questionCorrectAlternative' => <integer>,
+     *          'questionSubjectId' => <integer>
+     *      ],
+     *  ...
+     *  ]
+     */
     private function extractQuestionsInfo($questions) {
         $result = [];
         foreach ($questions as $q) {
@@ -861,7 +798,23 @@ class SchoolExamController extends AbstractEntityActionController
     }
     
     /**
-     *
+     * Recebe um array com ids de questões ($data['questions']), carrega essas
+     * questões e as retorna
+     * 
+     * @return JsonModel
+     *  [
+     *      [
+     *          'questionId' => <integer>,
+     *          'questionEnunciation' => <string>,
+     *          'questionAlternatives' => [
+     *              <string>,
+     *              ...
+     *          ],
+     *          'questionCorrectAlternative' => <integer>,
+     *          'questionSubjectId' => <integer>
+     *      ],
+     *  ...
+     *  ]
      */
     public function getQuestionsAction()
     {

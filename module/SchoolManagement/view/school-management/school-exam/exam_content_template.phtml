@@ -86,6 +86,7 @@
             <?php endif; ?>
                
             <div id="all-base-subjects"
+                 class="col-xs-12 no-padding"
                  style="overflow:auto; float: left;"><!-- style: Fix para um bug do jquery-ui (sortable) -->
                 <?php if ($this->editAllowed) : ?>
                     <?php 
@@ -109,154 +110,165 @@
                         <div class="base-subjects"
                              data-name="<?php echo $baseSubjectName; ?>"
                              data-id="<?php echo $baseSubjectId; ?>"
-                        >                            
-                            <div class="box box-widget widget-user-2 no-margin">
-                                <div class="widget-user-header bg-<?php echo $colors[$baseSubjectIndex % count($colors)];?>">
+                        >
+                            <div class="box box-widget widget-user-2">
+                                <div class="box-header widget-user-header bg-<?php echo $colors[$baseSubjectIndex % count($colors)];?>">
+                                    <div class="box-tools pull-right">
+                                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                                            <i class="fa fa-minus"></i>
+                                        </button>
+                                    </div>
                                     <div class="widget-user-image">
                                         <i class="fa fa-sort" aria-hidden="true" style="font-size: 25px; float:left;"></i>
                                     </div>
                                     <h3 class="widget-user-username"><?php echo $baseSubjectName; ?></h3>
                                 </div>
-                            </div>
-                            <div class="col-xs-12 parallel-block margin-bottom">
-                                <button type="button" class="select-parallel-subjects col-xs-1 btn">
-                                    <span style="font-size: 22px;"><i class="fa fa-columns"></i></span>
-                                </button>
-                                <div class="col-xs-11 parallel-groups">
-                                    <strong>DISCIPLINAS PARALELAS</strong><br>
-                                </div>
-                                <div class="col-xs-11">
-                                    <p class="parallel-group-error text-bold text-red"></p>
-                                </div>
-                            </div>
-                            <div class="col-xs-12 single-column-block">
-                                <button type="button" class="select-single-column-subjects col-xs-1 btn">
-                                    <span style="font-size: 22px;"><i class="fa fa-align-justify"></i></span>
-                                </button>
-                                <div class="col-xs-11 single-column-subjects">
-                                    <strong>DISCIPLINAS DE COLUNA ÚNICA</strong><br>
-                                </div>
-                                <div class="col-xs-11">
-                                    <p class="single-column-subject-error text-bold text-red"></p>
-                                </div>
-                            </div>
-                            <div class="box-footer no-padding">
-                                <table class="table table-bordered table-condensed col-xs-12">
-                                    <thead>
-                                        <tr>
-                                            <th></th>
-                                            <th class="text-center">
-                                                Nome da disciplina
-                                            </th>
-                                            <th class="text-center">
-                                                Nº de questões
-                                            </th>
-                                        </tr>
-                                    </thead>
-                                    <tbody class="bg-gray-light" style="overflow:auto;"><!-- style: Fix para um bug do jquery-ui (sortable) -->
-                                    <?php 
-                                        if ($this->editMode) :
-                                            $bSubjectChildren = $baseSubject['subgroups'];
-                                        else :
-                                            $bSubjectChildren = $baseSubject->getChildren();
-                                        endif;
-                                    ?>
-                                    <?php foreach ($bSubjectChildren as $subject) : ?>
-                                        <?php if ($this->editMode && !isset($subject['id'])) : ?>
-                                            <?php foreach ($subject as $parallelSubject) : ?>
-                                                <?php
-                                                    $subjectId = $parallelSubject['id'];
-                                                    $subjectName = $parallelSubject['subgroupName'];
-                                                    $subjectQuantity = $parallelSubject['numberOfProposedQuestions'];
-                                                ?>
-                                                <tr class="subjects cats-row bg-gray-light cats-selected-row parallel-flag" 
-                                                    style="border: solid 1px darkgrey"
-                                                    data-name="<?php echo $parallelSubject['subgroupName']; ?>"
-                                                    data-id="<?php echo $parallelSubject['id']; ?>"
-                                                >
-                                                    <td class="col-xs-1 text-center sort-icon">
-                                                        <i class="fa fa-sort" 
-                                                           aria-hidden="true" 
-                                                           style="font-size: 18px;">
-                                                        </i>
-                                                    </td>
-                                                    <td class="col-xs-8">
-                                                        <div class="col-xs-12 text-center">
-                                                            <?php echo $parallelSubject['subgroupName']; ?>
-                                                        </div>
-                                                    </td>
-                                                    <td class="quantity-block col-xs-1 no-padding form-group" 
-                                                        style="line-height: 2;"
-                                                        data-quantity="<?php  
-                                                           if ($this->editMode) : 
-                                                               echo $parallelSubject['numberOfProposedQuestions'];
-                                                           endif;
-                                                        ?>">
-
-                                                        <?php echo $this
-                                                                ->formInput($form
-                                                                        ->get('examQuestionQuantity')
-                                                                        ->get($i)
-                                                                        ->get('quantity'));
-                                                        ?>
-                                                    </td>
+                                
+                                <div class="box-footer no-padding">
+                                    <div class="col-xs-8 no-padding">
+                                        <table class="table table-bordered table-condensed col-xs-12">
+                                            <thead>
+                                                <tr>
+                                                    <th></th>
+                                                    <th class="text-center">
+                                                        Nome da disciplina
+                                                    </th>
+                                                    <th class="text-center">
+                                                        Nº de questões
+                                                    </th>
                                                 </tr>
-                                                <?php ++$i; ?>
-                                            <?php endforeach; ?>
-                                                
-                                        <?php else :?>
+                                            </thead>
+                                            <tbody class="bg-gray-light" style="overflow:auto;"><!-- style: Fix para um bug do jquery-ui (sortable) -->
                                             <?php 
                                                 if ($this->editMode) :
-                                                    $subjectId = $subject['id'];
-                                                    $subjectName = $subject['subgroupName'];
-                                                    $subjectQuantity = $subject['numberOfProposedQuestions'];
-                                                    $singleColumnSubject = ($subject['singleColumn']) ? " cats-selected-row single-column-flag" : "";
+                                                    $bSubjectChildren = $baseSubject['subgroups'];
                                                 else :
-                                                    $subjectId = $subject->getSubjectId();
-                                                    $subjectName = $subject->getSubjectName();
-                                                    $singleColumnSubject = "";
+                                                    $bSubjectChildren = $baseSubject->getChildren();
                                                 endif;
                                             ?>
-                                            <tr class="subjects cats-row bg-gray-light
-                                                <?php echo $singleColumnSubject ?>" 
-                                                style="border: solid 1px darkgrey"
-                                                data-name="<?php echo $subjectName; ?>"
-                                                data-id="<?php echo $subjectId; ?>"
-                                            >
-                                                <td class="col-xs-1 text-center sort-icon">
-                                                    <i class="fa fa-sort" 
-                                                       aria-hidden="true" 
-                                                       style="font-size: 18px;">
-                                                    </i>
-                                                </td>
-                                                <td class="col-xs-8">
-                                                    <div class="col-xs-12 text-center">
-                                                        <?php echo $subjectName; ?>
-                                                    </div>
-                                                </td>
-                                                <td class="quantity-block col-xs-1 no-padding form-group" 
-                                                    style="line-height: 2;"
-                                                    data-quantity="<?php  
-                                                       if ($this->editMode) : 
-                                                           echo $subjectQuantity;
-                                                       endif;
-                                                    ?>">
+                                            <?php foreach ($bSubjectChildren as $subject) : ?>
+                                                <?php if ($this->editMode && !isset($subject['id'])) : ?>
+                                                    <?php foreach ($subject as $parallelSubject) : ?>
+                                                        <?php
+                                                            $subjectId = $parallelSubject['id'];
+                                                            $subjectName = $parallelSubject['subgroupName'];
+                                                            $subjectQuantity = $parallelSubject['numberOfProposedQuestions'];
+                                                        ?>
+                                                        <tr class="subjects cats-row bg-gray-light cats-selected-row parallel-flag" 
+                                                            style="border: solid 1px darkgrey"
+                                                            data-name="<?php echo $parallelSubject['subgroupName']; ?>"
+                                                            data-id="<?php echo $parallelSubject['id']; ?>"
+                                                        >
+                                                            <td class="col-xs-1 text-center sort-icon">
+                                                                <i class="fa fa-sort" 
+                                                                   aria-hidden="true" 
+                                                                   style="font-size: 18px;">
+                                                                </i>
+                                                            </td>
+                                                            <td class="col-xs-8">
+                                                                <div class="col-xs-12 text-center">
+                                                                    <?php echo $parallelSubject['subgroupName']; ?>
+                                                                </div>
+                                                            </td>
+                                                            <td class="quantity-block col-xs-1 no-padding form-group" 
+                                                                style="line-height: 2;"
+                                                                data-quantity="<?php  
+                                                                   if ($this->editMode) : 
+                                                                       echo $parallelSubject['numberOfProposedQuestions'];
+                                                                   endif;
+                                                                ?>">
 
-                                                    <?php echo $this
-                                                            ->formInput($form
-                                                                    ->get('examQuestionQuantity')
-                                                                    ->get($i)
-                                                                    ->get('quantity'));
+                                                                <?php echo $this
+                                                                        ->formInput($form
+                                                                                ->get('examQuestionQuantity')
+                                                                                ->get($i)
+                                                                                ->get('quantity'));
+                                                                ?>
+                                                            </td>
+                                                        </tr>
+                                                        <?php ++$i; ?>
+                                                    <?php endforeach; ?>
+
+                                                <?php else :?>
+                                                    <?php 
+                                                        if ($this->editMode) :
+                                                            $subjectId = $subject['id'];
+                                                            $subjectName = $subject['subgroupName'];
+                                                            $subjectQuantity = $subject['numberOfProposedQuestions'];
+                                                            $singleColumnSubject = ($subject['singleColumn']) ? " single-column-flag" : "";
+                                                        else :
+                                                            $subjectId = $subject->getSubjectId();
+                                                            $subjectName = $subject->getSubjectName();
+                                                            $singleColumnSubject = "";
+                                                        endif;
                                                     ?>
-                                                </td>
-                                            </tr>
-                                        <?php endif; ?>
+                                                    <tr class="subjects cats-row bg-gray-light
+                                                        <?php echo $singleColumnSubject ?>" 
+                                                        style="border: solid 1px darkgrey"
+                                                        data-name="<?php echo $subjectName; ?>"
+                                                        data-id="<?php echo $subjectId; ?>"
+                                                    >
+                                                        <td class="col-xs-1 text-center sort-icon">
+                                                            <i class="fa fa-sort" 
+                                                               aria-hidden="true" 
+                                                               style="font-size: 18px;">
+                                                            </i>
+                                                        </td>
+                                                        <td class="col-xs-8">
+                                                            <div class="col-xs-12 text-center">
+                                                                <?php echo $subjectName; ?>
+                                                            </div>
+                                                        </td>
+                                                        <td class="quantity-block col-xs-1 no-padding form-group" 
+                                                            style="line-height: 2;"
+                                                            data-quantity="<?php  
+                                                               if ($this->editMode) : 
+                                                                   echo $subjectQuantity;
+                                                               endif;
+                                                            ?>">
 
-                                        <?php ++$i; ?>
-                                    <?php endforeach; ?>
-                                    </tbody>
-                                </table>
+                                                            <?php echo $this
+                                                                    ->formInput($form
+                                                                            ->get('examQuestionQuantity')
+                                                                            ->get($i)
+                                                                            ->get('quantity'));
+                                                            ?>
+                                                        </td>
+                                                    </tr>
+                                                <?php endif; ?>
+
+                                                <?php ++$i; ?>
+                                            <?php endforeach; ?>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                    <div class="col-xs-4 no-padding">
+                                        <div class="col-xs-12 parallel-block margin-bottom">
+                                            <button type="button" class="select-parallel-subjects col-xs-12 btn">
+                                                <span style="font-size: 22px;"><i class="fa fa-columns"></i></span>
+                                            </button>
+                                            <div class="col-xs-12 parallel-groups no-padding">
+                                                <strong>Disciplinas paralelas</strong><br>
+                                            </div>
+                                            <div class="col-xs-12">
+                                                <p class="parallel-group-error text-bold text-red"></p>
+                                            </div>
+                                        </div>
+                                        <div class="col-xs-12 single-column-block margin-bottom">
+                                            <button type="button" class="select-single-column-subjects col-xs-12 btn">
+                                                <span style="font-size: 22px;"><i class="fa fa-align-justify"></i></span>
+                                            </button>
+                                            <div class="col-xs-12 single-column-subjects no-padding">
+                                                <strong>Disciplinas de coluna única</strong><br>
+                                            </div>
+                                            <div class="col-xs-12">
+                                                <p class="single-column-subject-error text-bold text-red"></p>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
                             </div>
+                            
                         </div>
                     <?php endforeach; ?>
                 <?php else : ?>

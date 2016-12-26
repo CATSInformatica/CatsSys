@@ -21,6 +21,11 @@ define(['jquery', 'datatable'], function () {
         var examsTable = $('#exams-table');
 
         createApplicationListeners = function () {
+            /**
+             * Antes de enviar o formulário, anexa os ids das linhas 
+             * selecionadas da tabela de provas
+             * 
+             */
             $('#exam-application-form').submit(function () {
                 $('.cats-selected-row').each(function () {
                     var currentCount = $('form fieldset > input').length;

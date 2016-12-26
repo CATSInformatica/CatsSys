@@ -19,7 +19,8 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
     var createContent = (function () {  
 
         /**
-         * Cópia do JSON do conteúdo
+         * Cópia do JSON do conteúdo, carregado em initContentConfig()
+         * Usado para obter as questões já selecionadas, em caso de edição
          * 
          * {
          *       questionsStartAtNumber: <number>,
@@ -69,10 +70,11 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
          */
         createContentListeners = function() {
             /*
-             * Atualiza o total de questões
+             * Atualiza o total de questões quando o usuário digitar um valor 
+             * ou usar os controles do campo
              * 
              */
-            $('.amount-input').change(function () {
+            $('.amount-input').on('keyup input', function () {
                 var count = 0;
                 $('.amount-input').each(function () {
                     if ($(this).val() !== '') {
@@ -83,7 +85,24 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
             });
             
             /*
-             * Antes de submeter o formulário, anexa o JSON do conteúdo
+             * Impede que a roda do mouse altere o valor dos campos numéricos
+             * 
+             */
+            $('input[type=number]').on('mousewheel',function(){ 
+                $(this).blur(); 
+            });
+            
+            /*
+             * Impede a seleção de uma linha da tabela ao clicar sobre
+             * o campo numérico em uma de suas células
+             * 
+             */
+            $('input[type=number]').on('click',function(e){ 
+                e.stopPropagation();
+            });
+            
+            /*
+             * Antes de submeter o formulário, cria e anexa o JSON do conteúdo
              *  
              */
             $("#exam-content-form").submit( function() {
@@ -202,7 +221,7 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
             $('.select-parallel-subjects').click(function() {
                 var baseSubject = $(this).closest('.base-subjects');
                 var subjects = baseSubject.find('.cats-selected-row');
-                var errorMessage = baseSubject.find('.parallel-group-error');
+                var errorMessage = baseSubject.find('.parallel-group-error').first();
                 
                 var errorCheck = parallelSubjectsErrorCheck(subjects);
                 
@@ -215,7 +234,7 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
                 var subjectNames = '';
                 var parallelGroups = baseSubject.find('.parallel-groups');
 
-                subjects.each(function(i) {         
+                subjects.each(function(i) {        
                     subjectNames += $(this).data('name') + (i === totalSubjects - 1 ? '' : ', ');
                 });
                                 
@@ -401,7 +420,7 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
          */
         initQuestionAmount = function () {
             $(".amount-input").each(function () {
-                $(this).trigger("change");
+                $(this).trigger("input");
             });
         };
         
@@ -415,8 +434,8 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
         };
         
         /*
-         * Em caso de edição do conteúdo, certifica-se que esses grupos 
-         * são exibidos abaixo do respectivo campo de "DISCIPLINAS PARALELAS".
+         * Em caso de edição do conteúdo, certifica-se que discipinas paralelas 
+         * são exibidas abaixo do respectivo campo de "Discipinas paralelas ".
          * 
          */
         initParallelSubjects = function(initSingleColumnSubjects) {
@@ -436,12 +455,13 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
         /*
          * Em caso de edição do conteúdo, certifica-se que as disciplinas 
          * de coluna única são exibidas abaixo do respectivo campo 
-         * de "DISCIPLINAS DE COLUNA ÚNICA".
+         * de "Disciplinas de coluna única".
          * 
          */
         initSingleColumnSubjects = function() {
-            $('.cats-selected-row.single-column-flag').each(function() {
+            $('.single-column-flag').each(function() {
                 $(this).removeClass('single-column-flag');
+                $(this).addClass('cats-selected-row');
                 
                 $(this).closest('.base-subjects')
                         .find('.select-single-column-subjects')
@@ -450,7 +470,8 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
         };
         
         /*
-         * 
+         * Carrega o JSON do conteúdo, em caso de edição, para evitar a perda das 
+         * questões já selecionadas na montagem
          * 
          */
         initContentConfig = function () {
