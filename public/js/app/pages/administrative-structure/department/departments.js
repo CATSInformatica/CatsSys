@@ -66,7 +66,7 @@ define(['jquery'], function () {
                         departments.append("<br><h3>" +
                                 "<i class='" + departmentObjArray[params[0]].departmentIcon + "'></i> " +
                                 departmentObjArray[params[0]].departmentName + "</h3><hr>" +
-                                "<p class='text-justify'>" + departmentObjArray[params[0]].departmentDescription + "</p><br>");
+                                "<p class='text-justify'>" + departmentObjArray[params[0]].departmentDescription.replace(/\n/g, "<br>") + "</p><br>");
                     }
 
                     departments.append("<ul class='nav'></ul>");
