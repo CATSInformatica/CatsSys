@@ -173,8 +173,22 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
              * Recarrega as questões da disciplina selecionada no DataTable
              * 
              */
-            $('#refresh-button').click(function () {
+            $('.refresh-button').click(function () {
                 questionTable.DataTable().ajax.reload();
+            });
+            
+            $('.autosaving').click(function () {
+               $('.autosaving').each(function() {
+                    if ($(this).prop('checked')) {
+                        $(this).prop('checked', false);
+                        $(this).removeClass('bg-green');
+                        $(this).css('color', '#666');
+                    } else {
+                        $(this).prop('checked', true);
+                        $(this).addClass('bg-green');
+                        $(this).css('color', 'white');
+                    }
+               });
             });
             
             /*
@@ -227,11 +241,11 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          */
         setListeners = function () {
             /*
-             * Evento: clique no botão #save-content
+             * Evento: clique no botão .save-content
              * Salva o conteúdo
              * 
              */
-            $('#save-content').click(function () {
+            $('.save-content').click(function () {
                 saveContent();
             });
 
@@ -393,7 +407,8 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          * @returns {boolean}
          */
         autosaveIsOn = function () {
-            return $('#autosaving').is(':checked');
+            console.log('checked', $('.autosaving').first().prop('checked'));
+            return $('.autosaving').first().prop('checked');
         };
 
         /*
@@ -426,6 +441,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             questionTable.DataTable({
                 dom: '<"top"p>t<"bottom"p><"clear">',
                 autoWidth: false,
+                scrollY: '600px',
                 ajax: {
                     url: "/school-management/school-exam/get-subject-questions",
                     type: "POST",
