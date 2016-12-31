@@ -35,25 +35,22 @@ class ExamContentForm extends Form
     /**
      * 
      * @param ObjectManager $obj
-     * @param array $baseSubjects - grandes áreas, disciplinas superiores (parent = null)
-     * @param array $excludedBaseSubjects - grandes áreas que deseja-se 
-     *      excluir na contagem do número de campos "examQuestionQuantity"
+     * @param array $numberOfQuantityFields - número de campos desejado
      */
-    public function __construct(ObjectManager $obj, $baseSubjects = [], $excludedBaseSubjects = [])
+    public function __construct(ObjectManager $obj, $numberOfQuantityFields)
     {
         parent::__construct('exam-content-form');
         $this->setHydrator(new DoctrineHydrator($obj));
         $examContentFieldset = new ExamContentFieldset($obj);
         $examContentFieldset->setUseAsBaseFieldset(true);
-        $this->add($examContentFieldset);
-
-        $numberOfSubects = $this->getNumberOfSubjects($baseSubjects, $excludedBaseSubjects);        
+        $this->add($examContentFieldset);       
+        
         $this  
             ->add(array(
                 'name' => 'examQuestionQuantity',
                 'type' => 'Zend\Form\Element\Collection',
                 'options' => array(
-                    'count' => $numberOfSubects,
+                    'count' => $numberOfQuantityFields,
                     'should_create_template' => false,
                     'allow_add' => false,
                     'target_element' => new QuestionQuantityFieldset(),
@@ -68,17 +65,5 @@ class ExamContentForm extends Form
                 )
             ))  
         ;
-    }
-
-    protected function getNumberOfSubjects($baseSubjects, $excludedBaseSubjects)
-    {
-        $total = 0;
-        foreach ($baseSubjects as $baseSubject) {
-            if (in_array($baseSubject->getSubjectName(), $excludedBaseSubjects)) {
-                continue;
-            }
-            $total += count($baseSubject->getChildren());
-        }
-        return $total;
     }
 }

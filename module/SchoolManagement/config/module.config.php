@@ -541,7 +541,7 @@ return array(
                         'label' => 'Create Exam Content',
                         'route' => 'school-management/school-exam',
                         'action' => 'create-content',
-                        'icon' => 'fa fa-file-word-o'
+                        'icon' => 'fa fa-file-word-o',
                     ),
                     array(
                         'label' => 'Show Exams',
@@ -667,7 +667,7 @@ return array(
                             array(
                                 'label' => 'Get Questions',
                                 'route' => 'school-management/school-exam',
-                                'action' => 'get-questions',
+                                'action' => 'get-subject-questions',
                                 'icon' => 'fa fa-list-alt',
                             ),
                             array(

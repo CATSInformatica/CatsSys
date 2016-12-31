@@ -58,9 +58,8 @@ class ExamApplicationForm extends Form implements InputFilterProviderInterface
             ))
             ->add(array(
                 'name' => 'submit',
-                'type' => 'button',
+                'type' => 'submit',
                 'attributes' => array(
-                    'id' => 'submit-button',
                     'class' => 'btn btn-primary btn-block',
                     'value' => 'Criar Aplicação de Prova',
                 )
