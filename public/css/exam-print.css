@@ -16,24 +16,24 @@
  */
 
 @import url("/vendor/AdminLTE/bootstrap/css/bootstrap.min.css");
+@import url("/vendor/AdminLTE/dist/css/AdminLTE.min.css");
 
-.print-page {
+.print-page, .content-questions, #exam-temp {
     font-size: 10.5pt;
-}
-
-.print-page ol {
-    margin: 0;
 }
 
 /*  Preview  */
 .preview-page {
     width: 210mm;
-    padding: 0;
     margin: 0 auto;
     border: 1px solid #888888;
 }
-.exam-page {
-    display: none;
+.content-questions, #exam-temp {
+    height: 100%;
+    padding: 4mm;
+    column-count:2;
+    -moz-column-count:2;
+    -webkit-column-count: 2;
 }
 .fa-times:hover, .fa-sort-asc:hover, .fa-sort-desc:hover, #refresh-button:hover {
     cursor: pointer;
@@ -44,22 +44,42 @@
 .control-icons {
     margin-left: 2mm;
 }
+
 #instructions > div.text-justify {
     margin-right: 6mm;
 }
-#instructions > h3 {
+#instructions h3 {
     line-height: 4.5mm;
 }
 #instructions ol {
     font-size: 11pt;
     line-height: 6.2mm;
-    margin: 0;
 }
+
+.print-page {
+    width: 210mm; 
+    display: block;
+}
+
+/* Page */
+.page {
+    height: 297mm; 
+    width: 210mm; 
+    display: block; 
+    page-break-after: always;
+}
+.page {
+    height: 297mm; 
+    width: 210mm; 
+    display: block; 
+    page-break-after: always;
+}
+
 
 /*  Header  */
 .exam-header {
     width: 196mm;
-    height: 23.5mm;
+    height: 24mm;
     border-bottom: 0.5mm solid lightgray;
     padding: 5mm 0 2mm;
     margin-left: 7mm;
@@ -73,30 +93,24 @@
 }
 
 /*  Content  */
-h4 {
-    font-size: 13.5pt;
-}
-p {
-    margin: 0 0 1pt;
-}
 .exam-content {
-    width: 210mm;
-    padding: 2mm 7mm;
     height: 261mm;
 }
-.exam-content h3 {
+.exam-content, .content-questions, #exam-temp {
+    padding: 2mm 7mm;
+}
+.exam-content h3, .content-questions h3, #exam-temp h3 {
     font-size: 13pt;
 }
-.title {
+.exam-content h4, .content-questions h4, #exam-temp h4 {
+    font-size: 13.5pt;
+}
+.exam-content p, .content-questions p, #exam-temp p {
+    margin: 0 0 1pt;
+}
+.exam-content.title, .content-questions.title, #exam-temp.title {
     font-size: 13pt; 
     line-height: 6mm;
-}
-.content-questions {
-    height: 100%;
-    padding: 4mm;
-    column-count:2;
-    -moz-column-count:2;
-    -webkit-column-count: 2;
 }
 .question-block * :not(.fa), #question-table * {
     line-height: 4.8mm !important;
@@ -118,50 +132,38 @@ p {
 /*  Footer  */
 .exam-footer {
     width: 196mm;
-    height: 11.5mm;
+    height: 12mm;
     border-top: 0.5mm solid lightgray;
     padding: 1mm 3mm 4mm;
     margin-left: 7mm;
-}
-.exam-footer p {
-    margin: 0;
 }
 
 /*Gabarito*/
 #answer-key-tables {
     width: 297mm;
-    margin: 0;
     padding: 10mm;
 }
-
 .answers-table caption {
-    padding: 0;
     height: 19mm;
 }
-
 .answers-table {
     margin: 0 1.7mm !important;
     width: 21mm !important;
     float: left;
 }
-
 .answers-table * {
     font-size: 9pt;
 }
-
 .answers-table tr, .answers-table tr td {
     border: 0.4mm solid black !important;
 }
-
 .answers-table td {
     padding: 0.8mm !important;
 }
-
 .answers-table>tbody>tr:nth-child(odd)>td, 
 .answers-table>tbody>tr:nth-child(odd)>th {
     background-color: #50bb67;
 }
-
 .answers-table>tbody>tr:nth-child(even)>td, 
 .answers-table>tbody>tr:nth-child(even)>th {
     background-color: #dbf9bb;
@@ -173,15 +175,14 @@ p {
 }
 
 @media print {
+    /* Impressão do gabarito */
     body {
         -webkit-print-color-adjust: exact;
     }
-        
     .answers-table>tbody>tr:nth-child(odd)>td, 
     .answers-table>tbody>tr:nth-child(odd)>th {
         background-color: #50bb67 !important;
     }
-
     .answers-table>tbody>tr:nth-child(even)>td, 
     .answers-table>tbody>tr:nth-child(even)>th {
         background-color: #dbf9bb !important;

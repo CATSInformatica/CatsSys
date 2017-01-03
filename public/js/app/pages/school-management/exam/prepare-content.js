@@ -15,52 +15,184 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(['jquery', 'datatable', 'jquerycolumnizer', 
-        'jqueryprint', 'datetimepicker'], function () {
+
+/*
+ *  CONSIDERAÇÕES:
+ *  As disciplinas estão divididas em três grupos: base subjects, subjects e topics.
+ *  * Base subjects: Grandes áreas, disciplinas que não possuem "pais". 
+ *      Ex: Ciências da natureza e suas tecnologias
+ *  * Subjects: Disciplinas lecionadas. 
+ *      Ex: Física 1: Mecânica.
+ *  * Topics: Matérias específicas de uma disciplina. As questões são relacionadas
+ *      com os topics. 
+ *      Ex: Análise dimensional
+ * 
+ */
+define(['jquery', 'datatable', 'datetimepicker'], function () {
     var prepare = (function () {
 
-        //  Array de objetos com as questões carregadas por ajax
-        //  índice = id da questão
+        /*
+         * Cópia do JSON do conteúdo
+         * O objeto é atualizado a cada mudança do conteúdo e é usado para 
+         * salvar as mudanças
+         * 
+         * {
+         *       questionsStartAtNumber: <number>,
+         *       numberOfQuestions: <number>,
+         *       groups: [
+         *           {
+         *               id: <number>,
+         *               groupName: <string>,
+         *               subgroups: [
+         *                   {
+         *                       id: <number>,
+         *                       subgroupName: <string>,
+         *                       singleColumn: <boolean>,
+         *                       numberOfProposedQuestions: <number>,
+         *                       questions: [
+         *                           {
+         *                               id: <number>,
+         *                               subjectId: <number>,
+         *                               subjectName: <string>
+         *                           },
+         *                           ...
+         *                       ],
+         *                   },
+         *                   // disciplinas paralelas
+         *                   [
+         *                       <subject>, 
+         *                       ...
+         *                   ],
+         *                   ...
+         *               ]
+         *           },
+         *           ...
+         *       ]
+         *   }
+         * 
+         */
+        var contentConfig;        
+        
+        /*
+         * Array de objetos com as questões carregadas por ajax
+         * 
+         * Usado para evitar que seja necessário carregar as mesmas questões 
+         * diversas vezes
+         * 
+         * índice = id da questão
+         * Objeto do tipo:
+         *  examQuestions = [
+         *      {
+         *          enunciation: <string>,
+         *          alternatives: [
+         *              <string>,
+         *              ...
+         *          ],
+         *          correctAlternative: <number>,
+         *          topicId: <number>
+         *      },
+         *      ...
+         *  ];
+         * 
+         * 
+         */
         var examQuestions = [];
-        //  Array de objetos com formatação para inserir no DataTable as questões de uma disciplina 
-        //  índice = id da disciplina
+        
+        /*
+         * Array de objetos com formatação adequada para carregar as questões
+         * no DataTable
+         * 
+         * Ao carregar as questões de uma disciplina uma cópia dos dados da 
+         * tabela é inserida no array. Se a mesma disciplina é selecionada 
+         * posteriormente, basta acessar o índice do array e obter as questões
+         *  
+         * índice = id da disciplina
+         * sQuestionsDatatable = [
+         *      {
+         *          DT_RowClass: <string>,
+         *          DT_RowAttr: {
+         *              "id": <string>,
+         *              "data-id": <number, string>
+         *          },
+         *          0: <string>
+         *      },
+         *      ...
+         * ]
+         * 
+         */
         var sQuestionsDatatable = [];
-        //  Array de bool com as questões selecionadas (adicionadas ao conteúdo)
-        //  índice = id da questão
+                
+        /*
+         * Array de bool com as questões selecionadas (adicionadas ao conteúdo)
+         *  
+         * índice = id da questão
+         * selectedQuestions = [
+         *      <bool>,
+         *      ...  
+         * ]
+         * 
+         */
         var selectedQuestions = [];
-        //  id do DataTable
-        var questionTable = $('#question-table');
+        
+        
         //  Número de questões adicionadas
         var questionCount = 0;
+        
+        //  id do DataTable
+        var questionTable = $('#question-table');
 
+        /*
+         * Inicializa os listeners que permitem ao usuário selecionar e 
+         * adicionar questões ao conteúdo
+         * 
+         */
         initSelectionFunctionality = function () {
+            // Configura o DataTable com as opções desejadas
             initDataTable();
             
             /*
+             * Evento: clique no botão de uma disciplina
              * Carrega as questões da disciplina selecionada no DataTable
              * 
              */
-            $('select[name=subject]').change(function () {
-                var optionSelected = $("option:selected", this);
-                $('#last-selected').prop('selected', false);
-                $('#last-selected').removeAttr('id');
-                optionSelected.attr('id', 'last-selected');
-                if (typeof sQuestionsDatatable[+$("#last-selected").val()] !== 'undefined') {
-                    setDatatable(sQuestionsDatatable[+$("#last-selected").val()]);
+            $('.topic-info').click(function () {
+                $('.last-selected').first().removeClass('last-selected');
+                
+                $('#table-content-title').text($(this).data('name'));
+                $(this).addClass('last-selected');
+                
+                if (typeof sQuestionsDatatable[+$(this).data('id')] !== 'undefined') {
+                    setDatatable(sQuestionsDatatable[+$(this).data('id')]);
                 } else {
                     questionTable.DataTable().ajax.reload();
                 }
             });
 
             /*
+             * Evento: clique no ícone de recarregar questões
              * Recarrega as questões da disciplina selecionada no DataTable
              * 
              */
-            $('#refresh-button').click(function () {
+            $('.refresh-button').click(function () {
                 questionTable.DataTable().ajax.reload();
             });
             
+            $('.autosaving').click(function () {
+               $('.autosaving').each(function() {
+                    if ($(this).prop('checked')) {
+                        $(this).prop('checked', false);
+                        $(this).removeClass('bg-green');
+                        $(this).css('color', '#666');
+                    } else {
+                        $(this).prop('checked', true);
+                        $(this).addClass('bg-green');
+                        $(this).css('color', 'white');
+                    }
+               });
+            });
+            
             /*
+             * Evento: clique no botão + (adicionar)
              * Adiciona todas as questões selecionadas
              * 
              */
@@ -69,15 +201,33 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
                     $(this).removeClass('cats-selected-row');
                     $(this).removeClass('cats-row');
                     $(this).css('opacity', 0.4);
-                    var qId = $(this).data('id')
-                    addQuestion({
-                        id: qId,
-                        subjectId: examQuestions[qId]['subject'],
-                        baseSubjectId: $('#last-selected').parents('.base-subject-info').data('id'),
-                        enunciation: examQuestions[qId]['enunciation'],
-                        alternatives: examQuestions[qId]['alternatives'],
-                        answer: examQuestions[qId]['correctAlternative']
-                    });
+                    
+                    var questionInfo = examQuestions[+$(this).data('id')];            
+                    var topicInfo = $('#topic-info-' + questionInfo.topicId);
+                    var subjectInfo = topicInfo.closest('.subject-info');
+                    
+                    addQuestion(                            
+                            {
+                                id: +$(this).data('id'),
+                                enunciation: questionInfo.enunciation,
+                                alternatives: questionInfo.alternatives,
+                                correctAlternative: questionInfo.correctAlternative,
+                                new: true,
+                                subject: {
+                                    id: +subjectInfo.data('id'),
+                                    name: subjectInfo.data('name'),
+                                    parallel: subjectInfo.hasClass('parallel-subject'),
+                                    singleColumn: subjectInfo.hasClass('single-column-subject')
+                                }
+                            },
+                            {
+                                divObj: $('.content-questions').first(),
+                                baseSubjectId: +topicInfo.closest('.base-subject-info').data('id'),
+                                numberingStart: +$('#questions-start-at-number').text()
+                            },
+                            true
+                    );
+                    
                 });
                 
                 if (autosaveIsOn()) {
@@ -85,13 +235,17 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
                 }
             });
         };
+        
+        /*
+         *  Listeners que permitem a alteração do conteúdo
+         */
         setListeners = function () {
             /*
-             * Evento: clique no botão #save-content
+             * Evento: clique no botão .save-content
              * Salva o conteúdo
              * 
              */
-            $('#save-content').click(function () {
+            $('.save-content').click(function () {
                 saveContent();
             });
 
@@ -101,14 +255,19 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
              * 
              */
             $('.content-questions').on('click', '.rm-question', function () {
-                var question = $('#question-' + $(this).parents('.question-block').data('id'));
-                question.find('td').removeClass('cats-selected-bg');
-                question.addClass('cats-row');
-                question.css('opacity', 1);
-                removeQuestion(+$(this).parents('.question-block').data('id'));
+                var qId = +$(this).closest('.question-block').data('id');                
+                removeQuestion(qId);
+                removeAddedFlag(qId);
                 
                 if (autosaveIsOn()) {
                     saveContent();
+                }
+                
+                function removeAddedFlag(qId) {
+                    var questionRow = $('#question-' + qId);
+                    questionRow.find('td').removeClass('cats-selected-bg');
+                    questionRow.addClass('cats-row');
+                    questionRow.css('opacity', 1);
                 }
             });
 
@@ -119,15 +278,28 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
              * 
              */
             $('.content-questions').on('click', '.move-up', function () {
-                var qBlock = $(this).parents('.question-block');
-                var previous = qBlock.prev('.question-block');
-                if (previous.length !== 0) {
-                    var qNumber = qBlock.find('.q-number').html();
-                    qBlock.find('.q-number').html(previous.find('.q-number').html());
-                    previous.find('.q-number').html(qNumber);
-                    qBlock.detach().insertBefore(previous);
+                var qBlock = $(this).closest('.question-block');
+                var previousQBlock = qBlock.prev('.question-block');
+                
+                if (previousQBlock.length === 0) {
+                    return;
                 }
                 
+                if (previousQBlock.length !== 0) {
+                    decrementQuestionNumber(qBlock);
+                    incrementQuestionNumber(previousQBlock);
+                    
+                    qBlock.detach().insertBefore(previousQBlock);
+                }
+                
+                var baseSubjectId = +qBlock.closest('.base-subject-block').data('id');
+                var questionAId = +qBlock.data('id');
+                var subjectAId = +qBlock.data('subject-id');
+                var questionBId = +previousQBlock.data('id');
+                var subjectBId = +previousQBlock.data('subject-id');
+                
+                updateConfig(baseSubjectId, subjectAId, questionAId, subjectBId, questionBId);
+                               
                 if (autosaveIsOn()) {
                     saveContent();
                 }
@@ -140,51 +312,119 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
              * 
              */
             $('.content-questions').on('click', '.move-down', function () {
-                var qBlock = $(this).parents('.question-block');
-                var next = qBlock.next('.question-block');
-                if (next.length !== 0) {
-                    var qNumber = qBlock.find('.q-number').html();
-                    qBlock.find('.q-number').html(next.find('.q-number').html());
-                    next.find('.q-number').html(qNumber);
-                    qBlock.detach().insertAfter(next);
+                var qBlock = $(this).closest('.question-block');
+                var nextQBlock = qBlock.next('.question-block');
+                
+                if (nextQBlock.length === 0) {
+                    return;
                 }
                 
+                if (nextQBlock.length !== 0) {
+                    decrementQuestionNumber(nextQBlock);
+                    incrementQuestionNumber(qBlock);
+                    
+                    qBlock.detach().insertAfter(nextQBlock);
+                }
+                
+                var baseSubjectId = +qBlock.closest('.base-subject-block').data('id');
+                var questionAId = +qBlock.data('id');
+                var subjectAId = +qBlock.data('subject-id');
+                var questionBId = +nextQBlock.data('id');
+                var subjectBId = +nextQBlock.data('subject-id');
+                
+                updateConfig(baseSubjectId, subjectAId, questionAId, subjectBId, questionBId);
+                                
                 if (autosaveIsOn()) {
                     saveContent();
                 }
             });
+            
+            /*
+             * Incrementa o número de uma questão 
+             * 
+             * @param {object} qBlock - DOM Object do bloco da questão
+             */
+            function incrementQuestionNumber(qBlock) {
+                var qNumberBlock = qBlock.find('.q-number').first();
+
+                qNumberBlock.text(+qNumberBlock.text() + 1);
+            }
+            
+            /*
+             * Decrementa o número de uma questão 
+             * 
+             * @param {object} qBlock - DOM Object do bloco da questão
+             */
+            function decrementQuestionNumber(qBlock) {
+                var qNumberBlock = qBlock.find('.q-number').first();
+
+                qNumberBlock.text(+qNumberBlock.text() - 1);              
+            }
+            
+            /*
+             * Atualiza o objeto que representa o conteúdo quando duas questões
+             * são trocadas de lugar
+             *  
+             * @param {int} baseSubjectId - id da disciplina base
+             * @param {int} subjectAId - id da disciplina a qual a questão A pertence
+             * @param {int} questionAId - id da questão A
+             * @param {int} subjectBId - id da disciplina a qual a questão B pertence
+             * @param {int} questionBId - id da questão B
+             */
+            function updateConfig(
+                    baseSubjectId, 
+                    subjectAId, questionAId,
+                    subjectBId, questionBId) {                
+                var subgroupA = findSubgroup(baseSubjectId, subjectAId);
+                var subgroupB = findSubgroup(baseSubjectId, subjectBId);
+                var qAIndex = 0;
+                var qBIndex = 0;
+                
+                for (var i = 0; i < subgroupA.questions.length; ++i) {
+                    if (+subgroupA.questions[i].id === questionAId) {
+                        qAIndex = i;
+                        break;
+                    }
+                }
+                
+                for (var i = 0; i < subgroupB.questions.length; ++i) {
+                    if (+subgroupB.questions[i].id === questionBId) {
+                        qBIndex = i;
+                        break;
+                    }
+                }
+                
+                var qA = subgroupA.questions[qAIndex];
+                subgroupA.questions[qAIndex] = subgroupB.questions[qBIndex];
+                subgroupB.questions[qBIndex] = qA;           
+            }
         };
         
         /*
-         * Retorna true se o conteúdo estiver configurado para ser salvo automaticamente
+         * Retorna true se o conteúdo estiver configurado para ser salvo 
+         * automaticamente a cada mudança
          * 
          * @returns {boolean}
          */
         autosaveIsOn = function () {
-            return $('#autosaving').is(':checked');
-        };
-
-        /*
-         * Atualiza o número de questões restantes, conforme questões vão sendo
-         * adicionadas
-         * 
-         */
-        updateRemainingQuestions = function () {
-            $('#added-questions').html(questionCount);
-            $('#remaining-questions')
-                    .html(+$('#question-count').html() - questionCount);
+            console.log('checked', $('.autosaving').first().prop('checked'));
+            return $('.autosaving').first().prop('checked');
         };
 
         /*
          * Remove os dados do DataTable e insere os contidos em 'data'
          * 
-         * @param {array} data - Array de objetos contendo as informações a 
+         * @param {object} data - Array de objetos contendo as informações a 
          * serem carregadas na tabela
          * 
-         * data contém:
-         *      DT_RowAttr: (Objeto que determina os atributos de cada linha da tabela)
-         *      0: (Primeira coluna - checkbox com o id da questão)
-         *      1: (Segunda coluna - Descrição da questão)
+         * data = {
+         *      DT_RowClass: <string>,
+         *      DT_RowAttr: {
+         *          "id": <string>,
+         *          "data-id": <number, string>
+         *      },
+         *      0: <string>,
+         *      ...
          * }
          */
         setDatatable = function (data) {
@@ -197,36 +437,34 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
          * em 'dataSrc'
          * 
          */
-        initDataTable = function () {
+        initDataTable = function () {            
             questionTable.DataTable({
-                dom: 'tp',
+                dom: '<"top"p>t<"bottom"p><"clear">',
                 autoWidth: false,
-                createdRow: function(row, data, dataIndex) {
-                    if (selectedQuestions[($(row).data('id'))]) {
-                        $(row).find('td').addClass('cats-selected-bg');
-                        $(row).removeClass('cats-row');
-                        $(row).css('opacity', 0.4);
-                    }
-                },
+                scrollY: '600px',
                 ajax: {
-                    url: "/school-management/school-exam/get-questions",
+                    url: "/school-management/school-exam/get-subject-questions",
                     type: "POST",
                     data: function () {
                         return {
-                            subject: +$("#last-selected").val(),
+                            subject: +$(".last-selected").first().data('id'),
                             questionType: -1
                         };
                     },
                     dataSrc: function (data) {
                         var questions = [];
-                        var sId = +$("#last-selected").val();
+                        var sId = +$(".last-selected").first().data('id');
+                        
                         for (var i = 0; i < data.length; ++i) {
+                            // "cache"
                             examQuestions[data[i].questionId] = {
                                 enunciation: data[i].questionEnunciation,
                                 alternatives: data[i].questionAlternatives,
                                 correctAlternative: data[i].questionCorrectAlternative,
-                                subject: sId
+                                topicId: data[i].questionSubjectId
                             };
+                            
+                            // Objeto para preencher a tabela
                             questions.push({
                                 DT_RowClass: "cats-row",
                                 DT_RowAttr: {
@@ -240,346 +478,514 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
 
                         return questions;
                     }
+                },
+                // executado após cada linha da tabela ser criada
+                createdRow: function(row, data, dataIndex) {
+                    // adicionar borda as células
+                    $.each($('td', row), function (colIndex) {
+                        $(this).attr('style', "border: 1px solid lightgray");
+                    });
+                    
+                    // selecionar questões adicionadas
+                    if (selectedQuestions[(+$(row).data('id'))]) {
+                        $(row).find('td').addClass('cats-selected-bg');
+                        $(row).removeClass('cats-row');
+                        $(row).css('opacity', 0.4);
+                    }
                 }
             });
         };
-
-        /*
-         * Gera o JSON das questões do conteúdo no formato adequado para salvá-lo
-         *  
-         * @returns {Array} - array de objetos
-         *  Ex:
-         *  [
-         *      {
-         *          questionId: <number>,
-         *          questionNumber: <number>
-         *      },
-         *      ...
-         *  ] 
-         */
-        generateContentQuestionsJson = function() {
-            var questions = [];
-            var majorSubjects = $('.content-questions > div');
-            majorSubjects.each(function () {
-                $(this).find('.question-block').each(function () {
-                    questions.push({
-                        questionId: $(this).data('id'),
-                        //questionCorrectAnswer: $(this).data('answer'),
-                        questionNumber: +$(this).find('.q-number').html()
-                    });
-                });
-            });
-            return questions;
-        };
-
+        
         /*
          * Salva o conteúdo
          * 
          */
         saveContent = function() {
-            var questions = generateContentQuestionsJson();
-            
             $.ajax({
                 method: "POST",
-                url: '/school-management/school-exam/save-content-questions',
+                url: '/school-management/school-exam/save-content',
                 data: {
-                    contentId: $('#contentId').val(),
-                    questions: questions
+                    contentId: +$('#content-info').data('id'),
+                    config: JSON.stringify(contentConfig)
                 }
             });
             
         };
 
         /*
-         * Carrega todas as questões do conteúdo
+         * Carrega um conteúdo
          * 
+         * @param {int} contentId - id do conteúdo 
+         * @param {object} divObj - DOM Object da div com a classe 
+         *      'content-questions' na qual o conteúdo deve ser exibido
+         * @param {boolean} prepareContent - flag que indica se a função está 
+         *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
          */
-        loadQuestions = function(contentId) {
+        loadContent = function(contentId, divObj, prepareContent) {
             $.ajax({
                 method: "POST",
-                url: '/school-management/school-exam/get-content-questions',
+                url: '/school-management/school-exam/get-content',
                 data: {
                     contentId: contentId
                 }
             }).done(function(response) {
-                addLoadedQuestions(response.questions);
+                contentConfig = JSON.parse(response.config);
+                var groups = contentConfig.groups;
+                
+                for (var i = 0; i < groups.length; ++i) {
+                    addBaseSubjectBlock(groups[i], divObj);
+                    
+                    for (var j = 0; j < groups[i].subgroups.length; ++j) {
+                        var parallelSubject = false;
+                        
+                        if (Array.isArray(groups[i].subgroups[j])) {
+                            parallelSubject = true;
+                            addParallelSubjectBlock(groups[i].subgroups[j]);
+                            
+                            for (var k = 0; k < groups[i].subgroups[j].length; ++k) {
+                                if (prepareContent) {
+                                    setSubjectInfo(
+                                            groups[i].subgroups[j][k], 
+                                            parallelSubject
+                                    );
+                                }
+                                
+                                loadSubject(
+                                        {
+                                            baseSubjectId: groups[i].id,
+                                            numberingStart: contentConfig.questionsStartAtNumber, 
+                                            divObj: divObj
+                                        },
+                                        groups[i].subgroups[j][k],
+                                        parallelSubject,
+                                        prepareContent
+                                );
+                            }
+                        } else {
+                            if (prepareContent) {
+                                setSubjectInfo(
+                                        groups[i].subgroups[j], 
+                                        parallelSubject
+                                );
+                            }
+                            if (groups[i].subgroups[j].singleColumn === true) {  
+                                addSingleColumnSubjectBlock(groups[i], groups[i].subgroups[j], divObj);
+                            }          
+                            
+                            loadSubject(
+                                    {
+                                        baseSubjectId: groups[i].id,
+                                        numberingStart: contentConfig.questionsStartAtNumber, 
+                                        divObj: divObj
+                                    },
+                                    groups[i].subgroups[j],
+                                    parallelSubject,
+                                    prepareContent
+                            );
+                        }
+                    }
+                }
+                
+                $('#questions-count').text(contentConfig.numberOfQuestions);
             });
             
-        };
-        
-        /**
-         * Carrega as questões
-         * 
-         * @param {array} questions
-         *      questions = [
-         *          {
-         *              id: <number>
-         *              subjectId: <number>,
-         *              baseSubjectId: <number>,
-         *              enunciation: <string>, 
-         *              alternatives: [
-         *                  <string>,
-         *                  ...
-         *              ]
-         *              answer: <number>,
-         *          },
-         *          .
-         *          .
-         *          .          
-         *      ]
-         */
-        addLoadedQuestions = function (questions) {
-            var total = questions.length;
-            var invokeAddQuestion = function (i) {
-                // Adiciona questão
-                examQuestions[questions[i].id] = {
-                    enunciation: questions[i].enunciation,
-                    alternatives: questions[i].alternatives,
-                    correctAlternative: questions[i].answer,
-                    subject: questions[i].subjectId
-                };
-                addQuestion(questions[i]);
+            /*
+             * Adiciona um bloco de disciplina base
+             * 
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             * @param {object} divObj - DOM Object da div com a classe 
+             *      'content-questions' na qual o conteúdo deve ser exibido 
+             */
+            function addBaseSubjectBlock(subject, divObj) {
+                var baseSubjectTemplate = $('#base-subject-template > div').clone();
 
-                // Barra de progresso
-                var percentage = +((100 * (i + 1)) / total) + '%';
-                $('#content-load-progress').find('.sr-only').html(percentage);
-                $('#content-load-progress').find('.progress-bar').css('width', percentage);
-                if (i === total - 1) {
-                    $('#content-load-progress').find('.sr-only').html('CARREGAMENTO COMPLETO');
-                    setTimeout(function () {
-                        $('#content-load-progress').slideUp('slow');
-                    }, 3000);
-                }                  
+                baseSubjectTemplate.addClass('s-' + subject.id);
+                baseSubjectTemplate.attr('data-id', subject.id);
+                baseSubjectTemplate.attr('data-name', subject.groupName);
+                baseSubjectTemplate.find('.title').text(subject.groupName);
+
+                divObj.append(baseSubjectTemplate);
+            }
+            
+            /*
+             * Adiciona um bloco de disciplinas paralelas
+             * 
+             * @param {object} parallelSubjects - objeto que representa 
+             *      disciplinas paralelas no JSON do conteúdo
+             */
+            function addParallelSubjectBlock(parallelSubjects) {
+                var parallelSubjectsTemplate = $('#parallel-subjects-template > div').clone();
+                
+                for (var k = 0; k < parallelSubjects.length; ++k) {
+                    var parallelSubjectTemplate = $('#parallel-subject-template > div').clone();
+                    parallelSubjectTemplate.addClass('s-' + parallelSubjects[k].id);
+                    parallelSubjectTemplate.attr('data-id', parallelSubjects[k].id);
+                    parallelSubjectTemplate.attr('data-name', parallelSubjects[k].subgroupName);
+                    parallelSubjectTemplate.find('.title').text('OPÇÃO: ' + parallelSubjects[k].subgroupName);
+                    parallelSubjectsTemplate.append(parallelSubjectTemplate);
+                }
+                
+                divObj.find('.base-subject-block').last().append(parallelSubjectsTemplate);
+            }
+            
+            /*
+             * Adiciona um bloco de disciplina de coluna única
+             * 
+             * @param {object} baseSubject - objeto que representa a disciplina base no JSON 
+             *      do conteúdo
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             * @param {object} divObj - DOM Object da div com a classe 
+             *      'content-questions' na qual o conteúdo deve ser exibido 
+             */
+            function addSingleColumnSubjectBlock(baseSubject, subject, divObj) {
+                var singleColumnSubjectTemplate = $('#single-column-subject-template > div').clone();
+                
+                singleColumnSubjectTemplate.addClass('s-' + subject.id);
+                singleColumnSubjectTemplate.data('id', subject.id);
+                divObj.find('.s-' + baseSubject.id).first().append(singleColumnSubjectTemplate);
+            }
+            
+            /*
+             * Na preparação do conteúdo, adiciona ao bloco de informações de 
+             * determinada disciplina as informações de: quantidade de questões, 
+             * se a disciplina é paralela e se a disciplina é de coluna única
+             * 
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             * @param {boolean} parallel - flag que indica se 
+             */
+            function setSubjectInfo(subject, parallel) {
+                var subjectInfoBlock = $('#subject-info-' + subject.id);
+                
+                var amount = +subject.numberOfProposedQuestions;
+                subjectInfoBlock.find('.q-amount').first().text(amount);
+                
+                if (parallel) {
+                    subjectInfoBlock.addClass('parallel-subject');
+                } else if (subject.singleColumn) {
+                    subjectInfoBlock.addClass('single-column-subject');
+                }
+            }
+            
+            /*
+             * Carrega as questões de uma disciplina
+             * 
+             * @param {object} context - objeto com informações sobre a disciplina a ser adicionada
+             *  context = {
+             *      baseSubjectId: <int>,
+             *      numberingStart: <int>,
+             *      divObj: <object>
+             *  }
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             * @param {boolean} parallelSubject - flag que indica se a disciplina 
+             *      é paralela
+             * @param {boolean} prepareContent - flag que indica se a função está 
+             *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
+             */
+            function loadSubject(context, subject, parallelSubject, prepareContent) {
+                var questionsIds = [];
+                
+                for (var i = 0; i < subject.questions.length; ++i) {
+                    questionsIds.push(subject.questions[i].id);
+                }
+                
+                loadQuestions(
+                        questionsIds,
+                        context,
+                        {
+                            id: subject.id,
+                            name: subject.subgroupName,
+                            parallel: parallelSubject,
+                            singleColumn: subject.singleColumn,
+                        },
+                        prepareContent
+                );
+            }
+            
+            /*
+             * Carrega as questões pedidas
+             * 
+             * @param {array} questionsIds - ids das questões a serem carregadas
+             *  questionsIds = [
+             *      <int>,
+             *      ...
+             *  ]
+             * @param {object} context - objeto com informações sobre a disciplina a ser adicionada
+             *  context = {
+             *      baseSubjectId: <int>,
+             *      numberingStart: <int>,
+             *      divObj: <object>
+             *  }
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             * @param {boolean} prepareContent - flag que indica se a função está 
+             *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
+             */
+            function loadQuestions(questionsIds, context, subject, prepareContent) {
+                $.ajax({
+                     method: "POST",
+                     url: '/school-management/school-exam/get-questions',
+                     data: {
+                         questions: questionsIds
+                     }
+                }).done(function(questions) {
+                    addLoadedQuestions(
+                            questions,
+                            context, 
+                            subject, 
+                            prepareContent
+                    );
+                });
+            }
+            
+            /*
+             * Carrega as questões
+             * 
+             * @param {array} questions - questões a serem adicionadas
+             *      questions = [
+             *          {
+             *              questionId: <number>
+             *              questionEnunciation: <number>,
+             *              questionSubjectId: <number>,
+             *              questionCorrectAlternative: <string>, 
+             *              questionAlternatives: [
+             *                  <string>,
+             *                  ...
+             *              ]
+             *          },
+             *          .
+             *          .
+             *          . 
+             *      ]
+             * 
+             * @param {object} context - objeto com informações sobre a disciplina a ser adicionada
+             *  context = {
+             *      baseSubjectId: <int>,
+             *      numberingStart: <int>,
+             *      divObj: <object>
+             *  }
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             * @param {boolean} prepareContent - flag que indica se a função está 
+             *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
+             */
+            addLoadedQuestions = function (questions, context, subject, prepareContent) {
+                var total = questions.length;
+                for (var i = 0; i < total; ++i) {
+                    examQuestions[questions[i].questionId] = {
+                        enunciation: questions[i].questionEnunciation,
+                        alternatives: questions[i].questionAlternatives,
+                        correctAlternative: questions[i].questionCorrectAlternative,
+                        topicId: questions[i].questionSubjectId
+                    };
+                    
+                    addQuestion(
+                            {
+                                id: questions[i].questionId,
+                                enunciation: questions[i].questionEnunciation,
+                                alternatives: questions[i].questionAlternatives,
+                                correctAlternative: questions[i].questionCorrectAlternative,
+                                new: false,
+                                subject: {
+                                    id: subject.id,
+                                    name: subject.name,
+                                    parallel: subject.parallel, 
+                                    singleColumn: subject.singleColumn
+                                }
+                            },
+                            {
+                                divObj: context.divObj,
+                                baseSubjectId: context.baseSubjectId,
+                                numberingStart: context.numberingStart
+                            }, 
+                            true
+                    );
+                }
             };
-
-            $('#content-load-progress').slideDown('fast');
-            for (var i = 0; i < total; ++i) {
-                invokeAddQuestion(i);
-            }
-
-            if ($('#preview-page').hasClass('view-only')) {
-                $('.control-icons').remove();
-            }
         };
 
-        /*
-         * Inicializa o indicador ao lado das disciplinas quanto ao número desejado de questões
-         * 
-         */
-        initSubjectCounters = function () {
-            $('.quantity-block').each(function () {
-                var quantity = +$(this).data('quantity');
-                var subjectId = +$(this).data('s-id');
-                $('#select-' + subjectId).find('.q-amount').html(quantity);
-            });
-        };
-
-        /*
-         * Incrementa o valor do contador de questões da disciplina de id=subjectId
-         * 
-         * @param {int} subjectId - id da disciplina
-         */
-        incrementSubjectCounter = function(subjectId) {
-            $('#select-' + subjectId).find('.q-added')
-                .html(+$('#select-' + subjectId).find('.q-added').html() + 1);
-        };
 
         /*
          * Adiciona uma questão ao conteúdo
          * 
          * @param {object} question - objeto com os dados da questão
          *  question = {
-         *      id: <number>
-         *      subjectId: <number>,
-         *      baseSubjectId: <number>,
-         *      enunciation: <string>, 
+         *      id: <number>,
+         *      enunciation: <string>,
          *      alternatives: [
-         *           <string>,
-         *           ...
-         *      ]
-         *      answer: <number>,
+         *          <string>,
+         *          ...
+         *      ],
+         *      correctAlternative: <number>,
+         *      new: <boolean>,
+         *      subject: {
+         *          id: <number>,
+         *          name: <string>,
+         *          parallel: <boolean>,
+         *          singleColumn: <boolean>
+         *      },         *      
          *  }
-         * 
+         * @param {type} context - objeto com informações sobre a disciplina a ser adicionada
+         *  context = {
+         *      divObj: <object>,
+         *      baseSubjectId: <number>,
+         *      numberingStart: <number>
+         *  }
+         * @param {boolean} prepareContent - flag que indica se a função está 
+         *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
          */
-        addQuestion = function (question) {
+        addQuestion = function (question, context, prepareContent) {
             //  questão já adicionada
             if (selectedQuestions[question.id]) {
                 return;
             }
-            var subjectId = question.subjectId;
-            var subjectName = $('#select-' + subjectId).data("name");
-            var baseSubjectId = question.baseSubjectId;
-            var questionEnunciation = question.enunciation;  
-            var alternatives = question.alternatives;
-            var questionAnswer = question.answer;
-            var baseSubjectName = $('#base-subject-' + baseSubjectId).data("name");
-
-            selectedQuestions[question.id] = true;
-            ++questionCount;
-            incrementSubjectCounter(subjectId);
             
-            // TODO: Mudar a maneira como isto é feito para não utilizar o nome            
-            if (subjectName === "TEMAS PARA REDAÇÃO") {
-                baseSubjectId = subjectId;
-                if ($('#s-' + subjectId).length === 0) {
-                    var wordingBlock = '<div id="s-' + subjectId + '"'
-                            + 'class="wording-block do-not-print">'
-                            + '<h3 class="text-center no-margin">'
-                            + '<strong class="title"> PROPOSTA DE REDAÇÃO'
-                            + '</strong></h3></div>';
-
-                    $('.content-questions').prepend(wordingBlock);
+            var questionInfo = examQuestions[question.id];            
+            var topicInfo = $('#topic-info-' + questionInfo.topicId);
+            var subjectInfo = topicInfo.closest('.subject-info');
+            
+            var subjectId = question.subject.id;
+            var subjectName = question.subject.name;
+            var baseSubjectId = context.baseSubjectId;
+            
+            incrementQuestionCounter();
+            
+            var controlIconsTemplate = $('#control-icons-template > span').clone();
+            if (question.subject.singleColumn) {
+                var questionBlock = $('#single-column-question-template > div').clone();
+                
+                if (!context.divObj.parent().hasClass('view-only')) {
+                    questionBlock.prepend(controlIconsTemplate);
                 }
-
-                --questionCount;
-
-                var q = '<div id="q-' + question.id + '" class="question-block"'
-                        + 'data-id="' + question.id + '" data-subject-id="' + subjectId + '">'
-                        + '<span class="do-not-print control-icons pull-right">'
-                        + '<i class="rm-question fa fa-times"></i><br>'
-                        + '</span>' + questionEnunciation;
-            } else {
-
-                if (subjectName === "INGLÊS" || subjectName === "ESPANHOL") {
-                    baseSubjectId = subjectId;
-                    if ($('#s-' + subjectId).length === 0) {
-                        var subjectBlock = '<div id="s-' + subjectId + '">'
-                                + '<h3 class="text-center no-margin">'
-                                + '<strong class="title">OPÇÃO ' + subjectName
-                                + '</strong></h3></div>';
-                        switch (subjectName) {
-                            case "INGLÊS":
-                                subjectBlock = subjectBlock
-                                        .replace('<div id', '<div class="english-block" id');
-
-                                var wordingBlock = $('.content-questions').first()
-                                        .find('.wording-block');
-                                if (wordingBlock.length !== 0) {
-                                    wordingBlock.after(subjectBlock);
-                                } else {
-                                    $('.content-questions').prepend(subjectBlock);
-                                }
-                                break;
-                            case "ESPANHOL":
-                                subjectBlock = subjectBlock
-                                        .replace('<div id', '<div class="spanish-block" id');
-
-                                var englishBlock = $('.content-questions').first()
-                                        .find('.english-block');
-                                var wordingBlock = $('.content-questions').first()
-                                        .find('.wording-block');
-                                if (englishBlock.length !== 0) {
-                                    englishBlock.after(subjectBlock);
-                                } else if (wordingBlock.length !== 0) {
-                                    wordingBlock.after(subjectBlock);
-                                } else {
-                                    $('.content-questions').prepend(subjectBlock);
-                                }
-                                break;
-                        }
-                    }
+                
+                questionBlock.attr('id', 'q-' + question.id);
+                questionBlock.attr('data-id', question.id);
+                questionBlock.attr('data-subject-id', subjectId);
+                questionBlock.attr('data-subject-name', subjectName);
+                questionBlock.append(question.enunciation);
+                context.divObj.find('.s-' + subjectId).first().append(questionBlock);
+            } else {                
+                var questionBlock = $('#question-template > div').clone();
+                
+                if (!context.divObj.parent().hasClass('view-only')) {
+                    questionBlock.prepend(controlIconsTemplate);
+                }
+                
+                questionBlock.attr('id', 'q-' + question.id);
+                questionBlock.attr('data-id', question.id);
+                questionBlock.attr('data-subject-id', subjectId);
+                questionBlock.attr('data-subject-name', subjectName);
+                questionBlock.attr('data-correct-alternative', question.correctAlternative);
+                questionBlock.find('.q-number').first().text(questionCount);
+                questionBlock.find('hr').before(question.enunciation);               
+                
+                for (var i = 0; i < question.alternatives.length; ++i) {
+                    var alternative = $('#question-alternative-template > div').clone();
                     
-                //  Se ainda não existir um bloco de questões dessa matéria, cria-se
-                } else if ($('#s-' + baseSubjectId).length === 0) { 
-                    $('.content-questions').append('<div id="s-' + baseSubjectId + '">'
-                            + '<h3 class="text-center no-margin">'
-                            + '<strong class="title">' + baseSubjectName
-                            + '</strong></h3></div>');
+                    alternative.find('.question-alternative-identifier').first()
+                            .append('&#' + (9398 + i) + ';');            
+                    alternative.append(question.alternatives[i]);
+                    questionBlock.find('hr').before(alternative);
                 }
-
-                var q = '<div id="q-' + question.id + '" class="question-block" '
-                        + 'data-id="' + question.id + '" data-subject-id="' + subjectId + '" '
-                        + 'data-answer="' + questionAnswer + '">'
-                        + '<span class="do-not-print control-icons pull-right">'
-                        + '<i class="rm-question fa fa-times"></i><br>'
-                        + '<i class="move-up fa fa-sort-asc"></i><br>'
-                        + '<i class="move-down fa fa-sort-desc"></i>'
-                        + '</span>' + '<p class="no-margin"><strong>QUESTÃO '
-                        + '<span class="q-number">' + questionCount + '</span>'
-                        + '</strong></p>' + questionEnunciation;
-
-                for (var i = 0; i < alternatives.length; ++i) {
-                    var alternative = '<span class="pull-left" style="padding-right: 1mm">'
-                            + '&#' + (9398 + i) + ';  </span>'
-                            + alternatives[i];
-                    q += '<div>' + alternative + '</div>';
+                
+                if (question.subject.parallel) {
+                    context.divObj.find('.s-' + subjectId).first().append(questionBlock);
+                } else {
+                    context.divObj.find('.s-' + baseSubjectId).first().append(questionBlock);
                 }
-                updateRemainingQuestions();
-                q += '<hr class="q-divider"></div>';
+            
+                numberQuestions(context.numberingStart, context.divObj);
             }
-            $('#s-' + baseSubjectId).append(q);
-            numberQuestions();
-        };
-
+            
+            if (prepareContent) {
+                flagQuestionAsSelected(question.id);
+                incrementSubjectCounter(subjectId);
+                updateAddedQuestions();
+                
+                if (question.new) {
+                    addToConfig(baseSubjectId, subjectId, subjectName, question.id);
+                }
+            }
+            
+            /*
+             * Marca a questão como adicionada
+             * @param {int} questionId - id da questão
+             */
+            function flagQuestionAsSelected(questionId) {
+                selectedQuestions[questionId] = true;
+            }
+            
+            /*
+             * Incrementa o contador de questões adicionadas
+             */
+            function incrementQuestionCounter() {
+                ++questionCount;
+            }
+            
+            /*
+             * Incrementa o valor do contador de questões da disciplina de id=subjectId
+             * 
+             * @param {int} subjectId - id da disciplina
+             */
+            function incrementSubjectCounter(subjectId) {
+               var qAdded = $('#subject-info-' + subjectId).find('.q-added');
+               qAdded.text(+qAdded.text() + 1);
+            }
+            
+            /*
+             * Atualiza o JSON do conteúdo com a nova questão
+             * 
+             * @param {int} baseSubjectId - id da disciplina base
+             * @param {int} subjectId - id da disciplina
+             * @param {string} subjectName - nome da disciplina 
+             * @param {int} questionId - id da questão
+             */
+            function addToConfig(baseSubjectId, subjectId, subjectName, questionId) {                
+                var subgroup = findSubgroup(baseSubjectId, subjectId);
+                
+                subgroup.questions.push({
+                    id: questionId,
+                    subjectId: subjectId,
+                    subjectName: subjectName
+                });
+            }
+        };    
+        
         /*
-         * TODO: Adicionar redação separadamente deixar o código mais legível
+         * Atualiza o número de questões adicionadas
          * 
          */
-        addExamWording = function (qId) {
-            /*var subjectId = '';
-            var subjectName = $('#select-' + subjectId).data("name");
-            var baseSubjectId = '';
-            var questionEnunciation = '';
-            var questionAnswer = '';
-            var alternatives = [];
-            if (typeof question !== 'undefined') {
-                subjectId = question.subjectId;
-                baseSubjectId = question.baseSubjectId;
-                questionEnunciation = question.enunciation;  
-                alternatives = question.alternatives;
-                questionAnswer = question.answer;
-            } else {
-                subjectId = examQuestions[qId]['subject'];
-                baseSubjectId = $('#last-selected').parents('.base-subject-info').data('id');
-                questionEnunciation = examQuestions[qId]['enunciation'];
-                alternatives = examQuestions[qId]['alternatives'];
-                questionAnswer = examQuestions[qId]['correctAlternative'];
-            }
-
-            selectedQuestions[qId] = true;
-            ++questionCount;
-            incrementSubjectCounter(subjectId);
-            
-            if ($('#s-' + subjectId).length === 0) {
-                var wordingBlock = '<div id="s-' + subjectId + '"'
-                        + 'class="wording-block do-not-print">'
-                        + '<h3 class="text-center no-margin">'
-                        + '<strong class="title"> PROPOSTA DE REDAÇÃO'
-                        + '</strong></h3></div>';
-
-                $('.content-questions').prepend(wordingBlock);
-            }
-
-            --questionCount;
-
-            var q = '<div id="q-' + qId + '" class="question-block"'
-                    + 'data-id="' + qId + '" data-subject-id="' + subjectId + '">'
-                    + '<span class="do-not-print control-icons pull-right">'
-                    + '<i class="rm-question fa fa-times"></i><br>'
-                    + '</span>' + questionEnunciation;
-        
-            $('#s-' + baseSubjectId).append(q);
-            numberQuestions();*/
+        updateAddedQuestions = function() {
+            $('#added-questions').text(questionCount);
         };
-         
 
         /*
          * Numera as questões 
          * 
+         * @param {int} beginAt - número de ínicio da numeração
+         * @param {object} divObj - DOM Object da div com a classe 
+         *      'content-questions' na qual o conteúdo deve ser exibido 
          */
-        numberQuestions = function () {
-            var STARTING_COUNT = 1;
+        numberQuestions = function (beginAt, divObj) {
+            var baseSubjects = divObj.find('.base-subject-block');
+            var number = beginAt;
             
-            var questions = $('.content-questions > div');
-            var number = STARTING_COUNT;
-
-            questions.each(function () {
-                if ($(this).hasClass('spanish-block')) {
-                    number = STARTING_COUNT;
+            baseSubjects.children().each(function () {
+                if ($(this).hasClass('parallel-subjects-block')) {
+                    var parallelBlockStartNumber = number;
+                    
+                    $(this).find('.parallel-subject-block').each(function() {
+                        number = parallelBlockStartNumber;
+                        $(this).find('.q-number').each(function() {
+                           $(this).text(number++); 
+                        });
+                    });
+                } else if ($(this).hasClass('question-block')){
+                    $(this).find('.q-number').first().text(number++);
                 }
-                $(this).find('.question-block .q-number').each(function () {
-                    $(this).html(number++);
-                });
             });
         };
 
@@ -590,48 +996,111 @@ define(['jquery', 'datatable', 'jquerycolumnizer',
          */
         removeQuestion = function (qId) {
             selectedQuestions[qId] = false;
-
-            var subjectName = $('#select-' + examQuestions[qId]['subject']).data("name");
-            if (subjectName !== "TEMAS PARA REDAÇÃO") {
-                --questionCount;
-            }
-
+            decrementQuestionCounter();
+            
             var qBlock = $('#q-' + qId);
-            var qNumber = qBlock.find('.q-number').html();
-
-            $('#select-' + examQuestions[qId]['subject']).find('.q-added')
-                    .html(+$('#select-' + examQuestions[qId]['subject'])
-                            .find('.q-added').html() - 1);
-            updateRemainingQuestions();
-
-            qBlock.nextAll().each(function () {
-                $(this).find('.q-number').html(qNumber++);
-            });
-            qBlock.parent().nextAll().each(function () {
-                $(this).find('.question-block .q-number').each(function () {
-                    $(this).html(qNumber++);
-                });
-            });
-            var parent = qBlock.parent();
-            qBlock.remove();
-            if (parent.find('.question-block').length === 0) {
-                parent.remove();
+            var qNumber = +qBlock.find('.q-number').text();
+            
+            var subjectId = +qBlock.data('subject-id');
+            var subjectName = qBlock.data('subject-name');
+            
+            var baseSubjectId = +$('#subject-info-' + subjectId)
+                    .closest('.base-subject-info')
+                    .data('id');
+            
+            decrementSubjectCounter(subjectId);
+            qBlock.remove();        
+            numberQuestions(
+                    +$('#questions-start-at-number').text(), 
+                    $('.content-questions').first()
+            );
+            
+            removeFromConfig(baseSubjectId, subjectId, qId);
+            
+            /*
+             * Decrementa o valor do contador de questões da disciplina de id=subjectId
+             * 
+             * @param {int} subjectId - id da disciplina
+             */
+            function decrementSubjectCounter(subjectId) {
+               var qAdded = $('#subject-info-' + subjectId).find('.q-added');
+               qAdded.text(qAdded.text() - 1);
             }
-            numberQuestions();
+            
+            /*
+             * Descrementa o contador de questões
+             * Atualiza o contador de questões adicionadas
+             */
+            function decrementQuestionCounter() {
+                --questionCount; 
+                updateAddedQuestions();
+            }
+            
+            /*
+             * Atualiza o JSON do conteúdo com a questão removida
+             * 
+             * @param {int} baseSubjectId - id da disciplina base
+             * @param {int} subjectId - id da disciplina
+             * @param {string} subjectName - nome da disciplina 
+             * @param {int} questionId - id da questão
+             */
+            function removeFromConfig(baseSubjectId, subjectId, questionId) {                
+                var subgroup = findSubgroup(baseSubjectId, subjectId);
+                
+                for (var i = 0; i < subgroup.questions.length; ++i) {
+                    if (subgroup.questions[i].id === questionId) {
+                        subgroup.questions.splice(i, 1);
+                        break;
+                    }
+                }
+            }
+        };
+        
+        /*
+         * Retorna o objeto de uma disciplina no JSON do conteúdo
+         * 
+         * @param {int} baseSubjectId - id da disciplina base
+         * @param {int} subjectId - id da disciplina
+         */
+        findSubgroup = function (baseSubjectId, subjectId) {
+            var subgroup = {
+                questions: []
+            };
+            
+            for (var i = 0; i < contentConfig.groups.length; ++i) {
+                if (contentConfig.groups[i].id === baseSubjectId) {
+
+                    for (var j = 0; j < contentConfig.groups[i].subgroups.length; ++j) {
+                        // disciplina paralela
+                        if (Array.isArray(contentConfig.groups[i].subgroups[j])) {
+                            for (var k = 0; k < contentConfig.groups[i].subgroups[j].length; ++k) {
+                                if (contentConfig.groups[i].subgroups[j][k].id === subjectId) {
+                                    subgroup = contentConfig.groups[i].subgroups[j][k];
+                                    break;
+                                }
+                            }
+                        } else if (contentConfig.groups[i].subgroups[j].id === subjectId) {
+                            subgroup = contentConfig.groups[i].subgroups[j];
+                            break;
+                        }
+                    }
+                }
+            }
+            
+            return subgroup;
         };
 
         return {
             init: function () {
-                require(['app/pages/school-management/exam/create-content'], function(createContent) {
-                    createContent.init();
-
-                    initSubjectCounters();
-                    updateRemainingQuestions();
-                });
                 initSelectionFunctionality();
                 setListeners();
-                loadQuestions($('#contentId').val());
-            }
+                loadContent(
+                        +$('#content-info').data('id'), 
+                        $('.content-questions').first(), 
+                        true
+                );
+            },
+            loadContent: loadContent
         };
 
     }());

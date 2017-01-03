@@ -20,17 +20,19 @@ define(['app/pages/administrative-structure/department/departments', 'moment'], 
                 type: "POST",
                 url: "/school-management/study-resources/get-past-exams",
                 success: function (data) {
-                    for (i = 0; i < data.psa['source'].length; ++i) {
-                        pastExams += '<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 catssys-test">'
-                                + '<a href="' + data.psa_dir + '/' + data.psa['source'][i] + '" target="_blank">'
-                                + '<i class="fa fa-file-text-o"></i><h4>' + data.psa['number'][i]
-                                + 'º' + ' PSA ' + data.psa['year'][i];
-                        if (data.psa['part'][i] !== "") {
-                            pastExams += ' pt. ' + data.psa['part'][i];
+                    if (data.psa) {
+                        for (i = 0; i < data.psa['source'].length; ++i) {
+                            pastExams += '<div class="col-lg-2 col-md-3 col-sm-4 col-xs-6 catssys-test">'
+                                    + '<a href="' + data.psa_dir + '/' + data.psa['source'][i] + '" target="_blank">'
+                                    + '<i class="fa fa-file-text-o"></i><h4>' + data.psa['number'][i]
+                                    + 'º' + ' PSA ' + data.psa['year'][i];
+                            if (data.psa['part'][i] !== "") {
+                                pastExams += ' pt. ' + data.psa['part'][i];
+                            }
+                            pastExams += '</h4></a></div>';
                         }
-                        pastExams += '</h4></a></div>';
+                        $("#past-exams").html(pastExams);
                     }
-                    $("#past-exams").html(pastExams);
                 }
             });
         };
@@ -82,16 +84,16 @@ define(['app/pages/administrative-structure/department/departments', 'moment'], 
                                 studentWrapper
                                         .find(".recruitment-form-wrapper-closed").show();
                             } else {
-                                
-                                if(studentData.showSubscriptionLink) {
+
+                                if (studentData.showSubscriptionLink) {
                                     studentWrapper
-                                        .find(".recruitment-form-wrapper-opened").show();
+                                            .find(".recruitment-form-wrapper-opened").show();
                                 }
-                                
+
                                 studentWrapper
                                         .find(".recruitment-form-wrapper-candidate").show();
-                                
-                                
+
+
                             }
 
                             type += recruitmentTypes.STUDENT;

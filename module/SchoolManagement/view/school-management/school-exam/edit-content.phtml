@@ -9,8 +9,9 @@
             <?php if ($this->form !== null) :
                 echo $this->render('exam_content_template', array(
                     'form' => $this->form,
-                    'baseSubjects' => $this->baseSubjects,
-                    'subjectQuantities' => $this->subjectQuantities,
+                    'contentJson' => $this->contentJson,
+                    'editMode' => $this->editMode,
+                    'contentId' => $this->contentId,
                     'editAllowed' => $this->editAllowed,
                 ));
             endif;

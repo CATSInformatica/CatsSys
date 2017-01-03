@@ -18,6 +18,10 @@
 define(['jquery', 'datetimepicker'], function () {
     var createExam = (function () {
         
+        /**
+         * Inicializa os DateTimePickers 
+         * 
+         */
         initDatepickers = function () {            
             $('#exam-day').closest('.input-group').datetimepicker({
                 format: 'DD/MM/YYYY',

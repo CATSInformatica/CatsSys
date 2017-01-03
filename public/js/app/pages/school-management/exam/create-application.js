@@ -21,16 +21,25 @@ define(['jquery', 'datatable'], function () {
         var examsTable = $('#exams-table');
 
         createApplicationListeners = function () {
-            $('#submit-button').click(function () {
+            /**
+             * Antes de enviar o formulário, anexa os ids das linhas 
+             * selecionadas da tabela de provas
+             * 
+             */
+            $('#exam-application-form').submit(function () {
                 $('.cats-selected-row').each(function () {
                     var currentCount = $('form fieldset > input').length;
+                    
                     var template = $('form fieldset > span').data('template');
                     template = template.replace(/__index__/g, currentCount);
+                    
                     var htmlTemplate = $(template);
-                    htmlTemplate.val($(this).data('id'));
+                    htmlTemplate.val(+$(this).data('id'));
+                    
                     $('form fieldset').append(htmlTemplate);
                 });
-                $('#submit-button').prop('type', 'submit');
+                
+                return true;
             });
         };
 

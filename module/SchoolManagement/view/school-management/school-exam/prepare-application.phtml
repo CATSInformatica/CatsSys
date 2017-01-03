@@ -58,17 +58,17 @@
                         <ul>
                             <?php foreach ($this->application->getExams() as $exam) : ?>
                                 <li>
-                                    <span id="content-<?php echo $exam->getContent()->getExamContentId()?>-name"><?php echo $exam->getName() ?></span>
+                                    <span><?php echo $exam->getName() ?></span>
                                 </li>
                                     <?php echo 'Dia: '; ?>
-                                    <span id="content-<?php echo $exam->getContent()->getExamContentId()?>-day">
+                                    <span>
                                         <?php echo $exam->getDate()->format('d/m/Y'); ?>    
                                     </span><br>
                                     <?php echo 'Hora: '; ?>
-                                    <span id="content-<?php echo $exam->getContent()->getExamContentId()?>-start-time">
+                                    <span>
                                         <?php echo $exam->getStartTime()->format('H:i'); ?>    
                                     </span> - 
-                                    <span id="content-<?php echo $exam->getContent()->getExamContentId()?>-end-time">
+                                    <span>
                                         <?php echo $exam->getEndTime()->format('H:i'); ?>    
                                     </span><br> 
                             <?php endforeach; ?>
@@ -96,131 +96,195 @@
                             <a class="col-xs-6 btn btn-primary" id="print-answer-key">Gerar PDF</a>
                             <a class="col-xs-6 btn btn-success" id="save-answers-csv" disabled>Gerar CSV</a>
                         </div>
-                        <div class="col-xs-10 col-xs-offset-1" id="answer-key-tables">
+                        <div class="col-xs-10 col-xs-offset-1 no-margin" 
+                             id="answer-key-tables">
                         </div>
                     </div> 
                 </div><!-- /.box-body -->
             </div><!-- /.box -->
             
-            <!-- TEMPLATE DAS INSTRUÇÕES DO SIMULADO -->  
-            <script id="instructions-template" type="text/template">      
-                <div class="id-goes-here">
-                    <div class="text-center">
-                        <h3><strong> <span class="i-exam-name"></span> </strong></h3>
-                            <span class="i-exam-date"></span> - 
-                            <span class="i-begin-time"></span>h às 
-                            <span class="i-end-time"></span>h
+            <!-- TEMPLATE DA DE CADA PÁGINA (CABEÇALHO, CONTEÚDO, RODAPÉ) -->
+            <div class="hide" id="exam-page-template">
+                <div class="page">
+                    <div class="exam-header">
+                        <div class="col-xs-3 no-padding">
+                            <img class="center-block cats-logo" src="/img/logo_prova.png" style="height: 14mm;">
+                        </div>
+                        <div class="col-xs-9 no-padding">
+                            <p class="text-center header-text"><strong>Curso Assistencial Theodomiro Santiago</strong><br>
+                                Av. BPS, 1303 - UNIFEI - Campus Professor J.R. Seabra - Sala I.1.2.47 - Itajubá - MG<br>
+                                <strong>Tel.:</strong>(38) 98871-2364 | <strong>Email:</strong> catsensino@gmail.com | familiacats.com.br</p>
+                        </div>
+                    </div>
+                    <div class="exam-content">
+                    </div>
+                    <div class="exam-footer">
+                        <p class="no-margin">
+                            <span class="exam-name"></span>
+                            <span class="page-number pull-right"></span>
+                        </p>
+                    </div>
+                </div>
+            </div>
+            
+            <?php echo $this->render('exam_content_structure_templates', array()); ?>
+            
+            <!-- PROVAS -->
+            <?php foreach ($this->application->getExams() as $exam) : ?>
+                <!-- TEMPLATE DAS INSTRUÇÕES DO SIMULADO -->  
+                <div id="instructions-template-<?php echo $exam->getContent()->getExamContentId()?>" class="hide">
+                    <div id="instructions">
+                        <div class="text-center">
+                            <h3>
+                                <strong><?php echo $exam->getName(); ?></strong>
+                            </h3>
+                            <span><?php echo $exam->getDate()->format('d/m/Y'); ?></span> - 
+                            <span><?php echo $exam->getStartTime()->format('H:i'); ?> </span> h 
+                            às 
+                            <span><?php echo $exam->getEndTime()->format('H:i'); ?>  </span> h
                             <div class="text-uppercase">
                                 <br>
                                 <h4>Instruções gerais para a realização da prova</h4>
                             </div>
                             <h4>
                                 <br>
-                                <strong> Antes de iniciar a resolução da prova, verifique 
-                                        se as regras abaixo estão sendo cumpridas.
+                                <strong>
+                                    Antes de iniciar a resolução da prova, verifique 
+                                    se as regras abaixo estão sendo cumpridas.
                                 </strong>
                             </h4>
-                    </div>
-                    <br>
-                    <div class="text-justify">
-                        <ol> 
-                            <li>Não abra a prova até que o fiscal lhe conceda autorização</li>
-                            <li>Em sua mesa de prova <strong>não deve constar nada além de lápis, borracha e caneta.</strong></li>
-                            <li>Quaisquer materiais que não sejam os descritos acima devem ser deixados à sua direita, no chão.</li>
-                            <li><strong>O candidato</strong> que precisar usar o banheiro ou que, por ventura, 
-                                    <strong> venha a se sentir mal, deve chamar o fiscal</strong> à sua mesa. <strong>Não</strong>
+                        </div>
+                        <br>
+                        <div class="text-justify">
+                            <ol class="no-margin"> 
+                                <li>Não abra a prova até que o fiscal lhe conceda autorização</li>
+                                <li>
+                                    Em sua mesa de prova 
+                                    <strong>não deve constar nada além de lápis, borracha e caneta.</strong>
+                                </li>
+                                <li>
+                                    Quaisquer materiais que não sejam os descritos acima
+                                    devem ser deixados à sua direita, no chão.
+                                </li>
+                                <li>
+                                    <strong>O candidato</strong> 
+                                    que precisar usar o banheiro ou que, por ventura, 
+                                    <strong> venha a se sentir mal, deve chamar o fiscal</strong> 
+                                    à sua mesa. 
+                                    <strong>Não</strong> 
                                     se levante da mesa sem comunicar o fiscal.
-                            </li>
-                            <li>Não haverá correção de erros nas questões. Caso esses existam e comprometam o resultado das mesmas, 
+                                </li>
+                                <li>
+                                    Não haverá correção de erros nas questões. Caso 
+                                    esses existam e comprometam o resultado das mesmas, 
                                     as questões erradas serão anuladas posteriormente.
-                            </li>
-                            <li>A prova tem duração máxima de 4 (quatro) horas. O tempo mínimo de permanência na sala é de 2
-                                    <strong> (duas)</strong> horas. Após este período, você receberá uma folha de respostas, 
-                                    onde deverá marcar as repostas de <strong>caneta azul ou preta.</strong> Marque somente 
-                                    uma resposta para cada questão, caso contrário, tal questão será considerada anulada em 
-                                    sua prova. Logo abaixo, você pode verificar como deve ser marcada a resposta que você julgar correta.
-                            </li>
-                            
-                            <div class="col-xs-6 col-xs-offset-3" style="line-height: 15mm;">
-                                <div class="col-xs-1" style="font-size: 30pt; line-height: 15mm;"></div>
-                                <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9398 </div>
-                                <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9399 </div>
-                                <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9400 </div>
-                                <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 1mm 0 0;"> 
-                                        <svg height="38" width="38"><circle cx="19" cy="19" r="19" fill="black" /></svg>
+                                </li>
+                                <li>
+                                    A prova tem duração máxima de 4 (quatro) horas. 
+                                    O tempo mínimo de permanência na sala é de 2
+                                    <strong> (duas) </strong>
+                                    horas. Após este período, você receberá uma 
+                                    folha de respostas, onde deverá marcar as repostas de 
+                                    <strong>caneta azul ou preta.</strong> 
+                                    Marque somente uma resposta para cada questão, caso contrário, 
+                                    tal questão será considerada anulada em sua prova. Logo abaixo
+                                    , você pode verificar como deve ser marcada a resposta 
+                                    que você julgar correta.
+                                </li>
+                                <div class="col-xs-6 col-xs-offset-3" style="line-height: 15mm;">
+                                    <div class="col-xs-1" style="font-size: 30pt; line-height: 15mm;"></div>
+                                    <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> 
+                                        &#9398; 
+                                    </div>
+                                    <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> 
+                                        &#9399; 
+                                    </div>
+                                    <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> 
+                                        &#9400; 
+                                    </div>
+                                    <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 1mm 0 0;"> 
+                                        <svg height="38" width="38">
+                                        <circle cx="19" cy="19" r="19" fill="black" />
+                                        </svg>
+                                    </div>
+                                    <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> 
+                                        &#9402; 
+                                    </div>
+                                    <div class="col-xs-1" style="font-size: 30pt; line-height: 15mm;"></div>
                                 </div>
-                                <div class="col-xs-2 text-center" style="font-size: 30pt; padding: 0mm;"> &#9402 </div>
-                                <div class="col-xs-1" style="font-size: 30pt; line-height: 15mm;"></div>
-                            </div>
-                            <br><br><br>
-                            
-                            <li>Caso exista uma questão que você julgue estar sem sentido, sem resposta correta, mais de uma resposta 
-                                    correta, ilegível ou algo do gênero, escreva atrás do gabarito o número da questão e o erro encontrado.
-                            </li>
-                            <li>É recomendável que se deixem pelo menos 30 (trinta) minutos para o preenchimento da folha de resposta. Em 
-                                    hipótese alguma o fiscal irá trocá-la e somente ela deverá ser entregue ao fiscal no fim de sua prova. 
-                                    Não se esqueça de escrever o número de matrícula na folha de resposta. O caderno de questões ficará com 
+                                <br><br><br>
+                                <li>
+                                    Caso exista uma questão que você julgue estar sem 
+                                    sentido, sem resposta correta, mais de uma resposta 
+                                    correta, ilegível ou algo do gênero, escreva atrás do 
+                                    gabarito o número da questão e o erro encontrado.
+                                </li>
+                                <li>
+                                    É recomendável que se deixem pelo menos 30 (trinta) 
+                                    minutos para o preenchimento da folha de resposta. Em 
+                                    hipótese alguma o fiscal irá trocá-la e somente ela 
+                                    deverá ser entregue ao fiscal no fim de sua prova. 
+                                    Não se esqueça de escrever o número de matrícula na 
+                                    folha de resposta. O caderno de questões ficará com 
                                     você.
-                            </li>
-                            <li>Antes de iniciar sua prova, espere autorização do fiscal para conferir se todas as páginas estão em seu 
+                                </li>
+                                <li>
+                                    Antes de iniciar sua prova, espere autorização 
+                                    do fiscal para conferir se todas as páginas estão em seu 
                                     caderno e se todas estão legíveis.
-                            </li>
-                            <li>Inicie a prova quando houver autorização do fiscal.</li>
-                        </ol>
+                                </li>
+                                <li>Inicie a prova quando houver autorização do fiscal.</li>
+                            </ol>
+                        </div>
                     </div>
                 </div>
-            </script> 
-            
-            <!-- TEMPLATE DA DE CADA PÁGINA (CABEÇALHO, CONTEÚDO, RODAPÉ) -->
-            <div class="exam-page">
-                <div class="exam-header">
-                    <div class="col-xs-3 no-padding">
-                        <img class="center-block cats-logo" src="/img/logo_prova.png">
-                    </div>
-                    <div class="col-xs-9 no-padding">
-                        <p class="text-center header-text"><strong>Curso Assistencial Theodomiro Santiago</strong><br>
-                            Av. BPS, 1303 - UNIFEI - Campus Professor J.R. Seabra - Sala I.1.2.47 - Itajubá - MG<br>
-                            <strong>Tel.:</strong>(38) 98871-2364 | <strong>Email:</strong> catsensino@gmail.com | familiacats.com.br</p>
-                    </div>
-                </div>
-                <div class="exam-content">
-
-                </div>
-                <div class="exam-footer">
-                    <p><span class="exam-name"></span><span class="page-number pull-right"></span></p>
-                </div>
-            </div>
-            
-            <!-- PROVAS -->
-            <?php foreach ($this->application->getExams() as $exam) : ?>
-                <div class="box box-warning collapsed-box color-palette-box application-content" 
+                <div class="box box-warning collapsed-box color-palette-box content-info-block" 
                      id="content-<?php echo $exam->getContent()->getExamContentId(); ?>"
                      data-content-id="<?php echo $exam->getContent()->getExamContentId(); ?>">
                     <div class="box-header with-border">
-                        <h3 class="box-title text-uppercase"><i class="fa fa-file-text-o"></i> <?php echo $exam->getName(); ?> </h3>
+                        <h3 class="box-title text-uppercase">
+                            <i class="fa fa-file-text-o exam-name"></i> 
+                            <?php echo $exam->getName(); ?> 
+                        </h3>
                         <div class="box-tools pull-right">
-                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                            <button class="btn btn-box-tool" data-widget="collapse">
+                                <i class="fa fa-plus"></i>
+                            </button>
                         </div><!-- /.box-tools -->
                     </div>
                     <div class="box-body exam">
                         <div class="do-not-print row">
                             <div class="checkbox text-center">
-                                <label><input type="checkbox" class="exam-instructions" checked>Incluir cabeçalho com instruções</label>
+                                <label><input type="checkbox" class="exam-instructions" checked>
+                                    Incluir cabeçalho com instruções
+                                </label>
                             </div>
                         </div>
                         <div class="do-not-print row">
-                            <button class="col-xs-6 col-xs-offset-3 btn btn-success print-exam">Gerar Prova (PDF)</button>
-                            <br><br><br><br>
+                            <button class="col-xs-6 col-xs-offset-3 btn btn-success print-exam">
+                                Gerar Prova (PDF)
+                            </button>
+                            <br><br><br>
+                            <span class="col-xs-12 loading-message text-bold text-center"></span>                                           <span class="col-xs-12 alert-message text-center"></span>
+                            <div class="col-xs-12 progress progress-sm active">
+                                <div class="progress-bar progress-bar-success" 
+                                     role="progressbar" 
+                                     aria-valuenow="0" aria-valuemin="0" aria-valuemax="100" 
+                                     style="width: 0%">
+                                </div>
+                            </div>
                         </div>
 
                         <!-- PREVIEW -->
-                        <div class="preview-page tex2jax_ignore">
+                        <div class="preview-page view-only no-padding tex2jax_ignore">
                             <div class="content-questions">
                             </div>
                         </div>
 
                         <!-- DIV PARA IMPRESSÃO -->
-                        <div id="print-page-<?php echo $exam->getContent()->getExamContentId(); ?>">
+                        <div id="print-page-<?php echo $exam->getContent()->getExamContentId(); ?>"
+                             data-div-id="print-page-<?php echo $exam->getContent()->getExamContentId(); ?>"
+                             class="print-page">
 
                         </div> 
                     </div>

@@ -124,9 +124,8 @@ define(['jquery'], function () {
 
         applyAdministrativeEffects = function () {
             adminStructure.on("click", ".catssys-admin-structure", function () {
-
                 var parentDepartmentId = $(this).data('id');
-
+                $(this).next('[id^=department-identity]').fadeToggle();
                 $(this)
                         .closest(".nav")
                         .siblings(".tab-content")
@@ -138,12 +137,13 @@ define(['jquery'], function () {
                 if ($("#department-" + parentDepartmentId).length === 0) {
                     getAdministrativeHierarchy(parentDepartmentId);
                 } else {
-                    $("#department-" + parentDepartmentId).slideToggle(100);
+                    $("#department-" + parentDepartmentId)
+                            .slideToggle(100)
+                            .find('[id^=department-identity]')
+                            .fadeIn();
                 }
-
             });
         };
-
 
         return {
             init: function () {
