@@ -533,7 +533,9 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 var groups = contentConfig.groups;
                 
                 for (var i = 0; i < groups.length; ++i) {
-                    addBaseSubjectBlock(groups[i], divObj);
+                    if (hasAssociatedQuestions(groups[i])) { 
+                        addBaseSubjectBlock(groups[i], divObj);
+                    }
                     
                     for (var j = 0; j < groups[i].subgroups.length; ++j) {
                         var parallelSubject = false;
@@ -543,51 +545,64 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                             addParallelSubjectBlock(groups[i].subgroups[j]);
                             
                             for (var k = 0; k < groups[i].subgroups[j].length; ++k) {
-                                if (prepareContent) {
-                                    setSubjectInfo(
-                                            groups[i].subgroups[j][k], 
-                                            parallelSubject
-                                    );
-                                }
-                                
-                                loadSubject(
-                                        {
-                                            baseSubjectId: groups[i].id,
-                                            numberingStart: contentConfig.questionsStartAtNumber, 
-                                            divObj: divObj
-                                        },
-                                        groups[i].subgroups[j][k],
-                                        parallelSubject,
-                                        prepareContent
-                                );
+                                loadSubjecData(groups[i], groups[i].subgroups[j][k], parallelSubject);
                             }
                         } else {
-                            if (prepareContent) {
-                                setSubjectInfo(
-                                        groups[i].subgroups[j], 
-                                        parallelSubject
-                                );
-                            }
-                            if (groups[i].subgroups[j].singleColumn === true) {  
+                            if (groups[i].subgroups[j].singleColumn && groups[i].subgroups[j].numberOfProposedQuestions > 0) {  
                                 addSingleColumnSubjectBlock(groups[i], groups[i].subgroups[j], divObj);
-                            }          
+                            }  
                             
-                            loadSubject(
-                                    {
-                                        baseSubjectId: groups[i].id,
-                                        numberingStart: contentConfig.questionsStartAtNumber, 
-                                        divObj: divObj
-                                    },
-                                    groups[i].subgroups[j],
-                                    parallelSubject,
-                                    prepareContent
-                            );
+                            loadSubjecData(groups[i], groups[i].subgroups[j], parallelSubject);
                         }
                     }
                 }
                 
                 $('#questions-count').text(contentConfig.numberOfQuestions);
             });
+            
+            /*
+             * Checa se pelo menos uma das disciplinas descendentes da 
+             * disciplina base, passada por parâmetro, possui questões
+             * 
+             * @param {object} baseSubject - objeto que representa a disciplina base no JSON 
+             *      do conteúdo
+             * @returns {Boolean}
+             */
+            function hasAssociatedQuestions(baseSubject) {
+                for (var i = 0; i < baseSubject.subgroups.length; ++i) {
+                    if (baseSubject.subgroups[i].numberOfProposedQuestions > 0) {
+                        return true;
+                    }
+                }
+                return false;
+            }
+            
+            /*
+             * Carrega as questões dessa disciplina e, se na preparação de conteúdo,
+             * carrega os contadores da disciplina na página
+             * 
+             * @param {object} baseSubject - objeto que representa a disciplina base no JSON 
+             *      do conteúdo
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             * @param {boolean} parallelSubject - flag que indica se a disciplina 
+             *      é paralela
+             */
+            function loadSubjecData(baseSubject, subject, parallelSubject) {
+                if (prepareContent) {
+                    setSubjectInfo(subject, parallelSubject);
+                }        
+
+                loadSubject(
+                        {
+                            baseSubjectId: baseSubject.id,
+                            numberingStart: contentConfig.questionsStartAtNumber, 
+                            divObj: divObj
+                        },
+                        subject,
+                        parallelSubject,
+                        prepareContent
+                );
+            }
             
             /*
              * Adiciona um bloco de disciplina base
@@ -654,7 +669,8 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
              * 
              * @param {object} subject - objeto que representa a disciplina no JSON 
              *      do conteúdo
-             * @param {boolean} parallel - flag que indica se 
+             * @param {boolean} parallelSubject - flag que indica se a disciplina 
+             *      é paralela
              */
             function setSubjectInfo(subject, parallel) {
                 var subjectInfoBlock = $('#subject-info-' + subject.id);
