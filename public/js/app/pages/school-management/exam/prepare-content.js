@@ -179,12 +179,14 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             
             $('.autosaving').click(function () {
                $('.autosaving').each(function() {
-                    if ($(this).prop('checked')) {
-                        $(this).prop('checked', false);
+                    if ($(this).data('autosave') === 'on') {
+                        $(this).data('autosave', 'off');
+                        
                         $(this).removeClass('bg-green');
                         $(this).css('color', '#666');
                     } else {
-                        $(this).prop('checked', true);
+                        $(this).data('autosave', 'on');
+                        
                         $(this).addClass('bg-green');
                         $(this).css('color', 'white');
                     }
@@ -193,18 +195,27 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             
             /*
              * Evento: clique no botão + (adicionar)
-             * Adiciona todas as questões selecionadas
+             * Adiciona todas as questões selecionadas. 
+             * Exceção: quando o número de questões selecionadas é maior do que 
+             * o número de questões restantes para a disciplina em questão, as 
+             * questões excedentes não são adicionadas
              * 
              */
             $('.add-question').click(function () {
                 $('#question-table > tbody > .cats-selected-row').each(function () {
-                    $(this).removeClass('cats-selected-row');
-                    $(this).removeClass('cats-row');
-                    $(this).css('opacity', 0.4);
-                    
                     var questionInfo = examQuestions[+$(this).data('id')];            
                     var topicInfo = $('#topic-info-' + questionInfo.topicId);
                     var subjectInfo = topicInfo.closest('.subject-info');
+                    
+                    var addedQuestionsBlock = subjectInfo.find('.q-added').first();
+                    var amountOfQuestions = +addedQuestionsBlock.siblings('.q-amount').first().text();
+                    if (+addedQuestionsBlock.text() >= amountOfQuestions) {
+                        return false;
+                    }
+                    
+                    $(this).removeClass('cats-selected-row');
+                    $(this).removeClass('cats-row');
+                    $(this).css('opacity', 0.4);
                     
                     addQuestion(                            
                             {
@@ -407,8 +418,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          * @returns {boolean}
          */
         autosaveIsOn = function () {
-            console.log('checked', $('.autosaving').first().prop('checked'));
-            return $('.autosaving').first().prop('checked');
+            return $('.autosaving').first().data('autosave') === 'on';
         };
 
         /*
