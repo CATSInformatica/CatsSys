@@ -3,11 +3,8 @@
         <div class="col-md-3">
             <div class="box box-primary">
                 <div class="box-body box-profile">
-
                     <?php $person = $registration->getPerson(); ?>
-
                     <h2 class="text-center"><?php echo $person->getPersonFirstName() . " " . $person->getPersonLastName() ?></h2>
-
                     <h2 class="text-muted text-center">
                         <small>Nº de inscrição: <?php echo $registration->getRegistrationNumber(); ?></small>
                     </h2>
@@ -33,22 +30,17 @@
                 <!-- /.box-body -->
             </div>
             <div class="box box-primary">
-
                 <!-- /.box-header -->
                 <div class="box-body">
-
                     <a target="_blank" href="/docs/<?php echo $recruitment->getRecruitmentPublicNotice(); ?>" class="btn btn-flat btn-primary btn-block"><b>Edital</b></a>
                     <a target="_blank" href="https://www.facebook.com/cats.familia" class="btn btn-block btn-social btn-facebook">
                         <i class="fa fa-facebook"></i> Nos encontre no Facebook
                     </a>
-
                 </div>
-
                 <!-- /.box-body -->
             </div>
             <!-- /.box -->
         </div>
-
 
         <div class="col-md-9">
             <div class="nav-tabs-custom">
@@ -59,6 +51,7 @@
                 <div class="tab-content">
                     <!--PAINEL DE STATUS DO CANDIDATO-->
                     <?php
+                    //TO-DO Tratamento de candidatos na lista de espera
                     //INICIO tratamento dos blocos em cores
                     //candidato passou pela etapa
                     $completed = "green-active";
@@ -71,8 +64,8 @@
                     //etapas de reprovação ou cancelamento
                     $disapproved = "black";
 
-                    $inscription = $incomplete;
-                    $confirmation = $incomplete;
+                    $inscription = $completed;
+                    $confirmation = $processing;
                     $exam = $incomplete;
                     $examResult = $incomplete;
                     $preInterview = $incomplete;
@@ -80,77 +73,58 @@
                     $finalResult = $incomplete;
                     $enrollment = $incomplete;
 
-                    //tratamento de blocos que mudam com o status da inscrição
-                    //recolhe os timeStamp e altera o status de cada bloco
+                    //recolhe os timeStamp
                     $rstatus = $registration->getRegistrationStatus();
                     foreach ($rstatus as $st):
                         if ($st->getRecruitmentStatus()->getStatusType() == "INSCRITO") {
-                            $inscriptionTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                            $inscription = $completed;
-                            $confirmation = $processing;
+                            $inscriptionStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
                         } elseif ($st->getRecruitmentStatus()->getStatusType() == "CONFIRMADO") {
-                            $confirmationTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                            $inscription = $completed;
-                            $confirmation = $completed;
+                            $confirmationStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
                         } elseif ($st->getRecruitmentStatus()->getStatusType() == "CONVOCADO PARA PRÉ-ENTREVISTA") {
-                            $inscription = $completed;
-                            $confirmation = $completed;
-                            $preInterview = $summoned;
+                            $preInterviewSummonedStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
                         } elseif ($st->getRecruitmentStatus()->getStatusType() == "PRÉ-ENTREVISTA CONCLUÍDA") {
-                            $preInterviewTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                            $inscription = $completed;
-                            $confirmation = $completed;
-                            $preInterview = $completed;
-                            $interview = $processing;
+                            $preInterviewConclusionStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
                         } elseif ($st->getRecruitmentStatus()->getStatusType() == "CONVOCADO PARA ENTREVISTA") {
-                            $inscription = $completed;
-                            $confirmation = $completed;
-                            $preInterview = $completed;
-                            $interview = $summoned;
+                            $interviewSummonedStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
                         } elseif ($st->getRecruitmentStatus()->getStatusType() == "APROVADO EM ENTREVISTA") {
-                            $approvedTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                            $inscription = $completed;
-                            $confirmation = $completed;
-                            $preInterview = $completed;
-                            $interview = $completed;
-                            $finalResult = $processing;
+                            $approvedStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
                         } elseif ($st->getRecruitmentStatus()->getStatusType() == "REPROVADO EM ENTREVISTA") {
-                            $disapprovedTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                            $inscription = $completed;
-                            $confirmation = $completed;
-                            $preInterview = $completed;
-                            $interview = $disapproved;
+                            $disapprovedStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
                         } elseif ($st->getRecruitmentStatus()->getStatusType() == "LISTA DE ESPERA DA ENTREVISTA") {
-                            $inscription = $completed;
-                            $confirmation = $completed;
-                            $preInterview = $completed;
-                            $interview = $processing;
-                        } elseif ($st->getRecruitmentStatus()->getStatusType() == "INSCRIÇÃO CANCELADA") {
-                            $inscription = $disapproved;
-                            $confirmation = $disapproved;
-                            $preInterview = $disapproved;
-                            $interview = $disapproved;
-                            $finalResult = $disapproved;
-                        } else {
-                            $inscription = $disapproved;
-                            $confirmation = $disapproved;
-                            $preInterview = $disapproved;
-                            $interview = $disapproved;
-                            $finalResult = $disapproved;
+                            $waitListStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
                         }
                     endforeach;
 
                     //tratamento para blocos que mudam com o tempo 
                     //só modifca a cor se o candidato foi devidamente confirmado/entrevistad
                     $currentDate = new \DateTime();
+                    $confirmationStartDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getConfirmationStartDate());
+                    $confirmationEndDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getConfirmationEndDate());
                     $examDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getExamDate());
                     $examResultDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getExamResultDate());
                     $finalResultDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getResultDate());
                     $preInterviewDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getPreInterviewStartDate());
+                    $interviewDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getInterviewStartDate());
                     $enrollmentStartDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getEnrollmentStartDate());
                     $enrollmentEndDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getEnrollmentEndDate());
-                    
-                    //dia da prova  
+
+                    //dia da confirmação
+                    //tratamento com tempo e status
+                    if (isset($confirmationStatusTime) == false) {
+                        if ($confirmationStartDate > $currentDate) {
+                            $confirmation = $processing;
+                        } elseif ($confirmationStartDate <= $currentDate && $currentDate <= $confirmationEndDate) {
+                            $confirmation = $summoned;
+                        } elseif ($confirmationEndDate < $currentDate) {
+                            //demora na confirmação
+                            $confirmation = $processing;
+                        }
+                    } else {
+                        $confirmation = $completed;
+                    }
+
+                    //dia da prova
+                    //tratamento com tempo
                     if ($confirmation == $completed) {
                         if ($examDate > $currentDate) {
                             $exam = $processing;
@@ -162,69 +136,78 @@
                     }
 
                     //dia do resultado da prova
-                    if ($confirmation == $completed) {
+                    //tratamento com tempo
+                    if ($exam == $completed) {
                         if ($examResultDate > $currentDate && $examDate < $currentDate) {
                             $examResult = $processing;
-                        } elseif ($examResultDate == $currentDate)  {
+                        } elseif ($examResultDate == $currentDate) {
                             $examResult = $summoned;
                         } elseif ($examResultDate < $currentDate) {
                             $examResult = $completed;
                         }
                     }
+
+                    //dia da pré entrevista
+                    //tratamento com tempo e status
+                    if (isset($preInterviewSummonedStatusTime) && isset($preInterviewConclusionStatusTime)) {
+                        $preInterview = $completed;
+                    } elseif (isset($preInterviewSummonedStatusTime) && isset($preInterviewConclusionStatusTime) == false) {
+                        if ($preInterviewDate > $currentDate) {
+                            $preInterview = $processing;
+                        } elseif ($preInterviewDate < $currentDate) {
+                            //candidato não fez a pré-entrevista
+                            $preInterview = $disapproved;
+                        }
+                    } elseif (isset($preInterviewSummonedStatusTime) == false && $preInterviewDate < $currentDate) {
+                        //candidato não chamado para pré-entrevista
+                        $preInterview = $disapproved;
+                    } elseif (isset($preInterviewSummonedStatusTime) == false && $preInterviewDate == $currentDate) {
+                        $preInterview = $processing;
+                    }
+
+                    //dia da entrevista
+                    //tratamento com tempo e status
+                    if (isset($approvedStatusTime) == false) {
+                        if ($preInterview == $completed) {
+                            if ($interviewDate > $currentDate) {
+                                $interview = $processing;
+                            } elseif ($interviewDate == $currentDate) {
+                                $interview = $summoned;
+                            } elseif (isset($disapprovedStatusTime)) {
+                                //não aprovado em entrevista
+                                $interview = $disapproved;
+                            } else {
+                                //demora na aprovação/não aprovação
+                                $interview = $processing;
+                            }
+                        }
+                    } else {
+                        //aprovado em entrevista
+                        $interview = $completed;
+                    }
+
                     //dia do resultado Final
+                    //tratamento com tempo
                     if ($interview == $completed) {
                         if ($finalResultDate > $currentDate) {
                             $finalResult = $processing;
-                        } elseif ($finalResultDate == $currentDate)  {
+                        } elseif ($finalResultDate == $currentDate) {
                             $finalResult = $summoned;
                         } elseif ($finalResultDate < $currentDate) {
                             $finalResult = $completed;
-                            $enrollment = $processing;
                         }
                     }
-                    //dia da pré entrevista
-                    if ($interview == $completed) {
-                        if ($preInterviewDate > $currentDate) {
-                            $preInterview = $processing;
-                        } elseif ($preInterviewDate == $currentDate)  {
-                            $preInterview = $summoned;
-                        } elseif ($preInterviewDate < $currentDate) {
-                            $preInterview = $completed;
-                        }
-                    }
-                    
+
                     //dia da matrícula
-                    if ($interview == $completed) {
+                    //tratamento com tempo
+                    if ($finalResult == $completed) {
                         if ($enrollmentStartDate > $currentDate) {
                             $enrollment = $processing;
-                        } elseif ($enrollmentStartDate <= $currentDate && $currentDate <= $enrollmentEndDate)  {
+                        } elseif ($enrollmentStartDate <= $currentDate && $currentDate <= $enrollmentEndDate) {
                             $enrollment = $summoned;
                         } elseif ($enrollmentEndDate < $currentDate) {
                             $enrollment = $completed;
                         }
-                    }
-                    
-                    //fim do tratamento dos blocos em cores
-                    //Links tratados por tempo.
-                    //LINK para resultado do exame 
-                    if ($examResultDate <= $currentDate) {
-                        $examResultLink = 'href="www.google.com" ';
-                    } else {
-                        $examResultLink = " ";
-                    }
-
-                    //LINK para Resultado Final 
-                    if ($finalResultDate <= $currentDate) {
-                        $finalResultLink = 'href="www.google.com"';
-                    } else {
-                        $finalResultLink = " ";
-                    }
-
-                    //LINK Pré Entrevista 
-                    if ($preInterviewDate == $currentDate)  {
-                        $preInterviewLink = 'href="www.google.com"';
-                    } else {
-                        $preInterviewLink = " ";
                     }
                     ?>
                     <!--
@@ -247,7 +230,7 @@
                                 <div class="small-box bg-<?php echo $inscription ?>">
                                     <div class="inner">
                                         <h3>Inscrição</h3>
-                                        <p>Realizada no dia <?php echo $registration->getRegistrationDate() ?></p>
+                                        <p>Realizada no dia <?php echo $inscriptionStatusTime ?></p>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-edit"></i>
@@ -266,12 +249,11 @@
                                     <div class="inner">
                                         <h3>Confirmação </h3>
                                         <?php
-                                        if (isset($confirmationTime)) {
-                                            echo "<p>Realizada no dia " . $confirmationTime;
+                                        if (isset($confirmationStatusTime)) {
+                                            echo "<p>Realizada no dia " . $confirmationStatusTime;
                                         } else {
                                             echo "<p>Entre os dias " . $recruitment->getConfirmationStartDate() . ' e ' . $recruitment->getConfirmationEndDate() . "</p>";
                                         }
-
                                         ?>
                                     </div>
                                     <div class="icon">
@@ -306,7 +288,7 @@
                             </div>
 
                             <div class="col-lg-6 col-xs-12">
-                                <div <?php echo $examResultLink ?> class="small-box bg-<?php echo $examResult ?>">
+                                <div class="small-box bg-<?php echo $examResult ?>">
                                     <div class="inner">
                                         <h3>Resultado da Prova</h3>
                                         <p>Dia <?php echo $recruitment->getExamResultDate() ?></p>
@@ -327,16 +309,15 @@
 
                         <div class="row">
                             <div class="col-lg-6 col-xs-12">
-                                <div <?php echo $preInterviewLink ?> class="small-box bg-<?php echo $preInterview ?>">
+                                <div class="small-box bg-<?php echo $preInterview ?>">
                                     <div class="inner">
                                         <h3>Pré-Entrevista</h3>
                                         <?php
-                                        if (isset($preInterviewTime)) {
-                                            echo "<p>Realizada no dia " . $preInterviewTime;
+                                        if (isset($preInterviewConclusionStatusTime)) {
+                                            echo "<p>Realizada no dia " . $preInterviewConclusionStatusTime;
                                         } else {
                                             echo "<p>Dia " . $recruitment->getPreInterviewStartDate() . "</p>";
                                         }
-
                                         ?>
                                     </div>
                                     <div class="icon">
@@ -355,14 +336,13 @@
                                     <div class="inner">
                                         <h3>Entrevista</h3>
                                         <?php
-                                        if (isset($approvedTime)) {
-                                            echo "<p>Candidato APROVADO no dia " . $approvedTime;
-                                        } elseif (isset($disapprovedTime)) {
-                                            echo "<p>Candidato REPROVADO no dia " . $disapprovedTime;
+                                        if (isset($approvedStatusTime)) {
+                                            echo "<p>Candidato APROVADO no dia " . $approvedStatusTime;
+                                        } elseif (isset($disapprovedStatusTime)) {
+                                            echo "<p>Candidato REPROVADO no dia " . $disapprovedStatusTime;
                                         } else {
                                             echo "<p>Entre os dias " . $recruitment->getInterviewStartDate() . ' e ' . $recruitment->getInterviewEndDate() . "</p>";
                                         }
-
                                         ?>
                                     </div>
                                     <div class="icon">
@@ -379,7 +359,7 @@
                         </div>
                         <div class="row">
                             <div class="col-lg-6 col-xs-12">
-                                <div <?php echo $finalResultLink ?> class="small-box bg-<?php echo $finalResult ?>">
+                                <div class="small-box bg-<?php echo $finalResult ?>">
                                     <div class="inner">
                                         <h3>Resultado Final </h3>
                                         <p>Dia <?php echo $recruitment->getResultDate() ?></p>
@@ -419,23 +399,22 @@
                         <?php if ($this->form !== null): ?>
                             <?php $form->prepare(); ?>
                             <div class="row">
-                                <div class="col-xs-12 col-md-10 col-md-offset-1">
-                                    <?php echo $this->form()->openTag($form); ?>
-                                    <?php
-                                    $registration = $form->get('registration');
-                                    $person = $registration->get('person');
-                                    echo $this->partial('person/template', array(
-                                        'form' => $person,
-                                    ));
-                                    echo $this->partial('disclosure/template', array(
-                                        'form' => $registration,
-                                    ));
+                                <div class="col-xs-12 col-md-10 col-md-offset-1"
+                                <?php echo $this->form()->openTag($form); ?>
+                                <?php
+                                $registration = $form->get('registration');
+                                $person = $registration->get('person');
+                                echo $this->partial('person/template', array(
+                                    'form' => $person,
+                                ));
+                                echo $this->partial('disclosure/template', array(
+                                    'form' => $registration,
+                                ));
+                                ?>
 
-                                    ?>
+                                     <?php echo $this->formHidden($form->get('registrationCsrf')); ?>
 
-                                    <?php echo $this->formHidden($form->get('registrationCsrf')); ?>
-
-                                    <div class="col-xs-12 col-md-12">
+                                     <div class="col-xs-12 col-md-12">
                                         <div class="form-group">
                                             <?php echo $this->formRow($form->get('registrationConsent')->setAttribute('checked', true)); ?>
                                         </div>
@@ -461,12 +440,10 @@
 <script>
     appConfig = (function () {
         var scriptSrc = 'app/pages/recruitment/registration/candidate';
-
         return {
             getScriptSrc: function () {
                 return scriptSrc;
             }
         };
-
     })();
 </script>
