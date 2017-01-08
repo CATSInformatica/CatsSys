@@ -57,7 +57,8 @@ class QuestionQuantityFieldset extends Fieldset implements InputFilterProviderIn
                     array(
                         'name' => 'GreaterThan',
                         'options' => array(
-                            'min' => 0
+                            'min' => 0,
+                            'inclusive' => true
                         )
                     ),
                 ),
