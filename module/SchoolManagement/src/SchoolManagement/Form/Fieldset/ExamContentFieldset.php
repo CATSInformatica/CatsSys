@@ -45,6 +45,7 @@ class ExamContentFieldset extends Fieldset implements InputFilterProviderInterfa
             'type' => 'textarea',
             'attributes' => array(
                 'rows' => 5,
+                'tabindex' => '1'
             ),
             'options' => array(
                 'label' => 'Descrição do conteúdo',

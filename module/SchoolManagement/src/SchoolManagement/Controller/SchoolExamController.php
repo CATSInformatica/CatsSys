@@ -526,13 +526,19 @@ class SchoolExamController extends AbstractEntityActionController
             
             try {
                 $em = $this->getEntityManager();
-                
+
                 $examContent = $em->find('SchoolManagement\Entity\ExamContent', $contentId);
-
                 $editAllowed = $this->isExamContentEditable($examContent);
-                $contentJson = json_decode($examContent->getConfig(), true);
-
-                $form = new ExamContentForm($em, $contentJson['numberOfQuestions']);
+                
+                $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')
+                ->findBy(['parent' => null]);
+            
+                $numberOfQuantityFields = 0;
+                foreach ($baseSubjects as $baseSubject) {
+                    $numberOfQuantityFields += count($baseSubject->getChildren());
+                }
+                
+                $form = new ExamContentForm($em, $numberOfQuantityFields);
                 $form->bind($examContent);
                 $form->get('submit')->setAttribute('value', 'Editar Conteúdo');
                 
@@ -558,9 +564,8 @@ class SchoolExamController extends AbstractEntityActionController
                 return new ViewModel(array(
                     'message' => null,
                     'form' => $form,
+                    'baseSubjects' => $baseSubjects,
                     'contentId' => $contentId,
-                    'contentJson' => $contentJson,
-                    'editMode' => true,
                     'editAllowed' => $editAllowed,
                 ));
             } catch (Exception $ex) {
@@ -568,8 +573,6 @@ class SchoolExamController extends AbstractEntityActionController
                     'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                     'form' => null,
                     'contentId' => null,
-                    'contentJson' => null,
-                    'editMode' => true,
                     'editAllowed' => false
                 ));
             }
