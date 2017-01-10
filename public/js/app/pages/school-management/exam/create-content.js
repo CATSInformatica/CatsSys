@@ -75,6 +75,19 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
              */
             $('.amount-input').on('keyup input', function () {
                 var count = 0;
+                
+                if ($('#content-info').length !== 0) {
+                    var subjectBlock = $(this).closest('.subjects');
+                    var baseSubjectBlock = subjectBlock.closest('.base-subjects');
+                    var questions = getSubjectQuestions(baseSubjectBlock.data('id'), subjectBlock.data('id'));
+                    if (questions.length > +$(this).val()) {
+                        $(this).val(questions.length);
+                        $('#quantity-error').removeClass('hide');
+                    } else {
+                        $('#quantity-error').addClass('hide');
+                    }
+                }
+                
                 $('.amount-input').each(function () {
                     if ($(this).val() !== '') {
                         count += +$(this).val();
@@ -189,42 +202,42 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
                         questions: questions
                     };
                 }
-                
-                /*
-                 * 
-                 * @param {int} baseSubjectId - id da disciplina base
-                 * @param {int} subjectId - id da disciplina
-                 * @returns {array} - array do contentConfig com as questões da 
-                 *      disciplina especificada
-                 */
-                function getSubjectQuestions(baseSubjectId, subjectId) {
-                    if (contentConfig === null) {
-                        return [];
-                    }
-                    
-                    for (var i = 0; i < contentConfig.groups.length; ++i) {
-                        
-                        if (contentConfig.groups[i].id === baseSubjectId) {
-                            for (var j = 0; j < contentConfig.groups[i].subgroups.length; ++j) {
-                                
-                                // disciplina paralela
-                                if (Array.isArray(contentConfig.groups[i].subgroups[j])) {
-                                    for (var k = 0; k < contentConfig.groups[i].subgroups[j].length; ++k) {
-                                        
-                                        if (contentConfig.groups[i].subgroups[j][k].id === subjectId) {
-                                            return contentConfig.groups[i].subgroups[j][k].questions;
-                                        }
+            });
+            
+            /*
+             * 
+             * @param {int} baseSubjectId - id da disciplina base
+             * @param {int} subjectId - id da disciplina
+             * @returns {array} - array do contentConfig com as questões da 
+             *      disciplina especificada
+             */
+            var getSubjectQuestions = function(baseSubjectId, subjectId) {
+                if (contentConfig === null) {
+                    return [];
+                }
+
+                for (var i = 0; i < contentConfig.groups.length; ++i) {
+
+                    if (contentConfig.groups[i].id === baseSubjectId) {
+                        for (var j = 0; j < contentConfig.groups[i].subgroups.length; ++j) {
+
+                            // disciplina paralela
+                            if (Array.isArray(contentConfig.groups[i].subgroups[j])) {
+                                for (var k = 0; k < contentConfig.groups[i].subgroups[j].length; ++k) {
+
+                                    if (contentConfig.groups[i].subgroups[j][k].id === subjectId) {
+                                        return contentConfig.groups[i].subgroups[j][k].questions;
                                     }
-                                } else if (contentConfig.groups[i].subgroups[j].id === subjectId) {
-                                    return contentConfig.groups[i].subgroups[j].questions;
                                 }
+                            } else if (contentConfig.groups[i].subgroups[j].id === subjectId) {
+                                return contentConfig.groups[i].subgroups[j].questions;
                             }
                         }
                     }
+                }
 
-                    return [];
-                };
-            });
+                return [];
+            };
             
             /*
              *  Ao selecionar duas ou mais disciplinas e clicar no botão com a 

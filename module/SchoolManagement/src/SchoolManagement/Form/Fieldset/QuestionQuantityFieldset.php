@@ -41,6 +41,7 @@ class QuestionQuantityFieldset extends Fieldset implements InputFilterProviderIn
                 'data-old-value' => '',
                 'min' => 0,
                 'style' => 'width: 100%; color: black;',
+                'tabindex' => '1'
             ),
         ));
     }
