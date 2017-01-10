@@ -24,7 +24,6 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
          * 
          * {
          *       questionsStartAtNumber: <number>,
-         *       numberOfQuestions: <number>,
          *       groups: [
          *           {
          *               id: <number>,
@@ -106,97 +105,112 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
              *  
              */
             $("#exam-content-form").submit( function() {
-                var numberOfQuestions = 0;
-                var groups = [];
-
-                $('.base-subjects').each(function() {
-                    var baseSubjectId = +$(this).data('id');
-                    var subgroups = [];
-
-                    $(this).find('.subjects').each(function() {        
-                        if ($(this).hasClass('subject-done'))
-                            return;
-
-                        var subjectId = +$(this).data('id');
-                        var quantity = +$(this).find('.quantity-block > .amount-input').val();
-                        
-                        numberOfQuestions += quantity;
-                        
-                        var questions = [];
-                        if (contentConfig !== null) {
-                            questions = getSubjectQuestions(contentConfig, baseSubjectId, subjectId);
-                        }
-
-                        var subject = {
-                            id: subjectId,
-                            subgroupName: $(this).data('name'),
-                            singleColumn: $(this).hasClass('single-column-subject') ? true : false,                         
-                            numberOfProposedQuestions: quantity,
-                            questions: questions
-                        };
-
-                        if ($(this).hasClass('parallel-subject')) {
-                            var parallelGroup = [];
-
-                            parallelGroup.push(subject);
-                            $(this).addClass('subject-done');
-
-                            var group = +$(this).data('parallel-group');
-                            $(this).siblings('.parallel-group-' + group).each(function() {
-                                var subjectId = +$(this).data('id');
-                                var quantity = +$(this).find('.quantity-block > .amount-input').val();
-                                var questions = [];
-
-                                if (contentConfig !== null) {
-                                    questions = getSubjectQuestions(contentConfig, baseSubjectId, subjectId);
-                                }
-
-                                subject = {
-                                    id: +$(this).data('id'),
-                                    subgroupName: $(this).data('name'),
-                                    singleColumn: $(this).hasClass('single-column-subject') ? true : false,
-                                    numberOfProposedQuestions: quantity,
-                                    questions: questions
-                                };
-                                parallelGroup.push(subject);
-                                numberOfQuestions += quantity;
-
-                                $(this).addClass('subject-done');
-                            });
-
-                            subgroups.push(parallelGroup);
-                        } else {
-                            subgroups.push(subject);
-                        }
-                    });
-                    groups.push({
-                        id: $(this).data('id'),
-                        groupName: $(this).data('name'),
-                        subgroups: subgroups
-                    });
-                });  
-                
                 $('<input />').attr('type', 'hidden')
                     .attr('name', "contentJson")
-                    .attr('value', 
-                            JSON.stringify({
-                                questionsStartAtNumber: +$('#start-number').val(),
-                                numberOfQuestions: numberOfQuestions,
-                                groups: groups
-                            }))
+                    .attr('value', JSON.stringify(createContentJson()))
                     .appendTo('form');                
                 
                 return true;
                 
-                
-                function getSubjectQuestions(contentConfig, baseSubjectId, subjectId) {
-                    for (var i = 0; i < contentConfig.groups.length; ++i) {
-                        if (contentConfig.groups[i].id === baseSubjectId) {
+                /*
+                 * Gera o JSON do conteúdo a partir do DOM
+                 * 
+                 * @returns {object} - objeto representando o JSON do conteúdo
+                 */
+                function createContentJson() {
+                    var groups = [];
 
+                    $('.base-subjects').each(function() {
+                        var baseSubjectId = +$(this).data('id');
+                        var subgroups = [];
+
+                        $(this).find('.subjects').each(function() {        
+                            if ($(this).hasClass('subject-done')) {
+                                return;
+                            }
+
+                            var subject = extractSubjectInfo(baseSubjectId, $(this));
+
+                            if ($(this).hasClass('parallel-subject')) {
+                                var parallelGroup = [];
+                                var group = +$(this).data('parallel-group');
+                                
+                                $('.parallel-group-' + group).each(function() {
+                                    var subject = extractSubjectInfo(baseSubjectId, $(this));
+                                    
+                                    if (subject.numberOfProposedQuestions) {
+                                        parallelGroup.push(subject);
+                                    }
+
+                                    $(this).addClass('subject-done');
+                                });
+                                
+                                if (parallelGroup.length > 0) {
+                                    subgroups.push(parallelGroup);
+                                }
+                            } else if (subject.numberOfProposedQuestions > 0) {
+                                subgroups.push(subject);
+                            }
+                        });
+                        
+                        if (subgroups.length > 0) {
+                            groups.push({
+                                id: $(this).data('id'),
+                                groupName: $(this).data('name'),
+                                subgroups: subgroups
+                            });
+                        }
+                    });  
+                    
+                    return {
+                        questionsStartAtNumber: +$('#start-number').val(),
+                        groups: groups
+                    };
+                }
+                
+                /*
+                 * 
+                 * @param {int} baseSubjectId - id da disciplina base
+                 * @param {int} subjectBlock - id da disciplina
+                 * @returns {object} - objeto com informações sobre a disciplina 
+                 *      especificada
+                 */
+                function extractSubjectInfo(baseSubjectId, subjectBlock) {
+                    var subjectId = +subjectBlock.data('id');
+                    var quantity = +subjectBlock.find('.quantity-block > .amount-input').val();
+
+                    var questions = getSubjectQuestions(baseSubjectId, subjectId);
+
+                    return {
+                        id: subjectId,
+                        subgroupName: subjectBlock.data('name'),
+                        singleColumn: subjectBlock.hasClass('single-column-subject') ? true : false,                         
+                        numberOfProposedQuestions: quantity,
+                        questions: questions
+                    };
+                }
+                
+                /*
+                 * 
+                 * @param {int} baseSubjectId - id da disciplina base
+                 * @param {int} subjectId - id da disciplina
+                 * @returns {array} - array do contentConfig com as questões da 
+                 *      disciplina especificada
+                 */
+                function getSubjectQuestions(baseSubjectId, subjectId) {
+                    if (contentConfig === null) {
+                        return [];
+                    }
+                    
+                    for (var i = 0; i < contentConfig.groups.length; ++i) {
+                        
+                        if (contentConfig.groups[i].id === baseSubjectId) {
                             for (var j = 0; j < contentConfig.groups[i].subgroups.length; ++j) {
+                                
                                 // disciplina paralela
                                 if (Array.isArray(contentConfig.groups[i].subgroups[j])) {
                                     for (var k = 0; k < contentConfig.groups[i].subgroups[j].length; ++k) {
+                                        
                                         if (contentConfig.groups[i].subgroups[j][k].id === subjectId) {
                                             return contentConfig.groups[i].subgroups[j][k].questions;
                                         }
@@ -401,17 +415,23 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
          */
         initQuantities = function() {
             var QUESTIONS_PER_BASE_SUBJECT = 45;
-            var quantityIsDefined = ($('.base-subjects').find('.quantity-block').data('quantity') !== '') ? true : false;
             $('.base-subjects').each(function() {
                 var questionQuantity = parseInt(QUESTIONS_PER_BASE_SUBJECT / +$(this).find('.amount-input').length);
-                $(this).find('.amount-input').each(function() {
-                    if (quantityIsDefined) {
-                        $(this).val($(this).parents('.quantity-block').data('quantity'));
-                    } else {
-                        $(this).val(questionQuantity);
-                    }
+                $(this).find('.subjects').each(function() {
+                    setSubjectQuantity($(this), questionQuantity);                    
                 });
             });
+        };
+
+        /*
+         * Define o número de questões de uma disciplina
+         * 
+         * @param {object} subjectBlock - DOM Object que representa o bloco da 
+         *      disciplina cuja quantidade deve ser definida
+         * @param {int} quantity - quantidade de questões desta disciplina
+         */
+        var setSubjectQuantity = function(subjectBlock, quantity) {
+            subjectBlock.find('.amount-input').first().val(quantity);
         };
 
         /*
@@ -431,25 +451,6 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
         initSortable = function() {
             $('tbody').sortable();
             $('#all-base-subjects').sortable();                            
-        };
-        
-        /*
-         * Em caso de edição do conteúdo, certifica-se que discipinas paralelas 
-         * são exibidas abaixo do respectivo campo de "Discipinas paralelas ".
-         * 
-         */
-        initParallelSubjects = function(initSingleColumnSubjects) {
-            $('.cats-selected-row.parallel-flag').each(function() {
-                $(this).removeClass('parallel-flag');
-                // Essa condicional é necessária pois a classe pode ter sido
-                // removida, se a disciplina for paralela a anterior.
-                if (!$(this).hasClass('cats-selected-row')) 
-                    return;
-                
-                $(this).closest('.base-subjects')
-                        .find('.select-parallel-subjects')
-                        .click();
-            });
         };
         
         /*
@@ -486,21 +487,61 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
                     },
                     success: function (json){
                         contentConfig = JSON.parse(json.config);
+                        updateInterface();
+                        initQuestionAmount();
                     }                        
                 });  
+            } else {
+                initQuantities();
+                initQuestionAmount();
             }
-        }
+            
+            /*
+             * Atualiza a a interface com os dados do JSON, exibindo disciplinas 
+             * de coluna única, disciplinas paralelas, o número de questões de 
+             * cada disciplina e o número da primeira questão
+             * 
+             */
+            function updateInterface() {
+                $('#start-number').val(contentConfig.questionsStartAtNumber);
+                
+                for (var i = 0; i < contentConfig.groups.length; ++i) {
+                    for (var j = 0; j < contentConfig.groups[i].subgroups.length; ++j) {
+                        
+                        // disciplina paralela
+                        if (Array.isArray(contentConfig.groups[i].subgroups[j])) {
+                            for (var k = 0; k < contentConfig.groups[i].subgroups[j].length; ++k) {
+                                var quantity = contentConfig.groups[i].subgroups[j][k].numberOfProposedQuestions;
+                                var subjectBlock = $('#subject-' + contentConfig.groups[i].subgroups[j][k].id);
+                                
+                                subjectBlock.addClass('cats-selected-row');                                
+                                setSubjectQuantity(subjectBlock, quantity);
+                            }
+                            
+                            subjectBlock.closest('.base-subjects')
+                                    .find('.select-parallel-subjects')
+                                    .click();
+                        } else {
+                            var quantity = contentConfig.groups[i].subgroups[j].numberOfProposedQuestions;
+                            var subjectBlock = $('#subject-' + contentConfig.groups[i].subgroups[j].id);
+                            
+                            if (contentConfig.groups[i].subgroups[j].singleColumn) {
+                                subjectBlock.addClass('single-column-flag');
+                            }
+                            setSubjectQuantity(subjectBlock, quantity);
+                        }
+                    }
+                }
+                initSingleColumnSubjects();
+            }
+        };
         
 
         return {
             init: function () {
                 createContentListeners();
-                initQuantities();
-                initQuestionAmount();
-                initSortable();
-                initParallelSubjects();
-                initSingleColumnSubjects();
                 initContentConfig();
+                initSortable();
             } 
         };
 

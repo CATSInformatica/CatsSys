@@ -47,7 +47,6 @@ class ExamContent
      * Ex: 
      *  config = {
      *      questionsStartAtNumber: <number>,
-     *      numberOfQuestions: <number>,
      *      groups: [
      *          {
      *              id: <number>,

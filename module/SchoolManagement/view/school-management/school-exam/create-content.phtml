@@ -10,9 +10,9 @@
                 echo $this->render('exam_content_template', array(
                     'form' => $this->form,
                     'baseSubjects' => $this->baseSubjects,
+                    'editMode' => $this->editMode,
                     'subjectQuantities' => null,
                     'editAllowed' => $this->editAllowed,
-                    'editMode' => $this->editMode,
                 ));
             endif;
             ?>
