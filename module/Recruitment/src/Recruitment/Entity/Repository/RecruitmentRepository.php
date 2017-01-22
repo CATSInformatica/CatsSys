@@ -76,7 +76,12 @@ class RecruitmentRepository extends EntityRepository
      * @param \DateTime $date data de consulta
      * @return array|null
      */
-    public function findNotEndedByTypeAsArray($type, \DateTime $date) {
+    public function findNotEndedByTypeAsArray($type, \DateTime $date = null) {
+        
+        if($date == null) {
+            $date = new \DateTime();
+        }
+        
         $edate = clone $date;
         $edate->sub(new \DateInterval('P30D'));
         return $this->_em

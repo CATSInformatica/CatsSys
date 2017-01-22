@@ -21,16 +21,19 @@ namespace SchoolManagement\Controller;
 use Database\Controller\AbstractEntityActionController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject;
 use Exception;
 use SchoolManagement\Entity\Exam;
 use SchoolManagement\Entity\ExamApplication;
 use SchoolManagement\Entity\ExamContent;
-use SchoolManagement\Form\ExamForm;
-use SchoolManagement\Form\ExamContentForm;
-use SchoolManagement\Form\ExamApplicationForm;
 use SchoolManagement\Entity\ExamQuestion;
+use SchoolManagement\Form\ExamApplicationForm;
+use SchoolManagement\Form\ExamContentForm;
+use SchoolManagement\Form\ExamForm;
 use SchoolManagement\Form\ExamQuestionForm;
 use SchoolManagement\Form\SearchQuestionsForm;
+use SchoolManagement\Hydrator\Strategy\ExamAnswersStrategy;
+use SchoolManagement\Hydrator\Strategy\ExamContentStrategy;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -526,13 +529,19 @@ class SchoolExamController extends AbstractEntityActionController
             
             try {
                 $em = $this->getEntityManager();
-                
+
                 $examContent = $em->find('SchoolManagement\Entity\ExamContent', $contentId);
-
                 $editAllowed = $this->isExamContentEditable($examContent);
-                $contentJson = json_decode($examContent->getConfig(), true);
-
-                $form = new ExamContentForm($em, $contentJson['numberOfQuestions']);
+                
+                $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')
+                ->findBy(['parent' => null]);
+            
+                $numberOfQuantityFields = 0;
+                foreach ($baseSubjects as $baseSubject) {
+                    $numberOfQuantityFields += count($baseSubject->getChildren());
+                }
+                
+                $form = new ExamContentForm($em, $numberOfQuantityFields);
                 $form->bind($examContent);
                 $form->get('submit')->setAttribute('value', 'Editar Conteúdo');
                 
@@ -558,9 +567,8 @@ class SchoolExamController extends AbstractEntityActionController
                 return new ViewModel(array(
                     'message' => null,
                     'form' => $form,
+                    'baseSubjects' => $baseSubjects,
                     'contentId' => $contentId,
-                    'contentJson' => $contentJson,
-                    'editMode' => true,
                     'editAllowed' => $editAllowed,
                 ));
             } catch (Exception $ex) {
@@ -568,8 +576,6 @@ class SchoolExamController extends AbstractEntityActionController
                     'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                     'form' => null,
                     'contentId' => null,
-                    'contentJson' => null,
-                    'editMode' => true,
                     'editAllowed' => false
                 ));
             }
@@ -594,7 +600,7 @@ class SchoolExamController extends AbstractEntityActionController
                 break;
             }
         }
-        
+
         return $editAllowed;
     }
 
@@ -1108,5 +1114,75 @@ class SchoolExamController extends AbstractEntityActionController
         return new JsonModel(array(
             'message' => $message,
         ));
+    }
+
+    /**
+     * Retorna todas as provas associadas à applicação de prova $appId.
+     * 
+     * @return JsonModel
+     */
+    public function getExamsAction()
+    {
+        $appId = $this->params('id', false);
+
+        if ($appId) {
+
+            $em = $this->getEntityManager();
+
+            $app = $em->getReference('SchoolManagement\Entity\ExamApplication', $appId);
+            $exams = $em->getRepository('SchoolManagement\Entity\Exam')->findBy([
+                'application' => $app,
+            ]);
+
+            if ($exams) {
+                $hydrator = new DoctrineObject($em, false);
+                // força o carregamento do conteúdo do simulado
+                $hydrator->addStrategy('content', new ExamContentStrategy());
+                $hydrator->addStrategy('answers', new ExamAnswersStrategy());
+                $examArray = [];
+                foreach ($exams as $exam) {
+                    $examArray[] = $hydrator->extract($exam);
+                }
+                return new JsonModel($examArray);
+            }
+
+            return new JsonModel([
+            ]);
+        }
+        $this->getResponse()->setStatusCode(400);
+    }
+
+    public function getQuestionSubjectsAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
+            $em = $this->getEntityManager();
+            $subjects = [];
+
+            foreach ($data['questions'] as $id) {
+                $subjects[$id] = [];
+                $question = $em->getReference('SchoolManagement\Entity\ExamQuestion', $id);
+
+                $subject = $question->getSubject();
+
+                while ($subject !== null) {
+
+                    $subjects[$id][] = [
+                        'subjectId' => $subject->getSubjectId(),
+                        'subjectName' => $subject->getSubjectName(),
+                    ];
+
+                    $subject = $subject->getParent();
+                }
+
+                $subjects[$id] = array_reverse($subjects[$id]);
+            }
+
+            return new JsonModel($subjects);
+        }
+
+        $this->response()->setStatusCode(400);
     }
 }

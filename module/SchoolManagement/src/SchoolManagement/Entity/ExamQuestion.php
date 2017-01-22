@@ -2,9 +2,10 @@
 
 namespace SchoolManagement\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-use Doctrine\Common\Collections\Collection;
 use Doctrine\Common\Collections\ArrayCollection;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\Criteria;
+use Doctrine\ORM\Mapping as ORM;
 
 /**
  * Description of ExamQuestion
@@ -181,4 +182,44 @@ class ExamQuestion
         return $this->answerOptions->contains($answer);
     }
 
+    /**
+     * Retorna a resposta correta ou null caso seja uma questao aberta
+     * 
+     * @return null|ExamAnswer
+     */
+    public function getCorrectAnswerOption()
+    {
+
+        if ($this->examQuestionType === self::QUESTION_TYPE_CLOSED) {
+            $criteria = Criteria::create()
+                ->where(Criteria::expr()->eq("isCorrect", true))
+                ->setMaxResults(1);
+
+            $result = $this->answerOptions->matching($criteria);
+
+            return $result->toArray()[0];
+        }
+        
+        return null;
+    }
+    
+    /**
+     * Converte a resposta correta em uma letra. Caso nao exista uma resposta
+     * correta retorna null.
+     * 
+     * @return string|null
+     */
+    public function getConvertedCorrectAnswer()
+    {
+        $ascii = ord('A');
+        
+        foreach($this->answerOptions as $answer) {
+            if($answer->getIsCorrect()) {
+                return chr($ascii);
+            }
+            $ascii++;
+        }
+        
+        return null;
+    }
 }

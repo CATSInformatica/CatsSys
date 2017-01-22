@@ -38,7 +38,6 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          * 
          * {
          *       questionsStartAtNumber: <number>,
-         *       numberOfQuestions: <number>,
          *       groups: [
          *           {
          *               id: <number>,
@@ -208,9 +207,20 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                     var subjectInfo = topicInfo.closest('.subject-info');
                     
                     var addedQuestionsBlock = subjectInfo.find('.q-added').first();
-                    var amountOfQuestions = +addedQuestionsBlock.siblings('.q-amount').first().text();
-                    if (+addedQuestionsBlock.text() >= amountOfQuestions) {
+                    var amountOfQuestionsBlock = addedQuestionsBlock.siblings('.q-amount').first();
+                    if (+addedQuestionsBlock.text() >= +amountOfQuestionsBlock.text()) {
+                        $('#question-quantity-exceeded-alert').show();
+                        amountOfQuestionsBlock.parent().css("border", "2px solid red");
+                        
+                        setTimeout(function () {
+                            $('#question-quantity-exceeded-alert').fadeOut(600);
+                            amountOfQuestionsBlock.parent().css("border", "");
+                        }, 12000);
+                        
                         return false;
+                    } else {
+                        $('#question-quantity-exceeded-alert').hide();
+                        amountOfQuestionsBlock.parent().css("border", "");
                     }
                     
                     $(this).removeClass('cats-selected-row');
@@ -539,13 +549,12 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                     contentId: contentId
                 }
             }).done(function(response) {
+                var numberOfQuestions = 0;
                 contentConfig = JSON.parse(response.config);
                 var groups = contentConfig.groups;
                 
                 for (var i = 0; i < groups.length; ++i) {
-                    if (hasAssociatedQuestions(groups[i])) { 
-                        addBaseSubjectBlock(groups[i], divObj);
-                    }
+                    addBaseSubjectBlock(groups[i], divObj);
                     
                     for (var j = 0; j < groups[i].subgroups.length; ++j) {
                         var parallelSubject = false;
@@ -556,6 +565,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                             
                             for (var k = 0; k < groups[i].subgroups[j].length; ++k) {
                                 loadSubjecData(groups[i], groups[i].subgroups[j][k], parallelSubject);
+                                numberOfQuestions += groups[i].subgroups[j][k].numberOfProposedQuestions;
                             }
                         } else {
                             if (groups[i].subgroups[j].singleColumn && groups[i].subgroups[j].numberOfProposedQuestions > 0) {  
@@ -563,29 +573,13 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                             }  
                             
                             loadSubjecData(groups[i], groups[i].subgroups[j], parallelSubject);
+                            numberOfQuestions += groups[i].subgroups[j].numberOfProposedQuestions;
                         }
                     }
                 }
                 
-                $('#questions-count').text(contentConfig.numberOfQuestions);
+                $('#questions-count').text(numberOfQuestions);
             });
-            
-            /*
-             * Checa se pelo menos uma das disciplinas descendentes da 
-             * disciplina base, passada por parâmetro, possui questões
-             * 
-             * @param {object} baseSubject - objeto que representa a disciplina base no JSON 
-             *      do conteúdo
-             * @returns {Boolean}
-             */
-            function hasAssociatedQuestions(baseSubject) {
-                for (var i = 0; i < baseSubject.subgroups.length; ++i) {
-                    if (baseSubject.subgroups[i].numberOfProposedQuestions > 0) {
-                        return true;
-                    }
-                }
-                return false;
-            }
             
             /*
              * Carrega as questões dessa disciplina e, se na preparação de conteúdo,

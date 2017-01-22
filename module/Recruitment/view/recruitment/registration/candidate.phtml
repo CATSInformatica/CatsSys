@@ -209,6 +209,7 @@
                             $enrollment = $completed;
                         }
                     }
+
                     ?>
                     <!--
                         Os blocos: Confirmação; Pré-Entrevista; e Entrevista, contém
@@ -231,15 +232,13 @@
                                     <div class="inner">
                                         <h3>Inscrição</h3>
                                         <p>Realizada no dia <?php echo $inscriptionStatusTime ?></p>
+                                        <span>
+                                            <?php echo $recruitment->getSubscriptionDescription(); ?>
+                                        </span>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-edit"></i>
                                         1
-                                    </div>
-                                    <div class="small-box-footer">
-                                        <p>
-                                            <?php echo $recruitment->getSubscriptionDescription(); ?>
-                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -255,15 +254,13 @@
                                             echo "<p>Entre os dias " . $recruitment->getConfirmationStartDate() . ' e ' . $recruitment->getConfirmationEndDate() . "</p>";
                                         }
                                         ?>
+                                        <span>
+                                            <?php echo $recruitment->getConfirmationDescription(); ?>
+                                        </span>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-users"></i>
                                         2
-                                    </div>
-                                    <div class="small-box-footer">
-                                        <p>
-                                            <?php echo $recruitment->getConfirmationDescription(); ?>
-                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -274,15 +271,13 @@
                                     <div class="inner">
                                         <h3>Prova</h3>
                                         <p>Dia <?php echo $recruitment->getExamDate() ?></p>
+                                        <span>
+                                            <?php echo $recruitment->getExamDescription(); ?>
+                                        </span>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-file-text-o"></i>
                                         3
-                                    </div>
-                                    <div class="small-box-footer">
-                                        <p>
-                                            <?php echo $recruitment->getExamDescription(); ?>
-                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -292,17 +287,18 @@
                                     <div class="inner">
                                         <h3>Resultado da Prova</h3>
                                         <p>Dia <?php echo $recruitment->getExamResultDate() ?></p>
+                                        <span><?php echo $recruitment->getExamResultDescription(); ?></span>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-check-square-o"></i>
                                         4
                                     </div>
-
-                                    <div class="small-box-footer">
-                                        <p>
-                                            <?php echo $recruitment->getExamResultDescription(); ?>
-                                        </p>
-                                    </div>
+                                    <?php if ($examResult === $completed || $examResult === $summoned): ?>
+                                        <a class="small-box-footer" href="/recruitment/registration/exam-result">
+                                            <h4>Acessar Resultado <i class="fa fa-arrow-circle-right"></i>
+                                            </h4>
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                         </div>
@@ -318,16 +314,15 @@
                                         } else {
                                             echo "<p>Dia " . $recruitment->getPreInterviewStartDate() . "</p>";
                                         }
+
                                         ?>
+                                        <span>
+                                            <?php echo $recruitment->getPreInterviewDescription(); ?>
+                                        </span>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-files-o"></i>
                                         5
-                                    </div>
-                                    <div class="small-box-footer">
-                                        <p>
-                                            <?php echo $recruitment->getPreInterviewDescription(); ?>
-                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -343,16 +338,15 @@
                                         } else {
                                             echo "<p>Entre os dias " . $recruitment->getInterviewStartDate() . ' e ' . $recruitment->getInterviewEndDate() . "</p>";
                                         }
+
                                         ?>
+                                        <span>
+                                            <?php echo $recruitment->getInterviewDescription(); ?>
+                                        </span>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-commenting-o"></i>
                                         6
-                                    </div>
-                                    <div class="small-box-footer">
-                                        <p>
-                                            <?php echo $recruitment->getInterviewDescription(); ?>
-                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -363,15 +357,13 @@
                                     <div class="inner">
                                         <h3>Resultado Final </h3>
                                         <p>Dia <?php echo $recruitment->getResultDate() ?></p>
+                                        <span>
+                                            <?php echo $recruitment->getResultDescription(); ?>
+                                        </span>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa fa-gavel"></i>
                                         7
-                                    </div>
-                                    <div class="small-box-footer">
-                                        <p>
-                                            <?php echo $recruitment->getResultDescription(); ?>
-                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -380,15 +372,11 @@
                                     <div class="inner">
                                         <h3>Matrícula</h3>
                                         <p>Entre os dias <?php echo $recruitment->getEnrollmentStartDate() . ' e ' . $recruitment->getEnrollmentEndDate() ?></p>
+                                        <span><?php echo $recruitment->getEnrollmentDescription(); ?></span>
                                     </div>
                                     <div class="icon">
                                         <i class="fa fa-user"></i>
                                         8
-                                    </div>
-                                    <div class="small-box-footer">
-                                        <p>
-                                            <?php echo $recruitment->getEnrollmentDescription(); ?>
-                                        </p>
                                     </div>
                                 </div>
                             </div>
@@ -399,22 +387,23 @@
                         <?php if ($this->form !== null): ?>
                             <?php $form->prepare(); ?>
                             <div class="row">
-                                <div class="col-xs-12 col-md-10 col-md-offset-1"
-                                <?php echo $this->form()->openTag($form); ?>
-                                <?php
-                                $registration = $form->get('registration');
-                                $person = $registration->get('person');
-                                echo $this->partial('person/template', array(
-                                    'form' => $person,
-                                ));
-                                echo $this->partial('disclosure/template', array(
-                                    'form' => $registration,
-                                ));
-                                ?>
+                                <div class="col-xs-12 col-md-10 col-md-offset-1">
+                                    <?php echo $this->form()->openTag($form); ?>
+                                    <?php
+                                    $registration = $form->get('registration');
+                                    $person = $registration->get('person');
+                                    echo $this->partial('person/template', array(
+                                        'form' => $person,
+                                    ));
+                                    echo $this->partial('disclosure/template', array(
+                                        'form' => $registration,
+                                    ));
 
-                                     <?php echo $this->formHidden($form->get('registrationCsrf')); ?>
+                                    ?>
 
-                                     <div class="col-xs-12 col-md-12">
+                                    <?php echo $this->formHidden($form->get('registrationCsrf')); ?>
+
+                                    <div class="col-xs-12 col-md-12">
                                         <div class="form-group">
                                             <?php echo $this->formRow($form->get('registrationConsent')->setAttribute('checked', true)); ?>
                                         </div>

@@ -15,7 +15,7 @@ class EnrollmentRepository extends EntityRepository
     public function findAllCurrentStudents($params)
     {
         return $this->_em
-                ->createQuery('SELECT e.enrollmentId, p.personFirstName, p.personLastName '
+                ->createQuery('SELECT e.enrollmentId, p.personFirstName, p.personLastName, r.registrationId '
                     . 'FROM SchoolManagement\Entity\Enrollment e '
                     . 'JOIN e.registration r '
                     . 'JOIN r.person p '

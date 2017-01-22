@@ -20,3 +20,9 @@ INSERT INTO `registration_status` VALUES
 (2,2,1,'2016-06-12 14:01:25',0),
 (3,1,13,'2016-06-12 14:03:01',1),
 (4,2,12,'2016-06-12 14:03:11',1);
+
+LOCK TABLES `resource` WRITE;
+INSERT INTO `resource` VALUES 
+(NULL,'SchoolManagement\\Controller\\SchoolExamResult')
+;
+UNLOCK TABLES;
