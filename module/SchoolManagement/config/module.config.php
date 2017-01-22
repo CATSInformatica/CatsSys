@@ -638,33 +638,69 @@ return array(
                         'icon' => 'fa fa-file-text-o',
                     ],
                     [
-                        'label' => 'Upload answers template',
+                        'label' => 'Answers template',
                         'route' => 'school-management/school-exam-result',
-                        'action' => 'upload-answers-template',
-                        'icon' => 'fa fa-cloud-upload',
-                    ],
-                    [
-                        'label' => 'Upload answers (class)',
-                        'route' => 'school-management/school-exam-result',
-                        'action' => 'upload-answers-by-class',
+                        'action' => 'answers-template',
                         'icon' => 'fa fa-cloud-upload',
                         'toolbar' => [
                             [
-                                'url' => '/school-management/school-exam-result/save-student-answers',
+                                'url' => '/school-management/school-exam-result/save-template',
                                 'title' => 'Salvar',
-                                'id' => 'save-student-answers',
-                                'description' => 'Salva as respostas dos alunos selecionados',
+                                'id' => 'save-template',
+                                'description' => 'Salva o gabrito da prova selecionada',
                                 'class' => 'fa fa-hdd-o bg-green',
                                 'fntype' => 'ajaxPostClick',
                             ]
                         ],
                     ],
 //                    [
-//                        'label' => 'Upload answers (std rec)',
+//                        'label' => 'Upload answers (class)',
 //                        'route' => 'school-management/school-exam-result',
-//                        'action' => 'upload-answers-by-std-recruitment',
+//                        'action' => 'upload-answers-by-class',
 //                        'icon' => 'fa fa-cloud-upload',
+//                        'toolbar' => [
+//                            [
+//                                'url' => '/school-management/school-exam-result/save-student-answers',
+//                                'title' => 'Salvar',
+//                                'id' => 'save-student-answers',
+//                                'description' => 'Salva as respostas dos alunos selecionados',
+//                                'class' => 'fa fa-hdd-o bg-green',
+//                                'fntype' => 'ajaxPostClick',
+//                            ]
+//                        ],
 //                    ],
+                    [
+                        'label' => 'Upload answers (rec)',
+                        'route' => 'school-management/school-exam-result',
+                        'action' => 'upload-answers-by-std-recruitment',
+                        'icon' => 'fa fa-cloud-upload',
+                        'toolbar' => [
+                            [
+                                'url' => '/school-management/school-exam-result/save-answers',
+                                'title' => 'Salvar',
+                                'id' => 'save-answers',
+                                'description' => 'Salva as respostas dos alunos/candidatos selecionados',
+                                'class' => 'fa fa-hdd-o bg-green',
+                                'fntype' => 'ajaxPostClick',
+                            ]
+                        ],
+                    ],
+                    [
+                        'label' => 'Exam application result',
+                        'route' => 'school-management/school-exam-result',
+                        'action' => 'result',
+                        'icon' => 'fa fa-cloud-upload',
+                        'toolbar' => [
+                            [
+                                'url' => '/school-management/school-exam-result/save-result',
+                                'title' => 'Salvar Resultado',
+                                'id' => 'save-result',
+                                'description' => 'Salva o resultado da aplicação de prova',
+                                'class' => 'fa fa-hdd-o bg-green',
+                                'fntype' => 'ajaxPostClick',
+                            ]
+                        ],
+                    ],
                 ],
             ],
             array(

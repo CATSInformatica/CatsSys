@@ -31,11 +31,12 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <div class="col-md-10 col-md-offset-1 col-xs-12">
+                <div class="col-md-10 col-md-offset-1 col-xs-12 table-responsive">
                     <table id="exams-table" class="table table-striped table-bordered table-condensed">
                         <thead>
                             <tr>
-                                <th></th>
+                                <th class="details-control"></th>
+                                <th class='text-center'>#</th>
                                 <th class='text-center'>Prova</th>
                                 <th class='text-center'>Data</th>
                                 <th class='text-center'>Horário de Início</th>
@@ -54,7 +55,7 @@
 
 <script>
     appConfig = (function () {
-        var scriptSrc = 'app/pages/school-management/exam/UploadAnswersTemplate';
+        var scriptSrc = 'app/pages/school-management/exam/AnswersTemplate';
         return {
             getScriptSrc: function () {
                 return scriptSrc;

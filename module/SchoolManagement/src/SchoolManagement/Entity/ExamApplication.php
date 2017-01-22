@@ -57,6 +57,14 @@ class ExamApplication
      */
     private $exams;
     
+    /**
+     *
+     * @var Recruitment\Entity\Recruitment
+     * @ORM\OneToOne(targetEntity="Recruitment\Entity\Recruitment")
+     * @ORM\JoinColumn(name="recruitment_id", referencedColumnName="recruitment_id", nullable=true)
+     */
+    private $recruitment;
+    
     const EXAM_APP_CREATED = 'Criado';
     const EXAM_APP_APPLIED = 'Aplicado';
     
@@ -101,6 +109,11 @@ class ExamApplication
     {
         return $this->exams;
     }
+    
+    public function getRecruitment()
+    {
+        return $this->recruitment;
+    }
 
     /**
      * @param string $name
@@ -119,6 +132,12 @@ class ExamApplication
     public function setExams(ArrayCollection $exams)
     {
         $this->exams = $exams;
+        return $this;
+    }
+    
+    public function setRecruitment($recruitment = null)
+    {        
+        $this->recruitment = $recruitment;
         return $this;
     }
 

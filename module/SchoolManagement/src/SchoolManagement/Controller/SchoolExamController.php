@@ -32,6 +32,7 @@ use SchoolManagement\Form\ExamContentForm;
 use SchoolManagement\Form\ExamForm;
 use SchoolManagement\Form\ExamQuestionForm;
 use SchoolManagement\Form\SearchQuestionsForm;
+use SchoolManagement\Hydrator\Strategy\ExamAnswersStrategy;
 use SchoolManagement\Hydrator\Strategy\ExamContentStrategy;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -1137,6 +1138,7 @@ class SchoolExamController extends AbstractEntityActionController
                 $hydrator = new DoctrineObject($em, false);
                 // força o carregamento do conteúdo do simulado
                 $hydrator->addStrategy('content', new ExamContentStrategy());
+                $hydrator->addStrategy('answers', new ExamAnswersStrategy());
                 $examArray = [];
                 foreach ($exams as $exam) {
                     $examArray[] = $hydrator->extract($exam);

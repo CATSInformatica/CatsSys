@@ -21,36 +21,26 @@ namespace SchoolManagement\Entity;
 use Doctrine\ORM\Mapping as ORM;
 
 /**
- * Description of ApplicationResult
  *
- * @ORM\Table(name="exam_application_result", 
+ * @ORM\Table(name="exam_result", 
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="enrollment_application_unique", columns={"enrollment_id", "exam_application_id"}),
- *          @ORM\UniqueConstraint(name="registration_application_unique", columns={"registration_id", "exam_application_id"})
+ *          @ORM\UniqueConstraint(name="registration_exam_unique", columns={"registration_id", "exam_id"})
  *      }
  * )
  * @ORM\Entity
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class ApplicationResult
+class ExamResult
 {
 
     /**
      *
      * @var int
-     * @ORM\Column(name="exam_application_result_id", type="integer", nullable=false)
+     * @ORM\Column(name="exam_result_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
      */
     private $resultId;
-
-    /**
-     *
-     * @var Enrollment
-     * @ORM\ManyToOne(targetEntity="Enrollment")
-     * @ORM\JoinColumn(name="enrollment_id", referencedColumnName="enrollment_id", nullable=true)
-     */
-    private $enrollment;
 
     /**
      *
@@ -63,17 +53,17 @@ class ApplicationResult
     /**
      *
      * @var string
-     * @ORM\Column(name="exam_application_result_answers", type="string", length=1000, nullable=false)
+     * @ORM\Column(name="exam_application_result_answers", type="string", length=2000, nullable=false)
      */
     private $answers;
 
     /**
      * 
-     * @var ExamApplication
-     * @ORM\ManyToOne(targetEntity="ExamApplication")
-     * @ORM\JoinColumn(name="exam_application_id", referencedColumnName="exam_application_id", nullable=false)
+     * @var Exam
+     * @ORM\ManyToOne(targetEntity="Exam")
+     * @ORM\JoinColumn(name="exam_id", referencedColumnName="exam_id", nullable=false)
      */
-    private $application;
+    private $exam;
 
     public function __construct()
     {
@@ -83,11 +73,6 @@ class ApplicationResult
     public function getResultId()
     {
         return $this->resultId;
-    }
-
-    public function getEnrollment()
-    {
-        return $this->enrollment;
     }
 
     public function getRegistration()
@@ -100,15 +85,9 @@ class ApplicationResult
         return $this->answers;
     }
 
-    public function getApplication()
+    public function getExam()
     {
-        return $this->application;
-    }
-
-    public function setEnrollment($enrollment)
-    {
-        $this->enrollment = $enrollment;
-        return $this;
+        return $this->exam;
     }
 
     public function setRegistration($registration)
@@ -123,9 +102,9 @@ class ApplicationResult
         return $this;
     }
 
-    public function setApplication($application)
+    public function setExam($exam)
     {
-        $this->application = $application;
+        $this->exam = $exam;
         return $this;
     }
 }

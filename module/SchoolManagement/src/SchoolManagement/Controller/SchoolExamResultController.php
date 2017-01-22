@@ -20,9 +20,12 @@ namespace SchoolManagement\Controller;
 
 use Database\Controller\AbstractEntityActionController;
 use DateTime;
+use Doctrine\Common\Persistence\ObjectManager;
 use Exception;
-use SchoolManagement\Entity\ApplicationResult;
+use Recruitment\Entity\Recruitment;
 use SchoolManagement\Entity\ExamApplication;
+use SchoolManagement\Entity\ExamApplicationResult;
+use SchoolManagement\Entity\ExamResult;
 use Zend\Json\Json;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
@@ -97,23 +100,45 @@ class SchoolExamResultController extends AbstractEntityActionController
             ]);
         }
     }
-    /**
-     * Salva as respostas dos candidatos em uma prova de uma aplicação de psa.
-     * 
-     * @return \SchoolManagement\Controller\JsonModel
-     */
-//    public function uploadAnswersByStdRecruitmentAction()
-//    {
-//        return new ViewModel([
-//        ]);
-//    }
 
     /**
-     * Salva as respostas dos alunos em uma prova de uma aplicação de simulados.
+     * Salva as respostas dos candidatos de vestibulinhos.
      * 
      * @return \SchoolManagement\Controller\JsonModel
      */
-    public function saveStudentAnswersAction()
+    public function uploadAnswersByStdRecruitmentAction()
+    {
+        try {
+
+            $em = $this->getEntityManager();
+
+            $recruitments = $em->getRepository('Recruitment\Entity\Recruitment')->findBy([
+                'recruitmentType' => Recruitment::STUDENT_RECRUITMENT_TYPE
+                ], [
+                'recruitmentId' => 'desc'
+            ]);
+
+            $applications = $em->getRepository('SchoolManagement\Entity\ExamApplication')
+                ->findBy([
+                'status' => ExamApplication::EXAM_APP_CREATED
+                ], [
+                'examApplicationId' => 'desc',
+            ]);
+
+            return new ViewModel([
+                'recruitments' => $recruitments,
+                'apps' => $applications,
+                'message' => null,
+            ]);
+        } catch (Exception $ex) {
+            return new ViewModel([
+                'message' => $ex->getMessage(),
+                'classes' => null,
+            ]);
+        }
+    }
+
+    public function saveAnswersAction()
     {
         $request = $this->getRequest();
 
@@ -122,27 +147,28 @@ class SchoolExamResultController extends AbstractEntityActionController
             try {
 
                 $em = $this->getEntityManager();
-                $application = $em->getReference('SchoolManagement\Entity\ExamApplication', $data['application']);
+                $exam = $em->getReference('SchoolManagement\Entity\Exam', $data['exam']);
 
-                foreach ($data['students'] as $st) {
+                foreach ($data['individuals'] as $c) {
 
-                    $enrollment = $em->getReference('SchoolManagement\Entity\Enrollment', $st['enrollment']);
+                    $registration = $em->getReference('Recruitment\Entity\Registration', $c['registration']);
                     $encodedAnswers = Json::encode([
-                            'answers' => $st['answers'],
-                            'languageOption' => $st['languageOption'],
+                            'answers' => $c['answers'],
+                            'parallels' => $c['parallels'],
                     ]);
 
-                    $answerEntity = $em->getRepository('SchoolManagement\Entity\ApplicationResult')->findOneBy([
-                        'enrollment' => $enrollment->getEnrollmentId(),
-                        'application' => $application->getExamApplicationId(),
+                    $answerEntity = $em->getRepository('SchoolManagement\Entity\ExamResult')->findOneBy([
+                        'registration' => $c['registration'],
+                        'exam' => $data['exam'],
                     ]);
 
                     if ($answerEntity === null) {
-                        $answerEntity = new ApplicationResult();
+                        $answerEntity = new ExamResult();
                         $answerEntity
-                            ->setApplication($application)
-                            ->setEnrollment($enrollment);
+                            ->setExam($exam)
+                            ->setRegistration($registration);
                     }
+
                     $answerEntity->setAnswers($encodedAnswers);
                     $em->persist($answerEntity);
                 }
@@ -161,12 +187,38 @@ class SchoolExamResultController extends AbstractEntityActionController
         }
     }
 
+    public function getAnswersAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
+            if (!empty($data)) {
+
+                $em = $this->getEntityManager();
+                $examResult = $em->getRepository('SchoolManagement\Entity\ExamResult')->findOneBy([
+                    'registration' => $data['registration'],
+                    'exam' => $data['exam']
+                ]);
+
+                $answers = null;
+                if ($examResult) {
+                    $answers = Json::decode($examResult->getAnswers());
+                }
+
+                return new JsonModel([
+                    'examAnswers' => $answers,
+                ]);
+            }
+        }
+    }
+
     /**
      * Lista todas as aplicações de prova para escolha.
      * 
      * @return ViewModel
      */
-    public function uploadAnswersTemplateAction()
+    public function answersTemplateAction()
     {
 
         $em = $this->getEntityManager();
@@ -187,7 +239,7 @@ class SchoolExamResultController extends AbstractEntityActionController
      * Busca todas as respostas da prova $id;
      * @throws Exception
      */
-    public function getAnswersAction()
+    public function getTemplateAnswersAction()
     {
         $id = $this->params('id', false);
 
@@ -197,16 +249,261 @@ class SchoolExamResultController extends AbstractEntityActionController
                 $em = $this->getEntityManager();
 
                 $exam = $em->find('SchoolManagement\Entity\Exam', $id);
-                $answers = Json::decode($exam
+                $config = Json::decode($exam
                             ->getContent()
-                            ->getConfig());
+                            ->getConfig(), Json::TYPE_ARRAY);
+                $ansJson = $exam->getAnswers();
 
-                return new JsonModel([$answers]);
+                $answers = !empty($ansJson) ? Json::decode($exam->getAnswers()) : null;
+
+                foreach ($config['groups'] as &$group) {
+                    foreach ($group['subgroups'] as &$subgroup) {
+                        if (key_exists('id', $subgroup)) {
+                            $this->fillAnswers($em, $subgroup);
+                        } else {
+                            foreach ($subgroup as &$psubgroup) {
+                                $this->fillAnswers($em, $psubgroup);
+                            }
+                        }
+                    }
+                }
+
+                return new JsonModel([
+                    'answers' => $answers,
+                    'config' => $config
+                ]);
             } catch (\Exception $ex) {
                 $this->getResponse()->setStatusCode(400);
             }
         }
 
         $this->getResponse()->setStatusCode(400);
+    }
+
+    public function saveTemplateAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $data = (array) $request->getPost();
+
+            if (!empty($data['templates'])) {
+
+                $message = "";
+
+                $em = $this->getEntityManager();
+
+                foreach ($data['templates'] as $exam) {
+
+                    if (empty($exam['template'])) {
+                        $message .= "Prova " . $exam['id'] . ": Gabarito vazio.<br>";
+                        continue;
+                    }
+
+                    $message .= "Prova " . $exam['id'] . " Gabarito salvo com sucesso<br>";
+
+                    $e = $em->getReference('SchoolManagement\Entity\Exam', $exam['id']);
+                    $e->setAnswers(Json::encode($exam['template']));
+                    $em->merge($e);
+                }
+
+                $em->flush();
+
+                return new JsonModel([
+                    'message' => $message,
+                ]);
+            }
+            return new JsonModel([
+                'message' => 'Para salvar gabaritos é necessário selecionar ao menos uma prova',
+            ]);
+        }
+
+        $this->getResponse()->setStatusCode(403);
+    }
+
+    public function resultAction()
+    {
+        try {
+
+
+            $em = $this->getEntityManager();
+
+            $applications = $em->getRepository('SchoolManagement\Entity\ExamApplication')
+                ->findBy([
+                'status' => ExamApplication::EXAM_APP_CREATED
+                ], [
+                'examApplicationId' => 'desc',
+            ]);
+
+            $lastRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')->findNotEndedByTypeAsArray(Recruitment::STUDENT_RECRUITMENT_TYPE);
+
+            $rec = [
+                'id' => $lastRecruitment['recruitmentId'],
+                'desc' => Recruitment::formatName($lastRecruitment['recruitmentNumber'], $lastRecruitment['recruitmentYear'])
+            ];
+
+            return new ViewModel([
+                'apps' => $applications,
+                'rec' => $rec
+            ]);
+        } catch (\Thrownable $ex) {
+            die($ex->getMessage());
+        }
+    }
+
+    private function fillAnswers(ObjectManager $em, &$subgroup)
+    {
+        foreach ($subgroup['questions'] as &$question) {
+            $question['answer'] = $em
+                ->find('SchoolManagement\Entity\ExamQuestion', $question['id'])
+                ->getConvertedCorrectAnswer();
+        }
+    }
+
+    public function getAllAnswersAction()
+    {
+        try {
+
+            $examId = $this->params('id', false);
+
+            if ($examId) {
+
+                $em = $this->getEntityManager();
+                $examAnswers = $em->getRepository('SchoolManagement\Entity\ExamResult')->findBy([
+                    'exam' => $examId
+                ]);
+
+                $answers = [];
+
+                foreach ($examAnswers as $ea) {
+                    $registration = $ea->getRegistration();
+                    $person = $registration->getPerson();
+                    $status = $registration->getCurrentRegistrationStatus()->getRecruitmentStatus()->getStatusType();
+                    $answers[] = [
+                        'registrationId' => $registration->getRegistrationId(),
+                        'registrationNumber' => $registration->getRegistrationNumber(),
+                        'currentStatus' => $status,
+                        'enrollment' => null,
+                        'answers' => Json::decode($ea->getAnswers()),
+                        'birth' => $person->getPersonBirthday(),
+                    ];
+                }
+
+                return new JsonModel([
+                    'examId' => $examId,
+                    'answers' => $answers
+                ]);
+            }
+        } catch (\Exception $ex) {
+            
+        }
+
+
+        return [];
+    }
+
+    public function saveResultAction()
+    {
+        $request = $this->getRequest();
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
+
+            if (!empty($data['results']) && !empty($data['application']) && !empty($data['recruitment'])) {
+
+                try {
+
+                    $em = $this->getEntityManager();
+
+                    $app = $em->getReference('SchoolManagement\Entity\ExamApplication', $data['application']);
+                    
+                    $rec = $em->getReference('Recruitment\Entity\Recruitment', $data['recruitment']);
+                    $app->setRecruitment($rec);
+                    
+
+                    foreach ($data['results'] as $result) {
+
+                        $appResult = $em->getRepository('SchoolManagement\Entity\ExamApplicationResult')->findOneBy([
+                            'application' => $data['application'],
+                            'registration' => $result['registrationId']
+                        ]);
+
+                        if ($appResult === null) {
+
+                            $reg = $em->getReference('Recruitment\Entity\Registration', $result['registrationId']);
+                            $appResult = new ExamApplicationResult();
+
+                            $appResult
+                                ->setApplication($app)
+                                ->setRegistration($reg)
+                                ->setResult(Json::encode([
+                                        'partialResult' => $result['partialResult'],
+                                        'result' => $result['result'],
+                                        'groups' => $result['groups'],
+                                        'position' => $result['position']
+                            ]));
+                        } else {
+                            $appResult->setResult(Json::encode([
+                                    'partialResult' => $result['partialResult'],
+                                    'result' => $result['result'],
+                                    'groups' => $result['groups'],
+                                    'position' => $result['position']
+                            ]));
+                        }
+
+                        $em->persist($appResult);
+                    }
+                    
+                    $em->persist($app);
+
+                    $em->flush();
+
+                    return new JsonModel([
+                        'message' => 'Resultado salvo com sucesso'
+                    ]);
+                } catch (\Exception $ex) {
+                    return new JsonModel([
+                        'message' => 'Erro: ' . $ex->getMessage()
+                    ]);
+                }
+            }
+            return new JsonModel([
+                'message' => 'Requisição sem dados',
+            ]);
+        }
+    }
+
+    public function getResultAction()
+    {
+        $id = $this->params('id', false);
+
+        if ($id) {
+
+            $em = $this->getEntityManager();
+
+            $appResults = $em->getRepository('SchoolManagement\Entity\ExamApplicationResult')->findBy([
+                'application' => $id,
+            ]);
+
+            $results = [];
+            foreach ($appResults as $res) {
+
+                $reg = $res->getRegistration();
+                $r = Json::decode($res->getResult(), Json::TYPE_ARRAY);
+                $status = $reg->getCurrentRegistrationStatus()->getRecruitmentStatus()->getStatusType();
+
+                $results[] = [
+                    'registrationId' => $reg->getRegistrationId(),
+                    'registrationNumber' => $reg->getRegistrationNumber(),
+                    'partialResult' => $r['partialResult'],
+                    'currentStatus' => $status,
+                    'result' => $r['result'],
+                    'groups' => $r['groups'],
+                    'position' => $r['position']
+                ];
+            }
+
+            return new JsonModel($results);
+        }
     }
 }

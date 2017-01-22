@@ -19,7 +19,6 @@
 namespace Recruitment\Controller;
 
 use Database\Controller\AbstractEntityActionController;
-use DateInterval;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use Recruitment\Entity\Recruitment;
