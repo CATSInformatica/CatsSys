@@ -8,6 +8,7 @@
         echo $this->headMeta()
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
             ->appendHttpEquiv('X-UA-Compatible', 'IE=edge')
+
         ?>
 
         <!-- Le styles -->
@@ -15,7 +16,7 @@
         echo $this->headLink(array(
                 'rel' => 'shortcut icon',
                 'type' => 'image/vnd.microsoft.icon',
-                'href' => $this->basePath() . '/img/favicon.ico'))
+                'href' => $this->basePath('/img/favicon.ico')))
             // Bootstrap
             ->appendStylesheet($this->basePath('vendor/AdminLTE/bootstrap/css/bootstrap.min.css'))
             // DataTable
@@ -33,6 +34,7 @@
             // Pace for ajax loading
             ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/pace/pace.min.css'))
             ->appendStylesheet($this->basePath('css/app.css'));
+
         ?>
 
     </head>
@@ -74,6 +76,7 @@
                                 $userInfo = $this->userInfo();
                                 $userActiveRole = ucwords($userInfo['activeRole']);
                                 $userRoles = $userInfo['allRoles'];
+
                                 ?>
                                 <ul class="dropdown-menu">
                                     <!-- User image -->
@@ -89,10 +92,12 @@
                                     <li class="user-body">
                                         <?php
                                         foreach ($userInfo['allRoles'] as $userRole):
+
                                             ?>
                                             <?php
                                             $userRole = ucwords($userRole);
                                             if ($userRole != $userActiveRole):
+
                                                 ?>
                                                 <div class="col-xs-3 text-center">
                                                     <a href="#"><i class="fa fa-fw fa-user"></i> <span class='role'><?php echo $userRole ?></span> </a>
@@ -109,6 +114,7 @@
                                         <div class="pull-right">
                                             <a href="<?php
                                             echo $this->url('authentication/login', array('action' => 'logout'));
+
                                             ?>"  class="btn btn-default btn-flat">
                                                 <i class="fa fa-fw fa-power-off"></i>Sair </a>
                                         </div>
@@ -136,6 +142,7 @@
                         ->menu()
                         ->setUlClass('sidebar-menu')
                         ->setPartial('menu/template');
+
                     ?>
                     <!-- /.Sidebar Menu Items -->
                 </section>
@@ -151,6 +158,7 @@
                         ->breadcrumbs()
                         ->setMinDepth(0)
                         ->setPartial('header/template');
+
                     ?>
                 </section>
                 <?php echo $this->content; ?>
@@ -171,14 +179,13 @@
                 <div class="tab-content">
                     <!-- Home tab content -->
                     <div class="tab-pane active" id="control-sidebar-toolbar-tab">
-
                         <?php
                         echo $this->navigation('navigation')
                             ->menu()
                             ->setUlClass('system-toolbar')
                             ->setPartial('toolbar/template');
-                        ?>
 
+                        ?>
                     </div>
                 </div>
             </aside>
@@ -186,92 +193,8 @@
             <!-- Add the sidebar's background. This div must be placed
             immediately after the control sidebar -->
             <div class="control-sidebar-bg"></div>
-
         </div>
-
         <script data-main="/js/config" src="/vendor/requirejs/require.js" ></script>
-        <script>
-            require(['config'], function () {
-
-                // for file inputs
-                $(document).on('change', '.btn-file :file', function () {
-                    var input = $(this),
-                            numFiles = input.get(0).files ? input.get(0).files.length : 1,
-                            label = input.val().replace(/\\/g, '/').replace(/.*\//, '');
-                    input.trigger('fileselect', [numFiles, label]);
-                });
-
-                $('.btn-file :file').on('fileselect', function (event, numFiles, label) {
-                    $(this).siblings('.btn-file-name').text(label);
-                });
-
-                // change user active role
-                $(function () {
-
-                    // show footer
-                    $(".main-footer").toggle("slide");
-
-                    //                $('.role').on('click', function () {
-                    //                    var role = $(this);
-                    //                    var jsonRole = JSON.stringify({
-                    //                        'role': role.text().toLowerCase()
-                    //                    });
-                    //                    $.ajax({
-                    //                        url: '/authorization/role/changeActiveUserRole',
-                    //                        type: 'POST',
-                    //                        dataType: 'json',
-                    //                        async: true,
-                    //                        data: jsonRole,
-                    //                        success: function (msg) {
-                    //
-                    //                            // change role in menu
-                    //                            if (msg.success) {
-                    //                                var newActiveRole = role.text();
-                    //                                role.text($('.active-role').text());
-                    //                                $('.active-role').text(newActiveRole);
-                    //                            }
-                    //
-                    //                            console.log(msg);
-                    //                        },
-                    //                        error: function (msg) {
-                    //                            console.log(msg);
-                    //                        }
-                    //                    });
-                    //                });
-
-                    require(['app/models/Main', 'pace'], function (Main) {
-
-                        $(document).ajaxStart(function () {
-                            Pace.restart();
-                        });
-
-                        var config = {
-                            toolbarElement: '.system-toolbar',
-                            toolbarItem: 'li',
-                            toolbarSelectedItem: '.cats-selected-row',
-                            toolbarContainer: '.control-sidebar',
-                            toolbarContainerOpen: 'control-sidebar-open'
-                        };
-
-                        if (typeof appConfig !== 'undefined') {
-                            require([appConfig.getScriptSrc()], function (pageScript) {
-                                Main.setPageConfig(pageScript);
-                                pageScript.init();
-                            });
-                        }
-
-                        // deprecated
-                        if (typeof standardConfig !== 'undefined') {
-                            standardConfig.init();
-                        }
-
-                        Main.setConfig(config);
-                        Main.init();
-                    });
-
-                });
-            });
-        </script>
     </body>
 </div>
 </html>

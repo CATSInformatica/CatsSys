@@ -416,6 +416,16 @@ return array(
                                 'resource' => 'Recruitment\Controller\Registration',
                                 'privilege' => 'candidate',
                                 'icon' => 'fa fa-user',
+                                'pages' => [
+                                    [
+                                        'label' => 'Resultado da Prova',
+                                        'route' => 'recruitment/registration',
+                                        'action' => 'exam-result',
+                                        'resource' => 'Recruitment\Controller\Registration',
+                                        'privilege' => 'exam-result',
+                                        'icon' => 'fa fa-file-o',
+                                    ]
+                                ],
                             ]
                         ],
                     ),

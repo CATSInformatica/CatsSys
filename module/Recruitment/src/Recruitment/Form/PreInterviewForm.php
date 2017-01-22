@@ -21,6 +21,9 @@ use Zend\InputFilter\InputFilterProviderInterface;
  */
 class PreInterviewForm extends Form implements InputFilterProviderInterface
 {
+    
+    private $isPreInterviewConsentRequired;
+    
 
     public function __construct(ObjectManager $obj, $options = null)
     {
@@ -46,6 +49,8 @@ class PreInterviewForm extends Form implements InputFilterProviderInterface
                 'unchecked_value' => false,
             ]
         ]);
+        
+        $this->isPreInterviewConsentRequired = empty($options['pre_interview']) ? false : $options['pre_interview'];
 
         $this->add(array(
             'name' => 'submit',
@@ -61,7 +66,7 @@ class PreInterviewForm extends Form implements InputFilterProviderInterface
     {
         return [
             'preInterviewConsent' => [
-                'required' => true,
+                'required' => $this->isPreInterviewConsentRequired,
             ]
         ];
     }

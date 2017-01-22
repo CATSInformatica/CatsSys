@@ -1,0 +1,137 @@
+<section class="content">
+    <p><?php echo $message; ?></p>
+
+    <div class="box box-success" id="definitions">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-cogs"></i> Definições</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1 col-xs-12">
+                    <div class="col-md-4 col-xs-12">
+                        <div class="form-group">
+                            <label>Turma</label>
+                            <select id="studentClass" class="form-control">
+                                <?php foreach ($classes as $cl): ?>
+                                    <option value="<?php echo $cl->getClassId(); ?>">  <?php echo $cl->getClassName(); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-xs-12">
+                        <div class="form-group">
+                            <label>Aplicação</label>
+                            <select id="application" class="form-control">
+                                <?php foreach ($apps as $app): ?>
+                                    <option value="<?php echo $app->getExamApplicationId(); ?>">  <?php echo $app->getName(); ?>
+                                    </option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-4 col-xs-12">
+                        <div class="form-group">
+                            <label>Prova</label>
+                            <select id="exam" class="form-control">
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12 col-xs-12">
+                        <button id="fetch-data" class="btn btn-primary btn-flat btn-block"> <i class="fa fa-magic"></i> Carregar </button>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+
+    <div class="box box-warning">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-cogs"></i> Configurações de Importação </h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1 col-xs-12">
+                    <div class="col-md-4 col-xs-6">
+                        <br>
+                        <div class="checkbox">
+                            <label>
+                                <input type="checkbox" name="has-language" id="has-language" value="0"> <b>Possui opção de idioma?</b>
+                            </label>
+                        </div>
+                    </div>
+                    <div class="col-md-8 col-xs-6">
+                        <div class="form-group">
+                            <label>Arquivo de respostas dos alunos (<code>.csv</code>)</label>
+                            <div class="input-group btn-file">
+                                <span class="input-group-addon"><i class="fa fa-file-excel-o"></i></span>
+                                <input name="exam-answers" id="exam-answers" type="file">
+                                <span class="form-control btn-file-name">Nenhum arquivo selecionado</span>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <button id="import-answers" class="btn btn-primary btn-flat btn-block" disabled> <i class="fa fa-magic"></i> Importar </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <!-- /.box-body -->
+
+    <div class="box box-default">
+        <div class="box-header with-border">
+            <h3 class="box-title text-center"><i class="fa fa-refresh pull-left"></i> Ajustes do modelo</h3>
+            <p>Faça o emparelhamento dos grupos do arquivo com os grupos correspondentes no sistema</p>
+        </div>
+        <!-- /.box-header -->
+        <div class="box-body">
+            <div id="groups">
+
+            </div>
+            <div class="form-group">
+                <button id="adjust-groups" class="btn btn-primary btn-flat btn-block" disabled> <i class="fa fa-magic"></i> Fixar </button>
+            </div>
+        </div>
+    </div>
+
+    <div class="box box-info">
+        <div class="box-header with-border">
+            <h3 class="box-title"><i class="fa fa-archive"></i> Respostas</h3>
+        </div>
+        <div class="box-body">
+            <div class="row">
+                <div class="col-md-10 col-md-offset-1 col-xs-12">
+                    <h3 class="text-center"> Alunos </h3>
+                    <table id="student-answers-table" class="table table-condensed table-stripped table-bordered">
+                        <thead>
+                            <tr>
+                                <th class="text-center">Matrícula</th><th class="text-center">Aluno</th>
+                                <th class="text-center">Arquivo</th><th class="text-center">Idioma</th>
+                                <th class="text-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            
+                        </tbody>
+                    </table>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <!-- /.box-body -->
+    </div>
+
+</section>
+
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/school-management/exam/UploadAnswersByClass';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+</script>
