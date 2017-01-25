@@ -47,6 +47,9 @@ class RecruitmentStatus
     const STATUSTYPE_CONFIRMED = 11;
     const STATUSTYPE_CALLEDFOR_PREINTERVIEW = 12;
     const STATUSTYPE_PREINTERVIEW_COMPLETE = 13;
+    
+    const STATUSTYPE_EXAM_DISAPPROVED = 14;
+    const STATUSTYPE_EXAM_WAITING_LIST = 15;
 
     /**
      * Descrição das constantes anteriores
@@ -67,6 +70,9 @@ class RecruitmentStatus
     const STATUSTYPEDESC_CALLEDFOR_PREINTERVIEW = 'CONVOCADO PARA PRÉ-ENTREVISTA';
     const STATUSTYPEDESC_PREINTERVIEW_COMPLETE = 'PRÉ-ENTREVISTA CONCLUÍDA';
     const STATUSTYPEDESC_INVALID = 'INVÁLIDO';
+    
+    const STATUSTYPEDESC_EXAM_DISAPPROVED = 'DESCLASSIFICADO NA PROVA';
+    const STATUSTYPEDESC_EXAM_WAITING_LIST = 'LISTA DE ESPERA DA PROVA';
 
     /**
      *
@@ -149,6 +155,12 @@ class RecruitmentStatus
             case self::STATUSTYPE_PREINTERVIEW_COMPLETE:
                 $status = self::STATUSTYPEDESC_PREINTERVIEW_COMPLETE;
                 break;
+            case self::STATUSTYPE_EXAM_DISAPPROVED:
+                $status = self::STATUSTYPEDESC_EXAM_DISAPPROVED;
+                break;
+            case self::STATUSTYPE_EXAM_WAITING_LIST:
+                $status = self::STATUSTYPEDESC_EXAM_WAITING_LIST;
+                break;
             default:
                 $status = self::STATUSTYPEDESC_INVALID;
         }
@@ -167,6 +179,11 @@ class RecruitmentStatus
             $this->regStatus->add($rs);
         }
     }
+    
+    public function is($status)
+    {
+        return $this->statusType === $status;
+    }
 
     /**
      * 
@@ -184,7 +201,7 @@ class RecruitmentStatus
      */
     public static function statusTypeExists($sType)
     {
-        if ($sType >= self::STATUSTYPE_REGISTERED && $sType <= self::STATUSTYPE_PREINTERVIEW_COMPLETE) {
+        if ($sType >= self::STATUSTYPE_REGISTERED && $sType <= self::STATUSTYPE_EXAM_WAITING_LIST) {
             return true;
         }
 

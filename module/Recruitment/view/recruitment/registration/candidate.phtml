@@ -1,3 +1,5 @@
+<?php use Recruitment\Entity\RecruitmentStatus; ?>
+
 <section class="content">
     <div class="row">
         <div class="col-md-3">
@@ -76,21 +78,25 @@
                     //recolhe os timeStamp
                     $rstatus = $registration->getRegistrationStatus();
                     foreach ($rstatus as $st):
-                        if ($st->getRecruitmentStatus()->getStatusType() == "INSCRITO") {
+                        if ($st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_REGISTERED)) {
                             $inscriptionStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                        } elseif ($st->getRecruitmentStatus()->getStatusType() == "CONFIRMADO") {
+                        } elseif (
+                            $st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_CONFIRMED)
+                            || $st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_EXAM_DISAPPROVED)
+                            || $st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_EXAM_WAITING_LIST)
+                            ) {
                             $confirmationStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                        } elseif ($st->getRecruitmentStatus()->getStatusType() == "CONVOCADO PARA PRÉ-ENTREVISTA") {
+                        } elseif ($st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW)) {
                             $preInterviewSummonedStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                        } elseif ($st->getRecruitmentStatus()->getStatusType() == "PRÉ-ENTREVISTA CONCLUÍDA") {
+                        } elseif ($st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE)) {
                             $preInterviewConclusionStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                        } elseif ($st->getRecruitmentStatus()->getStatusType() == "CONVOCADO PARA ENTREVISTA") {
+                        } elseif ($st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW)) {
                             $interviewSummonedStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                        } elseif ($st->getRecruitmentStatus()->getStatusType() == "APROVADO EM ENTREVISTA") {
+                        } elseif ($st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED)) {
                             $approvedStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                        } elseif ($st->getRecruitmentStatus()->getStatusType() == "REPROVADO EM ENTREVISTA") {
+                        } elseif ($st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_INTERVIEW_DISAPPROVED)) {
                             $disapprovedStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                        } elseif ($st->getRecruitmentStatus()->getStatusType() == "LISTA DE ESPERA DA ENTREVISTA") {
+                        } elseif ($st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_INTERVIEW_WAITINGLIST)) {
                             $waitListStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
                         }
                     endforeach;
