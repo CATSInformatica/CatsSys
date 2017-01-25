@@ -30,14 +30,70 @@ class SearchRegistrationsForm extends Form implements InputFilterProviderInterfa
             );
         }
 
+        if ($rtype === Recruitment::STUDENT_RECRUITMENT_TYPE) {
+            $statusArr = [
+                RecruitmentStatus::STATUSTYPE_REGISTERED
+                => RecruitmentStatus::STATUSTYPEDESC_REGISTERED,
+                RecruitmentStatus::STATUSTYPE_CANCELED_REGISTRATION
+                => RecruitmentStatus::STATUSTYPEDESC_CANCELED_REGISTRATION,
+                RecruitmentStatus::STATUSTYPE_CONFIRMED
+                => RecruitmentStatus::STATUSTYPEDESC_CONFIRMED,
+                RecruitmentStatus::STATUSTYPE_EXAM_DISAPPROVED
+                => RecruitmentStatus::STATUSTYPEDESC_EXAM_DISAPPROVED,
+                RecruitmentStatus::STATUSTYPE_EXAM_WAITING_LIST
+                => RecruitmentStatus::STATUSTYPEDESC_EXAM_WAITING_LIST,
+                RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW
+                => RecruitmentStatus::STATUSTYPEDESC_CALLEDFOR_PREINTERVIEW,
+                RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE
+                => RecruitmentStatus::STATUSTYPEDESC_PREINTERVIEW_COMPLETE,
+                RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW
+                => RecruitmentStatus::STATUSTYPEDESC_CALLEDFOR_INTERVIEW,
+                RecruitmentStatus::STATUSTYPE_INTERVIEWED
+                => RecruitmentStatus::STATUSTYPEDESC_INTERVIEWED,
+                RecruitmentStatus::STATUSTYPE_INTERVIEW_WAITINGLIST
+                => RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_WAITINGLIST,
+                RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED
+                => RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_APPROVED,
+                RecruitmentStatus::STATUSTYPE_INTERVIEW_DISAPPROVED
+                => RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_DISAPPROVED,
+                RecruitmentStatus::STATUSTYPE_ALL => RecruitmentStatus::STATUSTYPEDESC_ALL,
+            ];
+        } else {
+            $statusArr = [
+                RecruitmentStatus::STATUSTYPE_REGISTERED
+                => RecruitmentStatus::STATUSTYPEDESC_REGISTERED,
+                RecruitmentStatus::STATUSTYPE_CANCELED_REGISTRATION
+                => RecruitmentStatus::STATUSTYPEDESC_CANCELED_REGISTRATION,
+                RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW
+                => RecruitmentStatus::STATUSTYPEDESC_CALLEDFOR_INTERVIEW,
+                RecruitmentStatus::STATUSTYPE_INTERVIEWED
+                => RecruitmentStatus::STATUSTYPEDESC_INTERVIEWED,
+                RecruitmentStatus::STATUSTYPE_INTERVIEW_WAITINGLIST
+                => RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_WAITINGLIST,
+                RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED
+                => RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_APPROVED,
+                RecruitmentStatus::STATUSTYPE_INTERVIEW_DISAPPROVED
+                => RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_DISAPPROVED,
+                RecruitmentStatus::STATUSTYPE_VOLUNTEER
+                => RecruitmentStatus::STATUSTYPEDESC_VOLUNTEER,
+                RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS
+                => RecruitmentStatus::STATUSTYPEDESC_CALLEDFOR_TESTCLASS,
+                RecruitmentStatus::STATUSTYPE_TESTCLASS_COMPLETE
+                => RecruitmentStatus::STATUSTYPEDESC_TESTCLASS_COMPLETE,
+                RecruitmentStatus::STATUSTYPE_TESTCLASS_WAITINGLIST
+                => RecruitmentStatus::STATUSTYPEDESC_TESTCLASS_WAITINGLIST,
+                RecruitmentStatus::STATUSTYPE_ALL => RecruitmentStatus::STATUSTYPEDESC_ALL,
+            ];
+        }
+
+
         $this
             ->add(array(
                 'name' => 'recruitment',
                 'type' => 'select',
                 'options' => array(
                     'label' => 'Processo seletivo',
-                    'value_options' => $this->getRecruitments($recruitments,
-                        $rtype !== Recruitment::STUDENT_RECRUITMENT_TYPE),
+                    'value_options' => $this->getRecruitments($recruitments, $rtype !== Recruitment::STUDENT_RECRUITMENT_TYPE),
                 ),
             ))
             ->add(array(
@@ -45,37 +101,7 @@ class SearchRegistrationsForm extends Form implements InputFilterProviderInterfa
                 'type' => 'select',
                 'options' => array(
                     'label' => 'Situação',
-                    'value_options' => array(
-                        RecruitmentStatus::STATUSTYPE_REGISTERED
-                        => RecruitmentStatus::STATUSTYPEDESC_REGISTERED,
-                        RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW
-                        => RecruitmentStatus::STATUSTYPEDESC_CALLEDFOR_INTERVIEW,
-                        RecruitmentStatus::STATUSTYPE_CANCELED_REGISTRATION
-                        => RecruitmentStatus::STATUSTYPEDESC_CANCELED_REGISTRATION,
-                        RecruitmentStatus::STATUSTYPE_INTERVIEWED
-                        => RecruitmentStatus::STATUSTYPEDESC_INTERVIEWED,
-                        RecruitmentStatus::STATUSTYPE_INTERVIEW_WAITINGLIST
-                        => RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_WAITINGLIST,
-                        RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED
-                        => RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_APPROVED,
-                        RecruitmentStatus::STATUSTYPE_INTERVIEW_DISAPPROVED
-                        => RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_DISAPPROVED,
-                        RecruitmentStatus::STATUSTYPE_VOLUNTEER
-                        => RecruitmentStatus::STATUSTYPEDESC_VOLUNTEER,
-                        RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS
-                        => RecruitmentStatus::STATUSTYPEDESC_CALLEDFOR_TESTCLASS,
-                        RecruitmentStatus::STATUSTYPE_TESTCLASS_COMPLETE
-                        => RecruitmentStatus::STATUSTYPEDESC_TESTCLASS_COMPLETE,
-                        RecruitmentStatus::STATUSTYPE_TESTCLASS_WAITINGLIST
-                        => RecruitmentStatus::STATUSTYPEDESC_TESTCLASS_WAITINGLIST,
-                        RecruitmentStatus::STATUSTYPE_CONFIRMED
-                        => RecruitmentStatus::STATUSTYPEDESC_CONFIRMED,
-                        RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW
-                        => RecruitmentStatus::STATUSTYPEDESC_CALLEDFOR_PREINTERVIEW,
-                        RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE
-                        => RecruitmentStatus::STATUSTYPEDESC_PREINTERVIEW_COMPLETE,
-                        RecruitmentStatus::STATUSTYPE_ALL => RecruitmentStatus::STATUSTYPEDESC_ALL,
-                    ),
+                    'value_options' => $statusArr,
                 ),
             ))
             ->add(array(
@@ -120,6 +146,5 @@ class SearchRegistrationsForm extends Form implements InputFilterProviderInterfa
             ),
         );
     }
-
 //put your code here
 }

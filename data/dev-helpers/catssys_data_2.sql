@@ -30,7 +30,8 @@ INSERT INTO `resource` VALUES
 (NULL,'SchoolManagement\\Controller\\SchoolExamPreview'),
 (NULL,'Documents\\Controller\\StudentAnswersSheets'),
 (NULL,'FinancialManagement\\Controller\\CashFlow'),
-(NULL,'FinancialManagement\\Controller\\MonthlyPayment')
+(NULL,'FinancialManagement\\Controller\\MonthlyPayment'),
+(NULL,'SchoolManagement\\Controller\\SchoolExamResult')
 ;
 UNLOCK TABLES;
 
@@ -105,7 +106,9 @@ INSERT INTO `recruitment_status` VALUES
 (11, 10),
 (12, 11),
 (13, 12),
-(14, 13);
+(14, 13),
+(15, 14),
+(16, 15);
 UNLOCK TABLES;
 
 LOCK TABLES `infrastructure_element` WRITE;

@@ -501,6 +501,90 @@ class RegistrationController extends AbstractEntityActionController
             'message' => 'Nenhum candidato selecionado',
         ));
     }
+    
+    /**
+     * Altera a situação do candidato do processo seletivo de alunos para 
+     * Desclassificado na Prova.
+     * 
+     * @return JsonModel
+     */
+    public function examDisapproveAction()
+    {
+        $id = $this->params('id', false);
+
+        if ($id) {
+
+            try {
+                $em = $this->getEntityManager();
+                $registration = $em->getReference('Recruitment\Entity\Registration', $id);
+
+                $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_EXAM_DISAPPROVED);
+
+                $em->persist($registration);
+                $em->flush();
+
+                $dt = new \DateTime();
+
+                return new JsonModel(array(
+                    'message' => 'operação executada com sucesso',
+                    'callback' => array(
+                        'timestamp' => $dt->format('d/m/Y H:i:s'),
+                        'status' => RecruitmentStatus::STATUSTYPEDESC_EXAM_DISAPPROVED,
+                    ),
+                ));
+            } catch (Exception $ex) {
+                return new JsonModel(array(
+                    'message' => 'Erro inesperado: ' . $ex->getMessage(),
+                ));
+            }
+        }
+
+        return new JsonModel(array(
+            'message' => 'Nenhum candidato selecionado',
+        ));
+    }
+        
+    /**
+     * Altera a situação do candidato do processo seletivo de alunos para 
+     * Lista de Espera da Prova.
+     * 
+     * @return JsonModel
+     */
+    public function examWaitingListAction()
+    {
+        $id = $this->params('id', false);
+
+        if ($id) {
+
+            try {
+                $em = $this->getEntityManager();
+                $registration = $em->getReference('Recruitment\Entity\Registration', $id);
+
+                $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_EXAM_WAITING_LIST);
+
+                $em->persist($registration);
+                $em->flush();
+
+                $dt = new \DateTime();
+
+                return new JsonModel(array(
+                    'message' => 'operação executada com sucesso',
+                    'callback' => array(
+                        'timestamp' => $dt->format('d/m/Y H:i:s'),
+                        'status' => RecruitmentStatus::STATUSTYPEDESC_EXAM_WAITING_LIST,
+                    ),
+                ));
+            } catch (Exception $ex) {
+                return new JsonModel(array(
+                    'message' => 'Erro inesperado: ' . $ex->getMessage(),
+                ));
+            }
+        }
+
+        return new JsonModel(array(
+            'message' => 'Nenhum candidato selecionado',
+        ));
+    }
 
     /**
      * Altera a situação do candidato do processo seletivo de alunos para 
