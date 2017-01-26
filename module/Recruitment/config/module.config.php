@@ -262,9 +262,25 @@ return array(
                                 'id' => 'fn-confirmation',
                                 'title' => 'Confirmar',
                                 'description' => 'Confirmar/Desconfirmar a inscrição do candidato.',
-                                'class' => 'fa fa-check bg-red',
+                                'class' => 'fa fa-check bg-green',
                                 'fntype' => 'ajaxPostSelectedClick',
                             ),
+                            [
+                                'url' => '/recruitment/registration/exam-disapprove/$id',
+                                'id' => 'fn-exam-disapprove',
+                                'title' => 'Desclassificar na Prova',
+                                'description' => 'Desclassifica/Retorna pra confirmado a inscrição do candidato.',
+                                'class' => 'fa fa-close bg-red',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ],
+                            [
+                                'url' => '/recruitment/registration/exam-waiting-list/$id',
+                                'id' => 'fn-exam-waiting-list',
+                                'title' => 'Lista de Espera de Prova',
+                                'description' => 'Coloca o candidato na lista de Espera da prova/retorna para confirmado.',
+                                'class' => 'fa fa-tasks bg-white',
+                                'fntype' => 'ajaxPostSelectedClick',
+                            ],
                             array(
                                 'url' => '/recruitment/registration/convocation/$id',
                                 'id' => 'fn-convocation',
@@ -416,6 +432,16 @@ return array(
                                 'resource' => 'Recruitment\Controller\Registration',
                                 'privilege' => 'candidate',
                                 'icon' => 'fa fa-user',
+                                'pages' => [
+                                    [
+                                        'label' => 'Resultado da Prova',
+                                        'route' => 'recruitment/registration',
+                                        'action' => 'exam-result',
+                                        'resource' => 'Recruitment\Controller\Registration',
+                                        'privilege' => 'exam-result',
+                                        'icon' => 'fa fa-file-o',
+                                    ]
+                                ],
                             ]
                         ],
                     ),

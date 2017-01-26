@@ -288,6 +288,21 @@ class Recruitment
     }
 
     /**
+     * Retorna a identificaçao do processo seletivo no formato Y - Numero
+     * 
+     * @return string
+     */
+    public function getRecruitmentYn()
+    {
+        return self::formatName($this->recruitmentYear, $this->recruitmentNumber);
+    }
+
+    public static function formatName($year, $number)
+    {
+         return $year . ' - ' . $number;
+    }
+
+    /**
      * 
      * @param integer $recruitmentNumber
      * @return \Recruitment\Entity\Recruitment
@@ -663,7 +678,7 @@ class Recruitment
      * @param string $subscriptionDescription
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setSubscriptionDescription($subscriptionDescription)
+    public function setSubscriptionDescription($subscriptionDescription = null)
     {
         $this->subscriptionDescription = $subscriptionDescription;
         return $this;
@@ -674,7 +689,7 @@ class Recruitment
      * @param \DateTime $confirmationStartDate
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setConfirmationStartDate(\DateTime $confirmationStartDate)
+    public function setConfirmationStartDate(\DateTime $confirmationStartDate = null)
     {
         $this->confirmationStartDate = $confirmationStartDate;
         return $this;
@@ -685,7 +700,7 @@ class Recruitment
      * @param \DateTime $confirmationEndDate
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setConfirmationEndDate(\DateTime $confirmationEndDate)
+    public function setConfirmationEndDate(\DateTime $confirmationEndDate = null)
     {
         $this->confirmationEndDate = $confirmationEndDate;
         return $this;
@@ -696,7 +711,7 @@ class Recruitment
      * @param string $confirmationDescription
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setConfirmationDescription($confirmationDescription)
+    public function setConfirmationDescription($confirmationDescription = null)
     {
         $this->confirmationDescription = $confirmationDescription;
         return $this;
@@ -707,7 +722,7 @@ class Recruitment
      * @param \DateTime $examDate
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setExamDate(\DateTime $examDate)
+    public function setExamDate(\DateTime $examDate = null)
     {
         $this->examDate = $examDate;
         return $this;
@@ -718,7 +733,7 @@ class Recruitment
      * @param type $examDescription
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setExamDescription($examDescription)
+    public function setExamDescription($examDescription = null)
     {
         $this->examDescription = $examDescription;
         return $this;
@@ -729,7 +744,7 @@ class Recruitment
      * @param \DateTime $examResultDate
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setExamResultDate(\DateTime $examResultDate)
+    public function setExamResultDate(\DateTime $examResultDate = null)
     {
         $this->examResultDate = $examResultDate;
         return $this;
@@ -740,7 +755,7 @@ class Recruitment
      * @param string $examResultDescription
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setExamResultDescription($examResultDescription)
+    public function setExamResultDescription($examResultDescription = null)
     {
         $this->examResultDescription = $examResultDescription;
         return $this;
@@ -751,7 +766,7 @@ class Recruitment
      * @param \DateTime $preInterviewStartDate
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setPreInterviewStartDate(\DateTime $preInterviewStartDate)
+    public function setPreInterviewStartDate(\DateTime $preInterviewStartDate = null)
     {
         $this->preInterviewStartDate = $preInterviewStartDate;
         return $this;
@@ -762,7 +777,7 @@ class Recruitment
      * @param string $preInterviewDescription
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setPreInterviewDescription($preInterviewDescription)
+    public function setPreInterviewDescription($preInterviewDescription = null)
     {
         $this->preInterviewDescription = $preInterviewDescription;
         return $this;
@@ -773,7 +788,7 @@ class Recruitment
      * @param \DateTime $interviewStartDate
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setInterviewStartDate(\DateTime $interviewStartDate)
+    public function setInterviewStartDate(\DateTime $interviewStartDate = null)
     {
         $this->interviewStartDate = $interviewStartDate;
         return $this;
@@ -784,7 +799,7 @@ class Recruitment
      * @param \DateTime $interviewEndDate
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setInterviewEndDate(\DateTime $interviewEndDate)
+    public function setInterviewEndDate(\DateTime $interviewEndDate = null)
     {
         $this->interviewEndDate = $interviewEndDate;
         return $this;
@@ -795,7 +810,7 @@ class Recruitment
      * @param string $interviewDescription
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setInterviewDescription($interviewDescription)
+    public function setInterviewDescription($interviewDescription = null)
     {
         $this->interviewDescription = $interviewDescription;
         return $this;
@@ -806,7 +821,7 @@ class Recruitment
      * @param \DateTime $resultDate
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setResultDate(\DateTime $resultDate)
+    public function setResultDate(\DateTime $resultDate = null)
     {
         $this->resultDate = $resultDate;
         return $this;
@@ -817,7 +832,7 @@ class Recruitment
      * @param string $resultDescription
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setResultDescription($resultDescription)
+    public function setResultDescription($resultDescription = null)
     {
         $this->resultDescription = $resultDescription;
         return $this;
@@ -828,7 +843,7 @@ class Recruitment
      * @param \DateTime $enrollmentStartDate
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setEnrollmentStartDate(\DateTime $enrollmentStartDate)
+    public function setEnrollmentStartDate(\DateTime $enrollmentStartDate = null)
     {
         $this->enrollmentStartDate = $enrollmentStartDate;
         return $this;
@@ -839,7 +854,7 @@ class Recruitment
      * @param \DateTime $enrollmentEndDate
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setEnrollmentEndDate(\DateTime $enrollmentEndDate)
+    public function setEnrollmentEndDate(\DateTime $enrollmentEndDate = null)
     {
         $this->enrollmentEndDate = $enrollmentEndDate;
         return $this;
@@ -850,7 +865,7 @@ class Recruitment
      * @param string $enrollmentDescription
      * @return \Recruitment\Entity\Recruitment
      */
-    public function setEnrollmentDescription($enrollmentDescription)
+    public function setEnrollmentDescription($enrollmentDescription = null)
     {
         $this->enrollmentDescription = $enrollmentDescription;
         return $this;

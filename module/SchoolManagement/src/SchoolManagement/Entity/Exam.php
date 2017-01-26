@@ -86,7 +86,7 @@ class Exam
     /**
      * 
      * @var ExamApplication
-     * @ORM\ManyToOne(targetEntity="ExamApplication", inversedBy="exams")
+     * @ORM\ManyToOne(targetEntity="ExamApplication", inversedBy="exams", fetch="EAGER")
      * @ORM\JoinColumn(name="exam_application_id", referencedColumnName="exam_application_id")
      */
     private $application;

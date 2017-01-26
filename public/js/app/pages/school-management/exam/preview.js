@@ -309,9 +309,9 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
         var ans = null;
         var enrollmentId;
         var partialId;
-        
+
         studentAnswers = {};
-        
+
         for (var i = 1; i < csvData.answers.length; i++) {
             ans = csvData.answers[i];
             enrollmentId = ans.slice(1, 6).join('');
@@ -381,6 +381,8 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
             };
         });
     };
+
+
     /**
      * 
      * @param {type} classId
@@ -403,6 +405,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
             }
         });
     };
+
     var preview = (function () {
         return {
             init: function () {
@@ -410,5 +413,6 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
             }
         };
     }());
+    
     return preview;
 });

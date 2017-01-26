@@ -5,10 +5,9 @@
       xmlns:fb="http://ogp.me/ns/fb#">
     <head>
         <meta charset="utf-8">
-        <meta property="og:image" content="http://www.familiacats.com/img/logo_fb.png">
+        <meta property="og:image" content="<?php echo $this->serverUrl('/img/logo_fb.png'); ?>">
         <?php echo $this->headTitle('CATS'); ?>
-
-
+            
         <?php
         echo $this->headMeta()
             ->appendName('viewport', 'width=device-width, initial-scale=1.0')
@@ -20,9 +19,9 @@
         echo $this->headLink(array(
                     'rel' => 'shortcut icon',
                     'type' => 'image/vnd.microsoft.icon',
-                    'href' => $this->basePath() . '/img/favicon.ico'))
+                    'href' => $this->basePath('/img/favicon.ico')))
                 // Roboto
-                ->appendStylesheet('http://fonts.googleapis.com/css?family=Roboto:300,400,500,700')
+                ->appendStylesheet('https://fonts.googleapis.com/css?family=Roboto:300,400,500,700')
                 // Bootstrap
                 ->appendStylesheet($this->basePath('vendor/bootswatch-dist/css/bootstrap.min.css'))
                 ->appendStylesheet($this->basePath('css/site.css'))
