@@ -58,7 +58,7 @@ class SearchRegistrationsForm extends Form implements InputFilterProviderInterfa
                 => RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_DISAPPROVED,
                 RecruitmentStatus::STATUSTYPE_ALL => RecruitmentStatus::STATUSTYPEDESC_ALL,
             ];
-        } else {
+        } else if($rtype === Recruitment::STUDENT_RECRUITMENT_TYPE) {
             $statusArr = [
                 RecruitmentStatus::STATUSTYPE_REGISTERED
                 => RecruitmentStatus::STATUSTYPEDESC_REGISTERED,
@@ -84,8 +84,9 @@ class SearchRegistrationsForm extends Form implements InputFilterProviderInterfa
                 => RecruitmentStatus::STATUSTYPEDESC_TESTCLASS_WAITINGLIST,
                 RecruitmentStatus::STATUSTYPE_ALL => RecruitmentStatus::STATUSTYPEDESC_ALL,
             ];
+        } else {
+            throw new \Exception('Not implemented');
         }
-
 
         $this
             ->add(array(

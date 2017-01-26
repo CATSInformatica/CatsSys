@@ -140,13 +140,13 @@ class RegistrationRepository extends EntityRepository
             ->join('rs.recruitmentStatus', 'res')
             ->where('r.recruitment = :recruitment')
             ->setParameter('recruitment', $rid);
-        
+
         if (!empty($status)) {
             $qb
                 ->andWhere($qb->expr()->in('res.statusType', ':statusArray'))
                 ->setParameter('statusArray', $status);
         }
-        
+
         return $qb->getQuery()->getResult();
     }
 }

@@ -381,7 +381,7 @@ class RegistrationController extends AbstractEntityActionController
             try {
 
                 $em = $this->getEntityManager();
-                $form = new SearchRegistrationsForm($em);
+                $form = new SearchRegistrationsForm($em, Recruitment::STUDENT_RECRUITMENT_TYPE);
                 $form->setData($request->getPost());
 
                 if ($form->isValid()) {
@@ -415,6 +415,7 @@ class RegistrationController extends AbstractEntityActionController
                         );
                     }
                 }
+                
             } catch (Exception $ex) {
                 
             }
