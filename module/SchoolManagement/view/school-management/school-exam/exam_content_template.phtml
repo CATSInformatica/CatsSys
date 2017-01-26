@@ -1,11 +1,11 @@
-<?php
-    $form->prepare();
-    $examContent = $form->get('exam-content-fieldset');
-    echo $this->form()->openTag($form);
-?>
 <p><?php echo $this->message; ?></p>
 <div class="row">
     <?php if ($this->form !== null) : ?>
+        <?php
+        $form->prepare();
+        $examContent = $form->get('exam-content-fieldset');
+        echo $this->form()->openTag($form);
+        ?>
         <div class="col-xs-12 no-padding">
             <div class="box box-success">
                 <div class="box-header with-border">
