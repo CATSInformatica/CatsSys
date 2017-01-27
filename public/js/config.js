@@ -75,7 +75,8 @@ requirejs.config({
                         inlineMath: [
                             ['$', '$'],
                             ['\\(', '\\)']
-                        ]
+                        ],
+                        processEscapes: true
                     }
                 });
                 MathJax.Hub.Startup.onload();
