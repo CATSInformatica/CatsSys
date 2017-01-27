@@ -93,7 +93,8 @@
                         $baseSubjectId = $baseSubject->getSubjectId();
                         $baseSubjectName = $baseSubject->getSubjectName();
                         ?>
-                        <div class="base-subjects"
+                        <div id="base-subject-<?php echo $baseSubjectId ; ?>"
+                             class="base-subjects"
                              data-name="<?php echo $baseSubjectName; ?>"
                              data-id="<?php echo $baseSubjectId; ?>"
                         >
@@ -126,7 +127,7 @@
                                                     </th>
                                                 </tr>
                                             </thead>
-                                            <tbody class="bg-gray-light" style="overflow:auto;"><!-- style: Fix para um bug do jquery-ui (sortable) -->
+                                            <tbody class="bg-gray-light children-subjects" style="overflow:auto;"><!-- style: Fix para um bug do jquery-ui (sortable) -->
                                             <?php 
                                             $bSubjectChildren = $baseSubject->getChildren();
                                             foreach ($bSubjectChildren as $subject) : ?>
