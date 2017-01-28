@@ -26,7 +26,7 @@ class SchoolSubjectController extends AbstractEntityActionController
 {
 
     /**
-     * Exibe em uma tabela todas as disciplinas cadastradas
+     * Exibe as disciplinas e permite sua adição, edição e remoção.
      * 
      * @return ViewModel
      */
@@ -50,15 +50,13 @@ class SchoolSubjectController extends AbstractEntityActionController
                 'form' => null,
                 'message' => $ex->getMessage(),
             ));
-        }
-
-        
+        }        
     }
 
     /**
      * Grava no banco dados uma disciplina
      * 
-     * @return ViewModel
+     * @return JsonModel
      */
     public function createAction()
     {
@@ -128,21 +126,23 @@ class SchoolSubjectController extends AbstractEntityActionController
     public function deleteAction()
     {
         $id = $this->params('id', false);
-
+        $message = null;
+        
         if ($id) {
             try {
                 $em = $this->getEntityManager();
                 $subject = $em->getReference('SchoolManagement\Entity\Subject', $id);
+                
                 if ($subject->hasChildren()) {
                     return new JsonModel(array(
                         'message' => 'Não é possível remover uma disciplina que contém outras',
                     ));
                 }
+                
                 $em->remove($subject);
                 $em->flush();
-                $message = 'Disciplina removida com sucesso.';
                 return new JsonModel(array(
-                    'message' => $message,
+                    'message' => 'Disciplina removida com sucesso.',
                     'error' => false,
                 ));
             } catch (Exception $ex) {
@@ -152,6 +152,7 @@ class SchoolSubjectController extends AbstractEntityActionController
         } else {
             $message = 'Nenhuma disciplina foi selecionada.';
         }
+        
         return new JsonModel(array(
             'message' => $message,
             'error' => true,
@@ -159,7 +160,7 @@ class SchoolSubjectController extends AbstractEntityActionController
     }
 
     /**
-     * Exibe um formulário de edição para a disciplina selecionada
+     * Persiste as mudanças feitas a uma disciplina selecionada
      * 
      * @return JsonModel
      */

@@ -7,14 +7,21 @@
 define(['jquery', 'datatable', 'jqueryui'], function () {
     var index = (function () {
         
-        initCreateFunctionality = function () {            
+        /*
+         * Permite a criação de disciplinas.
+         */
+        initCreateFunctionality = function () {
+            
+            showCreateButtons();
+            
             /*
-             * 
+             * Evento: clique em um botão de criar diciplina (.create-subject)
+             * Abre o modal com o formulário de criação de disciplina. A disciplina 
+             * criada será uma filha da disciplina base que abriga o botão.
              * 
              */
-            
             $('.content').on('click', '.create-subject', function() {           
-                var form = $('#subject-form');              
+                var form = $('#subject-form');
                 var baseSubjectBlock = $(this).closest('.base-subjects');
                 var alertBlock = baseSubjectBlock.find('.subject-alert').first();
                 
@@ -52,6 +59,12 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                 }); 
             });
             
+            /*
+             * Evento: clique no botão de criar diciplina base (.create-base-subject)
+             * Abre o modal com o formulário de criação de disciplina. A disciplina 
+             * criada será não terá uma mãe.
+             * 
+             */
             $('.content').on('click', '.create-base-subject', function() {
                 var form = $('#subject-form');                
                 var alertBlock = $('#base-subject-alert');
@@ -67,8 +80,7 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                                 var baseSubjectBlockTemplate = createBaseSubjectBlock(
                                         response.subjectName,
                                         response.subjectDescription,
-                                        response.subjectId,
-                                        getRandomColorClass()
+                                        response.subjectId
                                         );
                                 
                                 $('#base-subjects-block').append(baseSubjectBlockTemplate);
@@ -76,6 +88,23 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                 });  
             });
             
+            /*
+             * Mostra os botões de criar disciplina.
+             */
+            function showCreateButtons() {
+                $('.create-subject, .create-base-subject').removeClass('hide');
+            }
+            
+            /*
+             * Faz a requisição de criação ao servidor e encarrega-se de tratar a 
+             * resposta.
+             * 
+             * @param {object} form - jQuery object do formulário
+             * @param {object} alertBlock - jQuery object do elemento onde 
+             *      as mensagens de erro devem ser exibidas
+             * @param {function} successFunc - função que será executada se a
+             *      requisição for bem sucedida e a disciplina foi criada
+             */
             function requestSubjectCreation(form, alertBlock, successFunc) {
                 var request = $.ajax({
                     url: '/school-management/school-subject/create',
@@ -96,8 +125,18 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
             
         };
 
+        /*
+         * Permite a remoção de disciplinas.
+         *  
+         */
         initDeleteFunctionality = function () {
             
+            showDeleteButtons();
+            
+            /*
+             * Evento: Clique no botão de remover disciplina (.delete-subject)
+             * Remove a disciplina relacionada ao botão.
+             */
             $('.content').on('click', '.delete-subject', function() {
                 var subjectBlock = $(this).closest('.subjects'); 
                 
@@ -109,6 +148,10 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                 });
             });
             
+            /*
+             * Evento: clique no botão de remover disciplina base (.delete-base-subject)
+             * Remove a disciplina relacionada ao botão.
+             */
             $('.content').on('click', '.delete-base-subject', function() {
                 var baseSubjectBlock = $(this).closest('.base-subjects'); 
                 
@@ -119,6 +162,22 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                 });
             });
             
+            /*
+             * Exibe os botões de remover disciplina.
+             */
+            function showDeleteButtons() {    
+                $('.delete-base-subject').removeClass('hide');
+                $('.delete-subject').removeClass('hide');
+            }
+            
+            /*
+             * Abre um modal para o usuário confirmar sua intenção de remover uma
+             * disciplina. Se o usuário confirmar, o modal é fechado e a função
+             * handlerFunction é executada.
+             * 
+             * @param {function} handlerFunction - função que será executada se
+             *      o usuário confirmar sua intenção de remover a disciplina
+             */
             function openConfirmDeletionDialog(handlerFunction) {
                 var confirmDeletionModal = $("#confirm-deletion-modal");
                 
@@ -131,10 +190,28 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                 });
             }
             
+            /*
+             * Retorna o campo de mensagens de erro, dado um bloco de disciplina 
+             * base.
+             * 
+             * @param {object} baseSubjectBlock - jQuery object de um bloco de 
+             *      disciplina base.
+             * @returns {object} jQuery object do bloco onde as mensagens de erro
+             *      deverão ser exibidas.
+             */
             function getAlertBlock(baseSubjectBlock) {
                 return baseSubjectBlock.find('.subject-alert').first();
             }
             
+            /*
+             * Faz a requisição de remoção ao servidor e encarrega-se de tratar a 
+             * resposta.
+             * 
+             * @param {object} subjectBlock - jQuery object de um bloco de 
+             *      disciplina.
+             * @param {object} alertBlock - jQuery object do elemento onde 
+             *      as mensagens de erro devem ser exibidas
+             */
             function requestSubjectDeletion(subjectBlock, alertBlock) {
                 var subjectId = subjectBlock.data('id');
                 
@@ -142,12 +219,18 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                     return;
                 }
                 
+                // remove as disciplinas filhas
                 $('.parent-' + subjectId).each(function() {
                     requestSubjectDeletion($(this), alertBlock);
                 });
                 
+                // o intervalo é necessário para garantir que as disciplinas 
+                // filhas sejam removidas antes da mãe.                
                 var intervalToRemoval = setInterval(removeSubject, 400);
                 
+                /*
+                 * Remove, de fato, a disciplina.
+                 */
                 function removeSubject() {
                     if ($('.parent-' + subjectId).length === 0) {
                         clearInterval(intervalToRemoval);
@@ -168,7 +251,17 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
             }
         };
 
+        /*
+         * Permite a edição de disciplinas.
+         */
         initEditFunctionality = function() {
+            
+            showEditButtons();
+            
+            /*
+             * Evento: clique no botão de editar disciplina base (.edit-base-subject)
+             * Abre o modal com o formulário de edição de disciplina.
+             */
             $('.content').on('click', '.edit-base-subject', function() {
                 var baseSubjectBlock = $(this).closest('.base-subjects');
 
@@ -193,6 +286,10 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                 });
             });
             
+            /*
+             * Evento: clique no botão de editar disciplina (.edit-subject)
+             * Abre o modal com o formulário de edição de disciplina.
+             */
             $('.content').on('click', '.edit-subject', function() {
                 var baseSubjectBlock = $(this).closest('.base-subjects');
                 var alertBlock = baseSubjectBlock.find('.subject-alert').first();
@@ -220,6 +317,10 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                 });
             });
             
+            /*
+             * Evento: clique no botão de editar disciplina mãe (.edit-parent-subject)
+             * Permite a seleção de outra disciplina como mãe.
+             */
             $('.content').on('click', '.edit-parent-subject', function() {
                 if ($('.parent-edit').length === 0 || $(this).hasClass('parent-edit')) { // inicia a troca
                     toggleAvailableParentsIcons($(this));
@@ -255,21 +356,24 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                     
                     requestSubjectEdit(subjectId, form, alertBlock, successfulEdit);
                             
-                            
+                    
+                    /*
+                     * Em caso de uma edição bem sucedida, faz as mudanças necessárias, 
+                     * movendo a disciplina e suas filhas.
+                     * 
+                     * @param {object} response - resposta do servidor
+                     */
                     function successfulEdit(response) {
                         toggleAvailableParentsIcons($('.parent-edit').first());
                         var baseSubjectChildren = subjectBlock.closest('.base-subject-children');
                         
-                        //base subject | subject | topic
                         if (parentSubjectBlock === null) {
-                            // subjectBlock -> !subject c/ filhos | subject s/ filhos | topic
                             subjectBlock.remove();
                             
                             var baseSubjectBlockTemplate = createBaseSubjectBlock(
                                     subjectName,
                                     subjectDescription,
-                                    subjectId,
-                                    getRandomColorClass()
+                                    subjectId
                                     ); 
 
                             $('#base-subjects-block').append(baseSubjectBlockTemplate);
@@ -288,6 +392,14 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                     }
                 }
                 
+                /*
+                 * Anexa as disciplinas filhas abaixo da disciplina, onde quer 
+                 * que ela esteja agora.
+                 * 
+                 * @param {int} parentSubjectId - id da disciplina mãe
+                 * @param {object} childrenParentBlock - jQuery object do bloco 
+                 *      que abriga as disciplinas filhas, antes da mudança
+                 */
                 function moveSubjectChildren(parentSubjectId, childrenParentBlock) {
                     var parentSubjectBlock = $('#subject-' + parentSubjectId);
                     
@@ -302,6 +414,27 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                 }
             });
             
+            /*
+             * Exibe os ícones que permitem a edição das disciplinas.
+             */
+            function showEditButtons() {    
+                $('.edit-base-subject').removeClass('hide');
+                $('.edit-subject').removeClass('hide');
+                $('.edit-parent-subject').removeClass('hide');
+            }
+            
+            /*
+             * Faz a requisição de edição ao servidor e encarrega-se de tratar a 
+             * resposta.
+             * 
+             * @param {type} subjectId - id da disciplina
+             * @param {type} form - jQuery object do formulário
+             * @param {type} alertBlock - jQuery object do elemento onde 
+             *      as mensagens de erro devem ser exibidas
+             * @param {type} successFunc - função que será executada se a
+             *      requisição for bem sucedida e a disciplina foi editada
+             * @returns {undefined}
+             */
             function requestSubjectEdit(subjectId, form, alertBlock, successFunc) {
                 if (!Number.isInteger(subjectId)) {
                     return;
@@ -325,28 +458,57 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
             };            
         };
         
+        /*
+         * @returns {String} - classe de cor de fundo aleatória
+         */
         getRandomColorClass = function() {
             var colors = ['teal', 'purple', 'orange', 'navy', 'maroon', 'black', 'primary'];
             return 'bg-' + colors[Math.floor(Math.random() * (colors.length - 1))];
         };
         
+        /*
+         * Impede comportamentos indesejados.
+         */
         preventUnwantedBehavior = function() {
+            /*
+             * Impede que, ao clicar em um botão, a disciplina seja selecionada.
+             */
             $('.content').on('click', '.cats-row > td > button', function(e) {
                 e.stopPropagation();
             });
             
+            /*
+             * Impede a seleção de múltiplas linhas de disciplina, dentro de uma 
+             * única discplina base.
+             */
             $('.content').on('click', '.cats-row > td', function(e) {                
                 $(this).parent().siblings('.cats-selected-row').click();
-            });          
+            });
             
+            /*
+             * Ao abrir o formulário de confirmação de remoção, foca o botão 
+             * de cancelar remoção.
+             */
             $("#confirm-deletion-modal").on('shown.bs.modal', function() {
-                $('.cancel-button').first().focus();
+                $('#confirm-deletion-modal .cancel-button').first().focus();
             });       
             
+            /*
+             * Ao abrir o formulário de criação/edição, foca o campo de nome da 
+             * disciplina.
+             */
             $("#form-modal").on('shown.bs.modal', function() {
                 $('#form-modal').find('.subject-name-input').first().focus();
             });
-            
+        };     
+        
+        /*
+         * Define atalhos do teclado.
+         */
+        initKeyboardShortcuts = function() {      
+            /*
+             * Permite remover a seleção de uma disciplina com a tecla ESC.
+             */
             $(document).keyup(function(e) {
                 var ESC = 27;
                 var activatedEditButton = $('.parent-edit').first();
@@ -355,13 +517,21 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                     toggleAvailableParentsIcons(activatedEditButton);
                 } 
             });
-        };        
+        };
           
-        toggleAvailableParentsIcons = function(clickedButton) { 
-            var subjectBlock = getSubjectBlock(clickedButton);
+        /*
+         * Procura todas as disciplinas que podem ser mãe da disciplina 
+         * ligada ao botão selecionado. Para indicar a disponibilidade da disciplina,
+         * seu botão de 'trocar disciplina mãe' é trocado pelo de 'selecionar como
+         * mãe'.
+         * 
+         * @param {type} selectedButton - botão de 'trocar disciplina mãe' selecionado
+         */
+        toggleAvailableParentsIcons = function(selectedButton) { 
+            var subjectBlock = getSubjectBlock(selectedButton);
             
-            if (clickedButton.hasClass('parent-edit')) {
-                clickedButton.removeClass('bg-yellow').removeClass('parent-edit');
+            if (selectedButton.hasClass('parent-edit')) {
+                selectedButton.removeClass('bg-yellow').removeClass('parent-edit');
                 var otherEditParentIcons = $('.fa-caret-square-o-down:not(.null-parent)');
 
                 otherEditParentIcons.each(function() {
@@ -372,7 +542,7 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                     $('.null-parent-button').slideUp();
                 }
             } else {
-                clickedButton.addClass('bg-yellow').addClass('parent-edit');
+                selectedButton.addClass('bg-yellow').addClass('parent-edit');
 
                 var subjectHasChildren = ($('.parent-' + subjectBlock.data('id')).length > 0) ? true : false;
                 var subjectHasGrandchildren = (subjectBlock.find('.topics').length > 0) ? true : false;
@@ -394,8 +564,13 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                     $('.null-parent-button').slideDown();
                 }
             }
-        } 
+        };
          
+        /*
+         * Limpa os campos e as mensagens de erro do formulário.
+         * 
+         * @param {type} form - jQuery object do formulário
+         */
         clearForm = function(form) {
             form.find('.subject-name-error').first().text('');
             form.find('.subject-description-error').first().text('');
@@ -404,6 +579,19 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
             form.find('.subject-description-input').first().val('');
         };
          
+        /*
+         * Encarrega-se de gerenciar a resposta do servidor a uma requisição, 
+         * exibindo as mensagens de erro e executando as funções definidas pelo
+         * usuário.
+         * 
+         * @param {jqXHR object} request - requisição
+         * @param {type} form - jQuery object do formulário
+         * @param {type} alertBlock - jQuery object do elemento onde 
+         * @param {type} successFunc - função que será executada se a requisição 
+         *      for bem sucedida e não retornar erros
+         * @param {type} failFunc - função que será executada se a requisição 
+         *      for bem sucedida mas retornar erros
+         */
         requestHandler = function (request, form, alertBlock, successFunc, failFunc) {
             // requisição bem sucedida - resposta do servidor
             request.done(function(response) {
@@ -442,53 +630,15 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                 alertBlock.html("Ocorreu um erro. A disciplina não foi criada!<br>");
             });
         };
-        
-        createFormInputTemplates = function(parentSubject) {
-            if (parentSubject === 'undefined') {
-                parentSubject = 0;
-            }
 
-            var nameErrorBlock = $('#subject-error-block-template > p')
-                    .clone()
-                    .addClass('subject-name-error');
-            var descriptionErrorBlock = $('#subject-error-block-template > p')
-                    .clone()
-                    .addClass('subject-description-error');
-    
-            var formTemplate = $('#subject-form')
-                    .clone()
-                    .attr('class', '')
-                    .removeAttr('id');
-
-            // campo de entrada para o nome e local exibir mensagens de erro
-            var nameInputTemplate = formTemplate
-                    .find('.subject-name-input')
-                    .first()
-                    .after(nameErrorBlock)
-                    .parent();
-
-            // campo de entrada para a descrição e local exibir mensagens de erro
-            var descriptionInputTemplate = formTemplate
-                    .find('.subject-description-input')
-                    .first()
-                    .after(descriptionErrorBlock)
-                    .parent();
-
-            // campo de entrada para a disciplina base
-            var parentSubjectInputTemplate = formTemplate
-                    .find('.subject-parent-input')
-                    .first()
-                    .val(parentSubject)
-                    .parent()
-                    .addClass('hide');
-
-            return {
-                name: nameInputTemplate,
-                description: descriptionInputTemplate,
-                parentSubject: parentSubjectInputTemplate
-            };
-        };
-
+        /*
+         * Abre o modal com o formulário de adição/edição de disciplinas.
+         * 
+         * @param {String} dialogTitle - título do modal
+         * @param {String} confirmButtonMessage - título do botão de confirmação
+         * @param {function} handlerFunction - função que será executada se o
+         *      usuário clicar no botão de confirmação
+         */
         openFormDialog = function(dialogTitle, confirmButtonMessage, handlerFunction) {
             var form = $('#form-modal');
             
@@ -504,6 +654,16 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
             });
         };
 
+        /*
+         * Dado um elemento qualquer, retorna o jQuery object do bloco de disciplina
+         * (disciplina base, disciplina, tópico) a qual o elemento faz parte. Se
+         * não fizer parte de nenhum, retorna null.
+         * 
+         * @param {object} element - jQuery object que representa um ou mais
+         *      elementos do DOM.
+         * @returns {object} - jQuery object - jQuery object do bloco de disciplina
+         *      a qual o objeto 'element' pertence
+         */
         getSubjectBlock = function(element) {
             var topic = element.closest('.topics');
             if (topic.length > 0) {
@@ -525,25 +685,21 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
             
             
         /*
+         * Cria um bloco de disciplina base.
          * 
-         * @param {type} name
-         * @param {type} description
-         * @param {type} id
-         * @param {type} bgColorClass
-         * @returns {undefined}
+         * @param {String} name - nome da disciplina base
+         * @param {String} description - descrição da disciplina base
+         * @param {String|int} id - id da disciplina base
+         * @returns {object} - jQuery object do bloco de disciplina base criado
          */
-        createBaseSubjectBlock = function(name, description, id, bgColorClass) {
+        createBaseSubjectBlock = function(name, description, id) {
             // template
             var baseSubjectBlockTemplate = $('#base-subject-block-template')
                     .clone()
                     .removeClass('hide');
 
             // cor de fundo aleatória
-            if (bgColorClass === 'undefined' || bgColorClass === 'random') {
-                // cores definidas
-                bgColorClass = getRandomColorClass()
-            }
-
+            var bgColorClass = getRandomColorClass();
 
             if (id === 'undefined' || id === '') { // sem atributos data-id e id
                 baseSubjectBlockTemplate.removeAttr('id');
@@ -564,11 +720,13 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
         };
 
         /*
+         * Cria um bloco de disciplina.
          * 
-         * @param {type} name
-         * @param {type} description
-         * @param {type} id
-         * @returns {undefined}
+         * @param {String} name - nome da disciplina
+         * @param {String} description - descrição da disciplina
+         * @param {String|int} id - id da disciplina
+         * @param {String|int} parentId - id da disciplina mãe
+         * @returns {object} - jQuery object do bloco de disciplina criado
          */
         createSubjectBlock = function(name, description, id, parentId) {
             // template
@@ -604,6 +762,14 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
             return subjectBlockTemplate;
         };
         
+        /*
+         * Dado o bloco de uma disciplina mãe, anexa uma disciplina filha.
+         * 
+         * @param {object} parentSubjectBlock - jQuery object do bloco da disciplina mãe
+         * @param {String|int} id - id da disciplina filha
+         * @param {String} name - nome da disciplina filha
+         * @param {String} description - descrição da disciplina filha
+         */
         appendChildToSubject = function(parentSubjectBlock, id, name, description) {
             var parentSubjectId = parentSubjectBlock.data('id');
             var childSubjectBlock = createSubjectBlock(
@@ -612,11 +778,9 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
                     id,
                     parentSubjectId);
             if (parentSubjectBlock.hasClass('base-subjects')) {
-                console.log('not ary');
                 var baseSubjectChildren = parentSubjectBlock.find('.base-subject-children').first();
                 baseSubjectChildren.append(childSubjectBlock);    
-            } else if (parentSubjectBlock.hasClass('subjects')) {  
-                console.log('ary');
+            } else if (parentSubjectBlock.hasClass('subjects')) { 
                 var baseSubjectChildren = parentSubjectBlock.closest('.base-subject-children');
                 if (baseSubjectChildren.find('.parent-' + parentSubjectId).length > 0) {
                     baseSubjectChildren.find('.parent-' + parentSubjectId).last().after(childSubjectBlock);   
@@ -629,6 +793,7 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
         return {
             init: function () {
                 preventUnwantedBehavior();
+                initKeyboardShortcuts();
                 initCreateFunctionality();
                 initDeleteFunctionality();
                 initEditFunctionality();
