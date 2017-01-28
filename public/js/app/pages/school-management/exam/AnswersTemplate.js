@@ -120,7 +120,7 @@ define(['moment', 'datatable'], function (moment) {
 
                             for (var k = 0; k < subgroup[g].questions.length; k++) {
                                 question = subgroup[g].questions[k];
-                                prevAns = answers !== null ? answers[tempNum].answers[g] : '-';
+                                prevAns = answers !== null ? (answers[tempNum].answers ? answers[tempNum].answers[g] : 'SUBGRUPO PARALELO TROCADO') : '-';
                                 table += generateAnswerRow(tempNum, question.answer, prevAns, parallelIdx);
                                 tempNum++;
                             }
@@ -131,7 +131,7 @@ define(['moment', 'datatable'], function (moment) {
                         table += '<tr><td colspan="3" class="text-center bg-navy">' + subgroup.subgroupName + '</td></tr>';
                         for (var k = 0; k < subgroup.questions.length; k++) {
                             question = subgroup.questions[k];
-                            prevAns = answers !== null ? answers[qNum] : '-';
+                            prevAns = answers !== null ? (answers[qNum].answers ? 'SUBGRUPO PARALELO TROCADO' : answers[qNum]) : '-';
                             table += generateAnswerRow(qNum, question.answer, prevAns, null);
                             qNum++;
                         }
