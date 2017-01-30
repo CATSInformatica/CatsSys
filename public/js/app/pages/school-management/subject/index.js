@@ -532,7 +532,7 @@ define(['jquery', 'datatable', 'jqueryui'], function () {
             
             if (selectedButton.hasClass('parent-edit')) {
                 selectedButton.removeClass('bg-yellow').removeClass('parent-edit');
-                var otherEditParentIcons = $('.fa-caret-square-o-down:not(.null-parent)');
+                var otherEditParentIcons = $('#base-subjects-block .fa-caret-square-o-down');
 
                 otherEditParentIcons.each(function() {
                     $(this).removeClass('fa-caret-square-o-down').addClass('fa-exchange');

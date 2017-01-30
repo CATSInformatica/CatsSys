@@ -3,12 +3,12 @@
     <p><?php echo $message; ?></p>
     <div class="row">
         <div class="col-xs-10 col-xs-offset-1">
-            <div class="box box-success collapsed-box">
+            <div class="box box-success">
                 <div class="box-header with-border">
                     <h3 class="box-title"><span class="fa fa-book"></span> Instruções</h3>
                     <div class="box-tools pull-right">
                         <button type="button" class="btn btn-box-tool" data-widget="collapse">
-                            <i class="fa fa-plus"></i>
+                            <i class="fa fa-minus"></i>
                         </button>
                     </div>
                 </div>
@@ -17,10 +17,16 @@
                     <div class="row">
                         <div class="col-md-6 col-xs-12">
                             <div class="row margin">
+                                <button type="button" class="btn col-xs-3 bg-blue">
+                                    <i class="fa fa-2x fa-plus paint-it-white"></i>
+                                </button>
+                                <h4 class="col-xs-9">Permite criar disciplinas primárias</h4>                        
+                            </div>
+                            <div class="row margin">
                                 <button type="button" class="btn col-xs-3 bg-green">
                                     <i class="fa fa-2x fa-plus paint-it-white"></i>
                                 </button>
-                                <h4 class="col-xs-9">Criar</h4>                        
+                                <h4 class="col-xs-9">Se nenhuma disciplina secundária estiver selecionada, é criada uma nova. Caso contrário, é criado um tópico filho para a disciplina selecionada.</h4>                        
                             </div>
                             <div class="row margin">
                                 <button type="button" class="btn col-xs-3">
@@ -28,14 +34,14 @@
                                 </button>
                                 <h4 class="col-xs-9">Editar</h4>                        
                             </div>
+                        </div>
+                        <div class="col-md-6 col-xs-12">
                             <div class="row margin">
                                 <button type="button" class="btn col-xs-3">
                                     <i class="fa fa-2x fa-close text-black"></i>
                                 </button>
                                 <h4 class="col-xs-9">Remover</h4>                        
                             </div>
-                        </div>
-                        <div class="col-md-6 col-xs-12">
                             <div class="row margin" >
                                 <button type="button" class="btn col-xs-3">
                                     <i class="fa fa-2x fa-plus text-black"></i>
@@ -284,7 +290,7 @@
             </div>
             
             <div class="col-xs-12 text-center">
-                <button type="button" class="btn bg-green col-xs-4 col-xs-offset-4 create-base-subject hide">
+                <button type="button" class="btn bg-blue col-xs-4 col-xs-offset-4 create-base-subject hide">
                     <i class="fa fa-2x fa-plus text-white"></i>
                 </button>
             </div>
