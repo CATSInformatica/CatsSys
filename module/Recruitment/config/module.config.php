@@ -454,7 +454,7 @@ return array(
                         'icon' => 'fa fa-file-text-o',
                         'toolbar' => [
                             [
-                                'url' => '/recruitment/pre-interview',
+                                'url' => '/recruitment/registration/access',
                                 'id' => 'fn-pre-interview',
                                 'title' => 'Inscrição/Pré-entrevista',
                                 'description' => 'Permite editar informações de inscrição e pré-entrevista',
