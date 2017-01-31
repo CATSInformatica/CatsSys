@@ -202,6 +202,17 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 ]
             ])
             ->add([
+                'name' => 'interviewBasicSalary',
+                'type' => 'number',
+                'options' => [
+                    'label' => 'Valor do Salário Mínimo',
+                ],
+                'attributes' => [
+                    'value' => 937,
+                    'id' => 'minimumSalary',
+                ]
+            ])
+            ->add([
                 'name' => 'interviewTotalIncome',
                 'type' => 'radio',
                 'options' => [
@@ -457,6 +468,9 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
             'interviewerCommentStudent' => [
                 'required' => false,
             ],
+            'interviewBasicSalary' => [
+                'required' => false,
+            ],
             'interviewTotalIncome' => [
                 'required' => true,
             ],
@@ -464,9 +478,6 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'required' => true,
             ],
             'interviewMaxScholarity' => [
-                'required' => true,
-            ],
-            'interviewTotalIncome' => [
                 'required' => true,
             ],
             'interviewHomeType' => [
