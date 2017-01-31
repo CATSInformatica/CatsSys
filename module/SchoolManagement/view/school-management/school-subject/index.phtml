@@ -1,38 +1,375 @@
 <section class="content">
 
-    <p><?php echo $message ?></p>
+    <p><?php echo $message; ?></p>
     <div class="row">
-        <div class="table-responsive col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
-            <table id="subject-table" class="table table-condensed table-striped">
-                <thead>
-                    <tr>
-                        <th class="text-center">#</th>
-                        <th class="text-center">Disciplina</th>
-                        <th class="text-center">Descrição</th>
-                        <th class="text-center">Disciplina superior</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if ($subjects): ?>
-                        <?php foreach ($this->subjects as $subject): ?>
-                            <tr class="cats-row" data-id="<?php echo $subject->getSubjectId(); ?>" id="subject-<?php echo $subject->getSubjectId(); ?>">
-                                <td class="text-center"> <?php echo $subject->getSubjectId(); ?></td>
-                                <td class="text-center"> <?php echo $subject->getSubjectName(); ?></td>
-                                <td class="text-center"> <?php echo $subject->getSubjectDescription(); ?></td>
-                                <td class="text-center"> 
-                                    <?php if ($subject->getParent() !== null): ?>
-                                        <dd><?php echo $subject->getParent()->getSubjectName(); ?></dd>
-                                    <?php else: ?>
-                                        -
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
+        <div class="col-xs-10 col-xs-offset-1">
+            <div class="box box-success">
+                <div class="box-header with-border">
+                    <h3 class="box-title"><span class="fa fa-book"></span> Instruções</h3>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse">
+                            <i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6 col-xs-12">
+                            <div class="row margin">
+                                <button type="button" class="btn col-xs-3 bg-blue">
+                                    <i class="fa fa-2x fa-plus paint-it-white"></i>
+                                </button>
+                                <h4 class="col-xs-9">Permite criar disciplinas primárias</h4>                        
+                            </div>
+                            <div class="row margin">
+                                <button type="button" class="btn col-xs-3 bg-green">
+                                    <i class="fa fa-2x fa-plus paint-it-white"></i>
+                                </button>
+                                <h4 class="col-xs-9">Se nenhuma disciplina secundária estiver selecionada, é criada uma nova. Caso contrário, é criado um tópico filho para a disciplina selecionada.</h4>                        
+                            </div>
+                            <div class="row margin">
+                                <button type="button" class="btn col-xs-3">
+                                    <i class="fa fa-2x fa-edit text-black"></i>
+                                </button>
+                                <h4 class="col-xs-9">Editar</h4>                        
+                            </div>
+                        </div>
+                        <div class="col-md-6 col-xs-12">
+                            <div class="row margin">
+                                <button type="button" class="btn col-xs-3">
+                                    <i class="fa fa-2x fa-close text-black"></i>
+                                </button>
+                                <h4 class="col-xs-9">Remover</h4>                        
+                            </div>
+                            <div class="row margin" >
+                                <button type="button" class="btn col-xs-3">
+                                    <i class="fa fa-2x fa-plus text-black"></i>
+                                </button>
+                                <h4 class="col-xs-9">Mostrar disciplinas filhas</h4>                        
+                            </div>
+                            <div class="row margin">
+                                <button type="button" class="btn col-xs-3">
+                                    <i class="fa fa-2x fa-exchange text-black"></i>
+                                </button>
+                                <h4 class="col-xs-9">Trocar disciplina mãe</h4>                        
+                            </div>
+                            <div class="row margin">
+                                <button type="button" class="btn col-xs-3">
+                                    <i class="fa fa-2x fa-caret-square-o-down text-black"></i>
+                                </button>
+                                <h4 class="col-xs-9">Selecionar como mãe</h4> 
+                            </div>
+                        </div>
+                    </div>
+                    <hr>
+                    <div class="row margin">
+                        <button type="button" class="btn col-md-2 col-xs-3">
+                            <i class="fa fa-2x fa-level-up" aria-hidden="true" style="transform: rotate(90deg);"></i>
+                        </button>
+                        <h4 class="col-md-10 col-xs-9">Tópico, filho da disciplina acima.</h4>                        
+                    </div>
+                </div>
+                <!-- /.box-body -->
+            </div>
+            
+            <div class="col-xs-12 text-center">
+                <button type="button" class="btn margin-bottom bg-white edit-parent-subject null-parent-button" style="display: none;">
+                    <i class="fa fa-3x fa-caret-square-o-down text-black null-parent" aria-hidden="true"></i>
+                </button>
+            </div>
+                
+            <style>
+                .custom-icon-size {
+                    font-size: 20px;
+                }
 
-                    <?php endif; ?>
-                </tbody>
-            </table>
-        </div>        
+                .paint-it-white {
+                    color: white;
+                }
+
+                .vcenter {
+                    display: inline-block;
+                    vertical-align: middle;
+                    float: none;
+                }
+            </style>
+            <div class="col-xs-12 no-padding" id="base-subjects-block">
+                <?php $colors = ['teal', 'purple', 'orange', 'navy', 'maroon', 'black', 'primary']; ?>
+                
+                <?php foreach (array_merge(['emptyIndex'], $this->baseSubjects) as $i => $baseSubject) : ?>
+                    <?php 
+                    // Usado para criar um template do bloco -- para a inserção de
+                    // novas disciplinas base -- e evitar a duplicação do código
+                    if ($baseSubject === 'emptyIndex') :
+                        $baseSubjectId = '';
+                        $baseSubjectName = '';
+                        $baseSubjectDescription = '';
+                        
+                        $baseSubjectNameBlockClass = 'col-xs-12';
+                        $baseSubjectBgColorClass = '';
+                        $baseSubjectBlockClass = 'hide';
+                        $baseSubjectBlockId = 'base-subject-block-template';
+                    else :
+                        $baseSubjectId = $baseSubject->getSubjectId();
+                        $baseSubjectName = $baseSubject->getSubjectName();
+                        $baseSubjectDescription = $baseSubject->getSubjectDescription();
+                        
+                        $baseSubjectNameBlockClass = 'col-xs-9 col-sm-10 col-md-11';
+                        $baseSubjectBgColorClass = 'bg-' . $colors[$i % count($colors)];
+                        $baseSubjectBlockClass = '';
+                        $baseSubjectBlockId = 'subject-' . $baseSubjectId;
+                    endif;
+                    ?>
+                    
+                    <div class="base-subjects <?php echo $baseSubjectBlockClass; ?>"
+                         data-id="<?php echo $baseSubjectId; ?>"
+                         id="<?php echo $baseSubjectBlockId; ?>"
+                         data-parent-id="0">
+                        <div class="box box-widget widget-user-2 collapsed-box">
+                            <div class="box-header widget-user-header bg-color-class paint-it-white base-subject-header
+                                 <?php echo $baseSubjectBgColorClass; ?>">
+                                <div class="row col-xs-10">
+                                    <h3 class="widget-user-username base-subject-name text-uppercase <?php echo $baseSubjectNameBlockClass; ?>" style="margin-left: 0;">
+                                        <?php echo $baseSubjectName; ?>
+                                    </h3>
+                                    <p class="text-justify base-subject-description col-xs-12 text-block">
+                                        <?php echo $baseSubjectDescription; ?>
+                                    </p>
+                                </div>
+                                <div class="box-tools pull-right text-right col-xs-2 no-padding">
+                                    <button type="button" class="btn btn-box-tool action-button" data-widget="collapse">
+                                        <i class="fa fa-2x fa-plus paint-it-white"></i>
+                                    </button>
+                                    <br><br>
+                                    <button type="button" class="btn btn-box-tool edit-parent-subject hide">
+                                        <i class="fa fa-2x fa-exchange paint-it-white" aria-hidden="true"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-box-tool edit-base-subject hide">
+                                        <i class="fa fa-2x fa-edit paint-it-white"></i>
+                                    </button>
+                                    <button type="button" class="btn btn-box-tool delete-base-subject hide">
+                                        <i class="fa fa-2x fa-close paint-it-white"></i>
+                                    </button>
+                                </div>
+                            </div>
+                            <div class="box-footer no-padding">
+                                <div class="col-xs-12 no-padding">
+                                    <table class="table table-bordered col-xs-12 no-margin">
+                                        <thead>
+                                            <tr>
+                                                <th class="text-center">
+                                                    Disciplina
+                                                </th>
+                                                <th class="text-center">
+                                                    Descrição
+                                                </th>
+                                                <th class="text-center">
+                                                    Ações
+                                                </th>
+                                            </tr>
+                                        </thead>
+                                        <tbody class="base-subject-children">
+                                            <?php if ($baseSubject === 'emptyIndex') :
+                                                $baseSubjectChildren = ['emptySubjectIndex'];
+                                            else : 
+                                                $baseSubjectChildren = array_merge(['emptySubjectIndex'], $baseSubject->getChildren()->toArray());
+                                            endif;
+                                            ?>      
+                                            <?php foreach ($baseSubjectChildren as $subject) : ?>
+                                                <?php 
+                                                // Usado para criar um template do bloco -- para a inserção de
+                                                // novas disciplinas -- e evitar a duplicação do código
+                                                if ($subject === 'emptySubjectIndex') :
+                                                    $subjectId = '';
+                                                    $subjectName = '';
+                                                    $subjectDescription = '';
+
+                                                    $subjectBlockId = '';
+                                                    $subjectBlockClass = 'subject-block-template hide';
+
+                                                    $subjectChildren = [];
+                                                else :
+                                                    $subjectId = $subject->getSubjectId();
+                                                    $subjectName = $subject->getSubjectName();
+                                                    $subjectDescription = $subject->getSubjectDescription();
+
+                                                    $subjectBlockId = 'subject-' . $subjectId;
+                                                    $subjectBlockClass = 'parent-' . $baseSubjectId;
+
+                                                    $subjectChildren = $subject->getChildren();
+                                                endif;
+                                                ?>
+
+                                                <tr id="<?php echo $subjectBlockId; ?>" 
+                                                    class="subjects cats-row <?php echo $subjectBlockClass; ?>" 
+                                                    data-id="<?php echo $subjectId; ?>"
+                                                    data-parent-id="<?php echo $baseSubjectId; ?>"
+                                                >
+                                                    <td class="col-xs-4">
+                                                        <div class="col-xs-12 subject-name">
+                                                            <?php echo $subjectName; ?>
+                                                        </div>
+                                                    </td>
+                                                    <td class="col-xs-5 col-lg-6 text-justify subject-description">
+                                                        <?php echo $subjectDescription; ?>
+                                                    </td>
+                                                    <td class="col-xs-3 col-lg-2 text-center control-icons no-padding">
+                                                        <button type="button" class="btn btn-box-tool edit-parent-subject custom-icon-size hide">
+                                                            <i class="fa fa-exchange text-black" aria-hidden="true"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-box-tool edit-subject custom-icon-size hide">
+                                                            <i class="fa fa-pencil-square-o text-black" aria-hidden="true"></i>
+                                                        </button>
+                                                        <button type="button" class="btn btn-box-tool delete-subject hide custom-icon-size">
+                                                            <i class="fa fa-close text-red" aria-hidden="true"></i>
+                                                        </button>
+                                                    </td>
+                                                </tr>    
+
+                                                <?php foreach ($subjectChildren as $topic) : ?>
+                                                    <?php
+                                                        $topicId = $topic->getSubjectId();
+                                                        $topicName = $topic->getSubjectName();
+                                                        $topicDescription = $topic->getSubjectDescription();
+
+                                                        $subjectBlockId = 'subject-' . $topicId;
+                                                    ?>
+
+                                                    <tr id="<?php echo $subjectBlockId; ?>" 
+                                                        class="subjects topics bg-gray parent-<?php echo $subjectId; ?>" 
+                                                        data-id="<?php echo $topicId; ?>"
+                                                        data-parent-id="<?php echo $subjectId; ?>"
+                                                    >
+                                                        <td class="col-xs-3">
+                                                            <div class="col-xs-2 text-center child-subject-block no-padding">
+                                                                <i class="fa fa-level-up custom-icon-size" aria-hidden="true" style="transform: rotate(90deg);"></i>
+                                                            </div>
+                                                            <div class="col-xs-10 subject-name no-padding">
+                                                                <?php echo $topicName; ?>
+                                                            </div>
+                                                        </td>
+                                                        <td class="col-xs-5 col-lg-6 text-justify subject-description">
+                                                            <?php echo $topicDescription; ?>
+                                                        </td>
+                                                        <td class="col-xs-3 col-lg-2 text-center control-icons no-padding">
+                                                            <button type="button" class="btn btn-box-tool edit-parent-subject custom-icon-size hide">
+                                                                <i class="fa fa-exchange text-black" aria-hidden="true"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-box-tool edit-subject custom-icon-size hide">
+                                                                <i class="fa fa-pencil-square-o text-black" aria-hidden="true"></i>
+                                                            </button>
+                                                            <button type="button" class="btn btn-box-tool delete-subject hide custom-icon-size">
+                                                                <i class="fa fa-close text-red" aria-hidden="true"></i>
+                                                            </button>
+                                                        </td>
+                                                    </tr>                                                   
+                                                <?php endforeach; ?>
+
+                                            <?php endforeach; ?>
+                                        </tbody>
+                                    </table>
+                                    <div class="col-xs-12 text-center">
+                                        <button type="button" class="btn bg-green col-xs-2 col-xs-offset-5 create-subject custom-icon-size hide">
+                                            <i class="fa fa-plus text-white" aria-hidden="true"></i>
+                                        </button>
+                                    </div>
+                                </div>
+                            </div>
+                            <p class="subject-alert"></p>
+                        </div>
+                    </div>
+                <?php endforeach; ?>
+                
+            </div>
+            
+            <div class="col-xs-12 text-center">
+                <button type="button" class="btn margin-bottom bg-white edit-parent-subject null-parent-button hide" style="display: none;">
+                    <i class="fa fa-3x fa-caret-square-o-down text-black null-parent" aria-hidden="true"></i>
+                </button>
+            </div>
+            
+            <div class="col-xs-12 text-center">
+                <button type="button" class="btn bg-blue col-xs-4 col-xs-offset-4 create-base-subject hide">
+                    <i class="fa fa-2x fa-plus text-white"></i>
+                </button>
+            </div>
+            
+            <p id="base-subject-alert" class="col-xs-12"></p>
+
+            
+            <!-- TEMPLATES -->
+            <div class="modal fade" id="confirm-deletion-modal" tabindex="-1" role="dialog" aria-labelledby="removeSubject">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="removeSubject">Remoção de disciplina</h4>
+                        </div>
+                        <div class="modal-body">
+                            <p>Tem certeza que deseja remover esta disciplina?</p>
+                            <br>
+                            <p class="text-bold text-red">Remover esta disciplina implicará na remoção de todas as suas disciplinas filhas.</p>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default cancel-button" data-dismiss="modal">Cancelar</button>
+                            <button type="button" id="confirm-deletion-button" class="btn btn-primary">Remover disciplina</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal fade" id="form-modal" tabindex="-1" role="dialog" aria-labelledby="formModalName">
+                <div class="modal-dialog" role="document">
+                    <div class="modal-content">
+                        <div class="modal-header">
+                            <button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+                            <h4 class="modal-title" id="formModalName"></h4>
+                        </div>
+                        <div class="modal-body">
+                            <?php if ($this->form !== null) : ?>
+                            <form id="subject-form">
+                                <?php
+                                $this->form->prepare();
+                                $examContent = $this->form->get('subject-fieldset');
+                                echo $this->form()->openTag($form);
+
+                                echo $this->formRow($examContent->get('subjectName'));
+                                ?>
+                                <p class="text-red subject-name-error" style="font-size: initial;"></p>
+
+                                <?php
+                                echo $this->formRow($examContent->get('subjectDescription'));
+                                ?>
+                                <p class="text-red subject-description-error" style="font-size: initial;"></p>
+
+                                <div class="hide">
+                                    <?php 
+                                    echo $this->formRow($examContent->get('subjectParent')); 
+                                    ?>
+                                </div>
+
+                                <?php
+                                echo $this->form()->closeTag(); 
+                                ?>
+                            </form>
+                            <?php endif; ?>
+                        </div>
+                        <div class="modal-footer">
+                            <button type="button" class="btn btn-default cancel-button" data-dismiss="modal">Cancelar</button>
+                            <button type="button" id="confirm-button" class="btn btn-primary"></button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div id="child-subject-icon-template" class="hide">
+                <div class="col-xs-1 text-right">
+                    <i class="fa fa-level-up custom-icon-size" aria-hidden="true" style="transform: rotate(90deg);"></i>
+                </div>
+            </div>
+        </div>  
+        
     </div>
 
 </section>

@@ -32,6 +32,7 @@ define(['moment'], function (moment) {
         var groupOrder;
         var answers;
         var sortedAnswers;
+        var saveIndex;
 
         var CRITERIA = {
             AGE_CODE: -1,
@@ -86,10 +87,10 @@ define(['moment'], function (moment) {
                 $("#set-criteria").prop('disabled', true);
 
                 getApplicationResult().then(function (results) {
-                    if(results.length) {
+                    if (results.length) {
                         createLoadedResultTable(results);
                     }
-                    
+
                 });
             });
 
@@ -109,7 +110,7 @@ define(['moment'], function (moment) {
                 console.log('order', groupOrder);
                 console.log('answers', answers);
                 console.log('sortedAnswers', sortedAnswers);
-
+                saveIndex = 0;
                 createResultTable();
             });
         };
@@ -122,7 +123,7 @@ define(['moment'], function (moment) {
             gs = results[0].groups;
 
             table += gs.map(function (g) {
-                    return "<th class='text-center'>" + g + "</th>";
+                return "<th class='text-center'>" + g + "</th>";
             }).join('');
 
             table += "<th class='text-center'>TOTAL</th></tr><thead><tbody>";
@@ -131,7 +132,7 @@ define(['moment'], function (moment) {
 
             // para cada resultado
             for (var i = 0; i < results.length; i++) {
-                tableContent += '<tr><td class="text-center">' + results[i].position + 
+                tableContent += '<tr><td class="text-center">' + results[i].position +
                         'º</td><td class="text-center">' + results[i].currentStatus + '</td><td class="text-center">' + results[i].registrationNumber + '</td>';
                 // para cada grupo, na ordem definida
                 for (var j = 0; j < gs.length; j++) {
@@ -271,36 +272,36 @@ define(['moment'], function (moment) {
             });
 
             sortedAnswers.sort(function (answerA, answerB) {
-                
+
                 var ret;
-                
+
                 // resultado A maior que resultado B
                 if (answerA.result > answerB.result) {
                     for (var i = 0; i < answerA.partialResult.length; i++) {
-                        
+
                         if (!answerB.partialResult[i] && answerA.partialResult[i]) {
                             return -1;
                         }
-                        
+
                         if (!answerA.partialResult[i] && answerB.partialResult[i]) {
                             return 1;
                         }
                     }
                     return -1;
                 } else if (answerB.result > answerA.result) {
-                    
+
                     for (var i = 0; i < answerA.partialResult.length; i++) {
-                        
+
                         if (!answerA.partialResult[i] && answerB.partialResult[i]) {
                             return 1;
                         }
-                        
+
                         if (!answerB.partialResult[i] && answerA.partialResult[i]) {
                             return -1;
                         }
-                        
+
                     }
-                    
+
                     return 1;
                 } else {
                     ret = 0;
@@ -311,10 +312,10 @@ define(['moment'], function (moment) {
                         } else if (answerB.partialResult[i] > answerA.partialResult[i] && !ret) {
                             ret = 1;
                         }
-                        
-                        if(ret > 0 && !answerB.partialResult[i] && answerA.partialResult[i]) {
+
+                        if (ret > 0 && !answerB.partialResult[i] && answerA.partialResult[i]) {
                             return -1;
-                        } else if(ret < 0 && !answerA.partialResult[i] && answerB.partialResult[i]) {
+                        } else if (ret < 0 && !answerA.partialResult[i] && answerB.partialResult[i]) {
                             return 1;
                         }
                     }
@@ -425,11 +426,17 @@ define(['moment'], function (moment) {
         getResult = function () {
 
             if (sortedAnswers) {
-                return {
+                
+                var obj = {
                     recruitment: recruitment.val(),
                     application: currentApplicationId,
-                    results: sortedAnswers
+                    results: sortedAnswers.slice(saveIndex, saveIndex + 10)
                 };
+                
+                saveIndex += 10;
+                
+                return obj;
+                
             } else {
                 return {
                 };

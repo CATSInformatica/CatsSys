@@ -1,11 +1,12 @@
-<?php use Recruitment\Entity\RecruitmentStatus; ?>
+<?php
+use Recruitment\Entity\RecruitmentStatus; ?>
 
 <section class="content">
     <div class="row">
         <div class="col-md-3">
             <div class="box box-primary">
                 <div class="box-body box-profile">
-                    <?php $person = $registration->getPerson(); ?>
+<?php $person = $registration->getPerson(); ?>
                     <h2 class="text-center"><?php echo $person->getPersonFirstName() . " " . $person->getPersonLastName() ?></h2>
                     <h2 class="text-muted text-center">
                         <small>Nº de inscrição: <?php echo $registration->getRegistrationNumber(); ?></small>
@@ -81,12 +82,12 @@
                         if ($st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_REGISTERED)) {
                             $inscriptionStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
                         } elseif (
-                            $st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_CONFIRMED)
-                            || $st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_EXAM_DISAPPROVED)
-                            || $st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_EXAM_WAITING_LIST)
-                            ) {
+                            $st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_CONFIRMED) 
+                            || $st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_EXAM_DISAPPROVED) || $st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_EXAM_WAITING_LIST)
+                        ) {
                             $confirmationStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
-                        } elseif ($st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW)) {
+                        } elseif (
+                            $st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW)) {
                             $preInterviewSummonedStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
                         } elseif ($st->getRecruitmentStatus()->is(RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE)) {
                             $preInterviewConclusionStatusTime = $st->getTimestamp('d/m/Y \à\s H:i:s');
@@ -153,21 +154,15 @@
                         }
                     }
 
-                    //dia da pré entrevista
+                    //dia da pré-entrevista
                     //tratamento com tempo e status
-                    if (isset($preInterviewSummonedStatusTime) && isset($preInterviewConclusionStatusTime)) {
-                        $preInterview = $completed;
-                    } elseif (isset($preInterviewSummonedStatusTime) && isset($preInterviewConclusionStatusTime) == false) {
-                        if ($preInterviewDate > $currentDate) {
-                            $preInterview = $processing;
-                        } elseif ($preInterviewDate < $currentDate) {
-                            //candidato não fez a pré-entrevista
-                            $preInterview = $disapproved;
+                    if (isset($preInterviewSummonedStatusTime)) {
+                        if(isset($preInterviewConclusionStatusTime)) {
+                          $preInterview = $completed;
+                        } else {
+                          $preInterview = $summoned;
                         }
-                    } elseif (isset($preInterviewSummonedStatusTime) == false && $preInterviewDate < $currentDate) {
-                        //candidato não chamado para pré-entrevista
-                        $preInterview = $disapproved;
-                    } elseif (isset($preInterviewSummonedStatusTime) == false && $preInterviewDate == $currentDate) {
+                    } else {
                         $preInterview = $processing;
                     }
 
@@ -259,6 +254,7 @@
                                         } else {
                                             echo "<p>Entre os dias " . $recruitment->getConfirmationStartDate() . ' e ' . $recruitment->getConfirmationEndDate() . "</p>";
                                         }
+
                                         ?>
                                         <span>
                                             <?php echo $recruitment->getConfirmationDescription(); ?>
@@ -318,7 +314,7 @@
                                         if (isset($preInterviewConclusionStatusTime)) {
                                             echo "<p>Realizada no dia " . $preInterviewConclusionStatusTime;
                                         } else {
-                                            echo "<p>Dia " . $recruitment->getPreInterviewStartDate() . "</p>";
+                                            echo "<p>A partir de " . $recruitment->getPreInterviewStartDate() . "</p>";
                                         }
 
                                         ?>
@@ -330,6 +326,12 @@
                                         <i class="fa fa-files-o"></i>
                                         5
                                     </div>
+                                     <?php if ($preInterview === $completed || $preInterview === $summoned): ?>
+                                        <a class="small-box-footer" href="/recruitment/pre-interview/student-pre-interview-form">
+                                            <h4>Acessar Formulário de Pre-entrevista <i class="fa fa-arrow-circle-right"></i>
+                                            </h4>
+                                        </a>
+                                    <?php endif; ?>
                                 </div>
                             </div>
                             <div class="col-lg-6 col-xs-12">

@@ -1312,15 +1312,15 @@ class StudentInterview
     public static function getInterviewStudentVulnerabilityArray()
     {
         return [
-            self::VULNERABILITY_HIGH => '(8 a 10 pontos) ' . self::VULNERABILITY_HIGH .
+            self::VULNERABILITY_HIGH => '[8,00 a 10,00] ' . self::VULNERABILITY_HIGH .
             ': ' . self::VULNERABILITY_HIGH_DESC,
-            self::VULNERABILITY_MIDDLE => '(5 a 8 pontos) ' . self::VULNERABILITY_MIDDLE .
+            self::VULNERABILITY_MIDDLE => '[6,00 a 7,99] ' . self::VULNERABILITY_MIDDLE .
             ': ' . self::VULNERABILITY_MIDDLE_DESC,
-            self::VULNERABILITY_LOW => '(3 a 5 pontos) ' . self::VULNERABILITY_LOW .
+            self::VULNERABILITY_LOW => '[4,00 a 5,99] ' . self::VULNERABILITY_LOW .
             ': ' . self::VULNERABILITY_LOW_DESC,
-            self::VULNERABILITY_TEMPORARY => '(1 a 3 pontos) ' . self::VULNERABILITY_TEMPORARY .
+            self::VULNERABILITY_TEMPORARY => '[2,00 a 3,99] ' . self::VULNERABILITY_TEMPORARY .
             ': ' . self::VULNERABILITY_TEMPORARY_DESC,
-            self::VULNERABILITY_NONE => '(zero pontos) ' . self::VULNERABILITY_NONE .
+            self::VULNERABILITY_NONE => '[0,00 a 1,99] ' . self::VULNERABILITY_NONE .
             ': ' . self::VULNERABILITY_NONE_DESC,
         ];
     }
@@ -1396,15 +1396,15 @@ class StudentInterview
     public static function getInterviewStudentQuestionArray()
     {
         return [
-            self::INTERVIEW_STUDENT_ADVANCED => '(2 a 4 pontos) ' . self::INTERVIEW_STUDENT_ADVANCED . ': ' .
+            self::INTERVIEW_STUDENT_ADVANCED => '[8,00 a 10,00] ' . self::INTERVIEW_STUDENT_ADVANCED . ': ' .
             self::INTERVIEW_STUDENT_ADVANCED_DESC,
-            self::INTERVIEW_STUDENT_MODERATE => '(4 a 7 pontos) ' . self::INTERVIEW_STUDENT_MODERATE . ': ' .
+            self::INTERVIEW_STUDENT_MODERATE => '[6,00 a 7,99] ' . self::INTERVIEW_STUDENT_MODERATE . ': ' .
             self::INTERVIEW_STUDENT_MODERATE_DESC,
-            self::INTERVIEW_STUDENT_COMMON => '(7 a 10 pontos) ' . self::INTERVIEW_STUDENT_COMMON . ': ' .
+            self::INTERVIEW_STUDENT_COMMON => '[4,00 a 5,99] ' . self::INTERVIEW_STUDENT_COMMON . ': ' .
             self::INTERVIEW_STUDENT_COMMON_DESC,
-            self::INTERVIEW_STUDENT_PROBLEMATIC => '(1 a 2 pontos) ' . self::INTERVIEW_STUDENT_PROBLEMATIC . ': ' .
+            self::INTERVIEW_STUDENT_PROBLEMATIC => '[2,00 a 3,99] ' . self::INTERVIEW_STUDENT_PROBLEMATIC . ': ' .
             self::INTERVIEW_STUDENT_PROBLEMATIC_DESC,
-            self::INTERVIEW_STUDENT_NOTMET => '(zero pontos) ' . self::INTERVIEW_STUDENT_NOTMET . ': ' .
+            self::INTERVIEW_STUDENT_NOTMET => '[0,00 a 1,99] ' . self::INTERVIEW_STUDENT_NOTMET . ': ' .
             self::INTERVIEW_STUDENT_NOTMET_DESC,
         ];
     }
@@ -1474,60 +1474,60 @@ class StudentInterview
     public static function calculateSocioeconomicGrade($iti, $inofm, $ims, $iht, $ihs, $imp)
     {
         $interviewTotalIncomeArr = [
-            self::TOTAL_INCOME_MORETHANSIXTEEN_SALARY => 0.83,
-            self::TOTAL_INCOME_EIGHTTOSIXTEEN_SALARY => 1.67,
-            self::TOTAL_INCOME_FOURTOEIGHT_SALARY => 2.5,
-            self::TOTAL_INCOME_TWOTOFOUR_SALARY => 3.33,
-            self::TOTAL_INCOME_ONEANDHALFTOTWO_SALARY => 4.17,
-            self::TOTAL_INCOME_ONETOONEANDHALF_SALARY => 5,
-            self::TOTAL_INCOME_HALFTOONE_SALARY => 7.5,
-            self::TOTAL_INCOME_HALF_SALARY => 10,
+            self::TOTAL_INCOME_MORETHANSIXTEEN_SALARY => 10,
+            self::TOTAL_INCOME_EIGHTTOSIXTEEN_SALARY => 7.5,
+            self::TOTAL_INCOME_FOURTOEIGHT_SALARY => 5,
+            self::TOTAL_INCOME_TWOTOFOUR_SALARY => 4.17,
+            self::TOTAL_INCOME_ONEANDHALFTOTWO_SALARY => 3.33,
+            self::TOTAL_INCOME_ONETOONEANDHALF_SALARY => 2.5,
+            self::TOTAL_INCOME_HALFTOONE_SALARY => 1.67,
+            self::TOTAL_INCOME_HALF_SALARY => 0.83,
         ];
 
         $interviewNumberOfFamilyMembersArr = [
-            self::FAMILY_MEMBERS_ONEORTWO => 1.67,
-            self::FAMILY_MEMBERS_THREEORFOUR => 3.33,
+            self::FAMILY_MEMBERS_ONEORTWO => 10,
+            self::FAMILY_MEMBERS_THREEORFOUR => 6.67,
             self::FAMILY_MEMBERS_FIVEORSIX => 5,
-            self::FAMILY_MEMBERS_SEVENOREIGHT => 6.67,
-            self::FAMILY_MEMBERS_NINEORMORE => 10,
+            self::FAMILY_MEMBERS_SEVENOREIGHT => 3.33,
+            self::FAMILY_MEMBERS_NINEORMORE => 1.67,
         ];
 
         $interviewMaxScholarityArr = [
-            self::MAXSCHOLARITY_GRADUATIONORMORE => 0,
-            self::MAXSCHOLARITY_HIGHSCHOOL => 1.43,
-            self::MAXSCHOLARITY_ELEMENTARYSCHOOLII => 2.86,
+            self::MAXSCHOLARITY_GRADUATIONORMORE => 10,
+            self::MAXSCHOLARITY_HIGHSCHOOL => 7.14,
+            self::MAXSCHOLARITY_ELEMENTARYSCHOOLII => 5.71,
             self::MAXSCHOLARITY_ELEMENTARYSCHOOLI => 4.29,
             self::MAXSCHOLARITY_ELEMENTARYSCHOOLI_COMPLETE => 4.29,
-            self::MAXSCHOLARITY_ELEMENTARYSCHOOLI_INCOMPLETE => 5.71,
-            self::MAXSCHOLARITY_LITERATE => 7.14,
-            self::MAXSCHOLARITY_ILITERATE => 10,
+            self::MAXSCHOLARITY_ELEMENTARYSCHOOLI_INCOMPLETE => 2.86,
+            self::MAXSCHOLARITY_LITERATE => 1.43,
+            self::MAXSCHOLARITY_ILITERATE => 0,
         ];
 
         $interviewHomeTypeArr = [
-            self::HOME_TYPE_OWN => 2.5,
-            self::HOME_TYPE_FUNDED => 5,
-            self::HOME_TYPE_RENTED => 7.5,
-            self::HOME_TYPE_GIVEIN => 10,
+            self::HOME_TYPE_OWN => 10,
+            self::HOME_TYPE_FUNDED => 7.5,
+            self::HOME_TYPE_RENTED => 5,
+            self::HOME_TYPE_GIVEIN => 2.5,
         ];
 
         $interviewHomeSituationArr = [
-            self::HOME_SITUATION_UNSATISFACTORY => 10,
+            self::HOME_SITUATION_UNSATISFACTORY => 0,
             self::HOME_SITUATION_GOOD => 6.67,
             self::HOME_SITUATION_REGULAR => 3.33,
-            self::HOME_SITUATION_GREAT => 0,
+            self::HOME_SITUATION_GREAT => 10,
         ];
 
         $interviewMaxPositionArr = [
-            self::MAX_POSITION_BUSINESSMAN => 0,
-            self::MAX_POSITION_HIGH_ADMINISTRADOR => 0.77,
-            self::MAX_POSITION_LIBERAL_AUTONOMOUS => 2.31,
-            self::MAX_POSITION_ADMINISTRATOR => 3.85,
+            self::MAX_POSITION_BUSINESSMAN => 10,
+            self::MAX_POSITION_HIGH_ADMINISTRADOR => 8.46,
+            self::MAX_POSITION_LIBERAL_AUTONOMOUS => 7.69,
+            self::MAX_POSITION_ADMINISTRATOR => 6.92,
             self::MAX_POSITION_PRODUCTION => 5.38,
             self::MAX_POSITION_AUTONOMOUS => 5.38,
-            self::MAX_POSITION_SMALL_PRODUCERS => 6.92,
-            self::MAX_POSITION_DOMESTICS => 7.69,
-            self::MAX_POSITION_RURAL_WORKER => 8.46,
-            self::MAX_POSITION_STUDENTOROTHER => 10,
+            self::MAX_POSITION_SMALL_PRODUCERS => 3.85,
+            self::MAX_POSITION_DOMESTICS => 2.31,
+            self::MAX_POSITION_RURAL_WORKER => 0.77,
+            self::MAX_POSITION_STUDENTOROTHER => 0,
         ];
         
         $grade = (

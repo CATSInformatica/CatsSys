@@ -516,14 +516,24 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
              * 
              */
             function updateInterface() {
+                var allBaseSubjectsBlock = $('#all-base-subjects');
                 $('#start-number').val(contentConfig.questionsStartAtNumber);
                 
                 for (var i = 0; i < contentConfig.groups.length; ++i) {
+                    var baseSubjectBlock = $('#base-subject-' + contentConfig.groups[i].id);
+                    var childrenSubjectsBlock = baseSubjectBlock.find('.children-subjects').first(); 
+                    
+                    // ordena as disciplinas base
+                    allBaseSubjectsBlock.append(baseSubjectBlock);
+                    
                     for (var j = 0; j < contentConfig.groups[i].subgroups.length; ++j) {
                         
                         // disciplina paralela
                         if (Array.isArray(contentConfig.groups[i].subgroups[j])) {
                             for (var k = 0; k < contentConfig.groups[i].subgroups[j].length; ++k) {
+                                // ordena as disciplinas
+                                childrenSubjectsBlock.append($('#subject-' + contentConfig.groups[i].subgroups[j][k].id));
+                                
                                 var quantity = contentConfig.groups[i].subgroups[j][k].numberOfProposedQuestions;
                                 var subjectBlock = $('#subject-' + contentConfig.groups[i].subgroups[j][k].id);
                                 
@@ -535,6 +545,9 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
                                     .find('.select-parallel-subjects')
                                     .click();
                         } else {
+                            // ordena as disciplinas
+                            childrenSubjectsBlock.append($('#subject-' + contentConfig.groups[i].subgroups[j].id));
+
                             var quantity = contentConfig.groups[i].subgroups[j].numberOfProposedQuestions;
                             var subjectBlock = $('#subject-' + contentConfig.groups[i].subgroups[j].id);
                             
