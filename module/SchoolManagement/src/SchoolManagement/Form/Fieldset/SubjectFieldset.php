@@ -24,7 +24,7 @@ class SubjectFieldset extends Fieldset implements InputFilterProviderInterface
 
     public function __construct(ObjectManager $obj)
     {
-        parent::__construct('subject');
+        parent::__construct('subject-fieldset');
 
         $this->setHydrator(new DoctrineHydrator($obj))
             ->setObject(new Subject());
@@ -33,49 +33,34 @@ class SubjectFieldset extends Fieldset implements InputFilterProviderInterface
             ->add(array(
                 'name' => 'subjectName',
                 'type' => 'text',
-                'attributes' => array(
-                    'placeholder' => 'Ex: História do Brasil',
-                ),
                 'options' => array(
                     'label' => 'Nome da disciplina',
                 ),
                 'attributes' => array(
-                    'id' => 'subject-name',
+                    'class' => 'subject-name-input',
                 ),
             ))
             ->add(array(
                 'name' => 'subjectParent',
-                'type' => 'select',
-                'options' => array(
-                    'label' => 'Disciplina a qual pertence',
-                    'value_options' => $this->getSubjects($obj),
-                ),
+                'type' => 'number',
                 'attributes' => array(
-                    'id' => 'subject-parent',
+                    'min' => '0',
+                    'step' => '1',
+                    'class' => 'subject-parent-input',
                 ),
             ))
             ->add(array(
                 'name' => 'subjectDescription',
                 'type' => 'textarea',
                 'attributes' => array(
-                    'rows' => 4,
+                    'rows' => 2,
+                    'class' => 'subject-description-input',
                 ),
                 'options' => array(
                     'label' => 'Descrição da disciplina',
                 ),
             ))
         ;
-    }
-
-    protected function getSubjects($obj)
-    {
-        $subjects = $obj->getRepository('SchoolManagement\Entity\Subject')->findAll();
-        $subjectNames = [];
-        $subjectNames[0] = '---';
-        foreach ($subjects as $s) {
-            $subjectNames[$s->getSubjectId()] = $s->getSubjectName();
-        }
-        return $subjectNames;
     }
 
     public function getInputFilterSpecification()

@@ -26,69 +26,95 @@ class SchoolSubjectController extends AbstractEntityActionController
 {
 
     /**
-     * Exibe em uma tabela todas as disciplinas cadastradas
+     * Exibe as disciplinas e permite sua adição, edição e remoção.
      * 
      * @return ViewModel
      */
     public function indexAction()
     {
-        $message = null;
         try {
             $em = $this->getEntityManager();
-            $subjects = $em->getRepository('SchoolManagement\Entity\Subject')->findAll();
+            
+            $form = new SubjectForm($em);
+            $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')
+                    ->findBy(['parent' => null]);
+            
+            return new ViewModel(array(
+                'baseSubjects' => $baseSubjects,
+                'form' => $form,
+                'message' => null,
+            ));
         } catch (Exception $ex) {
-            $message = $ex->getMessage();
-        }
-
-        return new ViewModel(array(
-            'subjects' => $subjects,
-            'message' => $message,
-        ));
+            return new ViewModel(array(
+                'baseSubjects' => null,
+                'form' => null,
+                'message' => $ex->getMessage(),
+            ));
+        }        
     }
 
     /**
      * Grava no banco dados uma disciplina
      * 
-     * @return ViewModel
+     * @return JsonModel
      */
     public function createAction()
     {
         $em = $this->getEntityManager();
         $request = $this->getRequest();
         $message = null;
+        
+        try {
+            if ($request->isPost()) {
+                $form = new SubjectForm($em);
+                $subject = new Subject();
+                $form->bind($subject);
+                $form->setData($request->getPost());            
 
-        $subject = new Subject();
-        $form = new SubjectForm($em);
-        $form->bind($subject);
-        if ($request->isPost()) {
-            $form->setData($request->getPost());
+                if ($form->isValid()) {
+                    $data = $form->getData(FormInterface::VALUES_AS_ARRAY)['subject-fieldset'];
 
-            if ($form->isValid()) {
-                $data = $form->getData(FormInterface::VALUES_AS_ARRAY)['subject'];
-                $parent = null;
-                if ($data['subjectParent'] > 0) {
-                    $parent = $em->find('SchoolManagement\Entity\Subject', $data['subjectParent']);
-                }
-                try {
+                    $parent = null;
+                    if ($data['subjectParent']) {
+                        $parent = $em->find('SchoolManagement\Entity\Subject', $data['subjectParent']);
+                    }
+
                     $subject->setParent($parent);
                     $em->persist($subject);
                     $em->flush();
-                    
-                    return new ViewModel(array(
+
+                    return new JsonModel(array(
                         'message' => "Disciplina cadastrada com sucesso!",
-                        'form' => $form,
+                        'error' => false,
+                        'subjectId' => $subject->getSubjectId(),
+                        'subjectName' => $subject->getSubjectName(),
+                        'subjectDescription' => $subject->getSubjectDescription(),
+                        'formErrors' => [],
                     ));
-                } catch (UniqueConstraintViolationException $ex) {
-                    $message = 'Essa disciplina já existe.';
-                } catch (Exception $ex) {
-                    $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
-                        'Erro: ' . $ex->getMessage();
+                } else {
+                    return new JsonModel(array(
+                        'message' => 'Ocorreu um erro. A disciplina não foi criada!',
+                        'error' => true,
+                        'subjectId' => null,
+                        'subjectName' => null,
+                        'subjectDescription' => null,
+                        'formErrors' => $form->getMessages()['subject-fieldset'],
+                    ));
                 }
             }
+        } catch (UniqueConstraintViolationException $ex) {
+            $message = 'Essa disciplina já existe.';
+        } catch (Exception $ex) {
+            $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
+                'Erro: ' . $ex->getMessage();
         }
-        return new ViewModel(array(
+        return new JsonModel(array(
             'message' => $message,
-            'form' => $form,
+            'error' => true,
+            'subjectId' => null,
+            'subjectName' => null,
+            'subjectDescription' => null,
+            'formErrors' => [],
         ));
     }
 
@@ -100,24 +126,24 @@ class SchoolSubjectController extends AbstractEntityActionController
     public function deleteAction()
     {
         $id = $this->params('id', false);
-
+        $message = null;
+        
         if ($id) {
             try {
                 $em = $this->getEntityManager();
                 $subject = $em->getReference('SchoolManagement\Entity\Subject', $id);
+                
                 if ($subject->hasChildren()) {
                     return new JsonModel(array(
                         'message' => 'Não é possível remover uma disciplina que contém outras',
                     ));
                 }
+                
                 $em->remove($subject);
                 $em->flush();
-                $message = 'Disciplina removida com sucesso.';
                 return new JsonModel(array(
-                    'message' => $message,
-                    'callback' => array(
-                        'subjectId' => $id,
-                    ),
+                    'message' => 'Disciplina removida com sucesso.',
+                    'error' => false,
                 ));
             } catch (Exception $ex) {
                 $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
@@ -126,62 +152,79 @@ class SchoolSubjectController extends AbstractEntityActionController
         } else {
             $message = 'Nenhuma disciplina foi selecionada.';
         }
+        
         return new JsonModel(array(
-            'message' => $message
+            'message' => $message,
+            'error' => true,
         ));
     }
 
     /**
-     * Exibe um formulário de edição para a disciplina selecionada
+     * Persiste as mudanças feitas a uma disciplina selecionada
      * 
-     * @return ViewModel
+     * @return JsonModel
      */
     public function editAction()
     {
         $em = $this->getEntityManager();
         $request = $this->getRequest();
         $message = null;
+        
         $id = $this->params('id', false);
-        if ($id) {
-            try {
+        try {
+            if ($request->isPost()) {
                 $subject = $em->getReference('SchoolManagement\Entity\Subject', $id);
-
+                
                 $form = new SubjectForm($em);
-                $form->get('submit')->setAttribute('value', 'Editar');
                 $form->bind($subject);
-                if ($request->isPost()) {
-                    $form->setData($request->getPost());
-                    if ($form->isValid()) {
-                        $data = $form->getData(FormInterface::VALUES_AS_ARRAY)['subject'];
+                $form->setData($request->getPost());
 
-                        // existe um novo pai e ele é diferente do filho (evita ciclos triviais)
-                        if ($data['subjectParent'] > 0 && $data['subjectParent'] !== $subject->getSubjectId()) {
-                            $subject->setParent($em->getReference('SchoolManagement\Entity\Subject',
-                                    $data['subjectParent']));
-                        } else {
-                            $subject->setParent(null);
-                        }
+                if ($form->isValid()) {
+                    $data = $form->getData(FormInterface::VALUES_AS_ARRAY)['subject-fieldset'];
 
-                        $em->merge($subject);
-                        $em->flush();
-                        return $this->redirect()->toRoute('school-management/school-subject', array('action' => 'index'));
+                    $parentSubject = null;
+                    // existe um novo pai e ele é diferente do filho (evita ciclos triviais)
+                    if ($data['subjectParent'] > 0 && $data['subjectParent'] !== $subject->getSubjectId()) {
+                        $parentSubject = $em->getReference('SchoolManagement\Entity\Subject',
+                                $data['subjectParent']);
                     }
+                    $subject->setParent($parentSubject);
+
+                    $em->merge($subject);
+                    $em->flush();
+                    
+                    return new JsonModel(array(
+                        'message' => "Disciplina modificada com sucesso!",
+                        'error' => false,
+                        'subjectName' => $subject->getSubjectName(),
+                        'subjectDescription' => $subject->getSubjectDescription(),
+                        'subjectParentId' => ($parentSubject === null) ? null : $parentSubject->getSubjectId(),
+                        'formErrors' => [],
+                    ));
+                } else {
+                    return new JsonModel(array(
+                        'message' => 'Ocorreu um erro. A disciplina não foi modificada!',
+                        'error' => true,
+                        'subjectName' => null,
+                        'subjectDescription' => null,
+                        'subjectParentId' => null,
+                        'formErrors' => $form->getMessages()['subject-fieldset'],
+                    ));
                 }
-                return new ViewModel(array(
-                    'message' => $message,
-                    'form' => $form,
-                    'subject' => $subject,
-                ));
-            } catch (Exception $ex) {
-                $message = 'Erro inesperado. Entre com contato com o administrador do sistema. ' .
-                    'Erro: ' . $ex->getMessage();
             }
-        } else {
-            $message = 'Nenhuma disciplina foi selecionada.';
+        } catch (UniqueConstraintViolationException $ex) {
+            $message = 'Essa disciplina já existe.';
+        } catch (Exception $ex) {
+            $message = 'Erro inesperado. Entre com contato com o administrador do sistema. ' .
+                'Erro: ' . $ex->getMessage();
         }
-        return new ViewModel(array(
+        return new JsonModel(array(
             'message' => $message,
-            'form' => null,
+            'error' => true,
+            'subjectName' => null,
+            'subjectDescription' => null,
+            'subjectParentId' => null,
+            'formErrors' => [],
         ));
     }
 
