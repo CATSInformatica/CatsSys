@@ -30,7 +30,7 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class StudentsBoardForm extends Form implements InputFilterProviderInterface
 {    
     
-    public function __construct($configIds = [], $classNames = [])
+    public function __construct($bgConfigs = [])
     {
         parent::__construct('student_board_form');
                 
@@ -38,16 +38,8 @@ class StudentsBoardForm extends Form implements InputFilterProviderInterface
                     'name' => 'config_id',
                     'type' => 'select',
                     'options' => array(
-                        'value_options' => $configIds,
+                        'value_options' => $this->getConfigsIds($bgConfigs),
                         'label' => 'Configuração de Fundo',
-                    ),
-                ))
-                ->add(array(
-                    'name' => 'class_id',
-                    'type' => 'select',
-                    'options' => array(
-                        'value_options' => $classNames,
-                        'label' => 'Turma',
                     ),
                 ))
                 ->add(array(
@@ -60,6 +52,15 @@ class StudentsBoardForm extends Form implements InputFilterProviderInterface
         ));
     }
 
+    private function getConfigsIds($bgConfigs) 
+    {
+        $configsIds = [];
+        foreach ($bgConfigs as $bgConfig) {
+            $configsIds[$bgConfig->getStudentBgConfigId()] = $bgConfig->getStudentBgConfigId();
+        }
+        return $configsIds;
+    }
+    
     public function getInputFilterSpecification()
     {
         return array(

@@ -1,0 +1,32 @@
+<table id="config-table" class="table table-striped">
+    <thead>
+        <tr>
+            <th class="text-center col-xs-2">Pré-visualização</th>
+            <th class="text-center col-xs-7">Frase</th>
+            <th class="text-center col-xs-3">Autor</th>
+        </tr>
+    </thead>
+    <tbody>
+        <?php if ($this->configs): ?>
+            <?php foreach ($this->configs as $config): ?>
+                <tr class="cats-row" id="bg-config-<?php echo $config->getStudentBgConfigId(); ?>"
+                    data-id="<?php echo $config->getStudentBgConfigId(); ?>"
+                    data-img-url="<?php echo $config->getStudentBgConfigImg(); ?>">
+                    <td class="details-control col-xs-2"></td>
+                    <td class="text-center col-xs-7"> <?php echo $config->getStudentBgConfigPhrase(); ?></td>
+                    <td class="text-center col-xs-3"> <?php echo $config->getStudentBgConfigAuthor(); ?></td>
+                </tr>
+            <?php endforeach; ?>
+
+        <?php endif; ?>
+    </tbody>
+</table>
+
+<div class="hide">
+    <?php
+        echo $this->partial('student-id-cards/template', array(
+            'config' => null,
+            'students' => null,
+        ));
+    ?>
+</div>

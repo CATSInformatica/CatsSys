@@ -49,7 +49,7 @@ class StudentBgConfig
     /**
      *
      * @var string 
-     * @ORM\Column(name="student_bg_config_author", type="string", length=50, nullable=false)
+     * @ORM\Column(name="student_bg_config_author", type="string", length=80, nullable=false)
      */
     private $studentBgConfigAuthor;
     
