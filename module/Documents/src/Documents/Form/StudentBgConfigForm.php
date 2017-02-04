@@ -90,7 +90,7 @@ class StudentBgConfigForm extends Form implements InputFilterProviderInterface
                     array(
                         'name' => 'Zend\Validator\File\Size',
                         'options' => array(
-                            'min' => '1000',
+                            'min' => '500',
                             'max' => '5000000',
                         )
                     )

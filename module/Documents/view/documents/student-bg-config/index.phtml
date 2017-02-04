@@ -1,32 +1,17 @@
 <section class="content">
 
-    <p><?php echo $message ?></p>
-    <div class="table-responsive col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
-        <table id="config-table" class="table table-condensed table-striped">
-            <thead>
-                <tr>
-                    <th class="text-center">#</th>
-                    <th class="text-center">Frase</th>
-                    <th class="text-center">Autor</th>
-                    <th class="text-center">Imagem</th>
-                </tr>
-            </thead>
-            <tbody>
-                <?php if ($configs): ?>
-                    <?php foreach ($this->configs as $config): ?>
-                        <tr class="cats-row" data-id="<?php echo $config->getStudentBgConfigId(); ?>" id="bg-config-<?php echo $config->getStudentBgConfigId(); ?>">
-                            <td class="text-center"> <?php echo $config->getStudentBgConfigId(); ?></td>
-                            <td class="text-center"> <?php echo $config->getStudentBgConfigPhrase(); ?></td>
-                            <td class="text-center"> <?php echo $config->getStudentBgConfigAuthor(); ?></td>
-                            <td class="text-center"> <a data-toggle="lightbox" href="/img/<?php echo $config->getStudentBgConfigImg(); ?>">
-                                    <?php echo $config->getStudentBgConfigImg(); ?> </a>
-                            </td>
-                        </tr>
-                    <?php endforeach; ?>
-
-                <?php endif; ?>
-            </tbody>
-        </table>
+    <p><?php echo $this->message; ?></p>
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
+            <?php 
+                echo $this->partial(
+                    'student-bg-configs/template', 
+                    [
+                        'configs' => $this->configs,
+                    ]
+                );
+            ?>
+        </div>
     </div>
 </section>
 

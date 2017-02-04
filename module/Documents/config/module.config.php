@@ -72,6 +72,8 @@ return array(
             __DIR__ . '/../view/',
         ),
         'template_map' => array(
+            'student-bg-configs/template' => __DIR__ . '/../view/templates/student-bg-configs.phtml',
+            'student-id-cards/template' => __DIR__ . '/../view/templates/student-id-cards.phtml',
         ),
         'display_exceptions' => true,
     ),
@@ -135,7 +137,7 @@ return array(
                         'icon' => 'fa fa-file-o'
                     ),
                     array(
-                        'label' => 'Generate Student Card IDs',
+                        'label' => 'Generate Student ID Cards',
                         'route' => 'documents/generate-pdf',
                         'action' => 'student-id-card',
                         'resource' => 'Documents\Controller\GeneratePdf',

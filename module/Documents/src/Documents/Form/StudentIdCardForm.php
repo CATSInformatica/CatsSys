@@ -29,20 +29,20 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class StudentIdCardForm extends StudentsBoardForm implements InputFilterProviderInterface
 {
         
-    public function __construct($configIds = [], $classNames = [])
+    public function __construct($bgConfigs = [])
     {
-        parent::__construct($configIds, $classNames);
-        $nextyear=date("Y")+1;
+        parent::__construct($bgConfigs);
+        $nextyear = date("Y") + 1;
         
         $this->add(array(
                 'name' => 'expiry_date',
                 'attributes' => array(
                     'type' => 'text',
                     'class' => 'datepicker text-center',
-                    'value' => '01/03/'.$nextyear, 
+                    'value' => '01/03/' . $nextyear, 
                 ),
                 'options' => array(
-                    'label' => 'Data de expiração',
+                    'label' => 'Data de validade',
                     'add-on-prepend' => '<i class="glyphicon glyphicon-calendar"></i>',
                 ),
                     

@@ -94,7 +94,7 @@ class StudentBgConfigFieldset extends Fieldset implements InputFilterProviderInt
                         'name' => 'StringLength',
                         'options' => array(
                             'min' => 3,
-                            'max' => 40,
+                            'max' => 80,
                             'encoding' => 'UTF-8',
                         ),
                     ),

@@ -1,0 +1,207 @@
+<?php
+    $MONTHS = ["Janeiro", "Fevereiro", "Março", "Abril", "Maio", "Junho",
+            "Julho", "Agosto", "Setembro", "Outubro", "Novembro", "Dezembro"]; 
+    
+    
+    if ($this->students === null) :
+        $students = [
+            [
+                'name' => 'Fulano Sicrano Beltrano',
+                'rg' => 'MG-99.999.999',
+                'img_url' => '/img/default-male-profile.png'
+            ]
+        ];
+        
+        $config = [
+            'phrase' => '',
+            'author' => '',
+            'bg_img_url' => '',
+            'expiry' => '01 de Janeiro de 2001',
+        ];
+    else :
+        $students = $this->students;
+    endif;
+?>
+
+<style>            
+    .student-id-card {
+        width: 178mm; 
+        height: 56mm; 
+        margin: auto;
+    }
+
+    .card * {
+        font-family: 'Arial', 'sans-serif';
+        color: rgb(20, 20, 20);
+    }
+
+    .card {
+        width: 88mm; 
+        height: 55mm; 
+        margin: 0.5mm;
+        padding: 3.6mm;
+
+        float: left;
+    }
+
+    .card-header {
+        height: 10mm;
+        text-align: right;
+    }
+
+    .card-body {
+        height: 31.4mm;
+        padding: 3.7mm 0;
+    }
+
+    .card-footer {
+        height: 10mm;
+    }
+
+    .card-logo {
+        width: 16mm;
+        float: left;
+    }
+
+    .card-student-picture {  
+        float: left;
+
+        width: 24mm;
+        margin-right: 3.6mm;
+    }
+
+    .card-title {
+        font-size: 9.5pt;
+        line-height: 10mm;
+        color: white;
+    }
+
+    .card-field-label {
+        font-size: 7.5pt;
+        font-weight: bold;
+    }
+
+    .card-phrase {
+        font-size: 7.0pt;
+    }
+
+    .card-signature-line {
+        margin: 0 auto;
+        width: 70%;
+    }
+
+    .card-regular-text {
+        font-size: 6.5pt;
+    }
+
+    .card-expiry-date {
+        line-height: 10mm;
+        font-size: 6.0pt;
+    }
+
+    .card-front-fields { 
+        float: left;
+        text-transform: uppercase;
+    }
+
+    .card-front-field {
+        background-color: white;
+        border: 0.3mm solid lightgray;
+
+        padding-left: 1.5mm;
+        padding-right: 2.7mm;
+        margin-bottom: 1mm;
+        width: 53mm;
+    }
+
+    .card-back-field {
+        position: relative;
+
+        background-color: white;
+        border: 0.3mm solid lightgray;
+
+        width: 100%;
+        height: 22mm;
+        padding: 3mm;
+
+        line-height: 4mm;
+        text-align: justify;
+    }
+
+    .card-back-field > .author {
+        position: absolute;
+
+        right: 3mm;
+        bottom: 3mm;
+    }
+
+</style>
+        
+<div id="student-id-cards">
+    <?php foreach ($students as $student) : ?>
+        <div class="student-id-card">
+            <div class="card" style="
+                    <?php if ($config['bg_img_url'] !== '') : ?>
+                        background-image: url(/img/<?php echo $config['bg_img_url']; ?>);
+                        background-repeat: no-repeat;
+                        background-size: 88mm 55mm;
+                    <?php endif; ?>
+                 ">
+                <div class="card-header">
+                    <img class="card-logo" src="/img/logo_branco.png">
+
+                    <span class="card-title">
+                        Curso Assistencial Theodomiro Santiago
+                    </span>
+                </div>
+
+                <div class="card-body">
+                    <img class="card-student-picture" src="<?php echo $student['img_url']; ?>">
+                    <div class="card-front-fields">
+                        <span class="card-field-label">NOME</span>
+                        <div class="card-front-field card-regular-text">
+                            <?php echo $student['name']; ?>
+                        </div>
+                        <span class="card-field-label">RG</span>
+                        <div class="card-front-field card-regular-text">
+                            <?php echo $student['rg']; ?>
+                        </div>
+                    </div>
+                </div>   
+
+                <div class="card-footer card-expiry-date text-right">
+                    <?php 
+                    echo $config['expiry'];
+                    ?>
+                </div>           
+            </div>
+            <div class="card" style="background-image: url(/img/<?php echo $config['bg_img_url']; ?>);">
+                <div class="card-header">
+                    <img class="card-logo" src="/img/logo_branco.png">
+
+                    <span class="card-title">
+                        Curso Assistencial Theodomiro Santiago
+                    </span>
+                </div>
+
+                <div class="card-body text-center">
+                    <div class="card-back-field card-phrase">
+                        <span class="phrase">
+                            <?php echo $config['phrase']; ?>
+                        </span>
+                        <span class="author">
+                            <?php echo $config['author']; ?>
+                        </span>
+                    </div>
+                </div>   
+
+                <div class="card-footer text-center">
+                    <hr class="card-signature-line">
+                    <span class="card-signature card-regular-text">
+                        Assinatura do Presidente
+                    </span>
+                </div>                        
+            </div>
+        </div>
+    <?php endforeach; ?>
+</div> 
