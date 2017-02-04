@@ -57,8 +57,8 @@ class PreInterviewController extends AbstractEntityActionController
 
         // id de inscrição não está na sessão redireciona para o início
         if (!$studentContainer->offsetExists('regId')) {
-            return $this->redirect()->toRoute('recruitment/pre-interview', array(
-                    'action' => 'index',
+            return $this->redirect()->toRoute('recruitment/registration', array(
+                    'action' => 'access',
             ));
         }
 

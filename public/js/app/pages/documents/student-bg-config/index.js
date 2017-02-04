@@ -4,32 +4,20 @@
  * and open the template in the editor.
  */
 
-define(['jquery', 'datatable', 'ekkolightbox'], function () {
+define(['jquery', 'datatable'], function () {
     var index = (function () {
 
         var configTable = $('#config-table');
 
-        initDataTable = function () {
-            
-            configTable.DataTable({
-                dom: 'lftip',
-                paging: false
-            });
-        };
-        
-        initLightbox = function () {
-            $(document).delegate('*[data-toggle="lightbox"]', 'click', function (event) {
-                event.preventDefault();
-                $(this).ekkoLightbox({
-                    loadingMessage: "Carregando..."
-                });
+        initTable = function () {
+            require(['/js/app/pages/documents/student-bg-config/student-bg-configs.js'], function(studentBgConfigs) {
+                studentBgConfigs.init();
             });
         };
 
         return {
             init: function () {
-                initDataTable();
-                initLightbox();
+                initTable();
             },
             getCallbackOf: function (element) {
                 

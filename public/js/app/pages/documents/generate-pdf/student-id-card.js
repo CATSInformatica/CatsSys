@@ -4,24 +4,99 @@
  * and open the template in the editor.
  */
 
-define(['moment', 'jquery', 'datetimepicker'], function (moment) {
+define(['moment', 'jquery', 'datetimepicker', 'datatable'], function (moment) {
 
     var create = (function () {
 
-        initDatepickers = function () {
-            $('.datepicker').closest('.input-group').datetimepicker({
-                format: 'DD/MM/YYYY',
-                minDate: moment().subtract(1, 'year'),
-                useCurrent: true,
-                maxDate: moment().add(2, 'years'),
-                locale: 'pt-br',
-                viewMode: 'months'
+        var studentsData = [];
+
+        initDataTables = function() {
+            var classId = $('#class-select').val();
+            
+            $('#students-table').DataTable({
+                dom: 'lftip',
+                paging: false,
+                ajax: {
+                    method: 'POST',
+                    url: '/school-management/student-class/get-students-by-class',
+                    data: {
+                        id: classId
+                    },
+                    dataSrc: function (response) {
+                        var students = response.students;
+                    
+                        studentsData = [];
+                        for (var i = 0; i < students.length; ++i) {
+                            studentsData.push({
+                                DT_RowClass: "cats-row",
+                                DT_RowAttr: {
+                                    "data-id": students[i].personId
+                                },
+                                0: students[i].personFullName,
+                                1: students[i].personCpf
+                            });
+                        }
+                        return studentsData;
+                    }
+                }
             });
         };
 
+        initDatepickers = function () {
+            $('#expiry-date').datetimepicker({
+                minDate: moment(),
+                maxDate: moment().add(2, 'years'),
+                useCurrent: true,
+                viewMode: 'years',
+                format: 'DD/MM/YYYY',
+                inline: true,
+                locale: 'pt-br'
+            });
+        };
+        
+        initStudentBgConfigTable = function() {
+            require(['/js/app/pages/documents/student-bg-config/student-bg-configs.js'], function(studentBgConfig) {
+                studentBgConfig.init();
+            });
+            
+            $('.content').on('click', '#config-table .cats-row > td', function(e) {                
+                $(this).parent().siblings('.cats-selected-row').click();
+            });
+        };
+        
+        initStudentsFetching = function() {
+            $('#fetch-class-students').on('click', function() {
+                $('#students-table').DataTable().ajax.reload();
+            });
+            
+            $('#select-all-students').on('click', function() {
+                $('#students-table .cats-row:not(.cats-selected-row)').click();
+            });
+            
+            $('#unselect-all-students').on('click', function() {
+                $('#students-table .cats-selected-row').click();
+            });
+        };
+        
+        allowSubmit = function() {
+            $('form').submit(function() {
+                $('#students-table .cats-selected-row').each(function() {
+                    $('form').append('<input type="hidden" name="studentIds[]" id="students-input" value="' + $(this).data('id') + '">');
+                });
+                
+                $('#bg-config-id-input').val($('#config-table .cats-selected-row').first().data('id'));
+                $('#expiry-date-input').val($('#expiry-date .day.active').first().data('day'));
+            });
+        };
+        
+
         return {
             init: function () {
+                initDataTables();
                 initDatepickers();
+                initStudentBgConfigTable();
+                initStudentsFetching();
+                allowSubmit();
             }
         };
 

@@ -19,17 +19,17 @@
 namespace Documents\Controller;
 
 use Database\Controller\AbstractEntityActionController;
-use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Documents\Entity\StudentBgConfig;
 use Documents\Form\StudentBgConfigForm;
-use Exception;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Exception;
 
 /**
- * Description of StudentBgConfigController
- * CRUD da configuração de fundo
+ * Provém actions para visualizar, criar, editar e remover configurações de fundo 
+ * para as carteirinhas dos estudantes.
  *
+ * @see StudentBgConfig   Entidade da configuração de fundo
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
 class StudentBgConfigController extends AbstractEntityActionController
@@ -43,6 +43,7 @@ class StudentBgConfigController extends AbstractEntityActionController
     public function indexAction()
     {
         $message = null;
+                
         try {
             $em = $this->getEntityManager();
             $configs = $em->getRepository('Documents\Entity\StudentBgConfig')->findAll();
@@ -53,6 +54,8 @@ class StudentBgConfigController extends AbstractEntityActionController
         return new ViewModel([
             'configs' => $configs,
             'message' => $message,
+            'logoUrl' => '/img/logo_branco.png',
+            'studentSilhouetteUrl' => '/img/default-male-profile.png'
         ]);
     }
 
@@ -95,17 +98,10 @@ class StudentBgConfigController extends AbstractEntityActionController
                 'form' => $form,
             ));
         } catch (Exception $ex) {
-            if ($ex instanceof UniqueConstraintViolationException) {
-                return new ViewModel(array(
-                    'message' => 'Já existe uma configuração com essa frase.',
-                    'form' => null,
-                ));
-            } else {
-                return new ViewModel(array(
-                    'message' => 'Erro inesperado. Entre com contato com o administrador do sistema.<br> Erro: ' . $ex->getMessage(),
-                    'form' => null,
-                ));
-            }
+            return new ViewModel(array(
+                'message' => 'Erro inesperado. Entre com contato com o administrador do sistema.<br> Erro: ' . $ex->getMessage(),
+                'form' => null,
+            ));
         }
     } 
 
@@ -124,11 +120,12 @@ class StudentBgConfigController extends AbstractEntityActionController
 
             try {
                 $bgConfig = $em->find('Documents\Entity\StudentBgConfig', $bgConfigId);
-                $form = new StudentBgConfigForm($em, false /*img not required*/);
+                $img = $bgConfig->getStudentBgConfigImg();
+                
+                $form = new StudentBgConfigForm($em, false /*o upload de uma nova imagem não obrigatório*/);
                 $form->bind($bgConfig);
                 $form->get('submit')->setAttribute('value', 'Editar configuração de fundo');
-                $img = $bgConfig->getStudentBgConfigImg();
-
+                
                 if ($request->isPost()) {
                     $file = $request->getFiles()->toArray();
                     $post = array_merge_recursive(
@@ -138,13 +135,17 @@ class StudentBgConfigController extends AbstractEntityActionController
                     $form->setData($post);
                     
                     if ($form->isValid()) {
+                        $imgDirectory = './public/img/';
+                        
                         // Outra imagem foi carregada
                         if (isset($file['bg_img']) && !empty($file['bg_img']['tmp_name'])) {
-                            unlink('./public/img/' . $img);
+                            // Remove a imagem anterior
+                            unlink($imgDirectory . $img);
                             
                             $bgImgNewName = 'bg' . time() . '.png';
-                            move_uploaded_file($file['bg_img']['tmp_name'], './public/img/' . $bgImgNewName);
-                            chmod('./public/img/' . $bgImgNewName, 0775);
+                            move_uploaded_file($file['bg_img']['tmp_name'], $imgDirectory . $bgImgNewName);
+                            chmod($imgDirectory . $bgImgNewName, 0775);
+                            
                             $bgConfig->setStudentBgConfigImg($bgImgNewName);
                         }
                         
@@ -158,17 +159,10 @@ class StudentBgConfigController extends AbstractEntityActionController
                     'form' => $form,
                 ));
             } catch (Exception $ex) {
-                if ($ex instanceof UniqueConstraintViolationException) {
-                    return new ViewModel(array(
-                        'message' => 'Já existe uma configuração com essa frase.',
-                        'form' => null,
-                    ));
-                } else {
-                    return new ViewModel(array(
-                        'message' => 'Erro inesperado. Entre com contato com o administrador do sistema.<br> Erro: ' . $ex->getMessage(),
-                        'form' => null,
-                    ));
-                }
+                return new ViewModel(array(
+                    'message' => 'Erro inesperado. Entre com contato com o administrador do sistema.<br> Erro: ' . $ex->getMessage(),
+                    'form' => null,
+                ));
             }
         }
     }    
@@ -185,16 +179,20 @@ class StudentBgConfigController extends AbstractEntityActionController
         if ($id) {
             try {
                 $em = $this->getEntityManager();
-
                 $bgConfig = $em->getReference('Documents\Entity\StudentBgConfig', $id);
+                
+                // Remove a imagem
                 unlink('./public/img/' . $bgConfig->getStudentBgConfigImg());
+                
                 $em->remove($bgConfig);
                 $em->flush();
+                
                 $message = 'Configuração removida com sucesso.';
             } catch (Exception $ex) {
                 $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                     'Erro: ' . $ex->getMessage();
             }
+            
             return new JsonModel(array(
                 'message' => $message,
                 'callback' => array(
@@ -203,6 +201,7 @@ class StudentBgConfigController extends AbstractEntityActionController
             ));
         } else {
             $message = 'Nenhuma configuração selecionada.';
+            
             return new JsonModel(array(
                 'message' => $message
             ));
