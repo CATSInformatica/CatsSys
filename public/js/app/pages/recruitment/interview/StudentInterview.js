@@ -19,7 +19,7 @@ define(['moment', 'masks', 'datetimepicker'], function (moment, masks) {
     var StudentInterviewModule = (function () {
 
         logInterviewChange = function () {
-            $("button[name='interviewSubmit']").click(function () {
+            $("button[name='interviewSubmit']").submit(function () {
                 if (localStorage.getItem('regId') && parseInt(localStorage.getItem('regId')) === $('#candidate-info').data('regid')) {
                     localStorage.removeItem('regId');
                 }

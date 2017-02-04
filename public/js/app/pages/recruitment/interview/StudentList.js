@@ -19,15 +19,39 @@ define(['datatable'], function () {
 
     var registrationsTable = null;
     var detailContent = null;
+
+    var targetTable = $('#target-table');
+    var socTarget = targetTable.data('socioeconomic');
+    var vulTarget = targetTable.data('vulnerability');
+    var stTarget = targetTable.data('student');
+    var SOCIOECONOMIC = 0,
+        VULNERABILITY = 1,
+        STUDENT = 2;
+
     var StudentListModule = (function () {
 
         initDataTable = function () {
+
+            $('#student-list-table').find('tbody').find('tr').each(function () {
+                var t = $(this);
+                var soc = t.data('socioeconomic'),
+                        socf = calcCriteriaGrade(soc, SOCIOECONOMIC),
+                        vul = t.data('vulnerability'),
+                        vulf = calcCriteriaGrade(vul, VULNERABILITY),
+                        st = t.data('student'),
+                        stf = calcCriteriaGrade(st, STUDENT);
+
+                var result = ((socf + vulf + stf) / 3).toFixed(3);
+
+                $(this).children("td[id^=grades]").text(result);
+            });
+
             registrationsTable = $('#student-list-table').DataTable({
                 iDisplayLength: 50,
                 order: [[5, 'desc'], [1, 'asc']]
             });
         };
-        
+
         /**
          * Exibir mais informações ao clicar na linha de algum aluno.
          * @returns {undefined}
@@ -51,7 +75,7 @@ define(['datatable'], function () {
                 }
             });
         };
-        
+
         /**
          * Mostra um icone de carregamento.
          * 
@@ -111,8 +135,8 @@ define(['datatable'], function () {
                         i + 1,
                         familyIncome[i]['familyIncomeExpDescription'],
                         '<strong class="text-green">' +
-                            familyIncome[i]['familyIncomeExpValue'] + 
-                        '</strong>',
+                                familyIncome[i]['familyIncomeExpValue'] +
+                                '</strong>',
                     ]);
                     total2 += parseFloat(familyIncome[i]['familyIncomeExpValue']);
                 }
@@ -121,8 +145,8 @@ define(['datatable'], function () {
                         familyIncome.length + i + 1,
                         familyExpenses[i]['familyIncomeExpDescription'],
                         '<strong class="text-red">' +
-                            familyExpenses[i]['familyIncomeExpValue'] + 
-                        '</strong>'
+                                familyExpenses[i]['familyIncomeExpValue'] +
+                                '</strong>'
                     ]);
                     total1 += parseFloat(familyExpenses[i]['familyIncomeExpValue']);
                 }
@@ -155,7 +179,7 @@ define(['datatable'], function () {
                             ["Computador", info['preInterview']['itemComputer']],
                             ["Smartphones", info['preInterview']['itemSmartphone']],
                             ["Quartos", info['preInterview']['itemBedroom']]
-                        ], 
+                        ],
                         ['', 'text-center']);
                 socioeconomic += createBox('Onde você reside existem:', table, 'box-warning');
 
@@ -168,30 +192,30 @@ define(['datatable'], function () {
                     infrastructureElements += '; ';
                 }
                 socioeconomic += '<div class="box box-warning">' +
-                    '<div class="box-body">' +
+                        '<div class="box-body">' +
                         '<strong>Você mora:</strong><br>' +
                         info['preInterview']['live'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Quem é(são) o(os) responsável(is) pela manutenção financeira do grupo familiar?</strong><br>' +
                         info['preInterview']['responsibleFinancial'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>A casa onde mora tem:</strong><br>' +
                         infrastructureElements +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Você reside em:</strong><br>' +
                         info['preInterview']['liveArea'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Justificativa para a nota no critério Socioeconômico</strong><br>' +
                         ((info['studentInterview'] !== null) ?
-                            info['studentInterview']['interviewerSocioecGradeJustification'] :
-                            'O candidato ainda não realizou a entrevista.') +
-                    '</div>' +
-                '</div>';
-                
+                                info['studentInterview']['interviewerSocioecGradeJustification'] :
+                                'O candidato ainda não realizou a entrevista.') +
+                        '</div>' +
+                        '</div>';
+
 
                 /* Aba - Vulnerabilidade */
                 // membros da família
@@ -258,103 +282,109 @@ define(['datatable'], function () {
                 vulnerability += createBox('Bens imóveis', table, 'box-danger');
 
                 vulnerability += '<div class="box box-danger">' +
-                    '<div class="box-body">' +
+                        '<div class="box-body">' +
                         '<strong>Você considera sua família:</strong><br>' +
                         info['preInterview']['familyEthnicity'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>A Instituição de ensino na qual cursou o ensino fundamental é?</strong><br>' +
                         info['preInterview']['elementarySchoolType'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Você cursou/cursa o ensino médio em escola(s):</strong><br>' +
                         info['preInterview']['highSchoolType'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Ano de ingresso no ensino médio?</strong><br>' +
                         info['preInterview']['highSchoolAdmissionYear'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Ano de conclusão/previsão de conclusão do ensino médio?</strong><br>' +
                         info['preInterview']['highSchoolConclusionYear'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Tem irmãos que cursaram/cursam o ensino superior?</strong><br>' +
                         ((info['preInterview']['siblingsUndergraduate']) ? "Sim" : "Não") +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Fala algum idioma estrangeiro? Se sim, como estudou?</strong><br>' +
                         info['preInterview']['otherLanguages'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Imovel em que reside é?</strong><br>' +
                         info['preInterview']['homeStatus'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Marque a característica que melhor descreve a sua casa?</strong><br>' +
                         info['preInterview']['homeDescription'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Transporte utilizado para comparecer às aulas:</strong><br>' +
                         info['preInterview']['transport'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Justificativa para a nota no critério Vulnerabilidade</strong><br>' +
-                        ((info['studentInterview'] !== null) ? 
-                        info['studentInterview']['interviewerVulnerabilityGradeJustification'] :
-                        'O candidato ainda não realizou a entrevista.') +
-                    '</div>' +
-                '</div>';
+                        ((info['studentInterview'] !== null) ?
+                                info['studentInterview']['interviewerVulnerabilityGradeJustification'] :
+                                'O candidato ainda não realizou a entrevista.') +
+                        '</div>' +
+                        '</div>';
 
                 /* Aba - Perfil de Estudante */
                 student += '<div class="box box-info">' +
-                    '<div class="box-body">' +
+                        '<div class="box-body">' +
                         '<strong>Fez algum curso extraclasse? Se sim, qual(is) curso(s)?</strong><br>' +
                         info['preInterview']['extraCourses'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Já fez curso pré-vestibular? Se sim, qual(is) curso(s) pré-vestibular(es)?</strong><br>' +
-                        info['preInterview']['preparationCourse'] + 
-                    '</div>' +
-                    '<div class="box-body">' +
+                        info['preInterview']['preparationCourse'] +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Já prestou algum vestibular ou concurso? Se sim, qual(is) vestibular(es)?</strong><br>' +
-                        info['preInterview']['entranceExam'] + 
-                    '</div>' +
-                    '<div class="box-body">' +
+                        info['preInterview']['entranceExam'] +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Já ingressou no ensino superior? Se sim, ainda cursa?</strong><br>' +
                         info['preInterview']['undergraduateCourse'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>O que espera de nós e o que pretende alcançar caso seja aprovado?</strong><br>' +
                         info['preInterview']['waitingForUs'] +
-                    '</div>' +
-                    '<div class="box-body">' +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Outras Informações</strong><br>' +
-                        info['preInterview']['moreInformation'] + 
-                    '</div>' +
-                    '<div class="box-body">' +
+                        info['preInterview']['moreInformation'] +
+                        '</div>' +
+                        '<div class="box-body">' +
                         '<strong>Justificativa para a nota no critério perfil de estudante</strong><br>' +
                         ((info['studentInterview'] !== null) ?
-                        (info['studentInterview']['interviewerStudentGradeJustification']) :
-                        'O candidato ainda não realizou a entrevista.') +
-                    '</div>' +
-                '</div>';
+                                (info['studentInterview']['interviewerStudentGradeJustification']) :
+                                'O candidato ainda não realizou a entrevista.') +
+                        '</div>' +
+                        '</div>';
             }
-            
-            var socioeconomicGrade = '-';
-            var vulnerabilityGrade = '-';
-            var studentGrade = '-';
+
+            var socioeconomicGrade = '-', socioeconomicFinalGrade = '-';
+            var vulnerabilityGrade = '-', vulnerabilityFinalGrade = '-';
+            var studentGrade = '-', studentFinalGrade = '-';
             var finalGrade = '-';
             // Mostra as notas se o candidato tiver feito a entrevista
             if (info['studentInterview'] !== null) {
-                socioeconomicGrade = +(info['studentInterview']['interviewSocioeconomicGrade']).toFixed(3);
-                vulnerabilityGrade = +(info['studentInterview']['interviewVulnerabilityGrade']).toFixed(3);
-                studentGrade = +(info['studentInterview']['interviewStudentGrade']).toFixed(3);
-                finalGrade = (socioeconomicGrade * $('#target-table').data('socioeconomic') +
-                        vulnerabilityGrade * $('#target-table').data('vulnerability') +
-                        studentGrade * $('#target-table').data('student')) /
-                        ($('#target-table').data('socioeconomic') + $('#target-table').data('vulnerability') + $('#target-table').data('student'));
-                finalGrade = +finalGrade.toFixed(3);
+                socioeconomicGrade = +(info['studentInterview']['interviewSocioeconomicGrade']);
+                socioeconomicFinalGrade = calcCriteriaGrade(socioeconomicGrade, SOCIOECONOMIC);
+                vulnerabilityGrade = +(info['studentInterview']['interviewVulnerabilityGrade']);
+                vulnerabilityFinalGrade = calcCriteriaGrade(vulnerabilityGrade, VULNERABILITY);
+                studentGrade = +(info['studentInterview']['interviewStudentGrade']);
+                studentFinalGrade = calcCriteriaGrade(studentGrade, STUDENT);
+                finalGrade = ((socioeconomicFinalGrade + vulnerabilityFinalGrade + studentFinalGrade) / 3).toFixed(3);
+
+                socioeconomicGrade = socioeconomicGrade.toFixed(3);
+                socioeconomicFinalGrade = socioeconomicFinalGrade.toFixed(3);
+                vulnerabilityGrade = vulnerabilityGrade.toFixed(3);
+                vulnerabilityFinalGrade = vulnerabilityFinalGrade.toFixed(3);
+                studentGrade = studentGrade.toFixed(3);
+                studentFinalGrade = studentFinalGrade.toFixed(3);
             }
 
             var addresses = '';
@@ -366,88 +396,113 @@ define(['datatable'], function () {
                         info['person']['addresses'][i]['addressState'] + ', CEP: ' +
                         info['person']['addresses'][i]['addressPostalCode'] + '<br>';
             }
-            
+
 
             return '<div class="row">' +
-                '<div class="col-md-3">' +
+                    '<div class="col-md-3">' +
                     '<div class="box box-primary">' +
-                        '<div class="box-body box-student">' +
-                            '<img class="student-user-img img-responsive img-circle center-block" src="/recruitment/registration/photo/' + info['person']['personId'] + '" alt="__NAME__">' +
-                            '<h3 class="student-username text-center"> ' +
-                                info['person']['personFirstName'] + ' ' + info['person']['personLastName'] +
-                            '</h3>' +
-                        '</div>' +
+                    '<div class="box-body box-student">' +
+                    '<img class="student-user-img img-responsive img-circle center-block" src="/recruitment/registration/photo/' + info['person']['personId'] + '" alt="__NAME__">' +
+                    '<h3 class="student-username text-center"> ' +
+                    info['person']['personFirstName'] + ' ' + info['person']['personLastName'] +
+                    '</h3>' +
+                    '</div>' +
                     '</div>' +
                     '<div class="box box-primary">' +
-                        '<div class="box-header with-border">' +
-                            '<h3 class="box-title"> Sobre Mim </h3>' +
-                        '</div>' +
-                        '<div class="box-body">' +
-                            '<strong><i class="fa fa-birthday-cake margin-r-5"></i> Data de Nascimento</strong>' +
-                            '<p class="text-muted">' + info['person']['personBirthday'] + '</p>' +
-                            '<strong><i class="fa fa-phone margin-r-5"></i> Telefone</strong>' +
-                            '<p class="text-muted">' + info['person']['personPhone'] + '</p>' +
-                            '<strong><i class="fa fa-at margin-r-5"></i> Email</strong>' +
-                            '<p class="text-muted">' + info['person']['personEmail'] + '</p>' +
-                            '<strong><i class="fa fa-map-marker margin-r-5"></i> Endereço</strong>' +
-                            '<p class="text-muted">' + addresses + '</p>' +
-                        '</div>' +
+                    '<div class="box-header with-border">' +
+                    '<h3 class="box-title"> Sobre Mim </h3>' +
                     '</div>' +
-                '</div>' +
-                '<div class="col-md-9">' +
+                    '<div class="box-body">' +
+                    '<strong><i class="fa fa-birthday-cake margin-r-5"></i> Data de Nascimento</strong>' +
+                    '<p class="text-muted">' + info['person']['personBirthday'] + '</p>' +
+                    '<strong><i class="fa fa-phone margin-r-5"></i> Telefone</strong>' +
+                    '<p class="text-muted">' + info['person']['personPhone'] + '</p>' +
+                    '<strong><i class="fa fa-at margin-r-5"></i> Email</strong>' +
+                    '<p class="text-muted">' + info['person']['personEmail'] + '</p>' +
+                    '<strong><i class="fa fa-map-marker margin-r-5"></i> Endereço</strong>' +
+                    '<p class="text-muted">' + addresses + '</p>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="col-md-9">' +
                     '<div class="box box-primary">' +
-                        '<div class="box-header with-border">' +
-                            '<h3 class="box-title"> Nota </h3>' +
-                            '<div class="box-tools pull-right">' +
-                                '<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>' +
-                            '</div>' +
-                        '</div>' +
-                        '<div class="box-body">' +
-                            '<table class="table table-condensed">' +
-                                '<tr>' +
-                                    '<th>Critério</th>' +
-                                    '<th>Nota</th>' +
-                                '</tr>' +
-                                '<tr>' +
-                                    '<td>Socioeconômico</td>' +
-                                    '<td id="se-grade-' + info['registrationId'] + '">' + socioeconomicGrade + '</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                    '<td>Vulnerabilidade</td>' +
-                                    '<td id="v-grade-' + info['registrationId'] + '">' + vulnerabilityGrade + '</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                    '<td>Perfil de Estudante</td>' +
-                                    '<td id="s-grade-' + info['registrationId'] + '">' + studentGrade + '</td>' +
-                                '</tr>' +
-                                '<tr>' +
-                                    '<td><strong>Nota final</strong></td>' +
-                                    '<td><strong id="final-grade-' + info['registrationId'] + '">' + finalGrade + '</strong></td>' +
-                                    '<td></td>' +
-                                '</tr>' +
-                            '</table>' +
-                        '</div>' +
+                    '<div class="box-header with-border">' +
+                    '<h3 class="box-title"> Nota </h3>' +
+                    '<div class="box-tools pull-right">' +
+                    '<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>' +
+                    '</div>' +
+                    '</div>' +
+                    '<div class="box-body">' +
+                    '<table class="table table-condensed">' +
+                    '<tr>' +
+                    '<th class="text-center">Critério</th>' +
+                    '<th class="text-center">Nota Obtida</th>' +
+                    '<th class="text-center">Nota Calculada</th>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>Socioeconômico</td>' +
+                    '<td id="se-grade-' + info['registrationId'] + '" class="text-center">' + socioeconomicGrade + '</td>' +
+                    '<td id="se-fgrade-' + info['registrationId'] + '" class="text-center">' + socioeconomicFinalGrade + '</td>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>Vulnerabilidade</td>' +
+                    '<td id="v-grade-' + info['registrationId'] + '" class="text-center">' + vulnerabilityGrade + '</td>' +
+                    '<td id="v-fgrade-' + info['registrationId'] + '" class="text-center">' + vulnerabilityFinalGrade + '</td>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td>Perfil de Estudante</td>' +
+                    '<td id="s-grade-' + info['registrationId'] + '" class="text-center">' + studentGrade + '</td>' +
+                    '<td id="s-fgrade-' + info['registrationId'] + '" class="text-center">' + studentFinalGrade + '</td>' +
+                    '</tr>' +
+                    '<tr>' +
+                    '<td><strong>Nota final</strong></td>' +
+                    '<td colspan="2" class="text-center"><strong id="final-grade-' + info['registrationId'] + '">' + finalGrade + '</strong></td>' +
+                    '</tr>' +
+                    '</table>' +
+                    '</div>' +
                     '</div>' +
                     '<div class="nav-tabs-custom">' +
-                        '<ul class="nav nav-tabs">' +
-                            '<li class="active"><a href="#socioeconomic" data-toggle="tab" aria-expanded="true">Socioeconômico</a></li>' +
-                            '<li class=""><a href="#vulnerability" data-toggle="tab" aria-expanded="false">Vulnerabilidade</a></li>' +
-                            '<li class=""><a href="#student" data-toggle="tab" aria-expanded="false">Perfil de Estudante</a></li>' +
-                        '</ul>' +
-                        '<div class="tab-content">' +
-                            '<div class="tab-pane active" id="socioeconomic">' +
-                                socioeconomic +
-                            '</div>' +
-                            '<div class="tab-pane" id="vulnerability">' +
-                                vulnerability +
-                            '</div>' +
-                            '<div class="tab-pane" id="student">' +
-                                student +
-                            '</div>' +
-                        '</div>' +
+                    '<ul class="nav nav-tabs">' +
+                    '<li class="active"><a href="#socioeconomic" data-toggle="tab" aria-expanded="true">Socioeconômico</a></li>' +
+                    '<li class=""><a href="#vulnerability" data-toggle="tab" aria-expanded="false">Vulnerabilidade</a></li>' +
+                    '<li class=""><a href="#student" data-toggle="tab" aria-expanded="false">Perfil de Estudante</a></li>' +
+                    '</ul>' +
+                    '<div class="tab-content">' +
+                    '<div class="tab-pane active" id="socioeconomic">' +
+                    socioeconomic +
                     '</div>' +
-                '</div>' +
-            '</div>';
+                    '<div class="tab-pane" id="vulnerability">' +
+                    vulnerability +
+                    '</div>' +
+                    '<div class="tab-pane" id="student">' +
+                    student +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>' +
+                    '</div>';
+        };
+
+        calcCriteriaGrade = function (grade, type) {
+            var target;
+
+            switch (type) {
+                case SOCIOECONOMIC:
+                    target = socTarget;
+                    break;
+                case VULNERABILITY:
+                    target = vulTarget;
+                    break;
+                case STUDENT:
+                    target = stTarget;
+                    break;
+                default:
+                    target = 0;
+            }
+            
+            var k = (grade <= target) ? 0 : 1;
+            var result = 10*(1 + Math.pow(-1, k)*(grade - target)/Math.max(target, 10 - target));
+            return +result;
         };
 
         /*
@@ -460,16 +515,16 @@ define(['datatable'], function () {
          */
         createBox = function (boxTitle, boxBody, boxClasses) {
             return '<div class="box collapsed-box ' + boxClasses + '">' +
-                '<div class="box-header">' +
+                    '<div class="box-header">' +
                     '<h3 class="box-title">' + boxTitle + '</h3>' +
                     '<div class="box-tools pull-right">' +
-                        '<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>' +
+                    '<button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>' +
                     '</div>' +
-                '</div>' +
-                '<div class="box-body">' +
+                    '</div>' +
+                    '<div class="box-body">' +
                     boxBody +
-                '</div>' +
-            '</div>';
+                    '</div>' +
+                    '</div>';
         };
 
         /*
@@ -492,7 +547,7 @@ define(['datatable'], function () {
          * @returns {String}
          */
         createTable = function (columns, data, columnCellClasses) {
-            var cellClasses = []; 
+            var cellClasses = [];
             if (!columnCellClasses) {
                 for (var i = 0; i < columns.length; ++i) {
                     cellClasses[i] = '';
@@ -500,7 +555,7 @@ define(['datatable'], function () {
             } else {
                 cellClasses = columnCellClasses;
             }
-            
+
             var table = '<table class="table table-condensed table-hover"><tbody><tr>';
             for (var i = 0; i < columns.length; ++i) {
                 table += '<th class="text-center">' + columns[i] + '</th>';
@@ -524,30 +579,36 @@ define(['datatable'], function () {
          * 
          */
         interviewLogListener = function () {
+
+            var table = $("#student-list-table");
+
             window.addEventListener('storage', function (e) {
-                if (e.newValue !== null) { // e.newValue - registrationId
-                    setTimeout(function() {
-                        var grades = {socioeconomic:-1, vulnerability:-1, student:-1};
-                        getCandidateGrades(e.newValue, function(grades) {                                                        
-                            var finalGrade = (grades['socioeconomic'] * $('#target-table').data('socioeconomic') +
-                                    grades['vulnerability'] * $('#target-table').data('vulnerability') +
-                                    grades['student'] * $('#target-table').data('student')) / 
-                                    ($('#target-table').data('socioeconomic') + $('#target-table').data('vulnerability') + $('#target-table').data('student'));
-                            finalGrade = +finalGrade.toFixed(3);
-                            
+
+                setTimeout(function () {
+                    if (e.newValue !== null) { // e.newValue - registrationId
+                        getCandidateGrades(e.newValue, function (grades) {
+                            var finalGrade = (grades.socioeconomicFinal + grades.vulnerabilityFinal + grades.studentFinal) / 3;
                             // Se a área com detalhes sobre o candidato estiver aberta, atualiza lá também
-                            if ($('#final-grade-' + (e.newValue)).length > 0) {
-                                $('#se-grade' + (e.newValue)).html(+(grades['socioeconomic']).toFixed(3));
-                                $('#v-grade-' + (e.newValue)).html(+(grades['vulnerability']).toFixed(3));
-                                $('#s-grade-' + (e.newValue)).html(+(grades['student']).toFixed(3));
-                                $('#final-grade-' + (e.newValue)).html(finalGrade);
+                            if (table.find('#final-grade-' + (e.newValue)).length > 0) {
+
+                                table.find('#se-grade-' + (e.newValue)).html((+grades.socioeconomic).toFixed(3));
+                                table.find('#se-fgrade-' + (e.newValue)).html(grades.socioeconomicFinal.toFixed(3));
+
+                                table.find('#v-grade-' + (e.newValue)).html((+grades.vulnerability).toFixed(3));
+                                table.find('#v-fgrade-' + (e.newValue)).html(grades.vulnerabilityFinal.toFixed(3));
+
+                                table.find('#s-grade-' + (e.newValue)).html((+grades.student).toFixed(3));
+                                table.find('#s-fgrade-' + (e.newValue)).html(grades.studentFinal.toFixed(3));
+
+                                table.find('#final-grade-' + (e.newValue)).html(finalGrade.toFixed(3));
                             }
-                            
-                            $('#student-list-table').DataTable().cell($('#grades-' + (e.newValue))).data(finalGrade);
-                            $('#student-list-table').DataTable().order([5 , "desc"]).draw();
+
+                            $('#student-list-table').DataTable().cell($('#grades-' + (e.newValue))).data(finalGrade.toFixed(3));
+                            $('#student-list-table').DataTable().order([5, "desc"]).draw();
                         });
-                    }, 1500);
-                }
+                    }
+                }, 2000);
+
             });
         };
 
@@ -558,19 +619,24 @@ define(['datatable'], function () {
          * @param int registrationId - inscrição do candidato
          * @param function callback - função que utiliza as notas retornadas
          */
-        getCandidateGrades = function (registrationId, callback) {            
+        getCandidateGrades = function (registrationId, callback) {
             $.ajax({
                 url: '/recruitment/interview/get-student-grades/' + registrationId,
                 type: 'GET',
                 success: function (response) {
+                    var grades = response.grades;
+                    grades.socioeconomicFinal = calcCriteriaGrade(grades.socioeconomic, SOCIOECONOMIC);
+                    grades.vulnerabilityFinal = calcCriteriaGrade(grades.vulnerability, VULNERABILITY);
+                    grades.studentFinal = calcCriteriaGrade(grades.student, STUDENT);
+
                     callback(response.grades);
                 },
                 error: function (txtStatus) {
                     console.log(txtStatus);
                 }
-            });            
+            });
         };
-        
+
         /**
          * Mantém a sessão para análise de candidatos ativa.
          * 
@@ -595,7 +661,7 @@ define(['datatable'], function () {
             }, 300000);
 
         };
-        
+
         return {
             init: function () {
                 initDataTable();
