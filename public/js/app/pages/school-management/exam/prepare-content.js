@@ -315,12 +315,11 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 }
                 
                 var baseSubjectId = +qBlock.closest('.base-subject-block').data('id');
+                var subjectId = +qBlock.parent().data('id');
                 var questionAId = +qBlock.data('id');
-                var subjectAId = +qBlock.data('subject-id');
                 var questionBId = +previousQBlock.data('id');
-                var subjectBId = +previousQBlock.data('subject-id');
                 
-                updateConfig(baseSubjectId, subjectAId, questionAId, subjectBId, questionBId);
+                updateConfig(baseSubjectId, subjectId, questionAId, questionBId);
                                
                 if (autosaveIsOn()) {
                     saveContent();
@@ -349,12 +348,11 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 }
                 
                 var baseSubjectId = +qBlock.closest('.base-subject-block').data('id');
+                var subjectId = +qBlock.parent().data('id');
                 var questionAId = +qBlock.data('id');
-                var subjectAId = +qBlock.data('subject-id');
                 var questionBId = +nextQBlock.data('id');
-                var subjectBId = +nextQBlock.data('subject-id');
                 
-                updateConfig(baseSubjectId, subjectAId, questionAId, subjectBId, questionBId);
+                updateConfig(baseSubjectId, subjectId, questionAId, questionBId);
                                 
                 if (autosaveIsOn()) {
                     saveContent();
@@ -364,7 +362,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             /*
              * Incrementa o número de uma questão 
              * 
-             * @param {object} qBlock - DOM Object do bloco da questão
+             * @param {object} qBlock - jQuery Object do bloco da questão
              */
             function incrementQuestionNumber(qBlock) {
                 var qNumberBlock = qBlock.find('.q-number').first();
@@ -375,7 +373,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             /*
              * Decrementa o número de uma questão 
              * 
-             * @param {object} qBlock - DOM Object do bloco da questão
+             * @param {object} qBlock - jQuery Object do bloco da questão
              */
             function decrementQuestionNumber(qBlock) {
                 var qNumberBlock = qBlock.find('.q-number').first();
@@ -395,30 +393,29 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
              */
             function updateConfig(
                     baseSubjectId, 
-                    subjectAId, questionAId,
-                    subjectBId, questionBId) {                
-                var subgroupA = findSubgroup(baseSubjectId, subjectAId);
-                var subgroupB = findSubgroup(baseSubjectId, subjectBId);
-                var qAIndex = 0;
-                var qBIndex = 0;
+                    subjectId, 
+                    questionAId, 
+                    questionBId) {                
+                var subgroup = findSubgroup(baseSubjectId, subjectId);
+                var qAIndex = -1;
+                var qBIndex = -1;
                 
-                for (var i = 0; i < subgroupA.questions.length; ++i) {
-                    if (+subgroupA.questions[i].id === questionAId) {
+                for (var i = 0; i < subgroup.questions.length; ++i) {
+                    var questionId = subgroup.questions[i].id;
+                    if (questionId === questionAId) {
                         qAIndex = i;
-                        break;
-                    }
-                }
-                
-                for (var i = 0; i < subgroupB.questions.length; ++i) {
-                    if (+subgroupB.questions[i].id === questionBId) {
+                    } else if (questionId === questionBId) {
                         qBIndex = i;
+                    }
+                    
+                    if (qAIndex !== -1 && qBIndex !== -1) {
                         break;
                     }
                 }
                 
-                var qA = subgroupA.questions[qAIndex];
-                subgroupA.questions[qAIndex] = subgroupB.questions[qBIndex];
-                subgroupB.questions[qBIndex] = qA;           
+                var qA = subgroup.questions[qAIndex];
+                subgroup.questions[qAIndex] = subgroup.questions[qBIndex];
+                subgroup.questions[qBIndex] = qA;           
             }
         };
         
@@ -1029,7 +1026,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             decrementQuestionCounter();
             
             var qNumber = +questionBlock.find('.q-number').text();
-            var subjectId = +questionBlock.data('subject-id');
+            var subjectId = +questionBlock.parent().data('id');
             
             var baseSubjectId = +$('#subject-info-' + subjectId)
                     .closest('.base-subject-info')
@@ -1041,7 +1038,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                     +$('#questions-start-at-number').text(), 
                     $('.content-questions').first()
             );
-            
+    
             removeFromConfig(baseSubjectId, subjectId, qId);
             
             /*
