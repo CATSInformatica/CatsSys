@@ -7,15 +7,28 @@
     <p><?php echo $this->message; ?></p>
     
     <div class="row">  
-            <?php if ($this->editAllowed) : ?>  
-                <div class="box box-success color-palette-box no-margin">
-                    <div class="box-header with-border">
-                        <h3 class="box-title text-uppercase"><i class="fa fa-list" aria-hidden="true"></i> DISCIPLINAS E QUESTÕES </h3>
-                        <div class="box-tools pull-right">
-                            <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                        </div><!-- /.box-tools -->
-                    </div>   
-                    <div class="box-body">                
+        <?php 
+            if (!$this->editAllowed) : 
+                $boxWidthClass = 'col-xs-12';
+                $questionSelectionBoxClass = 'hide';
+            else : 
+                $boxWidthClass = 'col-xs-6';
+                $questionSelectionBoxClass = '';
+            endif; 
+        ?> 
+        
+        <div class="<?php echo $boxWidthClass; ?>">
+            <div class="box box-success color-palette-box no-margin">
+                <div class="box-header with-border">
+                    <h3 class="box-title text-uppercase"><i class="fa fa-list" aria-hidden="true"></i> DISCIPLINAS E QUESTÕES </h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div><!-- /.box-tools -->
+                </div>   
+                <div class="box-body">       
+                    <?php if (!$this->editAllowed) : ?>
+                        <h4>Não é possível selecionar questões pois esse conteúdo está associado a uma ou mais provas.</h4>
+                    <?php else : ?>
                         <?php $colors = ['purple', 'orange', 'navy', 'maroon', 'teal']; ?>
                         <style>
                             .nav-tabs-custom>.nav-tabs>li.active  {
@@ -145,143 +158,136 @@
                                     </div>
                                 <?php endforeach; ?>
                             </div>
-                            
+
                             <div class="info-box-content no-margin">
-                                <span class="info-box-number text-right">
+                                <span class="info-box-number text-center">
                                     <span id="added-questions">0</span> 
                                     / 
                                     <span id="questions-count" class="text-blue">0</span>
                                 </span>                                                            
                             </div>
                         </div>
-                    </div>
+                    <?php endif; ?> 
                 </div>
-                <!-- /.box-body -->
-                
-                <div class="row">
-                    <div class="col-xs-6">
-                        <div class="box box-warning color-palette-box no-padding no-margin">
-                            <div class="box-header with-border">
-                                <h3 class="box-title text-uppercase"><i class="fa fa-list" aria-hidden="true"></i> SELEÇÃO DAS QUESTÕES</h3>
-                                <div class="box-tools pull-right">
-                                    <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                                </div><!-- /.box-tools -->
-                            </div>
+            </div>
+            <!-- /.box-body -->
 
-                            <div class="box-body">  
-                                <div class="col-xs-12" id="questions">
-                                    <div class="row"> 
-                                        <div class="col-xs-3 no-padding">
-                                            <div class="col-xs-12">
-                                                <a class="btn btn-app no-margin col-xs-12 save-content">
-                                                  <i class="fa fa-save"></i> Salvar conteúdo
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-3 no-padding">
-                                            <div class="col-xs-12">
-                                                <a class="btn btn-app no-margin col-xs-12 autosaving" data-autosave="off">
-                                                  <i class="fa fa-check"></i> Salvar automaticamente
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-3 no-padding">
-                                            <div class="col-xs-12">
-                                                <a class="btn btn-app no-margin col-xs-12 add-question">
-                                                  <i class="fa fa-plus"></i> Adicionar questões
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-3 no-padding">
-                                            <div class="col-xs-12">
-                                                <a class="btn btn-app no-margin refresh-button col-xs-12">
-                                                  <i class="fa fa-refresh"></i> Recarregar questões
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div> 
-                                    <div class="row text-center">
-                                        <h4 id="table-content-title">TÍTULO</h4>
-                                    </div>
-                                    <div class="row text-center">
-                                        <p class="text-red text-bold" style="display: none;" id="question-quantity-exceeded-alert">Não é possível adicionar mais questões a esta disciplina, pois o limite especificado na configuração do conteúdo já foi atingido.</p>
-                                    </div>
-                                    <div class="row">
-                                        <div class="table-responsive">
-                                            <table class="table table-condensed table-bordered" id="question-table">
-                                                <thead>
-                                                <th>Questões</th>
-                                                </thead>
-                                                <tbody>
-                                                </tbody>
-                                            </table>
-                                        </div>
-                                    </div> 
-                                    <div class="row"> 
-                                        <div class="col-xs-3 no-padding">
-                                            <div class="col-xs-12">
-                                                <a class="btn btn-app no-margin col-xs-12 save-content">
-                                                  <i class="fa fa-save"></i> Salvar conteúdo
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-3 no-padding">
-                                            <div class="col-xs-12">
-                                                <a class="btn btn-app no-margin col-xs-12 autosaving" data-autosave="off">
-                                                  <i class="fa fa-check"></i> Salvar automaticamente
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-3 no-padding">
-                                            <div class="col-xs-12">
-                                                <a class="btn btn-app no-margin col-xs-12 add-question">
-                                                  <i class="fa fa-plus"></i> Adicionar questões
-                                                </a>
-                                            </div>
-                                        </div>
-                                        <div class="col-xs-3 no-padding">
-                                            <div class="col-xs-12">
-                                                <a class="btn btn-app no-margin refresh-button col-xs-12">
-                                                  <i class="fa fa-refresh"></i> Recarregar questões
-                                                </a>
-                                            </div>
-                                        </div>
-                                    </div>   
+            <div class="box box-warning color-palette-box no-padding no-margin <?php echo $questionSelectionBoxClass; ?>">
+                <div class="box-header with-border">
+                    <h3 class="box-title text-uppercase"><i class="fa fa-list" aria-hidden="true"></i> SELEÇÃO DAS QUESTÕES</h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div><!-- /.box-tools -->
+                </div>
+
+                <div class="box-body">  
+                    <div class="col-xs-12" id="questions">
+                        <div class="row"> 
+                            <div class="col-xs-3 no-padding">
+                                <div class="col-xs-12">
+                                    <a class="btn btn-app no-margin col-xs-12 autosaving" data-autosave="off">
+                                      <i class="fa fa-check"></i> Salvar automaticamente
+                                    </a>
                                 </div>
                             </div>
-                        </div>
-                    </div>
-
-                <?php else : ?> 
-                    <h4 class="text-bold text-uppercase text-center" style="opacity: 0.5">
-                        Não é possível selecionar questões pois esse conteúdo está associado a uma ou mais provas.
-                    </h4>
-                <?php endif; ?> 
-
-                <!-- PROVA -->
-                <div class="col-xs-6">
-                    <div class="box box-warning color-palette-box no-padding no-margin">
-                        <div class="box-header with-border">
-                            <h3 class="box-title text-uppercase"><i class="fa fa-file-text-o"></i> PRÉ-VISUALIZAÇÃO DA PROVA </h3>
-                            <div class="box-tools pull-right">
-                                <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
-                            </div><!-- /.box-tools -->
-                        </div>
-                        <div class="box-body">
-                            <?php echo $this->render('exam_content_structure_templates', array()); ?>
-
-                            <!-- PREVIEW -->
-                            <div class="preview-page <?php echo ($this->editAllowed ? '' : 'view-only'); ?>"
-                                 style="width: 100%; max-height: 800px; overflow: scroll;">
-                                <div class="content-questions">
+                            <div class="col-xs-3 no-padding">
+                                <div class="col-xs-12">
+                                    <a class="btn btn-app no-margin col-xs-12 save-content">
+                                      <i class="fa fa-save"></i> Salvar conteúdo
+                                    </a>
                                 </div>
                             </div>
+                            <div class="col-xs-3 no-padding">
+                                <div class="col-xs-12">
+                                    <a class="btn btn-app no-margin col-xs-12 add-question">
+                                      <i class="fa fa-plus"></i> Adicionar questões
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-xs-3 no-padding">
+                                <div class="col-xs-12">
+                                    <a class="btn btn-app no-margin refresh-button col-xs-12">
+                                      <i class="fa fa-refresh"></i> Recarregar questões
+                                    </a>
+                                </div>
+                            </div>
+                        </div> 
+                        <div class="row text-center">
+                            <h4 id="table-content-title">TÍTULO</h4>
                         </div>
-                        <!-- /.col -->
+                        <div class="row text-center">
+                            <p class="text-red text-bold" style="display: none;" id="question-quantity-exceeded-alert">Não é possível adicionar mais questões a esta disciplina, pois o limite especificado na configuração do conteúdo já foi atingido.</p>
+                        </div>
+                        <div class="row">
+                            <div class="table-responsive">
+                                <table class="table table-condensed table-bordered" id="question-table">
+                                    <thead>
+                                    <th>Questões</th>
+                                    </thead>
+                                    <tbody>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </div> 
+                        <div class="row"> 
+                            <div class="col-xs-3 no-padding">
+                                <div class="col-xs-12">
+                                    <a class="btn btn-app no-margin col-xs-12 autosaving" data-autosave="off">
+                                      <i class="fa fa-check"></i> Salvar automaticamente
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-xs-3 no-padding">
+                                <div class="col-xs-12">
+                                    <a class="btn btn-app no-margin col-xs-12 save-content">
+                                      <i class="fa fa-save"></i> Salvar conteúdo
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-xs-3 no-padding">
+                                <div class="col-xs-12">
+                                    <a class="btn btn-app no-margin col-xs-12 add-question">
+                                      <i class="fa fa-plus"></i> Adicionar questões
+                                    </a>
+                                </div>
+                            </div>
+                            <div class="col-xs-3 no-padding">
+                                <div class="col-xs-12">
+                                    <a class="btn btn-app no-margin refresh-button col-xs-12">
+                                      <i class="fa fa-refresh"></i> Recarregar questões
+                                    </a>
+                                </div>
+                            </div>
+                        </div>   
                     </div>
                 </div>
             </div>
-            
+        </div>
+
+        <div class="<?php echo $boxWidthClass; ?>">
+            <!-- PROVA -->
+            <div class="box box-warning color-palette-box no-padding no-margin">
+                <div class="box-header with-border">
+                    <h3 class="box-title text-uppercase"><i class="fa fa-file-text-o"></i> PRÉ-VISUALIZAÇÃO DA PROVA </h3>
+                    <div class="box-tools pull-right">
+                        <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+                    </div><!-- /.box-tools -->
+                </div>
+                <div class="box-body">
+                    <?php echo $this->render('exam_content_structure_templates', array()); ?>
+
+                    <!-- PREVIEW -->
+                    <div class="preview-page <?php echo ($this->editAllowed ? '' : 'view-only'); ?>"
+                         style="width: 100%; max-height: 1250px; overflow: scroll;">
+                        <div class="content-questions">
+                        </div>
+                    </div>
+                </div>
+                <!-- /.col -->
+            </div>
+        </div>
+        
+        <div class="col-xs-12">
             <div class="box box-default">
                 <div class="box-header with-border">
                     <h3 class="box-title"><i class="fa fa-paragraph"></i> DESCRIÇÃO DO CONTEÚDO </h3>
@@ -295,7 +301,8 @@
                         <?php echo $this->questionsStartAtNumber; ?>
                     </span>
                 </div><!-- /.box-body -->
-            </div><!-- /.box -->    
+            </div><!-- /.box -->   
+        </div>
     </div>
 </section>
 
