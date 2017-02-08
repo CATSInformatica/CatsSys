@@ -646,30 +646,28 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * Permite adicionar ou remover questões de um conteúdo
+     * Exibe uma interface para adicionar, remover e ordenar as questões de um conteúdo.
      * 
      * @return ViewModel
      */
     public function prepareContentAction()
     {
         $contentId = $this->params('id', false);
+        $em = $this->getEntityManager();
 
         if ($contentId) {
             try {
-                $em = $this->getEntityManager();
-                
-                $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')
-                        ->findBy(['parent' => null]);
                 $content = $em->find('SchoolManagement\Entity\ExamContent', $contentId);
                 $config = json_decode($content->getConfig(), true);
-                
+               
+                $groupsData = $this->getGroupsData($config);
                 $editAllowed = $this->isExamContentEditable($content);
 
                 return new ViewModel(array(
                     'message' => null,
                     'description' => $content->getDescription(),
                     'questionsStartAtNumber' => $config['questionsStartAtNumber'],
-                    'baseSubjects' => $baseSubjects,
+                    'groupsData' => $groupsData,
                     'contentId' => $contentId,
                     'editAllowed' => $editAllowed,
                 ));
@@ -678,12 +676,89 @@ class SchoolExamController extends AbstractEntityActionController
                     'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                     'description' => null,
                     'questionsStartAtNumber' => null,
-                    'baseSubjects' => null,
+                    'groupsData' => null,
                     'contentId' => null,
                     'editAllowed' => null,
                 ));
             }
         }
+    }
+    
+    /**
+     * Extrai informações sobre as disciplinas que fazem parte de uma configuração
+     * de conteúdo.
+     * 
+     * @param array $examConfig - configuração de um conteúdo de prova
+     * @return array - array indexado pelo id da respectiva disciplina que possui
+     *      o nome e os subgrupos de determinado grupo
+     *  [
+     *      [<integer>] => [
+     *          'name' => <string>,
+     *          'subgroups' => [
+     *              [<integer>] => [
+     *                  'name' => <string>
+     *                  'subgroups' => [
+     *                      [<integer>] => [
+     *                          'name' => <string>
+     *                      ],
+     *                      ...
+     *                  ]
+     *              ],
+     *              ...            
+     *          ]    
+     *      ],
+     *      ...
+     *  ]
+     */
+    private function getGroupsData($examConfig) {
+        $em = $this->getEntityManager();
+        $groupsData = [];
+        
+        foreach ($examConfig['groups'] as $group) {
+            // disciplina base
+            $groupsData[$group['id']] = [
+                'name' => $group['groupName'],
+                'subgroups' => [],
+            ];
+
+            foreach ($group['subgroups'] as $subgroup) {                        
+                if (!isset($subgroup['id'])) {
+                    foreach ($subgroup as $parallelSubgroup) {
+                        // disciplina paralela
+                        $groupsData[$group['id']]['subgroups'][$parallelSubgroup['id']] = [
+                            'name' => $parallelSubgroup['subgroupName'],
+                            'subgroups' => [],                            
+                        ];
+
+                        $subject = $em->getRepository('SchoolManagement\Entity\Subject')
+                                ->findBy(['subjectId' => $parallelSubgroup['id']])[0];
+
+                        foreach ($subject->getChildren() as $topic) {
+                            $groupsData[$group['id']]['subgroups'][$subgroup['id']]['subgroups'][$topic->getSubjectId()] = [
+                                'name' => $topic->getSubjectName()            
+                            ];
+                        }
+                    }
+                } else {
+                    // disciplina
+                    $groupsData[$group['id']]['subgroups'][$subgroup['id']] = [
+                        'name' => $subgroup['subgroupName'],
+                        'subgroups' => [],                            
+                    ];
+
+                    $subject = $em->getRepository('SchoolManagement\Entity\Subject')
+                            ->findBy(['subjectId' => $subgroup['id']])[0];
+
+                    foreach ($subject->getChildren() as $topic) {
+                        $groupsData[$group['id']]['subgroups'][$subgroup['id']]['subgroups'][$topic->getSubjectId()] = [
+                            'name' => $topic->getSubjectName()            
+                        ];
+                    }
+                }
+            }
+        }
+        
+        return $groupsData;
     }
 
     /**

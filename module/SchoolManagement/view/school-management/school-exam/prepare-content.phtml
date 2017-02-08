@@ -29,7 +29,9 @@
                     <?php if (!$this->editAllowed) : ?>
                         <h4>Não é possível selecionar questões pois esse conteúdo está associado a uma ou mais provas.</h4>
                     <?php else : ?>
-                        <?php $colors = ['purple', 'orange', 'navy', 'maroon', 'teal']; ?>
+                        <?php 
+                            $colors = ['purple', 'orange', 'navy', 'maroon', 'teal'];
+                        ?>
                         <style>
                             .nav-tabs-custom>.nav-tabs>li.active  {
                                 border-top-color: #4c4c4c;
@@ -48,63 +50,71 @@
                              data-id="<?php echo $this->contentId; ?>"
                              style="border: thin lightgray solid; ">
                             <ul class="nav nav-tabs margin-bottom">
-                                <?php foreach ($this->baseSubjects as $i => $baseSubject) : ?> 
-                                    <li class=" no-margin
+                                
+                                <?php $i = 0; ?>
+                                <?php foreach ($this->groupsData as $baseSubjectId => $baseSubject) : ?>
+                                
+                                    <li class=" no-margin bg-<?php echo $colors[$i % count($colors)]; ?>
                                         <?php 
                                         if ($i === 0) :
                                             echo " active ";
                                         endif; 
-                                        ?>
-                                        bg-<?php echo $colors[$i % count($colors)]; ?>">
+                                        ?>">
+                                        
                                         <a class="text-white" 
-                                           href="#base-subject-info-<?php echo $baseSubject->getSubjectId(); ?>" 
+                                           href="#base-subject-info-<?php echo $baseSubjectId; ?>" 
                                            data-toggle="tab"
                                            style="border-right: 0; border-left: 0;">
-                                            <?php echo $baseSubject->getSubjectName(); ?>
+                                            <?php echo $baseSubject['name']; ?>
                                         </a>
                                     </li>
-                                <?php endforeach; ?>    
+                                    
+                                    <?php ++$i; ?>
+                                <?php endforeach; ?>  
+                                    
                             </ul>
 
                             <div class="tab-content"
-                                 style="border-right: thick <?php echo $colors[$i % count($colors)]; ?> solid">
-                                <?php foreach ($this->baseSubjects as $i => $baseSubject) : ?>
-                                    <?php
-                                    $baseSubjectName = $baseSubject->getSubjectName();
-                                    $baseSubjectId = $baseSubject->getSubjectId();                                       
-                                    ?>
-
+                                 style="border-right: thick maroon solid">
+                                
+                                <?php $i = 0; ?>
+                                <?php foreach ($this->groupsData as $baseSubjectId => $baseSubject) : ?>
                                     <div class="tab-pane base-subject-info nav-tabs-custom no-margin <?php 
                                                     if ($i === 0) :
                                                         echo " active ";
                                                     endif; 
                                                     ?>"  
                                          id="base-subject-info-<?php echo $baseSubjectId; ?>"
-                                         data-name="<?php echo $baseSubjectName; ?>"
-                                         data-id="<?php echo $baseSubjectId; ?>">
+                                         data-id="<?php echo $baseSubjectId; ?>"
+                                         data-name="<?php echo $baseSubject['name']; ?>">
 
                                         <ul class="nav nav-tabs margin-bottom">  
-                                            <?php foreach ($baseSubject->getChildren() as $j => $subject) : ?>
+                                            
+                                            <?php $j = 0; ?>
+                                            <?php foreach ($baseSubject['subgroups'] as $subjectId => $subject) : ?>
                                                 <li class="
                                                     <?php 
                                                     if ($j === 0) :
                                                         echo " active ";
                                                     endif; 
                                                     ?>">
-                                                    <a href="#subject-info-<?php echo $subject->getSubjectId(); ?>" 
+                                                    
+                                                    <a href="#subject-info-<?php echo $subjectId; ?>" 
                                                        data-toggle="tab">
-                                                        <?php echo $subject->getSubjectName(); ?>
+                                                        <?php echo $subject['name']; ?>
                                                     </a>
-                                                </li>                                           
+                                                </li>  
+                                                
+                                                <?php ++$j; ?>                                         
                                             <?php endforeach; ?>
+                                                
                                         </ul>
 
                                         <div class="tab-content">
-                                            <?php foreach ($baseSubject->getChildren() as $j => $subject) : ?>
-                                                <?php
-                                                $subjectId = $subject->getSubjectId();
-                                                $subjectName = $subject->getSubjectName();
-                                                ?>
+                                            
+                                            <?php $j = 0; ?> 
+                                            <?php foreach ($baseSubject['subgroups'] as $subjectId => $subject) : ?>
+                                            
                                                 <div class="tab-pane subject-info row
                                                     <?php 
                                                     if ($j === 0) :
@@ -113,32 +123,26 @@
                                                     ?>
                                                     " 
                                                     data-id="<?php echo $subjectId; ?>"
-                                                    data-name="<?php echo $subjectName; ?>"
+                                                    data-name="<?php echo $subject['name']; ?>"
                                                     id="subject-info-<?php echo $subjectId; ?>">        
                                                     <div class="col-xs-11">
-                                                        <?php
-                                                        foreach ($subject->getChildren() as $topic) :
-                                                        ?>
-                                                            <?php
-                                                            $topicName = $topic->getSubjectName();
-                                                            $topicId = $topic->getSubjectId();
-                                                            ?>
+                                                        
+                                                        <?php foreach ($subject['subgroups'] as $topicId => $topic) : ?>
                                                             <button class="btn btn-flat topic-info
                                                                     bg-<?php echo $colors[$i % count($colors)]; ?>"
                                                                     style="cursor: pointer;"
                                                                     data-id="<?php echo $topicId; ?>"
-                                                                    data-name="<?php echo $topicName; ?> - <?php echo $subjectName; ?>"
+                                                                    data-name="<?php echo $topic['name']; ?> - <?php echo $subject['name']; ?>"
                                                                     id="topic-info-<?php echo $topicId; ?>">
-                                                                <?php echo $topicName;  ?>
+                                                                <?php echo $topic['name'];  ?>
                                                             </button>
-                                                        <?php
-                                                        endforeach;
-                                                        ?> 
+                                                        <?php endforeach; ?> 
+                                                        
                                                         <button class="btn btn-flat topic-info
                                                                 bg-<?php echo $colors[$i % count($colors)]; ?>"
                                                                 style="cursor: pointer;"
                                                                 data-id="<?php echo $subjectId; ?>"
-                                                                data-name="SEM TÓPICO - <?php echo $subjectName; ?>"
+                                                                data-name="SEM TÓPICO - <?php echo $subject['name']; ?>"
                                                                 id="topic-info-<?php echo $subjectId; ?>">
                                                             SEM TÓPICO
                                                         </button>
@@ -153,9 +157,13 @@
                                                         </div>
                                                     </div>
                                                 </div>
+                                            
+                                                <?php ++$j; ?> 
                                             <?php endforeach; ?>
+                                            
                                         </div>
                                     </div>
+                                    <?php ++$i; ?>
                                 <?php endforeach; ?>
                             </div>
 
