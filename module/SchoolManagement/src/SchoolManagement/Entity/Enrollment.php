@@ -183,8 +183,40 @@ class Enrollment
      */
     public function setWarnings($warnings)
     {
-        $this->$warnings = $warnings;
+        $this->warnings = $warnings;
         return $this;
+    }
+    
+    /**
+     * 
+     * @param \SchoolManagement\Entity\Warning $warning
+     */
+    public function addWarning(Warning $warning)
+    {
+        if (!$this->hasWarning($warning)) {
+            $this->warnings->add($warning);
+        }
+    }
+    
+    /**
+     * 
+     * @param \SchoolManagement\Entity\Warning $warning
+     */
+    public function removeWarning(Warning $warning)
+    {
+        if ($this->hasWarning($warning)) {
+            $this->warnings->removeElement($warning);
+        }
+    }
+
+    /**
+     * 
+     * @param \SchoolManagement\Entity\Warning $warning
+     * @return boolean
+     */
+    public function hasWarning(Warning $warning)
+    {
+        return $this->warnings->contains($warning);
     }
 
     /**
