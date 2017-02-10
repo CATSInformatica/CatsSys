@@ -235,7 +235,7 @@ class SchoolWarningController extends AbstractEntityActionController
                 'message' => null,
                 'form' => $form,
             ));
-        } catch (\Throwable $ex) {
+        } catch (\Exception $ex) {
             $message = 'Erro inesperado. Entre com contato com o administrador do sistema.<br>' .
                     'Erro: ' . $ex->getMessage();
         }
