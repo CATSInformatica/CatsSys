@@ -3,11 +3,8 @@
 namespace Authentication\Controller;
 
 use Authentication\Entity\User;
-use Authentication\Form\UserFilter;
 use Authentication\Form\UserForm;
-use Authentication\Service\UserService;
 use Database\Controller\AbstractEntityActionController;
-use Exception;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -25,93 +22,83 @@ class UserController extends AbstractEntityActionController
 //    // C -Create
     public function createAction()
     {
-        $userForm = new UserForm();
-        $request = $this->getRequest();
-        if ($request->isPost()) {
 
-            $userForm->setInputFilter(new UserFilter());
-            $userForm->setData($request->getPost());
+        try {
 
-            if ($userForm->isValid()) {
+            $request = $this->getRequest();
 
-                $entityManager = $this->getEntityManager();
-                $data = $userForm->getData();
-                $user = new User();
+            $em = $this->getEntityManager();
+            $form = new UserForm($em);
+            $user = new User();
+            $form->bind($user);
 
-                $pass = UserService::encryptPassword($data['user_password']);
+            if ($request->isPost()) {
+                $form->setData($request->getPost());
+                if ($form->isValid()) {
 
-                $user->setUserName($data['user_name'])
-                    ->setUserPassword($pass['password'])
-                    ->setUserPasswordSalt($pass['password_salt'])
-                    ->setUserActive(true);
+                    $em->persist($user);
+                    $em->flush();
 
-                $entityManager->persist($user);
-                $entityManager->flush();
-
-                return $this->redirect()->toRoute('authentication/user',
-                        array(
-                        'action' => 'index',
-                ));
+                    return $this->redirect()->toRoute('authentication/user', [
+                            'action' => 'index',
+                    ]);
+                }
             }
-        }
 
-        return new ViewModel(array('form' => $userForm));
+            return new ViewModel([
+                'form' => $form
+            ]);
+        } catch (\Exception $ex) {
+
+            return new ViewModel([
+                'form' => null
+            ]);
+        }
     }
 
     // Edit
     public function editAction()
     {
-        $id = $this->params()->fromRoute('id');
-        if (!$id) {
-            return $this->redirect()->toRoute('authentication/user',
-                    array(
-                    'action' => 'index',
-            ));
-        }
-        $entityManager = $this->getEntityManager();
-
         try {
 
-            $user = $entityManager->getReference('Authentication\Entity\User', $id);
-        } catch (Exception $ex) {
-            echo $ex->getMessage();
-        }
+            $id = $this->params('id', false);
 
-        $form = new UserForm();
-
-        $form->get('user_name')->setValue($user->getUserName());
-
-        $request = $this->getRequest();
-
-        if ($request->isPost()) {
-
-            $formFilter = new UserFilter();
-            $formFilter->get('user_name')->setRequired(false);
-
-            $form->setInputFilter($formFilter);
-            $data = $request->getPost();
-            $form->setData($data);
-
-            $form->get('user_name')->setValue($user->getUserName());
-
-            if ($form->isValid()) {
-                $pass = UserService::encryptPassword($data['user_password']);
-                $user->setUserPassword($pass['password'])
-                    ->setUserPasswordSalt($pass['password_salt']);
-
-                $entityManager->persist($user);
-                $entityManager->flush();
-
-                return $this->redirect()
-                        ->toRoute('authentication/user',
-                            array(
-                            'action' => 'index'
-                ));
+            if (!$id) {
+                return $this->redirect()->toRoute('authentication/user', [
+                        'action' => 'index',
+                ]);
             }
+
+            $em = $this->getEntityManager();
+
+            $user = $em->find('Authentication\Entity\User', $id);
+            $form = new UserForm($em);
+            $form->bind($user);
+
+            $request = $this->getRequest();
+
+            if ($request->isPost()) {
+                $form->setData($request->getPost());
+                if ($form->isValid()) {
+
+                    $em->persist($user);
+                    $em->flush();
+
+                    return $this->redirect()->toRoute('authentication/user', [
+                        'action' => 'index'
+                    ]);
+                }
+            }
+            return new ViewModel([
+                'form' => $form
+            ]);
+        } catch (\Exception $ex) {
+            return new ViewModel([
+                'form' => null,
+            ]);
         }
-        return new ViewModel(array('form' => $form, 'id' => $id));
     }
-    
+
     // D -Delete
     public function deleteAction()
     {
@@ -137,5 +124,4 @@ class UserController extends AbstractEntityActionController
             ]);
         }
     }
-
 }
