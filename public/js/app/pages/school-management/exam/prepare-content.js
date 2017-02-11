@@ -276,8 +276,9 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
              * 
              */
             $('.content-questions').on('click', '.rm-question', function () {
-                var qId = +$(this).closest('.question-block').data('id');                
-                removeQuestion(qId);
+                var questionBlock = $(this).closest('.question-block');
+                var qId = +questionBlock.data('id');                
+                removeQuestion(questionBlock);
                 removeAddedFlag(qId);
                 
                 if (autosaveIsOn()) {
@@ -314,12 +315,11 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 }
                 
                 var baseSubjectId = +qBlock.closest('.base-subject-block').data('id');
+                var subjectId = +qBlock.parent().data('id');
                 var questionAId = +qBlock.data('id');
-                var subjectAId = +qBlock.data('subject-id');
                 var questionBId = +previousQBlock.data('id');
-                var subjectBId = +previousQBlock.data('subject-id');
                 
-                updateConfig(baseSubjectId, subjectAId, questionAId, subjectBId, questionBId);
+                updateConfig(baseSubjectId, subjectId, questionAId, questionBId);
                                
                 if (autosaveIsOn()) {
                     saveContent();
@@ -348,12 +348,11 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 }
                 
                 var baseSubjectId = +qBlock.closest('.base-subject-block').data('id');
+                var subjectId = +qBlock.parent().data('id');
                 var questionAId = +qBlock.data('id');
-                var subjectAId = +qBlock.data('subject-id');
                 var questionBId = +nextQBlock.data('id');
-                var subjectBId = +nextQBlock.data('subject-id');
                 
-                updateConfig(baseSubjectId, subjectAId, questionAId, subjectBId, questionBId);
+                updateConfig(baseSubjectId, subjectId, questionAId, questionBId);
                                 
                 if (autosaveIsOn()) {
                     saveContent();
@@ -363,7 +362,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             /*
              * Incrementa o número de uma questão 
              * 
-             * @param {object} qBlock - DOM Object do bloco da questão
+             * @param {object} qBlock - jQuery Object do bloco da questão
              */
             function incrementQuestionNumber(qBlock) {
                 var qNumberBlock = qBlock.find('.q-number').first();
@@ -374,7 +373,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             /*
              * Decrementa o número de uma questão 
              * 
-             * @param {object} qBlock - DOM Object do bloco da questão
+             * @param {object} qBlock - jQuery Object do bloco da questão
              */
             function decrementQuestionNumber(qBlock) {
                 var qNumberBlock = qBlock.find('.q-number').first();
@@ -394,30 +393,29 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
              */
             function updateConfig(
                     baseSubjectId, 
-                    subjectAId, questionAId,
-                    subjectBId, questionBId) {                
-                var subgroupA = findSubgroup(baseSubjectId, subjectAId);
-                var subgroupB = findSubgroup(baseSubjectId, subjectBId);
-                var qAIndex = 0;
-                var qBIndex = 0;
+                    subjectId, 
+                    questionAId, 
+                    questionBId) {                
+                var subgroup = findSubgroup(baseSubjectId, subjectId);
+                var qAIndex = -1;
+                var qBIndex = -1;
                 
-                for (var i = 0; i < subgroupA.questions.length; ++i) {
-                    if (+subgroupA.questions[i].id === questionAId) {
+                for (var i = 0; i < subgroup.questions.length; ++i) {
+                    var questionId = subgroup.questions[i].id;
+                    if (questionId === questionAId) {
                         qAIndex = i;
-                        break;
-                    }
-                }
-                
-                for (var i = 0; i < subgroupB.questions.length; ++i) {
-                    if (+subgroupB.questions[i].id === questionBId) {
+                    } else if (questionId === questionBId) {
                         qBIndex = i;
+                    }
+                    
+                    if (qAIndex !== -1 && qBIndex !== -1) {
                         break;
                     }
                 }
                 
-                var qA = subgroupA.questions[qAIndex];
-                subgroupA.questions[qAIndex] = subgroupB.questions[qBIndex];
-                subgroupB.questions[qBIndex] = qA;           
+                var qA = subgroup.questions[qAIndex];
+                subgroup.questions[qAIndex] = subgroup.questions[qBIndex];
+                subgroup.questions[qBIndex] = qA;           
             }
         };
         
@@ -528,8 +526,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                     contentId: +$('#content-info').data('id'),
                     config: JSON.stringify(contentConfig)
                 }
-            });
-            
+            });            
         };
 
         /*
@@ -540,39 +537,45 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          *      'content-questions' na qual o conteúdo deve ser exibido
          * @param {boolean} prepareContent - flag que indica se a função está 
          *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
+         * @param {function} callback - função chamada após o carregamento do conteúdo.
+         *      A resposta da requisição é passada como parâmetro para esta função
          */
         loadContent = function(contentId, divObj, prepareContent) {
-            $.ajax({
+            var request = $.ajax({
                 method: "POST",
                 url: '/school-management/school-exam/get-content',
                 data: {
                     contentId: contentId
                 }
-            }).done(function(response) {
+            });
+                    
+            request.done(function(response) {
                 var numberOfQuestions = 0;
                 contentConfig = JSON.parse(response.config);
                 var groups = contentConfig.groups;
                 
                 for (var i = 0; i < groups.length; ++i) {
-                    addBaseSubjectBlock(groups[i], divObj);
+                    addBaseSubjectBlock(groups[i]);
                     
                     for (var j = 0; j < groups[i].subgroups.length; ++j) {
                         var parallelSubject = false;
                         
                         if (Array.isArray(groups[i].subgroups[j])) {
                             parallelSubject = true;
-                            addParallelSubjectBlock(groups[i].subgroups[j]);
+                            addParallelSubjectBlock(groups[i].id, groups[i].subgroups[j]);
                             
                             for (var k = 0; k < groups[i].subgroups[j].length; ++k) {
-                                loadSubjecData(groups[i], groups[i].subgroups[j][k], parallelSubject);
+                                loadSubjectData(groups[i], groups[i].subgroups[j][k], parallelSubject);
                                 numberOfQuestions += groups[i].subgroups[j][k].numberOfProposedQuestions;
                             }
                         } else {
                             if (groups[i].subgroups[j].singleColumn && groups[i].subgroups[j].numberOfProposedQuestions > 0) {  
                                 addSingleColumnSubjectBlock(groups[i], groups[i].subgroups[j], divObj);
-                            }  
+                            } else {
+                                addSubjectBlock(groups[i].id, groups[i].subgroups[j]);                                
+                            }
                             
-                            loadSubjecData(groups[i], groups[i].subgroups[j], parallelSubject);
+                            loadSubjectData(groups[i], groups[i].subgroups[j], parallelSubject);
                             numberOfQuestions += groups[i].subgroups[j].numberOfProposedQuestions;
                         }
                     }
@@ -591,7 +594,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
              * @param {boolean} parallelSubject - flag que indica se a disciplina 
              *      é paralela
              */
-            function loadSubjecData(baseSubject, subject, parallelSubject) {
+            function loadSubjectData(baseSubject, subject, parallelSubject) {
                 if (prepareContent) {
                     setSubjectInfo(subject, parallelSubject);
                 }        
@@ -616,7 +619,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
              * @param {object} divObj - DOM Object da div com a classe 
              *      'content-questions' na qual o conteúdo deve ser exibido 
              */
-            function addBaseSubjectBlock(subject, divObj) {
+            function addBaseSubjectBlock(subject) {
                 var baseSubjectTemplate = $('#base-subject-template > div').clone();
 
                 baseSubjectTemplate.addClass('s-' + subject.id);
@@ -628,12 +631,29 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             }
             
             /*
+             * Adiciona um bloco de disciplina
+             * 
+             * @param {int} baseSubjectId - id da disciplina base
+             * @param {object} subject - objeto que representa a disciplina no JSON 
+             *      do conteúdo
+             */
+            function addSubjectBlock(baseSubjectId, subject) {
+                var subjectTemplate = $('#subject-template > div').clone();
+
+                subjectTemplate.addClass('s-' + subject.id);
+                subjectTemplate.attr('data-id', subject.id);
+                subjectTemplate.attr('data-name', subject.subgroupName);
+
+                divObj.find('.s-' + baseSubjectId).first().append(subjectTemplate);
+            }
+            
+            /*
              * Adiciona um bloco de disciplinas paralelas
              * 
              * @param {object} parallelSubjects - objeto que representa 
              *      disciplinas paralelas no JSON do conteúdo
              */
-            function addParallelSubjectBlock(parallelSubjects) {
+            function addParallelSubjectBlock(baseSubjectId, parallelSubjects) {
                 var parallelSubjectsTemplate = $('#parallel-subjects-template > div').clone();
                 
                 for (var k = 0; k < parallelSubjects.length; ++k) {
@@ -645,7 +665,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                     parallelSubjectsTemplate.append(parallelSubjectTemplate);
                 }
                 
-                divObj.find('.base-subject-block').last().append(parallelSubjectsTemplate);
+                divObj.find('.s-' + baseSubjectId).first().append(parallelSubjectsTemplate);
             }
             
             /*
@@ -719,7 +739,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                             id: subject.id,
                             name: subject.subgroupName,
                             parallel: parallelSubject,
-                            singleColumn: subject.singleColumn,
+                            singleColumn: subject.singleColumn
                         },
                         prepareContent
                 );
@@ -873,31 +893,12 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
             
             incrementQuestionCounter();
             
-            var controlIconsTemplate = $('#control-icons-template > span').clone();
             if (question.subject.singleColumn) {
                 var questionBlock = $('#single-column-question-template > div').clone();
                 
-                if (!context.divObj.parent().hasClass('view-only')) {
-                    questionBlock.prepend(controlIconsTemplate);
-                }
-                
-                questionBlock.attr('id', 'q-' + question.id);
-                questionBlock.attr('data-id', question.id);
-                questionBlock.attr('data-subject-id', subjectId);
-                questionBlock.attr('data-subject-name', subjectName);
                 questionBlock.append(question.enunciation);
-                context.divObj.find('.s-' + subjectId).first().append(questionBlock);
             } else {                
                 var questionBlock = $('#question-template > div').clone();
-                
-                if (!context.divObj.parent().hasClass('view-only')) {
-                    questionBlock.prepend(controlIconsTemplate);
-                }
-                
-                questionBlock.attr('id', 'q-' + question.id);
-                questionBlock.attr('data-id', question.id);
-                questionBlock.attr('data-subject-id', subjectId);
-                questionBlock.attr('data-subject-name', subjectName);
                 questionBlock.attr('data-correct-alternative', question.correctAlternative);
                 questionBlock.find('.q-number').first().text(questionCount);
                 questionBlock.find('hr').before(question.enunciation);               
@@ -909,16 +910,19 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                             .append('&#' + (9398 + i) + ';');            
                     alternative.append(question.alternatives[i]);
                     questionBlock.find('hr').before(alternative);
-                }
-                
-                if (question.subject.parallel) {
-                    context.divObj.find('.s-' + subjectId).first().append(questionBlock);
-                } else {
-                    context.divObj.find('.s-' + baseSubjectId).first().append(questionBlock);
-                }
-            
-                numberQuestions(context.numberingStart, context.divObj);
+                }            
             }
+            questionBlock.attr('data-id', question.id);
+            
+            // se no modo de edição, adiciona os ícones de remoção e ordenação
+            var controlIconsTemplate = $('#control-icons-template > span').clone();
+            if (!context.divObj.parent().hasClass('view-only')) {
+                questionBlock.prepend(controlIconsTemplate);
+            }
+            
+            context.divObj.find('.s-' + subjectId).first().append(questionBlock);
+                
+            numberQuestions(context.numberingStart, context.divObj);
             
             if (prepareContent) {
                 flagQuestionAsSelected(question.id);
@@ -990,10 +994,9 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          *      'content-questions' na qual o conteúdo deve ser exibido 
          */
         numberQuestions = function (beginAt, divObj) {
-            var baseSubjects = divObj.find('.base-subject-block');
+            var subjects = divObj.find('.subject-block, .parallel-subjects-block');
             var number = beginAt;
-            
-            baseSubjects.children().each(function () {
+            subjects.each(function () {
                 if ($(this).hasClass('parallel-subjects-block')) {
                     var parallelBlockStartNumber = number;
                     
@@ -1003,8 +1006,10 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                            $(this).text(number++); 
                         });
                     });
-                } else if ($(this).hasClass('question-block')){
-                    $(this).find('.q-number').first().text(number++);
+                } else {
+                    $(this).find('.q-number').each(function() {
+                       $(this).text(number++); 
+                    });
                 }
             });
         };
@@ -1014,27 +1019,26 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          * 
          * @param {int} qId - id da questão
          */
-        removeQuestion = function (qId) {
+        removeQuestion = function (questionBlock) {
+            var qId = +questionBlock.data('id');
+            
             selectedQuestions[qId] = false;
             decrementQuestionCounter();
             
-            var qBlock = $('#q-' + qId);
-            var qNumber = +qBlock.find('.q-number').text();
-            
-            var subjectId = +qBlock.data('subject-id');
-            var subjectName = qBlock.data('subject-name');
+            var qNumber = +questionBlock.find('.q-number').text();
+            var subjectId = +questionBlock.parent().data('id');
             
             var baseSubjectId = +$('#subject-info-' + subjectId)
                     .closest('.base-subject-info')
                     .data('id');
             
             decrementSubjectCounter(subjectId);
-            qBlock.remove();        
+            questionBlock.remove();        
             numberQuestions(
                     +$('#questions-start-at-number').text(), 
                     $('.content-questions').first()
             );
-            
+    
             removeFromConfig(baseSubjectId, subjectId, qId);
             
             /*

@@ -46,7 +46,7 @@ class StudentBgConfigFieldset extends Fieldset implements InputFilterProviderInt
                     'type' => 'textarea',
                     'options' => array(
                         'label' => 'Frase',
-                        'add-on-prepend' => '<i class="fa fa-paragraph"></i>',
+                        'add-on-prepend' => '<i class="fa fa-quote-left"></i>',
                     ),
                     'attributes' => array(
                         'rows' => 2,
@@ -57,7 +57,6 @@ class StudentBgConfigFieldset extends Fieldset implements InputFilterProviderInt
                     'type' => 'text',
                     'options' => array(
                         'label' => 'Autor',
-                        'add-on-prepend' => '<i class="fa fa-quote-left"></i>',
                     ),
                 ))
         ;

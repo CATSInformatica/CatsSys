@@ -22,7 +22,7 @@
                 <div class="box-body">
                     <ul>
                         <li>
-                            A ferramenta de geração automática de simulados ainda está sendo aprimorada, é possível que não haja o melhor aproveitamento de espaço em algumas páginas ou que questões extravasem o limite entre as questões e o rodapé. Uma maneira de tentar solucionar o eventual problema é rearranjando as questões.
+                            A ferramenta de geração automática de simulados ainda está sendo aprimorada, é possível que não haja o melhor aproveitamento de espaço em algumas páginas ou que questões extravasem o limite entre as questões e o rodapé. Uma maneira de tentar solucionar o eventual problema é rearranjando as questões na página de montagem de conteúdo.
                         </li>
                         <li>
                             Para salvar/imprimir corretamente o simulado gerado é necessário remover as margens de impressão do navegador.<br>
@@ -35,6 +35,17 @@
                             - Selecione "Gerenciar Tamanhos Personalizados..." (<i>Manage Custom Sizes...</i>).<br>
                             - Certifique-se que as dimensões do papel (largura x altura) estão definidas como 210x297mm (A4).<br>
                             - Em "Margens do papel" (<i>Paper Margins</i>), coloque zero em todos os campos.
+                        </li>
+                        <li>
+                            Para salvar/imprimir corretamente o gabarito você deve selecionar a orientação da folha como horizontal.<br>
+                        </li>
+                        <li>
+                            Para a impressão com cores, é necessário habilitar esta função.<br>
+                            <strong>Google Chrome</strong>: <br>
+                            Função habilitada por padrão.<br>
+                            <strong>Mozilla Firefox</strong>: <br>
+                            - Na janela de impressão, clique na aba "Opções" (<i>Options</i>).<br>
+                            - Habilite a opção "Imprimir cores de fundo" (<i>Print background colors</i>)
                         </li>
                     </ul>
                 </div>
@@ -77,6 +88,13 @@
                 </div>
             </div>
             
+            <!-- TEMPLATE TÍTULO DO GABARITO -->
+            <div class="hide" id="answers-tables-title-template">
+                <div class="col-xs-12 text-center text-bold">
+                    <h3 class="no-margin">GABARITO</h3>
+                </div>
+            </div>
+            
             <!-- GABARITO -->
             <div class="box box-default collapsed-box">
                 <div class="box-header with-border">
@@ -86,18 +104,12 @@
                     </div><!-- /.box-tools -->
                 </div><!-- /.box-header -->
                 <div class="box-body">
-                    <div class="row text-center">
-                        <i class="fa fa-info-circle text-blue" style="font-size: 20px; padding-right: 15px;" aria-hidden="true"></i>
-                        Escolha orientação horizontal para a folha ao imprimir/salvar o PDF do gabarito.
-                        <br><br>
-                    </div>
                     <div class="row">
                         <div class="btn-group col-xs-8 col-xs-offset-2 col-md-6 col-md-offset-3"> 
                             <a class="col-xs-6 btn btn-primary" id="print-answer-key">Gerar PDF</a>
                             <a class="col-xs-6 btn btn-success" id="save-answers-csv" disabled>Gerar CSV</a>
                         </div>
-                        <div class="col-xs-10 col-xs-offset-1 no-margin" 
-                             id="answer-key-tables">
+                        <div class="col-xs-10 col-xs-offset-1 no-margin" id="answer-key-tables">                            
                         </div>
                     </div> 
                 </div><!-- /.box-body -->
@@ -254,18 +266,19 @@
                     </div>
                     <div class="box-body exam">
                         <div class="do-not-print row">
-                            <div class="checkbox text-center">
+                            <div class="checkbox text-center hide-when-printing">
                                 <label><input type="checkbox" class="exam-instructions" checked>
                                     Incluir cabeçalho com instruções
                                 </label>
                             </div>
-                        </div>
-                        <div class="do-not-print row">
-                            <button class="col-xs-6 col-xs-offset-3 btn btn-success print-exam">
+                            
+                            <button class="col-xs-6 col-xs-offset-3 btn btn-success print-exam hide-when-printing">
                                 Gerar Prova (PDF)
                             </button>
+                            
                             <br><br><br>
-                            <span class="col-xs-12 loading-message text-bold text-center"></span>                                           <span class="col-xs-12 alert-message text-center"></span>
+                            <span class="col-xs-12 loading-message text-bold text-center"></span>                                         <span class="col-xs-12 alert-message text-center"></span>
+                            
                             <div class="col-xs-12 progress progress-sm active">
                                 <div class="progress-bar progress-bar-success" 
                                      role="progressbar" 
@@ -273,6 +286,10 @@
                                      style="width: 0%">
                                 </div>
                             </div>
+                            
+                            <!--<button class="col-xs-6 col-xs-offset-3 btn bg-red cancel-printing margin-bottom show-when-printing hide">
+                                Cancelar
+                            </button>-->
                         </div>
 
                         <!-- PREVIEW -->

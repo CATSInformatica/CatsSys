@@ -143,31 +143,26 @@
     width: 297mm;
     padding: 10mm;
 }
-.answers-table caption {
-    height: 19mm;
+#answers-title {
+    height: 10mm;
 }
-.answers-table {
-    margin: 0 1.7mm !important;
-    width: 21mm !important;
-    float: left;
+#answer-key-tables > div:not(#answers-title) {
+    height: 180mm;
 }
-.answers-table * {
-    font-size: 9pt;
+.answers-table > tbody > tr {
+    border: 1px solid #ddd !important;
+    line-height: 2;
 }
-.answers-table tr, .answers-table tr td {
-    border: 0.4mm solid black !important;
+.answers-table > tbody > tr:nth-child(odd):not(.highlighted-row) > td {
+    background-color: #f9f9f9 !important;
 }
-.answers-table td {
-    padding: 0.8mm !important;
+.answers-table > tbody > tr:nth-child(even):not(.highlighted-row) > td {
+    background-color: white !important;
 }
-.answers-table>tbody>tr:nth-child(odd)>td, 
-.answers-table>tbody>tr:nth-child(odd)>th {
-    background-color: #50bb67;
+.highlighted-row {
+    background-color: #dee !important;
 }
-.answers-table>tbody>tr:nth-child(even)>td, 
-.answers-table>tbody>tr:nth-child(even)>th {
-    background-color: #dbf9bb;
-}
+
 
 /*  Margens de impressão  */
 @page {
@@ -175,16 +170,8 @@
 }
 
 @media print {
-    /* Impressão do gabarito */
+    /* No Chrome, habilita cores por padrão */
     body {
         -webkit-print-color-adjust: exact;
-    }
-    .answers-table>tbody>tr:nth-child(odd)>td, 
-    .answers-table>tbody>tr:nth-child(odd)>th {
-        background-color: #50bb67 !important;
-    }
-    .answers-table>tbody>tr:nth-child(even)>td, 
-    .answers-table>tbody>tr:nth-child(even)>th {
-        background-color: #dbf9bb !important;
     }
 }

@@ -125,40 +125,89 @@ class RegistrationController extends AbstractEntityActionController
 
     public function candidateAction()
     {
-        $this->layout('application-clean/layout');
-        $studentContainer = new Container('candidate');
+        try {
+            $this->layout('application-clean/layout');
 
-        //se o id não estiver na sessão, redireciona para a página de acesso
-        if (!$studentContainer->offsetExists('regId')) {
-            return $this->redirect()->toRoute('recruitment/registration', array(
-                    'action' => 'access',
-            ));
-        }
+            $studentContainer = new Container('candidate');
 
-        $id = $studentContainer->offsetGet('regId');
-        $em = $this->getEntityManager();
-        $registration = $em->find('Recruitment\Entity\Registration', $id);
-
-
-        // para o formulário de edição de dados do candidato
-        $request = $this->getRequest();
-        $form = new RegistrationForm($em);
-        $form->bind($registration);
-        if ($request->isPost()) {
-
-            $form->setData($request->getPost());
-
-            if ($form->isValid()) {
-                $em->merge($registration);
-                $em->flush();
+            //se o id não estiver na sessão, redireciona para a página de acesso
+            if (!$studentContainer->offsetExists('regId')) {
+                return $this->redirect()->toRoute('recruitment/registration', array(
+                        'action' => 'access',
+                ));
             }
-        }
 
-        return new ViewModel([
-            'registration' => $registration,
-            'recruitment' => $registration->getRecruitment(),
-            'form' => $form,
-        ]);
+            $id = $studentContainer->offsetGet('regId');
+            $em = $this->getEntityManager();
+            $registration = $em->find('Recruitment\Entity\Registration', $id);
+            $recruitment = $registration->getRecruitment();
+
+            // para o formulário de edição de dados do candidato
+            $request = $this->getRequest();
+            $form = new RegistrationForm($em);
+            $form->bind($registration);
+            if ($request->isPost()) {
+
+                $form->setData($request->getPost());
+
+                if ($form->isValid()) {
+                    $em->merge($registration);
+                    $em->flush();
+                }
+            }
+
+            // Testes para decidir a situaçao dos blocos
+            $currentStatus = $registration->getCurrentRegistrationStatus()->getRecruitmentStatus()->getNumericStatusType();
+            $currentDate = new \DateTime();
+            $examDate = $recruitment->getExamDateAsDateTime();
+            $examResultDate = $recruitment->getExamResultDateAsDateTime();
+            $resultDate = $recruitment->getResultDateAsDateTime();
+            $preinterviewDate = $recruitment->getPreInterviewStartDateAsDateTime();
+            $interviewDate = $recruitment->getInterviewStartDateAsDateTime();
+
+            $blockStatus = [
+                'registration' => false,
+                'confirmation' => false,
+                'exam' => $examDate <= $currentDate,
+                'exam-result' => $examResultDate <= $currentDate,
+                'preinterview' => false,
+                'preinterview-complete' => false,
+                'interview' => false,
+                'interviewed' => false,
+                'result' => $resultDate <= $currentDate,
+                'enroll' => false,
+            ];
+
+            switch ($currentStatus) {
+                case RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED:
+                    $blockStatus['enroll'] = $resultDate <= $currentDate;
+                case RecruitmentStatus::STATUSTYPE_INTERVIEWED:
+                    $blockStatus['interviewed'] = true;
+                case RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW:
+                case RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE:
+                    $blockStatus['interview'] = $interviewDate <= $currentDate;
+                    $blockStatus['preinterview-complete'] = true;
+                case RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW:
+                    $blockStatus['preinterview'] = $preinterviewDate <= $currentDate;
+                case RecruitmentStatus::STATUSTYPE_EXAM_DISAPPROVED:
+                case RecruitmentStatus::STATUSTYPE_EXAM_WAITING_LIST:
+                case RecruitmentStatus::STATUSTYPE_CONFIRMED:
+                    $blockStatus['confirmation'] = true;
+                case RecruitmentStatus::STATUSTYPE_REGISTERED:
+                    $blockStatus['registration'] = true;
+            }
+
+            return new ViewModel([
+                'registration' => $registration,
+                'blockStatus' => $blockStatus,
+                'recruitment' => $registration->getRecruitment(),
+                'form' => $form,
+            ]);
+        } catch (\Exception $ex) {
+            return new ViewModel([
+                'registration' => null,
+            ]);
+        }
     }
 
     public function accessAction()
@@ -415,7 +464,6 @@ class RegistrationController extends AbstractEntityActionController
                         );
                     }
                 }
-                
             } catch (Exception $ex) {
                 
             }
@@ -438,7 +486,7 @@ class RegistrationController extends AbstractEntityActionController
                     $em = $this->getEntityManager();
                     $regs = $em->getRepository('Recruitment\Entity\Registration')->findByStatusType($rec['id'], RecruitmentStatus::STATUSTYPE_CONFIRMED);
                     $candidates = [];
-                    
+
                     foreach ($regs as $r) {
                         $person = $r->getPerson();
 
@@ -477,7 +525,15 @@ class RegistrationController extends AbstractEntityActionController
                 $em = $this->getEntityManager();
                 $registration = $em->getReference('Recruitment\Entity\Registration', $id);
 
-                $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_CONFIRMED);
+                $currentStatus = $registration->getCurrentRegistrationStatus()->getRecruitmentStatus()->getNumericStatusType();
+
+                if ($currentStatus === RecruitmentStatus::STATUSTYPE_CONFIRMED) {
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_REGISTERED);
+                    $newStatus = RecruitmentStatus::STATUSTYPEDESC_REGISTERED;
+                } else {
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_CONFIRMED);
+                    $newStatus = RecruitmentStatus::STATUSTYPEDESC_CONFIRMED;
+                }
 
                 $em->persist($registration);
                 $em->flush();
@@ -485,10 +541,10 @@ class RegistrationController extends AbstractEntityActionController
                 $dt = new \DateTime();
 
                 return new JsonModel(array(
-                    'message' => 'Candidato confirmado com sucesso.',
+                    'message' => 'Status alterado com sucesso.',
                     'callback' => array(
                         'timestamp' => $dt->format('d/m/Y H:i:s'),
-                        'status' => RecruitmentStatus::STATUSTYPEDESC_CONFIRMED,
+                        'status' => $newStatus,
                     ),
                 ));
             } catch (Exception $ex) {
@@ -502,7 +558,7 @@ class RegistrationController extends AbstractEntityActionController
             'message' => 'Nenhum candidato selecionado',
         ));
     }
-    
+
     /**
      * Altera a situação do candidato do processo seletivo de alunos para 
      * Desclassificado na Prova.
@@ -519,7 +575,16 @@ class RegistrationController extends AbstractEntityActionController
                 $em = $this->getEntityManager();
                 $registration = $em->getReference('Recruitment\Entity\Registration', $id);
 
-                $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_EXAM_DISAPPROVED);
+
+                $currentStatus = $registration->getCurrentRegistrationStatus()->getRecruitmentStatus()->getNumericStatusType();
+
+                if ($currentStatus === RecruitmentStatus::STATUSTYPE_EXAM_DISAPPROVED) {
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_CONFIRMED);
+                    $newStatus = RecruitmentStatus::STATUSTYPEDESC_CONFIRMED;
+                } else {
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_EXAM_DISAPPROVED);
+                    $newStatus = RecruitmentStatus::STATUSTYPEDESC_EXAM_DISAPPROVED;
+                }
 
                 $em->persist($registration);
                 $em->flush();
@@ -527,10 +592,10 @@ class RegistrationController extends AbstractEntityActionController
                 $dt = new \DateTime();
 
                 return new JsonModel(array(
-                    'message' => 'operação executada com sucesso',
+                    'message' => 'Status alterado com sucesso',
                     'callback' => array(
                         'timestamp' => $dt->format('d/m/Y H:i:s'),
-                        'status' => RecruitmentStatus::STATUSTYPEDESC_EXAM_DISAPPROVED,
+                        'status' => $newStatus,
                     ),
                 ));
             } catch (Exception $ex) {
@@ -544,7 +609,7 @@ class RegistrationController extends AbstractEntityActionController
             'message' => 'Nenhum candidato selecionado',
         ));
     }
-        
+
     /**
      * Altera a situação do candidato do processo seletivo de alunos para 
      * Lista de Espera da Prova.
@@ -561,7 +626,15 @@ class RegistrationController extends AbstractEntityActionController
                 $em = $this->getEntityManager();
                 $registration = $em->getReference('Recruitment\Entity\Registration', $id);
 
-                $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_EXAM_WAITING_LIST);
+                $currentStatus = $registration->getCurrentRegistrationStatus()->getRecruitmentStatus()->getNumericStatusType();
+
+                if ($currentStatus === RecruitmentStatus::STATUSTYPE_EXAM_WAITING_LIST) {
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_CONFIRMED);
+                    $newStatus = RecruitmentStatus::STATUSTYPEDESC_CONFIRMED;
+                } else {
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_EXAM_WAITING_LIST);
+                    $newStatus = RecruitmentStatus::STATUSTYPEDESC_EXAM_WAITING_LIST;
+                }
 
                 $em->persist($registration);
                 $em->flush();
@@ -569,10 +642,10 @@ class RegistrationController extends AbstractEntityActionController
                 $dt = new \DateTime();
 
                 return new JsonModel(array(
-                    'message' => 'operação executada com sucesso',
+                    'message' => 'Status alterado com sucesso',
                     'callback' => array(
                         'timestamp' => $dt->format('d/m/Y H:i:s'),
-                        'status' => RecruitmentStatus::STATUSTYPEDESC_EXAM_WAITING_LIST,
+                        'status' => $newStatus,
                     ),
                 ));
             } catch (Exception $ex) {
@@ -606,7 +679,15 @@ class RegistrationController extends AbstractEntityActionController
                 /**
                  * Atualizar status do candidato
                  */
-                $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW);
+                $currentStatus = $registration->getCurrentRegistrationStatus()->getRecruitmentStatus()->getNumericStatusType();
+
+                if ($currentStatus === RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW) {
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_CONFIRMED);
+                    $newStatus = RecruitmentStatus::STATUSTYPEDESC_CONFIRMED;
+                } else {
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW);
+                    $newStatus = RecruitmentStatus::STATUSTYPEDESC_CALLEDFOR_PREINTERVIEW;
+                }
 
                 $em->persist($registration);
                 $em->flush();
@@ -614,10 +695,10 @@ class RegistrationController extends AbstractEntityActionController
                 $dt = new \DateTime();
 
                 return new JsonModel(array(
-                    'message' => 'Candidato convocado com sucesso.',
+                    'message' => 'Status alterado com sucesso.',
                     'callback' => array(
                         'timestamp' => $dt->format('d/m/Y H:i:s'),
-                        'status' => RecruitmentStatus::STATUSTYPEDESC_CALLEDFOR_PREINTERVIEW,
+                        'status' => $newStatus,
                     ),
                 ));
             } catch (Exception $ex) {
@@ -651,7 +732,15 @@ class RegistrationController extends AbstractEntityActionController
                 /**
                  * Atualizar status do candidato
                  */
-                $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED);
+                $currentStatus = $registration->getCurrentRegistrationStatus()->getRecruitmentStatus()->getNumericStatusType();
+
+                if ($currentStatus === RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED) {
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_INTERVIEWED);
+                    $newStatus = RecruitmentStatus::STATUSTYPEDESC_INTERVIEWED;
+                } else {
+                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED);
+                    $newStatus = RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_APPROVED;
+                }
 
                 $em->persist($registration);
                 $em->flush();
@@ -659,10 +748,10 @@ class RegistrationController extends AbstractEntityActionController
                 $dt = new \DateTime();
 
                 return new JsonModel(array(
-                    'message' => 'Candidato aprovado com sucesso.',
+                    'message' => 'Status alterado com sucesso.',
                     'callback' => array(
                         'timestamp' => $dt->format('d/m/Y H:i:s'),
-                        'status' => RecruitmentStatus::STATUSTYPEDESC_INTERVIEW_APPROVED,
+                        'status' => $newStatus,
                     ),
                 ));
             } catch (Exception $ex) {
@@ -851,36 +940,43 @@ class RegistrationController extends AbstractEntityActionController
             }
         }
     }
-    
+
     public function examResultAction()
     {
         $this->layout('application-clean/layout');
         $studentContainer = new Container('candidate');
-        
+
         // id de inscrição não está na sessão redireciona para o início
         if (!$studentContainer->offsetExists('regId')) {
             return $this->redirect()->toRoute('recruitment/registration', array(
                     'action' => 'access',
             ));
         }
-        
+
         $registrationId = $studentContainer->offsetGet('regId');
-        
+
         try {
-            
+
             $em = $this->getEntityManager();
             $reg = $em->find('Recruitment\Entity\Registration', $registrationId);
-            
+
             $recruitment = $reg->getRecruitment();
-            
+
             $application = $em->getRepository('SchoolManagement\Entity\ExamApplication')->findOneBy([
                 'recruitment' => $recruitment->getRecruitmentId(),
             ]);
-            
+
+
+            if (empty($application)) {
+                return new ViewModel([
+                    'message' => 'Não foi encontrada nenhuma aplicação de prova associada a este processo seletivo',
+                ]);
+            }
+
             $appResults = $em->getRepository('SchoolManagement\Entity\ExamApplicationResult')->findBy([
                 'application' => $application->getExamApplicationId(),
             ]);
-            
+
             $results = [];
             foreach ($appResults as $res) {
 
@@ -896,10 +992,9 @@ class RegistrationController extends AbstractEntityActionController
                     'position' => $r['position']
                 ];
             }
-            
-            
+
             $status = $reg->getCurrentRegistrationStatus()->getRecruitmentStatus()->getStatusType();
-            
+
             return new ViewModel([
                 'message' => null,
                 'registration' => $reg,
@@ -907,10 +1002,59 @@ class RegistrationController extends AbstractEntityActionController
                 'results' => $results,
                 'status' => $status,
             ]);
-            
         } catch (\Throwable $ex) {
             return new ViewModel([
                 'message' => $ex->getMessage(),
+            ]);
+        }
+    }
+
+    public function finalResultAction()
+    {
+
+        $this->layout('application-clean/layout');
+        $studentContainer = new Container('candidate');
+
+        // id de inscrição não está na sessão redireciona para o início
+        if (!$studentContainer->offsetExists('regId')) {
+            return $this->redirect()->toRoute('recruitment/registration', array(
+                    'action' => 'access',
+            ));
+        }
+
+        $registrationId = $studentContainer->offsetGet('regId');
+
+        try {
+
+            $em = $this->getEntityManager();
+            $reg = $em->find('Recruitment\Entity\Registration', $registrationId);
+            $recruitment = $reg->getRecruitment();
+            $resultsArr = $em->getRepository('Recruitment\Entity\Registration')->findInterviewed($recruitment->getRecruitmentId());
+            
+            $year = $recruitment->getRecruitmentYear();
+            $number = $recruitment->getRecruitmentNumber();
+            
+            $results = [];
+            
+            foreach($resultsArr as $r) {
+                $results[] = [
+                    'registrationNumber' => Registration::generateRegistrationNumber($r['registrationId'], $year, $number),
+                    'status' => RecruitmentStatus::statusTypeToString($r['statusType']),
+                    'socioeconomic' => $r['interviewSocioeconomicGrade'],
+                    'vulnerability' => $r['interviewVulnerabilityGrade'],
+                    'student' => $r['interviewStudentGrade']
+                ];
+            }
+
+            return new ViewModel([
+                'message' => null,
+                'results' => $results,
+                'recruitment' => $recruitment,
+                'registration' => $reg,
+            ]);
+        } catch (\Exception $ex) {
+            return new ViewModel([
+                'message' => 'Erro inesperado, por favor, entre em contato com o administrador do sistema',
             ]);
         }
     }

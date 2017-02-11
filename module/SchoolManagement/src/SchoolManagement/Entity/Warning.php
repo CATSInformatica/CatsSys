@@ -108,22 +108,12 @@ class Warning
 
     /**
      * 
-     * @param $warningId
-     * @return Warning
-     */
-    function setWarningId($warningId)
-    {
-        $this->warningId = $warningId;
-        return $this;
-    }
-
-    /**
-     * 
      * @param $enrollment
      * @return Warning
      */
     function setEnrollment(Enrollment $enrollment)
     {
+        $enrollment->addWarning($this);
         $this->enrollment = $enrollment;
         return $this;
     }
@@ -160,8 +150,5 @@ class Warning
         $this->warningComment = $warningComment;
         return $this;
     }
-
-
-    
 
 }

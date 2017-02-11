@@ -1,91 +1,82 @@
 <?php
 
 /*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
+ * Copyright (C) 2016 Gabriel Pereira <rickardch@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
 namespace SchoolManagement\Form;
 
+use Doctrine\Common\Persistence\ObjectManager;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use SchoolManagement\Form\Fieldset\GiveWarningFieldset;
 use Zend\Form\Form;
+use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
  * Description of GiveWarningForm
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class GiveWarningForm extends Form
+class GiveWarningForm extends Form implements InputFilterProviderInterface
 {
 
-    public function __construct($name = null, $options = array())
+    public function __construct(ObjectManager $obj, 
+            $options = [
+                'class_names' => [],
+                'warning_type_names' => []
+            ])
     {
-        parent::__construct($name);
-
-        $this->add(array(
-                    'name' => 'person_id',
-                    'type' => 'Zend\Form\Element\Select',
-                    'options' => array(
-                        'label' => 'Aluno',
-                        'value_options' => $options['names'],
-                    ),
-                    'attributes' => array(
-                        'type' => 'select',
-                    ),
-                ))
-                ->add(array(
-                    'name' => 'class_id',
-                    'type' => 'Zend\Form\Element\Select',
-                    'options' => array(
-                        'label' => 'Turma',
-                        'value_options' => $options['class_names'],
-                    ),
-                    'attributes' => array(
-                        'type' => 'select',
-                    )
-                ))
-                ->add(array(
-                    'name' => 'warning_date',
-                    'options' => array(
-                        'label' => 'Data da Advertência',
-                        'add-on-prepend' => '<i class="glyphicon glyphicon-calendar"></i>',
-                    ),
-                    'attributes' => array(
-                        'type' => 'text',
-                        'class' => 'datepicker text-center',
-                        'placeholder' => 'Ex: 22/04/1500',
-                    )
-                ))
-                ->add(array(
-                    'name' => 'warning_id',
-                    'type' => 'Zend\Form\Element\Select',
-                    'options' => array(
-                        'label' => 'Tipo de Advertência',
-                        'value_options' => $options['warning_names'],
-                    ),
-                    'attributes' => array(
-                        'type' => 'select',
-                    )
-                ))
-                ->add(array(
-                    'name' => 'warning_comment',
-                    'type' => 'textarea',
-                    'options' => array(
-                        'label' => 'Comentário',
-                        'add-on-prepend' => '<i class="fa fa-paragraph"></i>',
-                    ),
-                    'attributes' => array(
-                        'rows' => '5',
-                    )
-                ))
-                ->add(array(
-                    'name' => 'Submit',
-                    'attributes' => array(
-                        'type' => 'submit',
-                        'class' => 'btn btn-primary btn-block',
-                        'value' => 'Salvar',
-                    )
+        parent::__construct('give-warning-form');
+        
+        $this->setHydrator(new DoctrineHydrator($obj));
+        
+        $giveWarningFieldset = new GiveWarningFieldset($obj, $options['warning_type_names']);
+        $giveWarningFieldset->setUseAsBaseFieldset(true);
+        
+        $this
+            ->add(array(
+                'name' => 'class_id',
+                'type' => 'Zend\Form\Element\Select',
+                'options' => array(
+                    'label' => 'Turma',
+                    'value_options' => $options['class_names'],
+                ),
+                'attributes' => array(
+                    'type' => 'select',
+                    'id' => 'class-input'
+                )
+            ))
+            ->add($giveWarningFieldset)
+            ->add(array(
+                'name' => 'Submit',
+                'attributes' => array(
+                    'type' => 'submit',
+                    'class' => 'btn btn-primary btn-block',
+                    'value' => 'Salvar',
+                )
         ));
     }
 
+    public function getInputFilterSpecification()
+    {
+        return array(
+            'class_id' => array(
+                'required' => true
+            )
+        );
+    }
+    
 }
