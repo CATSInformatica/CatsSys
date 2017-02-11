@@ -15,18 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(['datatable'], function () {
+define(['app/models/CriteriaGrade', 'datatable'], function (CriteriaGrade) {
 
     var registrationsTable = null;
     var detailContent = null;
 
     var targetTable = $('#target-table');
-    var socTarget = targetTable.data('socioeconomic');
-    var vulTarget = targetTable.data('vulnerability');
-    var stTarget = targetTable.data('student');
-    var SOCIOECONOMIC = 0,
-        VULNERABILITY = 1,
-        STUDENT = 2;
 
     var StudentListModule = (function () {
 
@@ -35,11 +29,11 @@ define(['datatable'], function () {
             $('#student-list-table').find('tbody').find('tr').each(function () {
                 var t = $(this);
                 var soc = t.data('socioeconomic'),
-                        socf = calcCriteriaGrade(soc, SOCIOECONOMIC),
+                        socf = CriteriaGrade.calcCriteriaGrade(soc, CriteriaGrade.SOCIOECONOMIC),
                         vul = t.data('vulnerability'),
-                        vulf = calcCriteriaGrade(vul, VULNERABILITY),
+                        vulf = CriteriaGrade.calcCriteriaGrade(vul, CriteriaGrade.VULNERABILITY),
                         st = t.data('student'),
-                        stf = calcCriteriaGrade(st, STUDENT);
+                        stf = CriteriaGrade.calcCriteriaGrade(st, CriteriaGrade.STUDENT);
 
                 var result = ((socf + vulf + stf) / 3).toFixed(3);
 
@@ -136,7 +130,7 @@ define(['datatable'], function () {
                         familyIncome[i]['familyIncomeExpDescription'],
                         '<strong class="text-green">' +
                                 familyIncome[i]['familyIncomeExpValue'] +
-                                '</strong>',
+                                '</strong>'
                     ]);
                     total2 += parseFloat(familyIncome[i]['familyIncomeExpValue']);
                 }
@@ -372,11 +366,11 @@ define(['datatable'], function () {
             // Mostra as notas se o candidato tiver feito a entrevista
             if (info['studentInterview'] !== null) {
                 socioeconomicGrade = +(info['studentInterview']['interviewSocioeconomicGrade']);
-                socioeconomicFinalGrade = calcCriteriaGrade(socioeconomicGrade, SOCIOECONOMIC);
+                socioeconomicFinalGrade = CriteriaGrade.calcCriteriaGrade(socioeconomicGrade, CriteriaGrade.SOCIOECONOMIC);
                 vulnerabilityGrade = +(info['studentInterview']['interviewVulnerabilityGrade']);
-                vulnerabilityFinalGrade = calcCriteriaGrade(vulnerabilityGrade, VULNERABILITY);
+                vulnerabilityFinalGrade = CriteriaGrade.calcCriteriaGrade(vulnerabilityGrade, CriteriaGrade.VULNERABILITY);
                 studentGrade = +(info['studentInterview']['interviewStudentGrade']);
-                studentFinalGrade = calcCriteriaGrade(studentGrade, STUDENT);
+                studentFinalGrade = CriteriaGrade.calcCriteriaGrade(studentGrade, CriteriaGrade.STUDENT);
                 finalGrade = ((socioeconomicFinalGrade + vulnerabilityFinalGrade + studentFinalGrade) / 3).toFixed(3);
 
                 socioeconomicGrade = socioeconomicGrade.toFixed(3);
@@ -481,28 +475,6 @@ define(['datatable'], function () {
                     '</div>' +
                     '</div>' +
                     '</div>';
-        };
-
-        calcCriteriaGrade = function (grade, type) {
-            var target;
-
-            switch (type) {
-                case SOCIOECONOMIC:
-                    target = socTarget;
-                    break;
-                case VULNERABILITY:
-                    target = vulTarget;
-                    break;
-                case STUDENT:
-                    target = stTarget;
-                    break;
-                default:
-                    target = 0;
-            }
-            
-            var k = (grade <= target) ? 0 : 1;
-            var result = 10*(1 + Math.pow(-1, k)*(grade - target)/Math.max(target, 10 - target));
-            return +result;
         };
 
         /*
@@ -625,9 +597,9 @@ define(['datatable'], function () {
                 type: 'GET',
                 success: function (response) {
                     var grades = response.grades;
-                    grades.socioeconomicFinal = calcCriteriaGrade(grades.socioeconomic, SOCIOECONOMIC);
-                    grades.vulnerabilityFinal = calcCriteriaGrade(grades.vulnerability, VULNERABILITY);
-                    grades.studentFinal = calcCriteriaGrade(grades.student, STUDENT);
+                    grades.socioeconomicFinal = CriteriaGrade.calcCriteriaGrade(grades.socioeconomic, CriteriaGrade.SOCIOECONOMIC);
+                    grades.vulnerabilityFinal = CriteriaGrade.calcCriteriaGrade(grades.vulnerability, CriteriaGrade.VULNERABILITY);
+                    grades.studentFinal = CriteriaGrade.calcCriteriaGrade(grades.student, CriteriaGrade.STUDENT);
 
                     callback(response.grades);
                 },
@@ -664,6 +636,10 @@ define(['datatable'], function () {
 
         return {
             init: function () {
+                var socTarget = targetTable.data('socioeconomic');
+                var vulTarget = targetTable.data('vulnerability');
+                var stTarget = targetTable.data('student');
+                CriteriaGrade.init(socTarget, vulTarget, stTarget);
                 initDataTable();
                 initTableListeners();
                 interviewLogListener();

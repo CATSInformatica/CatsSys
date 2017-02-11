@@ -71,6 +71,17 @@ class PreInterviewController extends AbstractEntityActionController
             $em = $this->getEntityManager();
             $registration = $em->getReference('Recruitment\Entity\Registration', $rid);
 
+            $currentStatus = $registration->getCurrentRegistrationStatus()->getRecruitmentStatus()->getNumericStatusType();
+
+            if ($currentStatus !== RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW &&
+                $currentStatus !== RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE &&
+                $currentStatus !== RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW &&
+                $currentStatus !== RecruitmentStatus::STATUSTYPE_INTERVIEWED) {
+                return $this->redirect()->toRoute('recruitment/registration', [
+                        'action' => 'access',
+                ]);
+            }
+
             $person = $registration->getPerson();
 
             $options = array(
@@ -94,7 +105,9 @@ class PreInterviewController extends AbstractEntityActionController
                     $this->adjustAddresses($person);
                     $this->adjustRelatives($person);
 
-                    $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE);
+                    if ($currentStatus === RecruitmentStatus::STATUSTYPE_CALLEDFOR_PREINTERVIEW) {
+                        $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_PREINTERVIEW_COMPLETE);
+                    }
 
                     $em->persist($registration);
                     $em->flush();
@@ -141,7 +154,7 @@ class PreInterviewController extends AbstractEntityActionController
         $studentContainer = new Container('candidate');
 
         $alive = true;
-        
+
         // id de inscrição não está na sessão redireciona para o início
         if (!$studentContainer->offsetExists('regId')) {
             $alive = false;
