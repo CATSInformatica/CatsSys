@@ -57,10 +57,10 @@ class StudentBgConfigForm extends Form implements InputFilterProviderInterface
                     'name' => 'bg_img',
                     'type' => 'file',
                     'attributes' => array(
-                        'id' => 'bg_img',
+                        'type' => 'file',
                     ),
                     'options' => array(
-                        'label' => 'Imagem de fundo (.png)',
+                        'label' => 'Imagem de fundo (.png)',    
                     ),
                 ))
                 ->add(array(

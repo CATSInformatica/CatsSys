@@ -26,7 +26,11 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
              */
             $('#print-answer-key').click(function () {
                 generateAnswerKey();
-                
+            
+                var answersTablesTitle = $('#answers-tables-title-template > div').clone();
+                answersTablesTitle.attr('id', 'answers-title');
+                $('#answer-key-tables').prepend(answersTablesTitle);
+                        
                 $('#answer-key-tables').print({
                     globalStyles: true,
                     mediaPrint: true,
@@ -52,14 +56,13 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                 var contentInfoBlock = $(this).closest('.content-info-block');
                 var contentId = +contentInfoBlock.data('content-id');
                 
+                showOnlyAppropriateButtons(contentInfoBlock, true);                
                 setLoadingText(contentInfoBlock, 'Iniciando geração da prova');
-                
-                var pageNumber = 1;
-                var examFirstPages = jQuery();
                 
                 setLoadingText(contentInfoBlock, 'Ajustando imagens a largura das colunas');
                 ajustImages(contentInfoBlock);
-                
+                                
+                var pageNumber = 1;
                 var instructionsPage = $();
                 if ($(this).closest('.exam').find('.exam-instructions').is(":checked")) {
                     setLoadingText(contentInfoBlock, 'Criando página de instruções');
@@ -82,6 +85,13 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                     generateExam(contentInfoBlock, printDiv, pageNumber, function() {
                         // typeset
                         MathJax.Hub.Queue(["Typeset", MathJax.Hub, printDiv.data('div-id')], function () {
+                            var printCallback = function() {
+                                printDiv.html('');
+                                console.timeEnd('print time');
+
+                                showOnlyAppropriateButtons(contentInfoBlock, false);
+                            };
+                            
                             //  Abre a janela de impressão da div .print-page usando jqueryprint
                             printDiv.print({
                                 globalStyles: true,
@@ -92,17 +102,34 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                                 append: null,
                                 prepend: instructionsPage,
                                 manuallyCopyFormValues: true,
-                                deferred: $.Deferred(),
+                                deferred: $.Deferred().done(printCallback),
                                 timeout: 1000,
                                 title: contentInfoBlock.find('.exam-name').first().text(),
                                 doctype: '<!doctype html>'
                             });
-
-                            printDiv.html('');
-                            console.timeEnd('print time');
                         }); 
                     });
-                }, 500);               
+                }, 500);   
+                
+                
+                /*
+                 * Utilizando as classes .hide-when-printing e .show-when-printing,
+                 * esconde e exibe, respectivamente, esses elementos durante ou após
+                 * o processo de impressão da prova.
+                 * @param {object} contentInfoBlock - jQuery object do bloco de informações
+                 *      de um conteúdo da prova
+                 * @param {boolean} printing - flag que indica se a prova está 
+                 *      sendo impressa (true), ou acabou de ser impressa (false)
+                 */
+                function showOnlyAppropriateButtons(contentInfoBlock, printing) {
+                    if (printing) {
+                        contentInfoBlock.find('.hide-when-printing').addClass('hide');
+                        contentInfoBlock.find('.show-when-printing').removeClass('hide');
+                    } else {
+                        contentInfoBlock.find('.hide-when-printing').removeClass('hide');
+                        contentInfoBlock.find('.show-when-printing').addClass('hide');
+                    }
+                }
             });
         };
 
@@ -110,8 +137,8 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
          * Ajusta o tamanho das imagens do conteúdo para que sua largura seja, 
          * no máximo, igual a largura da(s) coluna(s) da prova
          * 
-         * @param {object} contentInfoBlock - DOM Object do bloco de informações
-         *      do conteúdo da prova
+         * @param {object} contentInfoBlock - jQuery object do bloco de informações
+         *      de um conteúdo da prova
          */
         ajustImages = function(contentInfoBlock) {
             if (contentInfoBlock.hasClass('adjustment-done')) {
@@ -164,39 +191,28 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
          */
         generateExam = function (contentInfoBlock, printDiv, initialPageNumber, callback) {
             var pageNumber = initialPageNumber;
-            var totalQuestions = printDiv
-                    .siblings('.preview-page')
-                    .first()
-                    .find('.question-block')
-                    .length;
+            var contentQuestions = contentInfoBlock.find('.content-questions').first();
+            var totalQuestions = contentQuestions.find('.question-block').length;
             
             // Cria um div temporária que possuirá todo o conteúdo e servirá de 
             // fonte para o jquerycolumnizer gerar a div para impressão            
             printDiv.closest('.exam').append('<div id="exam-temp"></div>');
+            var examTemp = $('#exam-temp');
+            examTemp.html(contentQuestions.html());
             
             setLoadingText(contentInfoBlock, 'Removendo elementos desnecessários');
             updateProgressBar(totalQuestions, totalQuestions, printDiv, '');
-            
-            var examTemp = $('#exam-temp');
-            examTemp.html(
-                    printDiv
-                    .siblings(".preview-page")
-                    .find('.content-questions')
-                    .first()
-                    .html()
-            );
             examTemp.find('.do-not-print').each(function () {
                 $(this).remove();
             });
             
-            updateProgressBar(totalQuestions, totalQuestions, printDiv);
             setLoadingText(contentInfoBlock, 'Criando paginação - Redação');
+            updateProgressBar(totalQuestions, totalQuestions, printDiv);
             
             var examContentHeight = $("#exam-page-template")
                     .find('.exam-content')
                     .first()
                     .height();
-            
             // por enquanto, assume-se que existe apenas uma disciplina 
             // de coluna única, que ficará no topo da prova e terá 
             // como título o nome do base subject
@@ -225,16 +241,23 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                 $(this).closest('.base-subject-block').remove();
             });
             
-            updateProgressBar(totalQuestions, totalQuestions, printDiv);
             setLoadingText(contentInfoBlock, 'Criando paginação - Questões de múltipla escolha');
             setAlertText(contentInfoBlock, 'Isto pode demorar alguns minutos');
+            updateProgressBar(totalQuestions, totalQuestions, printDiv);
             
             buildExamLayout(contentInfoBlock, printDiv, totalQuestions, callback);
             
             
-            // A div para impressão assume o template da prova (cabeçalho, 
-            // corpo com duas colunas e rodapé) e é preenchida com o conteúdo 
-            // da div temporária, que fica vazia.
+            /*
+             * A div para impressão assume o template da prova (cabeçalho, 
+             * corpo com duas colunas e rodapé) e é preenchida com o conteúdo 
+             * da div temporária, que fica vazia.
+             * 
+             * @param {object} contentInfoBlock
+             * @param {object} printDiv
+             * @param {int} totalQuestions
+             * @param {function} callback
+             */
             function buildExamLayout(contentInfoBlock, printDiv, totalQuestions, callback) {
                 var questionsLeft = $('#exam-temp').find('.question-block');
                 
@@ -303,13 +326,13 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
          * 
          */
         loadExams = function () {
-            requirejs(['app/pages/school-management/exam/prepare-content'],
+            require(['app/pages/school-management/exam/prepare-content'],
             function (prepareContent) {
                 $('.content-info-block').each(function () {
                     loadContent(
-                            +$(this).data('content-id'), 
-                            $(this).find('.content-questions').first(), 
-                            false
+                        +$(this).data('content-id'), 
+                        $(this).find('.content-questions').first(), 
+                        false
                     );
                 });
             });
@@ -321,66 +344,29 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
          * 
          */
         generateAnswerKey = function () {
-            $('.answers-table').remove();
+            $('#answer-key-tables').html('');
             
-            var columnCount = 1;
-            var number = $('.preview-page .q-number').first().text();
             var CSVAnswers = "Numero,Resposta,Disciplina\n";
-            
-            $('.content-info-block').each(function () {
-                var baseSubjects = $(this).find('.content-questions > .base-subject-block');
-                var baseSubjectName = '';
-                baseSubjects.each(function () {
-                    baseSubjectName = $(this).data('name');
-                    $('#answer-key-tables').append(
-                        '<div>' +
-                            '<table class="table table-striped table-condensed answers-table">' +
-                                '<caption class="text-center no-padding"><strong>' + baseSubjectName + '</strong></caption>' +
-                            '</table>' +
-                        '</div>'
-                    );
-                    
-                    columnCount = 1;
-                    $(this).children('div').each(function () {
-                        if ($(this).hasClass('single-column-block')){ 
-                            $('.answers-table').last().parent().remove();
-                            return; 
-                        }
-                        
-                        if ($(this).hasClass('parallel-subjects-block')) {
-                            $(this).find('.parallel-subject-block').each(function() {
-                                var subjectOptionName = $(this).data('name');
-                                $('#answer-key-tables').append(
-                                    '<div>' +
-                                        '<table class="table table-striped table-condensed answers-table">' +
-                                            '<caption class="text-center no-padding"><strong>OPÇÃO: ' + subjectOptionName + '</strong></caption>' +
-                                        '</table>' +
-                                    '</div>'
-                                );
-                                
-                                $(this).find('.question-block').each(function() {
-                                    var correctAlternative = $(this).data('correct-alternative');
-                                    addRow(number, correctAlternative, subjectOptionName);
-                                    ++number;
-                                });
-                            });
-                        } else {                   
-                            if (columnCount++ % 26 === 0) {     
-                                $('#answer-key-tables').append(
-                                    '<div>' +
-                                        '<table class="table table-striped table-condensed answers-table">' +
-                                            '<caption class="text-center no-padding"><strong></strong></caption>' +
-                                        '</table>' +
-                                    '</div>'
-                                );  
-                            }
-
-                            var correctAlternative = $(this).data('correct-alternative');
-                            addRow(number, correctAlternative, baseSubjectName);
-                            ++number;
-                        }
-                    });
-                });
+            var questions = $('.subject-block > .question-block, .parallel-subject-block > .question-block');
+            addTable();
+            questions.each(function() {
+                var parentBlock = $(this).parent();
+                var baseSubjectName = parentBlock.closest('.base-subject-block').data('name'); 
+                var differentBgColor = false;
+                
+                if (parentBlock.hasClass('parallel-subject-block')) { 
+                    if ($(this).prev('.question-block').length === 0) {
+                        var subjectName = 'OPÇÃO ' + parentBlock.data('name');
+                        addTitleRow(subjectName);
+                    }
+                    differentBgColor = true;
+                } else if (parentBlock.prev('.subject-block').length === 0 && $(this).prev('.question-block').length === 0) {
+                    //addTitleRow(baseSubjectName);                  
+                }
+                
+                var questionNumber = $(this).find('.q-number').first().text();
+                var correctAlternative = $(this).data('correct-alternative');
+                addRow(questionNumber, correctAlternative, baseSubjectName, differentBgColor);
             });
             
             $('#answer-key-tables').css("height", "210mm");
@@ -392,22 +378,63 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
             
             
             /*
-             * Adiciona uma linha a tabela do gabarito e ao .csv
+             * Adiciona uma tabela de respostas ao gabarito
+             */
+            function addTable() {
+                $('#answer-key-tables').append(
+                    '<div class="col-xs-3">' +
+                        '<table class="table-striped answers-table col-xs-10 col-xs-offset-1">' + 
+                            '<tbody></tbody>' +
+                        '</table>' +
+                    '</div>'
+                );
+            }
+            
+            /*
+             * Adiciona uma linha, de uma única célula, à última tabela do gabarito.
+             * O conteúdo da linha será um texto.
+             * 
+             * @param {String} subjectName - conteúdo da linha
              * 
              */
-            function addRow(number, correctAlternative, baseSubjectName) {
-                $('.answers-table').last().append(
-                    '<tr>' + 
-                        '<td class="text-center">' + number + '</td>' + 
-                        '<td class="text-center">' + 
-                            '<span class="text-center">' + String.fromCharCode(correctAlternative + 'A'.charCodeAt(0)) + '</span>' + 
-                        '</td>' +
-                    '</tr>'
-                );
+            function addTitleRow(subjectName) {
+                var row = '<tr>' + 
+                    '<td class="text-center text-bold" colspan="2">' + subjectName + '</td>'
+                '</tr>';
+        
+                appendRow(row);
+            }
+            
+            /*
+             * Adiciona uma linha à última tabela do gabarito e ao .csv
+             */
+            function addRow(number, correctAlternative, baseSubjectName, differentBgColor) {
+                var alternativeLetter = String.fromCharCode(correctAlternative + 'A'.charCodeAt(0));
+                var rowClass = '';
+                if (differentBgColor) {
+                    rowClass = 'highlighted-row';
+                }
+                var row = '<tr class="' + rowClass + '">' +
+                    '<td class="text-center col-xs-2">' + number + '</td>' + 
+                    '<td class="text-center col-xs-2">' + alternativeLetter + '</td>' +
+                '</tr>';
+        
+                appendRow(row);
                 
-                CSVAnswers += (number) + ',' + 
-                        String.fromCharCode($(this).data('correct-alternative') + 'A'.charCodeAt(0)) + ',' + 
-                        baseSubjectName + "\n";   
+                CSVAnswers += (number) + ',' + alternativeLetter + ',' + baseSubjectName + "\n";   
+            }
+            
+            /*
+             * Anexa a linha à última tabela do gabarito
+             * 
+             * @param {object} row - jQuery Object da linha a ser anexada
+             */
+            function appendRow(row) {
+                if ($('.answers-table:last > tbody > tr').length > 22) {
+                    addTable();
+                }
+        
+                $('.answers-table:last > tbody').append(row);  
             }
         };
 

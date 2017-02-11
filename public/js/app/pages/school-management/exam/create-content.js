@@ -82,9 +82,9 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
                     var questions = getSubjectQuestions(baseSubjectBlock.data('id'), subjectBlock.data('id'));
                     if (questions.length > +$(this).val()) {
                         $(this).val(questions.length);
-                        $('#quantity-error').removeClass('hide');
+                        baseSubjectBlock.find('.quantity-error').first().removeClass('hide');
                     } else {
-                        $('#quantity-error').addClass('hide');
+                         baseSubjectBlock.find('.quantity-error').first().addClass('hide');
                     }
                 }
                 

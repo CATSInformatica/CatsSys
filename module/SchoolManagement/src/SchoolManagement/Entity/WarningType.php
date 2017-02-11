@@ -137,4 +137,14 @@ class WarningType
         return $this->warnings;
     }
 
+    /**
+     * @param Collection
+     * @return SchoolManagement\Entity\WarningType
+     */
+    public function setWarnings($warnings)
+    {
+        $this->warnings = $warnings;
+        return $this;
+    }
+
 }
