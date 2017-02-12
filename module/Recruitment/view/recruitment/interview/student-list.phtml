@@ -9,8 +9,10 @@
             <div class="box-body" style="display: block;">
                 <p class="text-center">
                     <b>
-                        <?php echo $recruitment['recruitmentNumber']; ?>º Processo Seletivo de Alunos de 
-                        <?php echo $recruitment['recruitmentYear']; ?>
+                        <?php
+                            $year = $recruitment['recruitmentYear'];
+                            $number = $recruitment['recruitmentNumber'];
+                            echo $number . "º Processo Seletivo de Alunos de $year";  ?>
                     </b>
                 </p>
                 <hr>
@@ -44,12 +46,13 @@
                     <thead>
                         <tr>
                             <th></th>
-                            <th>Candidato</th>
-                            <th>Situação</th>
-                            <th>Email</th>
-                            <th>Cpf</th>
-                            <th>Rg</th>
-                            <th>Nota</th>
+                            <th class="text-center">Inscrição</th>
+                            <th class="text-center">Candidato</th>
+                            <th class="text-center">Situação</th>
+                            <th class="text-center">Email</th>
+                            <th class="text-center">Cpf</th>
+                            <th class="text-center">Rg</th>
+                            <th class="text-center">Nota</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -61,12 +64,13 @@
                                     data-student="<?php echo $candidate['grades']['student']; ?>"
                                     >
                                     <td class="details-control"></td>
-                                    <td><?php echo $candidate['personFullName']; ?></td>
-                                    <td><?php echo $candidate['statusType']; ?></td>
-                                    <td><?php echo $candidate['personEmail']; ?></td>
-                                    <td><?php echo $candidate['personCpf']; ?></td>
-                                    <td><?php echo $candidate['personRg']; ?></td>
-                                    <td id="grades-<?php echo $candidate['registrationId']; ?>">-</td>
+                                    <td class="text-center"><?php echo Recruitment\Entity\Registration::generateRegistrationNumber($candidate['registrationId'], $year, $number); ?></td>
+                                    <td class="text-center"><?php echo $candidate['personFullName']; ?></td>
+                                    <td class="text-center"><?php echo $candidate['statusType']; ?></td>
+                                    <td class="text-center"><?php echo $candidate['personEmail']; ?></td>
+                                    <td class="text-center"><?php echo $candidate['personCpf']; ?></td>
+                                    <td class="text-center"><?php echo $candidate['personRg']; ?></td>
+                                    <td id="grades-<?php echo $candidate['registrationId']; ?>" class="text-center">-</td>
                                 </tr>
                             <?php endforeach; ?>
                         <?php endif; ?>
