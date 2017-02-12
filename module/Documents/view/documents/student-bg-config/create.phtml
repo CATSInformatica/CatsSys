@@ -1,4 +1,3 @@
-
 <section class="content">
     <?php 
         $this->headTitle()->append('Criar configuração de fundo')
@@ -6,48 +5,27 @@
     ?>
     <p><?php echo $this->message; ?></p>
     <div class="row">
-        <?php if ($form !== null): ?>
-            <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
-                <?php
-                $form->prepare();
-                $bgConfigFieldset = $this->form->get('student_bg_config_fieldset');
-                echo $this->form()->openTag($form);
-                ?>
-                
-                <div class="col-xs-12 col-md-12">
-                    <?php echo $this->formRow($bgConfigFieldset->get('studentBgConfigPhrase')); ?>
-                </div>
-                
-                <div class="col-xs-12 col-md-12">
-                    <?php echo $this->formRow($bgConfigFieldset->get('studentBgConfigAuthor')); ?>
-                </div>
-                
-                <div class="col-xs-12 col-md-12">
-                    <?php $bgConfigImgElement = $form->get('bg_img'); ?>
-                    <div class="form-group 
-                    <?php
-                    echo $this->formElementErrors($bgConfigImgElement) !== "" ? 'has-error' : '';
-                    ?>" >
-                        <?php echo $this->formLabel($bgConfigImgElement); ?>
-                        
-                        <div class="input-group btn-file">
-                            <span class="input-group-addon"><i class="fa fa-image"></i></span>
-                            <?php echo $this->formElement($bgConfigImgElement); ?>
-                            <span class="form-control btn-file-name">Nenhum arquivo selecionado</span>
-                        </div>
-                        
-                        <?php echo $this->formElementErrors($bgConfigImgElement); ?>
-                    </div>
-                </div>
-                
-                <div class="col-xs-12 col-md-12">
-                    <br>
-                    <?php echo $this->formRow($form->get('submit')); ?>
-                </div>
-                
-                <?php echo $this->form()->closeTag(); ?>
-            </div>
-        <?php endif; ?>
+        <?php
+        echo $this->partial('student-bg-config-form/template', array(
+                'form' => $this->form,
+                'imgFieldText' => 'Nenhum arquivo selecionado.',
+                'config' => null,
+                'students' => null,
+            ));
+        ?>
     </div>
 
 </section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/documents/student-bg-config/create';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>

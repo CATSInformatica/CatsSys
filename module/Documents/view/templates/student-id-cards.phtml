@@ -143,8 +143,7 @@
             <div class="card" style="
                     <?php if ($config['bg_img_url'] !== '') : ?>
                         background-image: url(/img/<?php echo $config['bg_img_url']; ?>);
-                        background-repeat: no-repeat;
-                        background-size: 88mm 55mm;
+                        background-size: 100%;
                     <?php endif; ?>
                  ">
                 <div class="card-header">
@@ -175,7 +174,12 @@
                     ?>
                 </div>           
             </div>
-            <div class="card" style="background-image: url(/img/<?php echo $config['bg_img_url']; ?>);">
+            <div class="card" style="
+                    <?php if ($config['bg_img_url'] !== '') : ?>
+                        background-image: url(/img/<?php echo $config['bg_img_url']; ?>);
+                        background-size: 100%;
+                    <?php endif; ?>
+                 ">
                 <div class="card-header">
                     <img class="card-logo" src="/img/logo_branco.png">
 

@@ -50,6 +50,7 @@ class StudentBgConfigFieldset extends Fieldset implements InputFilterProviderInt
                     ),
                     'attributes' => array(
                         'rows' => 2,
+                        'id' => 'phrase-input'
                     )
                 ))
                 ->add(array(
@@ -58,6 +59,9 @@ class StudentBgConfigFieldset extends Fieldset implements InputFilterProviderInt
                     'options' => array(
                         'label' => 'Autor',
                     ),
+                    'attributes' => array(
+                        'id' => 'author-input'
+                    )
                 ))
         ;
     }

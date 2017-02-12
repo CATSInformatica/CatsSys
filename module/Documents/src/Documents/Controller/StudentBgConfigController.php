@@ -122,7 +122,7 @@ class StudentBgConfigController extends AbstractEntityActionController
                 $bgConfig = $em->find('Documents\Entity\StudentBgConfig', $bgConfigId);
                 $img = $bgConfig->getStudentBgConfigImg();
                 
-                $form = new StudentBgConfigForm($em, false /*o upload de uma nova imagem não obrigatório*/);
+                $form = new StudentBgConfigForm($em, $img);
                 $form->bind($bgConfig);
                 $form->get('submit')->setAttribute('value', 'Editar configuração de fundo');
                 
