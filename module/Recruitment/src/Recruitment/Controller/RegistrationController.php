@@ -109,7 +109,7 @@ class RegistrationController extends AbstractEntityActionController
                 'form' => $form,
                 'timestamp' => $timestampForm,
             ));
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return new ViewModel(array(
                 'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema.',
                 'form' => null,
@@ -289,14 +289,14 @@ class RegistrationController extends AbstractEntityActionController
             $em = $this->getEntityManager();
             // Busca por um processo seletivo aberto
             $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-                ->findByTypeAndBetweenBeginAndEndDates($type, new DateTime('now'));
+                ->findByTypeAndBetweenBeginAndEndDates($type, new \DateTime('now'));
             if ($recruitment === null) {
                 return new ViewModel(array(
                     'message' => 'Não existe nenhum processo seletivo vigente no momento.',
                     'form' => null,
                 ));
             }
-        } catch (Exception $ex) {
+        } catch (\Exception $ex) {
             return new ViewModel(array(
                 'message' => 'Não foi possível verificar a existência de processos seletivos abertos.',
                 'form' => null,
@@ -333,6 +333,9 @@ class RegistrationController extends AbstractEntityActionController
                     );
 
                     // atribui a qual processo seletivo a inscrição pertence
+                    echo '<pre>';
+                    print_r($recruitment);
+                    exit;
                     $registration->setRecruitment($recruitment);
 
                     // salva no banco
@@ -392,7 +395,13 @@ class RegistrationController extends AbstractEntityActionController
                     ));
                 } catch (Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
-                        $message = 'Já existe uma inscrição associada ao CPF informado. Por favor, consulte a área do candidato';
+
+                        if ($type == Recruitment::STUDENT_RECRUITMENT_TYPE) {
+                            $message = 'Já existe uma inscrição associada ao CPF informado. Por favor, consulte a área do candidato';
+                        } else {
+                            $message = 'Já existe uma inscrição associada ao CPF informado.';
+                        }
+
                         $form = null;
                     } else {
                         $message = 'Erro inesperado. Por favor, tente novamente ou'
@@ -414,8 +423,7 @@ class RegistrationController extends AbstractEntityActionController
     }
 
     /**
-     * Busca todos as inscrições pro processo seletivo $rid com status atual $sid. 
-     * Esta action é acessada via ajax pelo DataTable Precisa ser refeita
+     * Busca todos as inscrições pro processo seletivo $rid com status atual $sid.
      * 
      * @return JsonModel
      */
@@ -426,22 +434,13 @@ class RegistrationController extends AbstractEntityActionController
 
         $result = [];
 
-        if ($request->isPost()) {
-            try {
-
-                $em = $this->getEntityManager();
-                $form = new SearchRegistrationsForm($em, Recruitment::STUDENT_RECRUITMENT_TYPE);
-                $form->setData($request->getPost());
-
-                if ($form->isValid()) {
-
-                    $data = $form->getData();
-
-                    $rid = $data['recruitment'];
-                    $sid = $data['registrationStatus'];
+        try {
+            if ($request->isPost()) {
+                $data = $request->getPost();
+                if (isset($data['recruitment']) && isset($data['registrationStatus'])) {
 
                     $em = $this->getEntityManager();
-                    $regs = $em->getRepository('Recruitment\Entity\Registration')->findByStatusType($rid, $sid);
+                    $regs = $em->getRepository('Recruitment\Entity\Registration')->findByStatusType($data['recruitment'], $data['registrationStatus']);
 
                     foreach ($regs as $r) {
                         $status = $r->getCurrentRegistrationStatus();
@@ -464,10 +463,10 @@ class RegistrationController extends AbstractEntityActionController
                         );
                     }
                 }
-            } catch (Exception $ex) {
-                
             }
+        } catch (\Exception $ex) {
         }
+        
         return new JsonModel($result);
     }
 
@@ -1030,13 +1029,13 @@ class RegistrationController extends AbstractEntityActionController
             $reg = $em->find('Recruitment\Entity\Registration', $registrationId);
             $recruitment = $reg->getRecruitment();
             $resultsArr = $em->getRepository('Recruitment\Entity\Registration')->findInterviewed($recruitment->getRecruitmentId());
-            
+
             $year = $recruitment->getRecruitmentYear();
             $number = $recruitment->getRecruitmentNumber();
-            
+
             $results = [];
-            
-            foreach($resultsArr as $r) {
+
+            foreach ($resultsArr as $r) {
                 $results[] = [
                     'registrationNumber' => Registration::generateRegistrationNumber($r['registrationId'], $year, $number),
                     'status' => RecruitmentStatus::statusTypeToString($r['statusType']),
