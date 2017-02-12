@@ -28,21 +28,21 @@ define(['app/models/CriteriaGrade', 'datatable'], function (CriteriaGrade) {
 
             $('#student-list-table').find('tbody').find('tr').each(function () {
                 var t = $(this);
-                var soc = t.data('socioeconomic'),
-                        socf = CriteriaGrade.calcCriteriaGrade(soc, CriteriaGrade.SOCIOECONOMIC),
-                        vul = t.data('vulnerability'),
-                        vulf = CriteriaGrade.calcCriteriaGrade(vul, CriteriaGrade.VULNERABILITY),
-                        st = t.data('student'),
-                        stf = CriteriaGrade.calcCriteriaGrade(st, CriteriaGrade.STUDENT);
+                var soc = t.data('socioeconomic'), socf, vul = t.data('vulnerability'), stf, st = t.data('student'), stf;
+                if (soc !== "" && vul !== "" && st !== "") {
+                    socf = CriteriaGrade.calcCriteriaGrade(soc, CriteriaGrade.SOCIOECONOMIC);
+                    vulf = CriteriaGrade.calcCriteriaGrade(vul, CriteriaGrade.VULNERABILITY);
+                    stf = CriteriaGrade.calcCriteriaGrade(st, CriteriaGrade.STUDENT);
 
-                var result = ((socf + vulf + stf) / 3).toFixed(3);
+                    var result = ((socf + vulf + stf) / 3).toFixed(3);
 
-                $(this).children("td[id^=grades]").text(result);
+                    $(this).children("td[id^=grades]").text(result);
+                }
             });
 
             registrationsTable = $('#student-list-table').DataTable({
                 iDisplayLength: 50,
-                order: [[5, 'desc'], [1, 'asc']]
+                order: [[7, 'desc'], [3, 'asc']]
             });
         };
 
