@@ -1,0 +1,74 @@
+<section class="content">
+    <div class="row">
+        <?php if (!$message): ?>
+            <div class="col-md-10 col-md-offset-1 col-xs-12">
+                <div class="box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Resultado Final do <?php echo $recruitment->getRecruitmentNumber(); ?>º Processo Seletivo de Alunos de <?php echo $recruitment->getRecruitmentYear(); ?></h3>
+                    </div>
+                    <div class="box-body">
+
+                        <h4>Inscrição: <?php echo $num = $registration->getRegistrationNumber(); ?></h4>
+
+                        <p><b>Observações:</b></p>
+                        <ul>
+                            <li>A tabela lista apenas candidatos que realizaram a entrevista. Se seu número de inscrição não estiver presente na tabela, mesmo tendo feito a entrevista, por favor, entre em contato conosco pela página do facebook ou telefones indicados no edital.</li>
+                            <li>Para facilitar a visualização, linha referente ao seu resultado deve aparecer colorida em azul.</li>
+                            <li>Os candidatos aprovados deverão realizar a matrícula conforme indicado no edital. Em caso de desistência de candidatos aprovados, os demais candidatos serão chamados para matrícula, de acordo com a ordem de classificação.</li>
+                        </ul>
+                        <hr>
+
+                        <table class='table table-condensed table-striped table-bordered' id='results-table'
+                               data-socioeconomic="<?php echo $recruitment->getRecruitmentSocioeconomicTarget(); ?>" 
+                               data-vulnerability="<?php echo $recruitment->getRecruitmentVulnerabilityTarget(); ?>" 
+                               data-student="<?php echo $recruitment->getRecruitmentStudentTarget(); ?>"
+                               >
+                            <thead>
+                                <tr>
+                                    <th class='text-center'>POSIÇÃO</th>
+                                    <th class='text-center'>SITUAÇÃO</th>
+                                    <th class='text-center'>INSCRIÇÃO</th>
+                                    <th class='text-center'>SOCIOECONÔMICO</th>
+                                    <th class='text-center'>VULNERABILIDADE</th>
+                                    <th class='text-center'>PERFIL DE ESTUDANTE</th>
+                                    <th class='text-center'>NOTA FINAL</th>
+                                </tr>
+                            <thead>
+                            <tbody>
+                                <?php foreach ($results as $result): ?>
+
+                                    <?php $class = $result['registrationNumber'] !== $num ? '' : 'cats-selected-bg'; ?>
+
+                                    <tr class="result-row">
+                                        <td class="text-center <?php echo $class; ?> position"></td>
+                                        <td class="text-center <?php echo $class; ?>"> <?php echo $result['status']; ?> </td>
+                                        <td class="text-center <?php echo $class; ?>"> <?php echo $result['registrationNumber']; ?> </td>
+                                        <td class="text-center <?php echo $class; ?> socioeconomic" data-value='<?php echo $result['socioeconomic']; ?>'></td>
+                                        <td class="text-center <?php echo $class; ?> vulnerability" data-value='<?php echo $result['vulnerability']; ?>'></td>
+                                        <td class="text-center <?php echo $class; ?> student" data-value='<?php echo $result['student']; ?>'></td>
+                                        <td class="text-center <?php echo $class; ?> result"></td>
+                                    </tr>
+                                <?php endforeach; ?>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        <?php else: ?>
+            <h3 class="text-center"><?php echo $message; ?>.</h3>
+        <?php endif; ?>
+    </div>
+</section>
+
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/recruitment/registration/FinalResult';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+</script>

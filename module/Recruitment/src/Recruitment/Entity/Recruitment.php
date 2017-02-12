@@ -299,7 +299,7 @@ class Recruitment
 
     public static function formatName($year, $number)
     {
-         return $year . ' - ' . $number;
+        return $year . ' - ' . $number;
     }
 
     /**
@@ -561,6 +561,15 @@ class Recruitment
 
     /**
      * 
+     * @return \DateTime|null
+     */
+    public function getExamDateAsDateTime()
+    {
+        return $this->examDate;
+    }
+
+    /**
+     * 
      * @return string
      */
     public function getExamDescription()
@@ -568,12 +577,26 @@ class Recruitment
         return $this->examDescription;
     }
 
+    /**
+     * 
+     * @param string $fmt
+     * @return string|null
+     */
     public function getExamResultDate($fmt = 'd/m/Y')
     {
         if ($this->examResultDate instanceof \DateTime) {
             return $this->examResultDate->format($fmt);
         }
         return null;
+    }
+
+    /**
+     * 
+     * @return \DateTime|null
+     */
+    public function getExamResultDateAsDateTime()
+    {
+        return $this->examResultDate;
     }
 
     /**
@@ -595,6 +618,15 @@ class Recruitment
 
     /**
      * 
+     * @return \DateTime|null
+     */
+    public function getPreInterviewStartDateAsDateTime()
+    {
+        return $this->preInterviewStartDate;
+    }
+
+    /**
+     * 
      * @return string
      */
     public function getPreInterviewDescription()
@@ -604,7 +636,7 @@ class Recruitment
 
     /**
      * 
-     * @return \DateTime
+     * @return string|null
      */
     public function getInterviewStartDate($fmt = 'd/m/Y')
     {
@@ -612,6 +644,15 @@ class Recruitment
             return $this->interviewStartDate->format($fmt);
         }
         return null;
+    }
+
+    /**
+     * 
+     * @return \DateTime|null;
+     */
+    public function getInterviewStartDateAsDateTime()
+    {
+        return $this->interviewStartDate;
     }
 
     public function getInterviewEndDate($fmt = 'd/m/Y')
@@ -637,6 +678,15 @@ class Recruitment
             return $this->resultDate->format($fmt);
         }
         return null;
+    }
+
+    /**
+     * 
+     * @return \DateTime|null
+     */
+    public function getResultDateAsDateTime()
+    {
+        return $this->resultDate;
     }
 
     /**

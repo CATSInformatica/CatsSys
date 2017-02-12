@@ -317,11 +317,12 @@ class Registration
      */
     public function getRegistrationNumber()
     {
-        $regNum = $this->recruitment->getRecruitmentYear() .
-            $this->recruitment->getRecruitmentNumber() .
-            str_pad($this->registrationId, self::REGISTRATION_PAD_LENGTH, '0', STR_PAD_LEFT
-        );
-
+        return self::generateRegistrationNumber($this->registrationId, $this->recruitment->getRecruitmentYear(), $this->recruitment->getRecruitmentNumber());
+    }
+    
+    public static function generateRegistrationNumber($regId, $year, $number)
+    {
+        $regNum =  $year. $number . str_pad($regId, self::REGISTRATION_PAD_LENGTH, '0', STR_PAD_LEFT);
         return $regNum;
     }
 

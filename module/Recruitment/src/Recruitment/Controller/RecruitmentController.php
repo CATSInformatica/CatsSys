@@ -107,6 +107,11 @@ class RecruitmentController extends AbstractEntityActionController
                             . 'Por favor entre em contato com o administrador do sistema.');
                         }
 
+                        $recruitment->setRecruitmentPublicNotice($filename);
+
+                        $em->merge($recruitment);
+                        $em->flush();
+                        
                         $uploadAdapter = new HttpAdapter();
 
                         $uploadAdapter->addFilter('File\Rename', array(
@@ -120,11 +125,6 @@ class RecruitmentController extends AbstractEntityActionController
                             $messages = implode('\n', $uploadAdapter->getMessages());
                             throw new \RuntimeException($messages);
                         }
-
-                        $recruitment->setRecruitmentPublicNotice($filename);
-
-                        $em->merge($recruitment);
-                        $em->flush();
 
                         return $this->redirect()->toRoute('recruitment/recruitment', array('action' => 'index'));
                     } catch (Exception $ex) {

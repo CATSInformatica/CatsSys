@@ -115,7 +115,7 @@ class RegistrationRepository extends EntityRepository
 
     /**
      * Busca todas as inscrições do processo seletivo $rid cuja situação 
-     * corrente é $status.
+     * atual é $status.
      * 
      * @param int $rid Identificador do processo seletivo
      * @param array $status Situações da inscrição
@@ -146,6 +146,35 @@ class RegistrationRepository extends EntityRepository
                 ->andWhere($qb->expr()->in('res.statusType', ':statusArray'))
                 ->setParameter('statusArray', $status);
         }
+
+        return $qb->getQuery()->getResult();
+    }
+    
+    /**
+     * Busca todas as inscrições do processo seletivo $rid que realizaram a entrevista
+     * 
+     * @param int $rid Identificador do processo seletivo
+     * @return array Candidatos que realizaram a entrevista
+     */
+    public function findInterviewed($rid)
+    {
+
+        $qb = $this
+            ->_em
+            ->createQueryBuilder();
+
+        $qb
+            ->select('r.registrationId, CONCAT(CONCAT(p.personFirstName, \' \'), '
+                . 'p.personLastName) as personFullName, p.personRg, p.personCpf, '
+                . 'p.personEmail, res.statusType, si.interviewSocioeconomicGrade, '
+                . 'si.interviewVulnerabilityGrade, si.interviewStudentGrade')
+            ->from('Recruitment\Entity\Registration', 'r')
+            ->join('r.person', 'p')
+            ->join('r.registrationStatus', 'rs', Expr\Join::WITH, 'rs.isCurrent = true')
+            ->join('rs.recruitmentStatus', 'res')
+            ->join('r.studentInterview', 'si')
+            ->where('r.recruitment = :recruitment')
+            ->setParameter('recruitment', $rid);
 
         return $qb->getQuery()->getResult();
     }
