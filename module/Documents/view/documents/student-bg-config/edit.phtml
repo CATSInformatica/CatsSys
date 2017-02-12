@@ -5,11 +5,27 @@
     ?>
     <p><?php echo $this->message; ?></p>
     <div class="row">
-        <?php if ($form !== null): ?>
-            <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2">
-                <?php echo $this->form($form); ?>
-            </div>
-        <?php endif; ?>
+        <?php
+        echo $this->partial('student-bg-config-form/template', array(
+                'form' => $this->form,
+                'imgFieldText' => '[OPCIONAL]',
+                'config' => null,
+                'students' => null,
+            ));
+        ?>
     </div>
 
 </section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/documents/student-bg-config/create';
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+    })();
+
+</script>
