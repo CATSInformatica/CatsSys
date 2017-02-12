@@ -2,6 +2,7 @@
 
 namespace Authentication\Entity;
 
+use Authentication\Service\UserService;
 use Authorization\Entity\Role;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
@@ -74,7 +75,7 @@ class User
     public function __construct()
     {
         $this->role = new ArrayCollection();
-        $this->userRegistrationDate = new DateTime();
+        $this->userRegistrationDate = new \DateTime();
     }
 
     /**
@@ -120,9 +121,9 @@ class User
      */
     public function setUserPassword($userPassword)
     {
-        $this->userPassword = $userPassword;
-
-        return $this;
+        $pass = UserService::encryptPassword($userPassword);
+        $this->userPassword = $pass['password'];
+        return $this->setUserPasswordSalt($pass['password_salt']);
     }
 
     /**

@@ -38,12 +38,12 @@ class StudentBgConfigForm extends Form implements InputFilterProviderInterface
     /**
      * 
      * @param ObjectManager $obj - entity manager
-     * @param bool $imgRequired - define se o upload de uma imagem é obrigatório
+     * @param string $imgUrl - url da imagem
      */
-    public function __construct(ObjectManager $obj, $imgRequired = true) 
+    public function __construct(ObjectManager $obj, $imgUrl = '') 
     {
         parent::__construct('student_bg_config_form');
-        $this->imgRequired = $imgRequired;
+        $this->imgRequired = ($imgUrl === '' ? true : false);
         
         $this->setAttribute('method', 'post');
         
@@ -58,6 +58,8 @@ class StudentBgConfigForm extends Form implements InputFilterProviderInterface
                     'type' => 'file',
                     'attributes' => array(
                         'type' => 'file',
+                        'id' => 'bg-img-input',
+                        'data-url' => '/img/' . $imgUrl
                     ),
                     'options' => array(
                         'label' => 'Imagem de fundo (.png)',    

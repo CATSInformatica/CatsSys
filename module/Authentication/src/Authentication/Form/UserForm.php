@@ -1,5 +1,4 @@
 <?php
-
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -13,59 +12,23 @@ namespace Authentication\Form;
  *
  * @author marcio
  */
+
+use Doctrine\Common\Persistence\ObjectManager;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Zend\Form\Form;
 
 class UserForm extends Form
 {
 
-    public function __construct($name = null)
+    public function __construct(ObjectManager $obj)
     {
         parent::__construct('user');
-        $this->setAttribute('method', 'post');
-        $this->add(array(
-            'name' => 'user_name',
-            'attributes' => array(
-                'type' => 'text',
-            ),
-            'options' => array(
-                'label' => 'Nome de usuário',
-            ),
-        ));
-
-        $this->add(array(
-            'name' => 'user_password',
-            'attributes' => array(
-                'type' => 'password',
-            ),
-            'options' => array(
-                'label' => 'Senha',
-            ),
-        ));
-
-        $this->add(array(
-            'name' => 'user_password_confirm',
-            'attributes' => array(
-                'type' => 'password',
-            ),
-            'options' => array(
-                'label' => 'Confirmação de senha',
-            ),
-        ));
-
-//        $this->add(array(
-//            'name' => 'user_email',
-//            'attributes' => array(
-//                'type' => 'email',
-//            ),
-//        ));
-//        
-//        $this->add(array(
-//            'name' => 'user_email_confirm',
-//            'attributes' => array(
-//                'type' => 'email',
-//            ),
-//        ));
-
+        $this->setHydrator(new DoctrineHydrator($obj));
+        
+        $userFieldset = new Fieldset\UserFieldset($obj);
+        $userFieldset->setUseAsBaseFieldset(true);
+        $this->add($userFieldset);
+        
         $this->add(array(
             'name' => 'submit',
             'type' => 'Submit',
@@ -76,5 +39,4 @@ class UserForm extends Form
             ),
         ));
     }
-
 }
