@@ -1,0 +1,59 @@
+<div class="box box-danger">
+    <div class="box-header with-border">
+        <h3 class="box-title">Turma</h3>
+
+        <div class="box-tools pull-right">
+            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
+        </div>
+        <!-- /.box-tools -->
+    </div>
+    <!-- /.box-header -->
+    <div class="box-body">
+        <div class="row">
+            <div class="col-xs-8 col-md-10">
+                <div class="form-group">
+                    <select class="form-control" id="class-select">
+                        <?php foreach ($classes as $class) :?>
+                            <option value="<?php echo $class->getClassId(); ?>"><?php echo $class->getClassName(); ?></option>
+                        <?php endforeach; ?>
+                    </select>
+                </div>
+            </div>
+            <div class="col-xs-4 col-md-2">
+                <button type="button" class="btn bg-green btn-block" id="fetch-class-students">Buscar alunos</button>
+            </div>
+        </div>
+        <hr>
+        <div class="row">
+            <div class="col-xs-10 col-xs-offset-1 margin-bottom">
+                <div class="col-xs-6">
+                    <button type="button" class="btn bg-blue btn-block" id="select-all-students">Selecionar todos os alunos</button>
+                </div>
+                <div class="col-xs-6">
+                    <button type="button" class="btn bg-blue btn-block" id="unselect-all-students">Desselecionar todos os alunos</button>
+                </div>
+            </div>
+        </div>
+        
+        <?php
+            if ($this->form) :
+                $studentsElement = $this->form->get('studentIds');
+                echo $this->formElementErrors($studentsElement, array('class' => 'text-bold text-red'));
+            endif;
+        ?>
+        
+        <table id="students-table" class="table table-striped">
+            <thead>
+                <tr>
+                    <th class="text-center col-xs-8">Nome</th>
+                    <th class="text-center col-xs-4">CPF</th>
+                    <th class="text-center col-xs-4">Cadastro</th>
+                </tr>
+            </thead>
+            <tbody>
+            </tbody>
+        </table>
+
+    </div>
+    <!-- /.box-body -->
+</div>

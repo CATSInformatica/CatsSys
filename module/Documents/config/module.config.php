@@ -7,8 +7,7 @@ return array(
         'factories' => array(
             'Documents\Controller\StudentBgConfig' => Factory\Controller\StudentBgConfigControllerFactory::class,
             'Documents\Controller\GeneratePdf' => Factory\Controller\GeneratePdfControllerFactory::class,
-            'Documents\Controller\StudentAnswersSheets' =>
-            Factory\Controller\StudentAnswersSheetsControllerFactory::class,
+            'Documents\Controller\StudentAnswersSheets' => Factory\Controller\StudentAnswersSheetsControllerFactory::class,
         ),
     ),
     'router' => array(
@@ -74,6 +73,7 @@ return array(
         'template_map' => array(
             'student-bg-configs/template' => __DIR__ . '/../view/templates/student-bg-configs.phtml',
             'student-bg-config-form/template' => __DIR__ . '/../view/templates/student-bg-config-form.phtml',
+            'students-board-form/template' => __DIR__ . '/../view/templates/students-board-form.phtml',
             'student-id-cards/template' => __DIR__ . '/../view/templates/student-id-cards.phtml',
         ),
         'display_exceptions' => true,

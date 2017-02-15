@@ -27,13 +27,19 @@ define(['moment', 'jquery', 'datetimepicker', 'datatable'], function (moment) {
                     
                         studentsData = [];
                         for (var i = 0; i < students.length; ++i) {
+                            var date = new Date(students[i].enrollmentBeginDate.date);
+                            var year = date.getFullYear() ;
+                            var month = (date.getMonth() < 10) ? '0' + date.getMonth() : date.getMonth();
+                            var day = (date.getDate() < 10) ? '0' + date.getDate() : date.getDate();
+                            
                             studentsData.push({
                                 DT_RowClass: "cats-row",
                                 DT_RowAttr: {
                                     "data-id": students[i].personId
                                 },
                                 0: students[i].personFullName,
-                                1: students[i].personCpf
+                                1: students[i].personCpf,
+                                2: year +  '-' + month + '-' + day
                             });
                         }
                         return studentsData;
