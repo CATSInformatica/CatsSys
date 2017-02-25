@@ -241,11 +241,24 @@ class StudentClassController extends AbstractEntityActionController
 
                 $students = $em->getRepository('SchoolManagement\Entity\Enrollment')->findByClass($id);
 
+                foreach($students as &$st) {
+                    $person = $em->getReference('Recruitment\Entity\Person', $st['personId']);
+                    $address = $person->getAddresses()->toArray()[0];
+                    $st['address'] = [
+                        'postalCode' => $address->getAddressPostalCode(),
+                        'state' => $address->getAddressState(),
+                        'city' => $address->getAddressCity(),
+                        'neighborhood' => $address->getAddressNeighborhood(),
+                        'street' => $address->getAddressStreet(),
+                        'number' => $address->getAddressNumber(),
+                    ];
+                }
+                
                 return new ViewModel([
                     'students' => $students,
                     'message' => null,
                 ]);
-            } catch (\Exception $ex) {
+            } catch (\Throwable $ex) {
                 return new ViewModel([
                     'message' => $ex->getMessage(),
                     'students' => null,

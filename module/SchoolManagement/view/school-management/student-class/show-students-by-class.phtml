@@ -18,6 +18,14 @@
                                     <th class="text-center">Rg</th>
                                     <th class="text-center">Telefone</th>
                                     <th class="text-center">Email</th>
+                                    
+                                    <th class="text-center">Cep</th>
+                                    <th class="text-center">Estado</th>
+                                    <th class="text-center">Cidade</th>
+                                    <th class="text-center">Bairro</th>
+                                    <th class="text-center">Rua</th>
+                                    <th class="text-center">Número</th>
+                                    
                                     <th class="text-center">Rede Social</th>
                                 </tr>
                             </thead>
@@ -31,12 +39,19 @@
                                         <td class="text-center">
                                             <?php echo $st['personBirthday']->format('d/m/Y'); ?></td>
                                         <td class="text-center"><?php echo $st['personFullName']; ?></td>
-                                        <td class="text-center"><?php echo $st['personGender']
-                                            == \Recruitment\Entity\Person::GENDER_F ? 'F' : 'M'; ?></td>
+                                        <td class="text-center"><?php echo $st['personGender'] === \Recruitment\Entity\Person::GENDER_F ? 'F' : 'M'; ?></td>
                                         <td class="text-center"><?php echo $st['personCpf']; ?></td>
                                         <td class="text-center"><?php echo $st['personRg']; ?></td>
                                         <td class="text-center"><?php echo $st['personPhone']; ?></td>
                                         <td class="text-center"><?php echo $st['personEmail']; ?></td>
+                                        
+                                        <td class="text-center"><?php echo $st['address']['postalCode']; ?></td>
+                                        <td class="text-center"><?php echo $st['address']['state']; ?></td>
+                                        <td class="text-center"><?php echo $st['address']['city']; ?></td>
+                                        <td class="text-center"><?php echo $st['address']['neighborhood']; ?></td>
+                                        <td class="text-center"><?php echo $st['address']['street']; ?></td>
+                                        <td class="text-center"><?php echo $st['address']['number']; ?></td>
+                                        
                                         <td class="text-center"><a href="<?php echo $st['personSocialMedia']; ?>"> 
                                                 <i class="fa fa-facebook-official" ></i> </a>
                                         </td>
