@@ -19,6 +19,7 @@
 
 namespace Documents\Form;
 
+use Zend\Form\Form;
 use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
@@ -29,12 +30,21 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class StudentIdCardForm extends StudentsBoardForm implements InputFilterProviderInterface
 {
         
-    public function __construct($bgConfigs = [])
+    public function __construct($bgConfigs)
     {
-        parent::__construct($bgConfigs);
+        parent::__construct('student-id-card-form');
         $nextyear = date("Y") + 1;
         
-        $this->add(array(
+        $this
+            ->add(array(
+                'name' => 'config_id',
+                'type' => 'select',
+                'options' => array(
+                    'value_options' => $this->getConfigsIds($bgConfigs),
+                    'label' => 'Configuração de Fundo',
+                ),
+            ))
+            ->add(array(
                 'name' => 'expiry_date',
                 'attributes' => array(
                     'type' => 'text',
@@ -49,9 +59,21 @@ class StudentIdCardForm extends StudentsBoardForm implements InputFilterProvider
         ));
     }  
 
+    private function getConfigsIds($bgConfigs) 
+    {
+        $configsIds = [];
+        foreach ($bgConfigs as $bgConfig) {
+            $configsIds[$bgConfig->getStudentBgConfigId()] = $bgConfig->getStudentBgConfigId();
+        }
+        return $configsIds;
+    }
+
     public function getInputFilterSpecification()
     {
         return array(
+            'config_id' => array(
+                'required' => true,
+            ),
             'expiry_date' => array(
                 'required' => true,
                 'filters' => array(
@@ -63,7 +85,7 @@ class StudentIdCardForm extends StudentsBoardForm implements InputFilterProvider
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
                         ),
-                    ),
+                    )
                 ),
                 'validators' => array(
                     array(

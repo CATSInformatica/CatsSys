@@ -1,18 +1,42 @@
 <section class="content">
-    
-    <?php 
-    if ($pdf !== null) :
-        $pdf->Output('Quadro de Alunos', 'I', true); 
-    endif;
-    ?>
-    
     <p><?php echo $this->message; ?></p>
-    <div class="row">
-        <div class="col-xs-10 col-xs-offset-1 col-md-8 col-md-offset-2"> 
-            <?php if ($this->form !== null) :
-                echo $this->form($form);
-            endif; ?>
-        </div>
-    </div>
 
+    <div class="row">
+        <?php
+        if ($form) :
+            $form->prepare();
+            echo $this->form()->openTag($form);
+        ?>
+            <div class="col-xs-10 col-xs-offset-1">
+                <?php
+                echo $this->partial('students-board-form/template', array(
+                    'form' => $this->form,
+                    'classes' => $this->classes
+                ));
+                ?>
+
+                <div class="col-xs-6 col-xs-offset-3">
+                    <button type="submit" class="btn btn-block bg-green" id="generate-id-cards">Gerar quadro de alunos</button>
+                </div>
+            </div>
+        <?php 
+            echo $this->form()->closeTag(); 
+        endif;    
+        ?>
+    </div>
 </section>
+
+<script>
+
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/documents/generate-pdf/student-id-card';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+
+</script>

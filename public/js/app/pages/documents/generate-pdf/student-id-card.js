@@ -10,30 +10,36 @@ define(['moment', 'jquery', 'datetimepicker', 'datatable'], function (moment) {
 
         var studentsData = [];
 
-        initDataTables = function() {
-            var classId = $('#class-select').val();
-            
+        initDataTables = function() {            
             $('#students-table').DataTable({
                 dom: 'lftip',
                 paging: false,
                 ajax: {
                     method: 'POST',
                     url: '/school-management/student-class/get-students-by-class',
-                    data: {
-                        id: classId
+                    data: function() {
+                        return {
+                            id: $('#class-select').val()
+                        };
                     },
                     dataSrc: function (response) {
                         var students = response.students;
-                    
+
                         studentsData = [];
                         for (var i = 0; i < students.length; ++i) {
+                            var date = new Date(students[i].enrollmentBeginDate.date);
+                            var year = date.getFullYear() ;
+                            var month = (date.getMonth() < 10) ? '0' + date.getMonth() : date.getMonth();
+                            var day = (date.getDate() < 10) ? '0' + date.getDate() : date.getDate();
+                            
                             studentsData.push({
                                 DT_RowClass: "cats-row",
                                 DT_RowAttr: {
                                     "data-id": students[i].personId
                                 },
                                 0: students[i].personFullName,
-                                1: students[i].personCpf
+                                1: students[i].personRg,
+                                2: year +  '-' + month + '-' + day
                             });
                         }
                         return studentsData;

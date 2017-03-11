@@ -43,8 +43,7 @@ define(['jquery', 'datatable'], function () {
                 var cardPreview = $('#student-id-cards .student-id-card').first().clone();
                 cardPreview.find('.card').css( {
                     'background-image': "url(/img/" + tr.data('img-url') + ")",
-                    'background-repeat': 'no-repeat',
-                    'background-size': '88mm 55mm'
+                    'background-size': '100%'
                 });
                 cardPreview.find('span.phrase').first().text(rowData[1]);
                 cardPreview.find('span.author').first().text(rowData[2]);
