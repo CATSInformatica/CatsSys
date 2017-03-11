@@ -137,8 +137,7 @@ class GeneratePdfController extends AbstractEntityActionController
             $selectedStudentsInfo[] = [
                 'name' => $student->getPersonName(),
                 'rg' => $student->getPersonRg(),
-                //'img_url' => $student->getPersonPhoto()
-                'img_url' => 'default-male-profile.png'
+                'img_url' => $student->getPersonPhoto()
             ];
         }
         
