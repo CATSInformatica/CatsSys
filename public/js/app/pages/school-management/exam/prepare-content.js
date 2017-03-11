@@ -461,8 +461,8 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 autoWidth: false,
                 scrollY: '600px',
                 ajax: {
+                    method: "POST",
                     url: "/school-management/school-exam/get-subject-questions",
-                    type: "POST",
                     data: function () {
                         return {
                             subject: +$(".last-selected").first().data('id'),

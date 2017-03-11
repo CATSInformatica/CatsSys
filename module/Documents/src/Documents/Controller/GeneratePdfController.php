@@ -54,7 +54,7 @@ class GeneratePdfController extends AbstractEntityActionController
             
             // Busca todas as turmas cadastradas
             $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')
-                    ->findAll();
+                    ->findBy([], ['classId' => 'DESC']);
                 
             $form = new StudentIdCardForm($bgConfigs);
             
