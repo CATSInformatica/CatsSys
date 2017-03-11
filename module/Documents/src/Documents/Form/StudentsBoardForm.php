@@ -30,47 +30,47 @@ use Zend\InputFilter\InputFilterProviderInterface;
 class StudentsBoardForm extends Form implements InputFilterProviderInterface
 {    
     
-    public function __construct($bgConfigs = [])
+    public function __construct($name = 'student-board-form')
     {
-        parent::__construct('student_board_form');
+        parent::__construct($name);
                 
-        $this->add(array(
-                    'name' => 'config_id',
-                    'type' => 'select',
-                    'options' => array(
-                        'value_options' => $this->getConfigsIds($bgConfigs),
-                        'label' => 'Configuração de Fundo',
-                    ),
-                ))
-                ->add(array(
+        $this
+            ->add([
+                'name' => 'studentIds',
+            ])
+            ->add([
                 'name' => 'Submit',
-                'attributes' => array(
+                'attributes' => [
                     'type' => 'submit',
                     'class' => 'btn btn-primary btn-block',
-                    'value' => 'Gerar',
-                )
-        ));
-    }
-
-    private function getConfigsIds($bgConfigs) 
-    {
-        $configsIds = [];
-        foreach ($bgConfigs as $bgConfig) {
-            $configsIds[$bgConfig->getStudentBgConfigId()] = $bgConfig->getStudentBgConfigId();
-        }
-        return $configsIds;
+                    'value' => 'Gerar'
+                ]
+        ]);
     }
     
     public function getInputFilterSpecification()
     {
-        return array(
-            'config_id' => array(
+        return [
+            'studentIds' => [
                 'required' => true,
-            ), 
-            'class_id' => array(
-                'required' => true,
-            ),
-        );
+                'validators' => [
+                    [
+                        'name' => 'Callback',
+                        'options' => [
+                            'callback' => function($studentIds) {
+                                foreach ($studentIds as $studentId) {
+                                    if (!is_numeric($studentId)) {
+                                        return false;
+                                    }
+                                }
+                                
+                                return true;
+                            },
+                        ],
+                    ],
+                ],
+            ]
+        ];
     }
     
 }
