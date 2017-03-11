@@ -153,7 +153,7 @@ class StudentIdCardPdf extends StudentsBoardPdf
         // Posiciona a foto do aluno
         $pdf->Image(
             $imgUrl['student-pic'],
-            $x,
+            $x + self::CARD_PADDING,
             $y + 19.40,
             self::STUDENT_PICTURE_WIDTH // largura 
             // altura dimensionada automaticamente
