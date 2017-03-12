@@ -333,9 +333,6 @@ class RegistrationController extends AbstractEntityActionController
                     );
 
                     // atribui a qual processo seletivo a inscrição pertence
-                    echo '<pre>';
-                    print_r($recruitment);
-                    exit;
                     $registration->setRecruitment($recruitment);
 
                     // salva no banco
