@@ -53,7 +53,7 @@ define(['moment', 'datatable'], function (moment) {
                 columnDefs: [
                     {
                         className: "text-center",
-                        targets: [1, 3, 4]
+                        targets: [1, 3, 4, 5]
                     },
                     {
                         className: "details-control",
