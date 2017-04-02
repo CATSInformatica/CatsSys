@@ -457,7 +457,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          */
         initDataTable = function () {            
             questionTable.DataTable({
-                dom: '<"top"p>t<"bottom"p><"clear">',
+                dom: '<"top"pf>t<"bottom"p><"clear">',
                 autoWidth: false,
                 scrollY: '600px',
                 ajax: {
