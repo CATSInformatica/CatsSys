@@ -968,10 +968,14 @@ class SchoolExamController extends AbstractEntityActionController
                     $subject = $em->getReference('SchoolManagement\Entity\Subject', $data['subject']);
                     $questionType = $data['questionType'];
                     if ($questionType > 0) { // Um tipo específico de questão foi selecionado
-                        $questions = $em->getRepository('SchoolManagement\Entity\ExamQuestion')->findBy([
-                            'examQuestionType' => $questionType,
-                            'subject' => $subject,
-                        ]);
+                        $questions = $em->getRepository('SchoolManagement\Entity\ExamQuestion')->findBy(
+                                [
+                                    'examQuestionType' => $questionType,
+                                    'subject' => $subject,
+                                ],
+                                [
+                                    'examQuestionId' => 'DESC'
+                                ]);
                     } else {
                         $questions = $em->getRepository('SchoolManagement\Entity\ExamQuestion')->findBy([
                             'subject' => $subject,
