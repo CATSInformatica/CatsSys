@@ -6,20 +6,140 @@
     ?>
     <p><?php echo $this->message; ?></p>
     <div class="row">
+        <div class="col-xs-12 col-md-10 col-md-offset-1">
+            <div class="box box-info">
+                <div class="box-header with-border">
+                    <h3 class="box-title">Instruções</h3>
 
-        <div class="container-fluid">
-            <div class="col-md-6 col-xs-6">
-                <p class="text-justify">Por favor, antes de inserir a questão, aguarde até que a fórmula ao lado seja exibida. 
-                    <br>Caso a fórmula não apareça dentro de alguns segundos, por favor, recarregue a página.</p>
-                <br>
+                    <div class="box-tools pull-right">
+                        <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i>
+                        </button>
+                    </div>
+                  <!-- /.box-tools -->
+                </div>
+                <!-- /.box-header -->
+                <div class="box-body">
+                    <div class="row">
+                        <div class="col-md-6 col-xs-6">
+                            <p class="text-justify">Por favor, antes de inserir a questão, aguarde até que a fórmula ao lado seja exibida. 
+                                <br>Caso a fórmula não apareça dentro de alguns segundos, por favor, recarregue a página.</p>
+                            <br>
+                        </div>
+                        <div class="col-md-6 col-xs-6">
+                            <h4 id="testEquation" style="display:none;" class="text-center">
+                                $$ e^{ix} = \cos{x} + i \sin{x}. $$
+                            </h4>
+                        </div>
+                    </div>
+                    <div class="row">
+                        <div class="col-xs-12">
+                            <h5 class="text-bold text-center tex2jax_ignore">O USO DO CARACTER $</h5>
+
+                            <!-- Explicação e Exemplo 1 -->
+                            <p class="text-justify tex2jax_ignore">
+                                O caracter $ é utilizado para acessar o modo matemático em linha única. Por exemplo, para definir o conjunto dos números naturais em uma linha seria feito:
+                            </p> 
+                            <code class="text-center tex2jax_ignore">$ \mathbb{N} = \lbrace 0, 1, 2, \dots \rbrace $</code> 
+                            <p>que nos dá como resultado</p>
+                            <p>$ \mathbb{N} = \lbrace 0, 1, 2, \dots \rbrace $</p> 
+
+                            <!-- Exemplo 2 -->
+                            <p class="text-justify tex2jax_ignore">
+                                Para centralizar e colocar em uma linha separada seria feito:
+                            </p> 
+                            <code class="text-center tex2jax_ignore">\[ \mathbb{N} = \lbrace 0, 1, 2, ...\rbrace \]</code> 
+                            <p>resultando</p>
+                            <p>\[ \mathbb{N} = \lbrace 0, 1, 2, ...\rbrace \]</p> 
+
+                            <!-- Solução -->
+                            <p class="text-justify tex2jax_ignore">
+                                Dessa forma é importante notar que o símbolo $ não pode ser utilizado para denotar texto não matemático, por exemplo R$ 4,50. Para fazer isso é necessário escapá-lo inserindo o caracter "\" na frente. Por exemplo: para obter o texto R$ 4,50 é necessário escrever
+                            </p> 
+                            <code class="tex2jax_ignore">R\$ 4,50</code>
+
+                            <br>
+
+                            <h5 class="text-bold text-center tex2jax_ignore">TABELA DE CONSULTA RÁPIDA</h5>
+                        </div>
+                        
+                        <div class="col-xs-12">
+                            Todos os comandos da tabela abaixo são do modo matemático do LaTeX.
+                            <table class="table table-bordered">
+                                <thead>
+                                    <tr>
+                                        <th class="text-center">Descrição</th>
+                                        <th class="text-center">Comando</th>
+                                        <th class="text-center">Resultado</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <tr class="text-center">
+                                        <td>Sobrescrito</td>
+                                        <td class="tex2jax_ignore">texto^{sobrescrito}</td>
+                                        <td>$texto^{sobrescrito}$</td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>Subscrito</td>
+                                        <td class="tex2jax_ignore">texto_{subscrito}</td>
+                                        <td>$texto_{subscrito}$</td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>Fração</td>
+                                        <td class="tex2jax_ignore">\frac{x}{y}</td>
+                                        <td>$\frac{x}{y}$</td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>Raiz</td>
+                                        <td class="tex2jax_ignore">\sqrt[n]{x}</td>
+                                        <td>$\sqrt[n]{x}$</td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>Comparação</td>
+                                        <td class="tex2jax_ignore">\leq, \geq, \neq, \approx, \dots</td>
+                                        <td>$\leq, \geq, \neq, \approx, \dots$</td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>Letras gregas</td>
+                                        <td class="tex2jax_ignore">\alpha, \delta, \Delta, \lambda, \Lambda, \dots</td>
+                                        <td>$\alpha, \pi, \delta, \Delta, \lambda, \Lambda, \dots$</td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>Vetor</td>
+                                        <td class="tex2jax_ignore">\vec{a}</td>
+                                        <td>$\vec{a}$</td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>Acentos</td>
+                                        <td class="tex2jax_ignore">\hat a, \dot a, \bar a, \tilde a, \dots</td>
+                                        <td>$\hat a, \dot a, \bar a, \tilde a, \dots$</td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>Setas</td>
+                                        <td class="tex2jax_ignore">\rightarrow, \Rightarrow e \Leftrightarrow</td>
+                                        <td>$\rightarrow, \Rightarrow e \Leftrightarrow$</td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>Conjuntos</td>
+                                        <td class="tex2jax_ignore">\supset, \subset, \cup, \cap, \in e \notin</td>
+                                        <td>$\supset, \subset, \cup, \cap, \in e \notin$</td>
+                                    </tr>
+                                    <tr class="text-center">
+                                        <td>Outros símbolos matemáticos</td>
+                                        <td class="tex2jax_ignore">\times, \div, \pm, \circ, \forall, \exists, \infty, \dots</td>
+                                        <td>$\times, \div, \pm, \circ, \forall, \exists, \infty, \dots$</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                        <div class="col-xs-12">
+                            <p>Outros comandos suportados podem ser consultados <a target="_blank" href="https://math.meta.stackexchange.com/questions/5020/mathjax-basic-tutorial-and-quick-reference">aqui</a>.</p>
+                        </div>
+                    </div>
+                </div>
+                <!-- /.box-body -->
             </div>
-            <div class="col-md-6 col-xs-6">
-                <h4 id="testEquation" style="display:none;" class="text-center">
-                    $$ e^{ix} = \cos{x} + i \sin{x}. $$
-                </h4>
-            </div>
+            <!-- /.box -->
         </div>
-        <hr>
         <?php if ($form !== null): ?>
             <div class="container-fluid">
                 <div class="col-xs-12 col-md-10 col-md-offset-1">
