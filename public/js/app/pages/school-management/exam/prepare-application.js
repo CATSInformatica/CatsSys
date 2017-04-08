@@ -25,11 +25,10 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
              * 
              */
             $('#print-answer-key').click(function () {
-                generateAnswerKey();
-            
                 var answersTablesTitle = $('#answers-tables-title-template > div').clone();
                 answersTablesTitle.attr('id', 'answers-title');
-                $('#answer-key-tables').prepend(answersTablesTitle);
+                
+                generateAnswerKey(answersTablesTitle);
                         
                 $('#answer-key-tables').print({
                     globalStyles: true,
@@ -343,33 +342,38 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
          * impressão para o pdf
          * 
          */
-        generateAnswerKey = function () {
-            $('#answer-key-tables').html('');
+        generateAnswerKey = function (answersTablesTitle) {
+            $('#answer-key-tables').html(''); 
             
             var CSVAnswers = "Numero,Resposta,Disciplina\n";
             var questions = $('.subject-block > .question-block, .parallel-subject-block > .question-block');
             addTable();
+            
+            var differentBgColor = false;
+            var parentBlock = null;
+            var baseSubjectName = ''; 
+            var subjectName = '';
+            var questionNumber = 0;
+            var correctAlternative = 0;
             questions.each(function() {
-                var parentBlock = $(this).parent();
-                var baseSubjectName = parentBlock.closest('.base-subject-block').data('name'); 
-                var differentBgColor = false;
+                parentBlock = $(this).parent();
+                baseSubjectName = parentBlock.closest('.base-subject-block').data('name'); 
+                differentBgColor = false;
                 
+                // disciplina paralela
                 if (parentBlock.hasClass('parallel-subject-block')) { 
+                    // primeira questão da disciplina
                     if ($(this).prev('.question-block').length === 0) {
-                        var subjectName = 'OPÇÃO ' + parentBlock.data('name');
+                        subjectName = 'OPÇÃO ' + parentBlock.data('name');
                         addTitleRow(subjectName);
                     }
                     differentBgColor = true;
-                } else if (parentBlock.prev('.subject-block').length === 0 && $(this).prev('.question-block').length === 0) {
-                    //addTitleRow(baseSubjectName);                  
                 }
                 
-                var questionNumber = $(this).find('.q-number').first().text();
-                var correctAlternative = $(this).data('correct-alternative');
+                questionNumber = $(this).find('.q-number').first().text();
+                correctAlternative = $(this).data('correct-alternative');
                 addRow(questionNumber, correctAlternative, baseSubjectName, differentBgColor);
             });
-            
-            $('#answer-key-tables').css("height", "210mm");
 
             $("#save-answers-csv").removeAttr("disabled");
             $("#save-answers-csv").attr("href", 'data:attachment/csv,' +  encodeURIComponent(CSVAnswers));
@@ -381,7 +385,17 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
              * Adiciona uma tabela de respostas ao gabarito
              */
             function addTable() {
-                $('#answer-key-tables').append(
+                var tablePages = $('#answer-key-tables > .answer-key-tables-page');
+                var lastPage = null;
+                console.log('new page');
+                if (tablePages.length === 0 || tablePages.last().find('table').length === 4) {
+                    var newPage = $('<div class="answer-key-tables-page"></div>');
+                    newPage.append(answersTablesTitle.clone());
+                    $('#answer-key-tables').append(newPage);
+                }
+                lastPage = $('#answer-key-tables > .answer-key-tables-page').last();
+                
+                lastPage.append(
                     '<div class="col-xs-3">' +
                         '<table class="table-striped answers-table col-xs-10 col-xs-offset-1">' + 
                             '<tbody></tbody>' +
@@ -440,8 +454,8 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
 
         return {
             init: function () {
-                prepareApplicationListeners();
                 loadExams();
+                prepareApplicationListeners();
             }
         };
 
