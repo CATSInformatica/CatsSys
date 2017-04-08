@@ -722,10 +722,8 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
              *      do conteúdo
              * @param {boolean} parallelSubject - flag que indica se a disciplina 
              *      é paralela
-             * @param {boolean} prepareContent - flag que indica se a função está 
-             *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
              */
-            function loadSubject(context, subject, parallelSubject, prepareContent) {
+            function loadSubject(context, subject, parallelSubject) {
                 var questionsIds = [];
                 
                 for (var i = 0; i < subject.questions.length; ++i) {
@@ -740,8 +738,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                             name: subject.subgroupName,
                             parallel: parallelSubject,
                             singleColumn: subject.singleColumn
-                        },
-                        prepareContent
+                        }
                 );
             }
             
@@ -761,10 +758,8 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
              *  }
              * @param {object} subject - objeto que representa a disciplina no JSON 
              *      do conteúdo
-             * @param {boolean} prepareContent - flag que indica se a função está 
-             *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
              */
-            function loadQuestions(questionsIds, context, subject, prepareContent) {
+            function loadQuestions(questionsIds, context, subject) {
                 $.ajax({
                      method: "POST",
                      url: '/school-management/school-exam/get-questions',
@@ -775,14 +770,13 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                     addLoadedQuestions(
                             questions,
                             context, 
-                            subject, 
-                            prepareContent
+                            subject
                     );
                 });
             }
             
             /*
-             * Carrega as questões
+             * Carrega as questões no contexto desejado
              * 
              * @param {array} questions - questões a serem adicionadas
              *      questions = [
@@ -809,10 +803,8 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
              *  }
              * @param {object} subject - objeto que representa a disciplina no JSON 
              *      do conteúdo
-             * @param {boolean} prepareContent - flag que indica se a função está 
-             *      sendo chamada da página de preparação do conteúdo (true) ou não(false)
              */
-            addLoadedQuestions = function (questions, context, subject, prepareContent) {
+            addLoadedQuestions = function (questions, context, subject) {
                 var total = questions.length;
                 for (var i = 0; i < total; ++i) {
                     examQuestions[questions[i].questionId] = {
@@ -841,7 +833,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                                 baseSubjectId: context.baseSubjectId,
                                 numberingStart: context.numberingStart
                             }, 
-                            true
+                            prepareContent
                     );
                 }
             };
@@ -879,7 +871,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
          */
         addQuestion = function (question, context, prepareContent) {
             //  questão já adicionada
-            if (selectedQuestions[question.id]) {
+            if (prepareContent && selectedQuestions[question.id]) {
                 return;
             }
             

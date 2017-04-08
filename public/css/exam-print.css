@@ -141,13 +141,14 @@
 /*Gabarito*/
 #answer-key-tables {
     width: 297mm;
+}
+.answer-key-tables-page {
+    width: 297mm;
+    height: 210mm;
     padding: 10mm;
 }
 #answers-title {
     height: 10mm;
-}
-#answer-key-tables > div:not(#answers-title) {
-    height: 180mm;
 }
 .answers-table > tbody > tr {
     border: 1px solid #ddd !important;
