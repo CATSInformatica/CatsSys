@@ -387,7 +387,6 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
             function addTable() {
                 var tablePages = $('#answer-key-tables > .answer-key-tables-page');
                 var lastPage = null;
-                console.log('new page');
                 if (tablePages.length === 0 || tablePages.last().find('table').length === 4) {
                     var newPage = $('<div class="answer-key-tables-page"></div>');
                     newPage.append(answersTablesTitle.clone());
