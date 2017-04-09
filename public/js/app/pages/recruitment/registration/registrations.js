@@ -53,8 +53,9 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                                 2: data[i].personName,
                                 3: data[i].personCpf,
                                 4: data[i].personRg,
-                                5: data[i].personEmail,
-                                6: data[i].status.type + '<br>' + data[i].status.timestamp
+                                5: data[i].personPhone,
+                                6: data[i].personEmail,
+                                7: data[i].status.type + '<br>' + data[i].status.timestamp
                             });
                         }
 
