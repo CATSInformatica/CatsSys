@@ -452,6 +452,7 @@ class RegistrationController extends AbstractEntityActionController
                             'personName' => $person->getPersonName(),
                             'personCpf' => $person->getPersonCpf(),
                             'personRg' => $person->getPersonRg(),
+                            'personPhone' => $person->getPersonPhone(),
                             'personEmail' => $person->getPersonEmail(),
                             'status' => array(
                                 'type' => $statusType,
