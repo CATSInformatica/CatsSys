@@ -708,18 +708,17 @@ return array(
                 'uri' => '#',
                 'icon' => 'fa fa-database',
                 'order' => 14,
-                'resource' => 'SchoolManagement\Controller\SchoolExam',
-                'privilege' => 'question-bank-editor',
                 'pages' => array(
                     array(
                         'label' => 'Show Questions',
                         'route' => 'school-management/school-exam',
                         'action' => 'question',
+                        'resource' => 'SchoolManagement\Controller\SchoolExam',
+                        'privilege' => 'question',
                         'icon' => 'fa fa-question-circle',
                         'toolbar' => array(
                             array(
                                 'url' => '/school-management/school-exam/edit-question/$id',
-                                'privilege' => 'edit-question',
                                 'title' => 'Editar',
                                 'id' => 'question-edit',
                                 'description' => 'Permite editar a questão selecionada',
@@ -728,7 +727,6 @@ return array(
                             ),
                             array(
                                 'url' => '/school-management/school-exam/delete-question/$id',
-                                'privilege' => 'delete-question',
                                 'title' => 'Remover',
                                 'id' => 'question-delete',
                                 'description' => 'Permite remoção da questão selecionada',
@@ -756,6 +754,8 @@ return array(
                         'label' => 'Add Question',
                         'route' => 'school-management/school-exam',
                         'action' => 'add-question',
+                        'resource' => 'SchoolManagement\Controller\SchoolExam',
+                        'privilege' => 'add-question',
                         'icon' => 'fa fa-question-circle',
                     ),
                 ),
