@@ -709,6 +709,7 @@ return array(
                 'icon' => 'fa fa-database',
                 'order' => 14,
                 'resource' => 'SchoolManagement\Controller\SchoolExam',
+                'privilege' => 'question-bank-editor',
                 'pages' => array(
                     array(
                         'label' => 'Show Questions',

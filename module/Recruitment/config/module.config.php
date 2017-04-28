@@ -230,7 +230,7 @@ return array(
                         'route' => 'recruitment/csv-viewer',
                         'action' => 'index',
                         'resource' => 'Recruitment\Controller\CsvViewer',
-                        'privilege' => 'index',
+                        'privilege' => 'csv-viewer',
                         'icon' => 'fa fa-info-circle',
                     ),
                 ),
