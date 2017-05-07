@@ -1,6 +1,8 @@
 <section class="content">
     <p><?php echo $this->message; ?></p>
+
     <?php if ($form !== null): ?>
+
         <div class="row">
             <div class="col-xs-12 col-md-8 col-md-offset-2">
                 <?php echo $this->form()->openTag($form); ?>
@@ -16,19 +18,14 @@
                     <?php echo $this->formRow($form->get('submit')); ?>
                 </div>
                 <?php echo $this->form()->closeTag(); ?>
-                <br>
-                <div>
-                    <h4 class="text-center">Cargos</h4>
-                    <dl id="jobList" class="dl-horizontal"></dl>
-                </div>
-            </div>
+            </div>            
         </div>
         <br>
         <div class="row">
             <div class="col-xs-12 col-md-8 col-md-offset-2">
                 <div class="table-responsive">
                     <h4 class="text-center">Voluntários</h4>
-                    <table class="table table-condensed table-bordered" id="office-table">
+                    <table class="table table-condensed table-bordered" id="volunteer-table">
                         <thead>
                         <th>Inscrição</th>
                         <th>Nome</th>
@@ -44,8 +41,9 @@
 </section>
 
 <script>
+
     appConfig = (function () {
-        var scriptSrc = 'app/pages/administrative-structure/job/job';
+        var scriptSrc = 'app/pages/administrative-structure/documents/documents';
         return {
             getScriptSrc: function () {
                 return scriptSrc;

@@ -31,7 +31,8 @@ INSERT INTO `resource` VALUES
 (NULL,'Documents\\Controller\\StudentAnswersSheets'),
 (NULL,'FinancialManagement\\Controller\\CashFlow'),
 (NULL,'FinancialManagement\\Controller\\MonthlyPayment'),
-(NULL,'SchoolManagement\\Controller\\SchoolExamResult')
+(NULL,'SchoolManagement\\Controller\\SchoolExamResult'),
+(NULL,'AdministrativeStructure\\Controller\\Documents')
 ;
 UNLOCK TABLES;
 
