@@ -155,12 +155,28 @@ define(['app/pages/administrative-structure/department/departments', 'moment'], 
                 }
             });
         };
+        
+        captchaRefresh = function() {
+            $('#captcha-input-refresh').click(function() { 
+                $.ajax({ 
+                    url: '/recruitment/captcha/refresh', 
+                    dataType:'json', 
+                    success: function(data) { 
+                        $('#captcha-input-image').attr('src', data.src); 
+                        $('#captcha-input-hidden').attr('value', data.id); 
+                    }
+                }); 
+            });
+        };
+        
+        
         return {
             init: function () {
                 moment.locale("pt-br");
                 pastExamsAjax();
                 departments.init();
                 recruitmentFinder();
+                captchaRefresh();
             }
         };
     }());

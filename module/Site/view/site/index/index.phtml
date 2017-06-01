@@ -161,27 +161,40 @@
     <div class="container">
         <h2 class="text-center">Entre em Contato Conosco</h2>
         <hr>
-        <?php if ($this->contact_form !== null): ?>
+        <?php if ($this->contactForm !== null): ?>
+            <?php 
+                $contactForm->prepare();
+                echo $this->form()->openTag($contactForm);
+            ?>
             <div class="col-md-8 col-xs-12"> 
                 <div class="col-md-6 col-xs-12">
-                    <?php echo $this->formRow($contact_form->get('name')); ?>
+                    <?php echo $this->formRow($contactForm->get('contact-fieldset')->get('name')); ?>
                 </div>
                 <div class="col-md-6 col-xs-12">
-                    <?php echo $this->formRow($contact_form->get('email')); ?>
+                    <?php echo $this->formRow($contactForm->get('contact-fieldset')->get('email')); ?>
+                </div>
+                <div class="col-xs-12">
+                    <?php echo $this->formRow($contactForm->get('contact-fieldset')->get('position')); ?>
                 </div>
                 <div class="col-md-12">
-                    <?php echo $this->formRow($contact_form->get('subject')); ?>
+                    <?php echo $this->formRow($contactForm->get('contact-fieldset')->get('subject')); ?>
                 </div>
                 <div class="col-md-12">
-                    <?php echo $this->formRow($contact_form->get('message')); ?>
+                    <?php echo $this->formRow($contactForm->get('contact-fieldset')->get('message')); ?>
                 </div>
                 <div class="col-md-12">
-                    <?php echo $this->formRow($contact_form->get('contactCsrf')); ?>
+                    <?php echo $this->formRow($contactForm->get('contactCaptcha')); ?>
                 </div>
                 <div class="col-md-12">
-                    <?php echo $this->formRow($contact_form->get('Submit')); ?>
+                    <?php echo $this->formRow($contactForm->get('contactCsrf')); ?>
+                </div>
+                <div class="col-md-12">
+                    <?php echo $this->formRow($contactForm->get('Submit')); ?>
                 </div>
             </div>
+            <?php 
+                echo $this->form()->closeTag(); 
+            ?>
             <div class="col-md-4 col-xs-12 text-left">
                 <div class="container-fluid text-justify">
                     <h4>Endereço</h4>

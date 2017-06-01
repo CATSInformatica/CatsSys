@@ -71,7 +71,7 @@ class CaptchaImage extends AbstractWord
             . '%s%s'
             . '<span class="input-group-btn">'
             . '<button id="' . $element->getAttribute('id') . '-refresh' . '" class="btn btn-default" type="button">'
-            . '<i class="ion-loop"></i>'
+            . '<i class="fa fa-2 fa-refresh"></i>'
             . '</button>'
             . '</span>'
             . '</div>';

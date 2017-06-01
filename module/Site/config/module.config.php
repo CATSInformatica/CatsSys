@@ -4,10 +4,11 @@ namespace Site;
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'Site\Controller\Index' => Controller\IndexController::class,
+        'factories' => array(
+            'Site\Controller\Index' => Factory\Controller\IndexControllerFactory::class,
         ),
     ),
+    
     'router' => array(
         'routes' => array(
             'home' => array(
@@ -30,7 +31,7 @@ return array(
                     'route' => '/site[/:action]',
                     'defaults' => array(
                         '__NAMESPACE__' => 'Site\Controller',
-                        'controller' => 'Site\Controller\Index',
+                        'controller' => 'Index',
                         'action' => 'index',
                     ),
                 ),
@@ -61,6 +62,28 @@ return array(
         ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
+        ),
+    ),
+    'view_helpers' => array(
+        'invokables' => array(
+            'CaptchaImageViewHelper' => 'Recruitment\View\Helper\CaptchaImage',
+        ),
+    ),
+    // Doctrine configuration
+    'doctrine' => array(
+        'driver' => array(
+            'site_driver' => array(
+                'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
+                'cache' => 'array',
+                'paths' => array(
+                    __DIR__ . '/../src/Site/Entity',
+                ),
+            ),
+            'orm_default' => array(
+                'drivers' => array(
+                    'Site\Entity' => 'site_driver',
+                ),
+            ),
         ),
     ),
     // Placeholder for console routes

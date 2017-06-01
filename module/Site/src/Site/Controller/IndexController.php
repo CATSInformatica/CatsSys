@@ -1,15 +1,44 @@
 <?php
 
+/*
+ * Copyright (C) 2016 Gabriel Pereira <rickardch@gmail.com>
+ *
+ * This program is free software: you can redistribute it and/or modify
+ * it under the terms of the GNU General Public License as published by
+ * the Free Software Foundation, either version 3 of the License, or
+ * (at your option) any later version.
+ *
+ * This program is distributed in the hope that it will be useful,
+ * but WITHOUT ANY WARRANTY; without even the implied warranty of
+ * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ * GNU General Public License for more details.
+ *
+ * You should have received a copy of the GNU General Public License
+ * along with this program.  If not, see <http://www.gnu.org/licenses/>.
+ */
+
 namespace Site\Controller;
 
-use Zend\Mvc\Controller\AbstractActionController;
+use Database\Controller\AbstractEntityActionController;
+use Authentication\Service\EmailSenderServiceInterface;
 use Zend\View\Model\ViewModel;
 use Site\Form\ContactForm;
-use Site\Form\ContactFilter;
+use Site\Entity\Contact;
 
-class IndexController extends AbstractActionController
+class IndexController extends AbstractEntityActionController
 {
-
+    /**
+     *
+     * @var EmailSenderServiceInterface Permite acessar o serviço de envio de emails.
+     */
+    protected $emailService;
+    
+    public function __construct(EmailSenderServiceInterface $emailService)
+    {
+        $this->emailService = $emailService;
+    }
+    
+    
     /**
      * Página inicial do site
      * 
@@ -17,25 +46,41 @@ class IndexController extends AbstractActionController
      */
     public function indexAction()
     {
+        $em = $this->getEntityManager();
         $request = $this->getRequest();
-        $form = new ContactForm('Formulario de Contato');
         $message = null;
+        
+        $contact = new Contact();
+        $form = new ContactForm($em);
+        $form->bind($contact);
 
         if ($request->isPost()) {
-
-            $form->setInputFilter(new ContactFilter());
             $form->setData($request->getPost()->toArray());
 
             if ($form->isValid()) {
                 $data = $form->getData();
-                /*
-                 *  Envia o email
-                 */
+                
+                if ($contact->getEmail()) {
+                    if ($contact->getName()) {
+                        $this->emailService->setFrom($contact->getEmail(), $contact->getName());
+                    } else {
+                        $this->emailService->setFrom($contact->getEmail(), "Anônimo");   
+                    }
+                }
+                    
+                $this->emailService->setSubject($contact->getSubject() . '[' . $contact->getPosition() . ']');
+                $this->emailService->setBody($contact->getMessage());
+                $this->emailService->setIsHtml(false);
+
+                $this->emailService->send();   
+                
+                $em->persist($contact);                
+                $em->flush();
             }
         }
         return new ViewModel(array(
             'message' => $message,
-            'contact_form' => $form,
+            'contactForm' => $form,
         ));
     }
 
