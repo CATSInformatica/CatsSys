@@ -9,60 +9,42 @@
 namespace Site\Form;
 
 use Zend\Form\Form;
+use Zend\InputFilter\InputFilterProviderInterface;
+use Doctrine\Common\Persistence\ObjectManager;
+use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
+use Recruitment\Model\CaptchaImage;
+use Site\Form\Fieldset\ContactFieldset;
 
 /**
  * Description of ContactForm
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class ContactForm extends Form
+class ContactForm extends Form implements InputFilterProviderInterface
 {
 
-    public function __construct($name = null)
+    public function __construct(ObjectManager $obj)
     {
 
-        parent::__construct($name);
-
+        parent::__construct('formulario-contato');
+        
+        $this->setHydrator(new DoctrineHydrator($obj));
+        
+        $contactFieldset = new ContactFieldset($obj);
+        $contactFieldset->setUseAsBaseFieldset(true);
+        $this->add($contactFieldset);
+        
         $this->add(array(
-                    'name' => 'name',
-                    'attributes' => array(
-                        'type' => 'text',
-                    ),
+                    'name' => 'contactCaptcha',
+                    'type' => 'Zend\Form\Element\Captcha',
                     'options' => array(
-                        'label' => 'Nome',
-                        'add-on-prepend' => '<i class="fa fa-user"></i>'
+                        'label' => 'Insira o código da imagem',
+                        'captcha' => new CaptchaImage(),
                     ),
-                ))
-                ->add(array(
-                    'name' => 'email',
                     'attributes' => array(
-                        'type' => 'text',
-                    ),
-                    'options' => array(
-                        'label' => 'Email',
-                        'add-on-prepend' => '<i class="fa fa-envelope-o"></i>'
-                    ),
-                ))
-                ->add(array(
-                    'name' => 'subject',
-                    'attributes' => array(
-                        'type' => 'text',
-                    ),
-                    'options' => array(
-                        'label' => 'Assunto',
-                        'add-on-prepend' => '<span class="glyphicon glyphicon-tag"></span>'
-                    ),
-                ))
-                ->add(array(
-                    'name' => 'message',
-                    'attributes' => array(
-                        'type' => 'textarea',
-                        'rows' => 6,
-                    ),
-                    'options' => array(
-                        'label' => 'Mensagem',
-                        'add-on-prepend' => '<i class="fa fa-text-width"></i>',
-                    ),
+                        'id' => 'captcha-input',
+                        'class' => 'text-center',
+                    )
                 ))
                 ->add(array(
                     'name' => 'contactCsrf',
@@ -70,7 +52,7 @@ class ContactForm extends Form
                 ))
                 ->add(array(
                     'name' => 'Submit',
-                    'type' => 'button',
+                    'type' => 'submit',
                     'attributes' => array(
                         'class' => 'btn btn-primary btn-block',
                         'value' => 'Enviar',
@@ -78,4 +60,16 @@ class ContactForm extends Form
         ));
     }
 
+    public function getInputFilterSpecification()
+    {   
+        return array(
+            'contactCsrf' => array(
+                'required' => true,
+            ),
+            'contactCaptcha' => array(
+                'required' => true,
+            ),
+        );
+    }
+    
 }
