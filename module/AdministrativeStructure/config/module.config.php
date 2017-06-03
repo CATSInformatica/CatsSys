@@ -7,6 +7,7 @@ return [
         'factories' => [
             'AdministrativeStructure\Controller\Department' => Factory\Controller\DepartmentControllerFactory::class,
             'AdministrativeStructure\Controller\Job' => Factory\Controller\JobControllerFactory::class,
+            'AdministrativeStructure\Controller\Documents' => Factory\Controller\DocumentsControllerFactory::class,
         ],
     ],
     'router' => array(
@@ -45,6 +46,18 @@ return [
                             ),
                         ),
                     ),
+                    'documents' => [
+                        'type' => 'Segment',
+                        'options' => array(
+                            'route' => '/documents[/:action]',
+                            'contraints' => array(
+                                'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                            ),
+                            'defaults' => array(
+                                'controller' => 'AdministrativeStructure\Controller\Documents',
+                            ),
+                        ),
+                    ],
                 ),
             ),
         ),
@@ -195,6 +208,14 @@ return [
                                 'fntype' => 'ajaxPostSelectedClick',
                             ],
                         ],
+                    ],
+                    [
+                        'label' => 'Documents',
+                        'route' => 'administrative-structure/documents',
+                        'action' => 'index',
+                        'resource' => 'AdministrativeStructure\Controller\Documents',
+                        'privilege' => 'index',
+                        'icon' => 'fa fa-file-text-o',
                     ],
                 ],
             ],
