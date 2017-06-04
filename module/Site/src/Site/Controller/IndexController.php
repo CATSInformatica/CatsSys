@@ -57,9 +57,7 @@ class IndexController extends AbstractEntityActionController
         if ($request->isPost()) {
             $form->setData($request->getPost()->toArray());
 
-            if ($form->isValid()) {
-                $data = $form->getData();
-                
+            if ($form->isValid()) {                
                 if ($contact->getEmail()) {
                     if ($contact->getName()) {
                         $this->emailService->setFrom($contact->getEmail(), $contact->getName());
@@ -76,6 +74,11 @@ class IndexController extends AbstractEntityActionController
                 
                 $em->persist($contact);                
                 $em->flush();
+                
+                return new ViewModel(array(
+                    'message' => $message,
+                    'contactForm' => null
+                ));
             }
         }
         return new ViewModel(array(
