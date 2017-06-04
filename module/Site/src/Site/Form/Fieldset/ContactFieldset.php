@@ -147,7 +147,7 @@ class ContactFieldset extends Fieldset implements InputFilterProviderInterface
                     array(
                         'name' => 'Zend\Validator\StringLength',
                         'options' => array(
-                            'min' => 10,
+                            'min' => 1,
                             'max' => 100,
                         )
                     )
@@ -158,12 +158,6 @@ class ContactFieldset extends Fieldset implements InputFilterProviderInterface
                 'filters' => array(
                     array('name' => 'StringTrim'),
                     array('name' => 'StripTags'),
-                    array(
-                        'name' => 'StringToUpper',
-                        'options' => [
-                            'encoding' => 'UTF-8',
-                        ],
-                    ),
                 ),
                 'validators' => array(
                     array(
