@@ -6,6 +6,7 @@ return array(
     'controllers' => array(
         'factories' => array(
             'Site\Controller\Index' => Factory\Controller\IndexControllerFactory::class,
+            'Site\Controller\SiteManagement' => Factory\Controller\SiteManagementControllerFactory::class,
         ),
     ),
     
@@ -28,27 +29,25 @@ return array(
             'site' => array(
                 'type' => 'Segment',
                 'options' => array(
-                    'route' => '/site[/:action]',
-                    'defaults' => array(
-                        '__NAMESPACE__' => 'Site\Controller',
-                        'controller' => 'Index',
-                        'action' => 'index',
-                    ),
+                    'route' => '/site',
                 ),
                 'may_terminate' => true,
                 'child_routes' => array(
-                    'default' => array(
+                    'site-management' => array(
                         'type' => 'Segment',
                         'options' => array(
-                            'route' => '/[:controller[/:action]]',
+                            'route' => '/site-management[/:action[/:id]]',
                             'constraints' => array(
-                                'controller' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
+                                'id' => '[0-9]+',
                             ),
                             'defaults' => array(
+                                'controller' => 'Site\Controller\SiteManagement',
+                                'action' => 'contact'
                             ),
                         ),
                     ),
+                    
                 ),
             ),
         ),
@@ -57,12 +56,13 @@ return array(
         'strategies' => array(
             'ViewJsonStrategy'
         ),
-        'template_map' => array(
-            'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
-        ),
         'template_path_stack' => array(
             __DIR__ . '/../view',
         ),
+        'template_map' => array(
+            'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
+        ),
+        'display_exceptions' => true,
     ),
     'view_helpers' => array(
         'invokables' => array(
@@ -90,6 +90,25 @@ return array(
     'console' => array(
         'router' => array(
             'routes' => array(
+            ),
+        ),
+    ),
+    'navigation' => array(
+        'default' => array(
+            array(
+                'label' => 'Site Management',
+                'uri' => '#',
+                'icon' => 'fa fa-gears',
+                'resource' => 'Site\Controller\SiteManagement',
+                'order' => 20,
+                'pages' => array(
+                    array(
+                        'label' => 'Contact',
+                        'route' => 'site/site-management',
+                        'action' => 'contact',
+                        'icon' => 'fa fa-commenting'
+                    ),
+                ),
             ),
         ),
     ),
