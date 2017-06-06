@@ -62,8 +62,10 @@ class IndexController extends AbstractEntityActionController
                     if ($contact->getName()) {
                         $this->emailService->setFrom($contact->getEmail(), $contact->getName());
                     } else {
-                        $this->emailService->setFrom($contact->getEmail(), "Anônimo");   
+                        $this->emailService->setFrom($contact->getEmail(), 'Anônimo');   
                     }
+                } else {
+                    $this->emailService->setFrom(' ');
                 }
                     
                 $this->emailService->setSubject($contact->getSubject() . '[' . $contact->getPosition() . ']');
@@ -85,6 +87,6 @@ class IndexController extends AbstractEntityActionController
             'message' => $message,
             'contactForm' => $form,
         ));
-    }
+    }    
 
 }
