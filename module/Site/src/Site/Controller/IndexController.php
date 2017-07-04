@@ -24,6 +24,7 @@ use Authentication\Service\EmailSenderServiceInterface;
 use Zend\View\Model\ViewModel;
 use Site\Form\ContactForm;
 use Site\Entity\Contact;
+use DateTime;
 
 class IndexController extends AbstractEntityActionController
 {
@@ -57,7 +58,9 @@ class IndexController extends AbstractEntityActionController
         if ($request->isPost()) {
             $form->setData($request->getPost()->toArray());
 
-            if ($form->isValid()) {                
+            if ($form->isValid()) {            
+                $contact->setDate(new DateTime('now'));
+                
                 if ($contact->getEmail()) {
                     if ($contact->getName()) {
                         $this->emailService->setFrom($contact->getEmail(), $contact->getName());
@@ -72,7 +75,7 @@ class IndexController extends AbstractEntityActionController
                 $this->emailService->setBody($contact->getMessage());
                 $this->emailService->setIsHtml(false);
 
-                $this->emailService->send();   
+                $this->emailService->send(); 
                 
                 $em->persist($contact);                
                 $em->flush();

@@ -78,6 +78,12 @@ class Contact
     private $message;
     
     /**
+     * @var \DateTime
+     * @ORM\Column(name="date", type="datetime", nullable=true)
+     */
+    private $date;
+    
+    /**
      * 
      * @return integer
      */
@@ -129,6 +135,16 @@ class Contact
     function getMessage()
     {
         return $this->message;
+    }
+    
+
+    /**
+     * 
+     * @return \DateTime
+     */
+    function getDate()
+    {
+        return $this->date;
     }
 
     /**
@@ -184,6 +200,17 @@ class Contact
     {
         $this->message = $message;
         return $this;
-    }  
+    }
+    
+    /**
+     * 
+     * @param \DateTime $date
+     * @return Contact
+     */
+    function setDate(\DateTime $date)
+    {
+        $this->date = $date;
+        return $this;
+    }
     
 }
