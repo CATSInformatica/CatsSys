@@ -58,6 +58,47 @@
                     </div>
                 </div>
             </div>
+            
+            <?php if (isset($contents)) : ?>
+                <div class="box box-danger">
+                    <div class="box-header with-border">
+                        <h3 class="box-title">Clonar conteúdo existente</h3>
+
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i> </button>
+                        </div>
+                        <!-- /.box-tools -->
+                    </div>
+                    <!-- /.box-header -->
+                    <div class="box-body">
+                        <p>Observação: A clonagem não afeta a descrição do conteúdo.</p>
+                        <div class="col-xs-12 col-md-9">
+                            <div class="form-group ">
+                                <label>Selecione um conteúdo</label>
+                                <select class="form-control" id="clone-content-select">
+                                    <?php foreach ($this->contents as $content) : 
+                                        echo '<option value="';
+                                        echo $content->getExamContentId();
+                                        echo '">';
+                                        echo $content->getDescription();
+                                        echo ' - ';
+                                        echo $content->getCreatedDate()->format('d/m/Y');
+                                        echo '</option>';
+                                    endforeach; ?>
+                                </select>  
+                            </div>
+                        </div>
+                        <div class="col-xs-12 col-md-3">
+                            <div class="form-group">
+                                <label><br></label>
+                                <button type="button" id="clone-content-btn" class="btn btn-block btn-primary">Clonar</button>
+                            </div>
+                        </div>
+                    </div>
+                    <!-- /.box-body -->
+                </div>
+            <?php endif; ?>
+            
             <div class="col-xs-12">
                 <?php echo $this->formRow($examContent->get('description')); ?>
             </div>
