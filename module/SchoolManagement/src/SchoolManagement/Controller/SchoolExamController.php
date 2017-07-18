@@ -465,6 +465,8 @@ class SchoolExamController extends AbstractEntityActionController
         $message = null;
 
         try {
+            $contents = $em->getRepository('SchoolManagement\Entity\ExamContent')
+                    ->findAll();
             $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')
                 ->findBy(['parent' => null]);
             
@@ -500,7 +502,8 @@ class SchoolExamController extends AbstractEntityActionController
                 'form' => $form,
                 'baseSubjects' => $baseSubjects,
                 'editMode' => false,
-                'editAllowed' => true
+                'editAllowed' => true,
+                'contents' => $contents,
             ));
         } catch (Exception $ex) {
             return new ViewModel(array(
@@ -508,7 +511,8 @@ class SchoolExamController extends AbstractEntityActionController
                 'form' => null,
                 'baseSubjects' => null,
                 'editMode' => false,
-                'editAllowed' => false
+                'editAllowed' => false,
+                'contents' => [],
             ));
         }
     }
@@ -530,6 +534,9 @@ class SchoolExamController extends AbstractEntityActionController
             try {
                 $em = $this->getEntityManager();
 
+                $contents = $em->getRepository('SchoolManagement\Entity\ExamContent')
+                        ->findAll();
+                
                 $examContent = $em->find('SchoolManagement\Entity\ExamContent', $contentId);
                 $editAllowed = $this->isExamContentEditable($examContent);
                 
@@ -570,13 +577,15 @@ class SchoolExamController extends AbstractEntityActionController
                     'baseSubjects' => $baseSubjects,
                     'contentId' => $contentId,
                     'editAllowed' => $editAllowed,
+                    'contents' => $contents,
                 ));
             } catch (Exception $ex) {
                 return new ViewModel(array(
                     'message' => 'Erro inesperado. Por favor entre em contato com o administrador do sistema. Erro: ' . $ex->getMessage(),
                     'form' => null,
                     'contentId' => null,
-                    'editAllowed' => false
+                    'editAllowed' => false,
+                    'contents' => [],
                 ));
             }
         }
