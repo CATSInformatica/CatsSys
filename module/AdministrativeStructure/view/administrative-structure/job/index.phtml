@@ -1,6 +1,6 @@
 <section class="content">
     <div class="row">
-        <div class="col-md-8 col-md-offset-2">
+        <div class="col-md-10 col-md-offset-1">
             <div class="table-responsive">
                 <table id="jobTable" class="table table-condensed table-striped">
                     <thead>
@@ -49,11 +49,10 @@
                                     </ol>
                                 </td>
                                 <td class="text-center">
-                                    <?php echo substr($job->getJobDescription(), 0,
-                                        100) . '...'; ?>
+                                    <?php echo $job->getJobDescription(); ?>
                                 </td>
                                 <td class="text-center">
-    <?php echo $job->getIsAvailable() ? 'TRUE' : 'FALSE'; ?>
+    <?php echo $job->getIsAvailable() ? 'ATIVO' : 'INATIVO'; ?>
                                 </td>
                             </tr>
 <?php endforeach; ?>

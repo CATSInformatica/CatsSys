@@ -560,6 +560,41 @@ define(['jquery', 'datetimepicker', 'jqueryui'], function () {
                 }
                 initSingleColumnSubjects();
             }
+            
+            $('#clone-content-btn').click(cloneContent);
+            
+            /**
+             * Clona todos os dados, exceto a descrição, do conteúdo de prova 
+             * selecionado em #clone-content-select
+             * 
+             */
+            function cloneContent() {
+                $.ajax({
+                    method: "POST",
+                    url: '/school-management/school-exam/get-content',
+                    data: {
+                        contentId: +$('#clone-content-select').val()
+                    },
+                    success: function (json){
+                        removeAllSubjectGroups(); // evita mensagens de erros na interface
+                        
+                        contentConfig = JSON.parse(json.config);
+                        updateInterface();
+                        initQuestionAmount();
+                        $('body').scrollTop($("form label").first().offset().top);
+                    }                        
+                });
+            };
+            
+            /**
+             * Remove todos os grupos de disciplinas --- paralelas e de coluna 
+             * única --- existentes na interface
+             * 
+             */
+            function removeAllSubjectGroups() {
+                $('.remove-parallel-group').click();
+                $('.remove-single-column-subject').click();
+            }
         };
         
 

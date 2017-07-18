@@ -5,7 +5,7 @@
     ?>
     <p><?php echo $this->message; ?></p>
     <div class="row">
-        <div class="col-xs-10 col-xs-offset-1">
+        <div class="col-xs-10 col-xs-offset-1">            
             <?php if ($this->form !== null) :
                 echo $this->render('exam_content_template', array(
                     'form' => $this->form,
@@ -13,6 +13,7 @@
                     'editMode' => $this->editMode,
                     'subjectQuantities' => null,
                     'editAllowed' => $this->editAllowed,
+                    'contents' => $this->contents,
                 ));
             endif;
             ?>
