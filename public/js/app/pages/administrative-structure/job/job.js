@@ -156,9 +156,9 @@ define(['datatable'], function () {
         };
         testGoogleChartMountVector = function (job, parent) {
 
-            diagramData.push([job.name + '<br>[' + job.department + ']', parent, '']);
+            diagramData.push([job.name, parent, '']);
             for (var i = 0; i < job.children.length; i++) {
-                testGoogleChartMountVector(job.children[i], job.name + '<br>[' + job.department + ']');
+                testGoogleChartMountVector(job.children[i], job.name);
             }
 
             return;
