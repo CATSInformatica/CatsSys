@@ -169,12 +169,15 @@ define(['app/pages/administrative-structure/department/departments', 'moment'], 
             });
         };
         
+        drawDepartments = function() {
+            departments.getTopDepartments();
+        };
         
         return {
             init: function () {
                 moment.locale("pt-br");
                 pastExamsAjax();
-                departments.init();
+                drawDepartments();
                 recruitmentFinder();
                 captchaRefresh();
             }
