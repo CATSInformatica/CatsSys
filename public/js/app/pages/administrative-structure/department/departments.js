@@ -85,16 +85,14 @@ define(['jquery'], function () {
                                 "data-children='" + results[i].numberOfChildren + "' " +
                                 "data-id='" + results[i].departmentId + "' " +
                                 "id='department-identity-" + results[i].departmentId + "' " +
-                                "class='col-lg-3 col-md-4 col-sm-6 col-xs-12 " +
+                                "class='col-lg-12 col-md-12 col-sm-12 col-xs-12 " +
                                 "catssys-admin-structure " +
                                 (typeof adminStructure.data('catssys-toolbar') !== 'undefined' ? "cats-row" : "") +
                                 (results[i].isActive === false ? " catssys-admin-structure-disabled" : "") + "'>" +
                                 "<div href='#department-" + results[i].departmentId + "' data-toggle='tab'>" +
                                 "<i class='" + results[i].departmentIcon + "'></i>" +
                                 "<h4><strong>" + results[i].departmentName + "</strong></h4>" +
-                                "<p class='text-justify'>" +
-                                (results[i].departmentDescription.length < 140 ?
-                                        results[i].departmentDescription : results[i].departmentDescription.substring(0, 136) + "...") +
+                                "<p class='text-justify'>" + results[i].departmentDescription +
                                 "</p></div></li>");
                     }
 
@@ -160,6 +158,9 @@ define(['jquery'], function () {
                         adminStructure.find("#department-" + data.departmentId).remove();
                     }
                 };
+            },
+            getTopDepartments: function() {
+                return getAdministrativeHierarchy();
             }
         };
     }());
