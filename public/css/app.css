@@ -1,0 +1,113 @@
+@charset "UTF-8";
+/*
+To change this license header, choose License Headers in Project Properties.
+To change this template file, choose Tools | Templates
+and open the template in the editor.
+*/
+/* 
+    Created on : Jan 8, 2016, 9:54:28 AM
+    Author     : Márcio Dias <marciojr91@gmail.com>
+*/
+.info-box .info-box-icon {
+  cursor: pointer; }
+
+.bg-green .info-box-number a {
+  color: white; }
+  .bg-green .info-box-number a:hover {
+    text-decoration: underline; }
+
+.bg-white {
+  background: white;
+  color: #333; }
+
+.attendanceListTable tr:hover td {
+  transition: 0s !important; }
+
+.cats-selected-bg, .attendanceListTable tr:hover td {
+  background-color: #5d9ede;
+  transition: all 0.5s;
+  color: white !important; }
+  .cats-selected-bg a, .attendanceListTable tr:hover td a, .cats-selected-bg .users-list-name, .attendanceListTable tr:hover td .users-list-name {
+    color: white !important; }
+
+.cats-row {
+  cursor: pointer; }
+
+.table {
+  cursor: pointer; }
+
+.input-group-addon {
+  cursor: pointer; }
+
+.btn-file {
+  position: relative;
+  overflow: hidden; }
+
+.btn-file input[type=file] {
+  position: absolute;
+  top: 0;
+  right: 0;
+  min-width: 100%;
+  min-height: 100%;
+  font-size: 100px;
+  filter: alpha(opacity=0);
+  opacity: 0;
+  outline: none;
+  background: white;
+  cursor: pointer;
+  display: block; }
+
+.catssys-admin-structure {
+  text-align: center;
+  box-sizing: border-box;
+  padding: 5px 5px;
+  border-top: 4px solid transparent; }
+  .catssys-admin-structure > div {
+    color: inherit; }
+  .catssys-admin-structure i {
+    border: 4px solid #008080;
+    padding: 18px 7px;
+    font-size: 25px;
+    margin-bottom: 5px;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    transition: all 0.2s; }
+  .catssys-admin-structure:hover i {
+    background: #008080;
+    color: white; }
+
+.catssys-bg-teal {
+  background-color: #008080;
+  color: white; }
+
+.catssys-bg-black {
+  background-color: #222222;
+  color: #eeeeee; }
+
+.catssys-admin-structure-disabled {
+  color: gray; }
+  .catssys-admin-structure-disabled i {
+    border: 4px solid #0F9A9A; }
+  .catssys-admin-structure-disabled:hover > i {
+    background: #0F9A9A;
+    color: white; }
+
+.details-control {
+  position: relative;
+  text-align: center;
+  vertical-align: middle !important; }
+  .details-control:before {
+    content: "\f059";
+    font-family: FontAwesome;
+    font-style: normal;
+    font-weight: normal;
+    text-decoration: inherit; }
+
+.details td {
+  vertical-align: top !important; }
+
+.catssys-list-box {
+  height: 150px; }
+
+/*# sourceMappingURL=app.css.map */
