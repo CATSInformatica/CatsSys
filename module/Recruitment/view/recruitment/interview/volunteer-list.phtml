@@ -1,0 +1,272 @@
+<?php
+$this->headTitle()->append('PSV - Lista de candidatos')->setSeparator(' - ');
+?>
+
+<section class="content">    
+    <div id="template-container" class="hide">
+        <div class="row candidate-info">
+            <div class="col-md-3">
+                <div class="box box-primary">
+                    <div class="box-body box-candidate">
+                        <img class="candidate-img img-responsive img-circle center-block" src="" alt="Foto do candidato">
+                        <h3 class="candidate-name text-center"></h3>
+                    </div>
+                </div>
+                <div class="box box-primary">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"> Sobre Mim </h3>
+                    </div>
+                    <div class="box-body">
+                        <strong><i class="fa fa-birthday-cake margin-r-5"></i> Data de Nascimento</strong>
+                        <p class="text-muted candidate-birthday">09/01/1997</p>
+                        <strong><i class="fa fa-phone margin-r-5"></i> Telefone</strong>
+                        <p class="text-muted candidate-phone">3621-7525</p>
+                        <strong><i class="fa fa-at margin-r-5"></i> Email</strong>
+                        <p class="text-muted candidate-email">rickardch@gmail.com</p>
+                        <strong><i class="fa fa-map-marker margin-r-5"></i> Endereço</strong>
+                        <p class="text-muted candidate-address">Rua Eduardo Ribeiro Pereira, 55, Vila Isabel - Itajubá - MG</p>
+                    </div>
+                </div>
+            </div>
+            <div class="col-md-9">
+                <div class="box box-primary collapsed-box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"> Avaliações e Notas </h3>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="col-xs-12">
+                            <div class="small-box bg-purple col-xs-12">
+                                <div class="inner col-xs-10">
+                                    <h1 class="text-bold"> NOTA FINAL </h1>
+                                </div>
+                                <div class="inner col-xs-2">
+                                    <h1 class="text-bold text-right candidate-final-rating"></h1>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="nav-tabs-custom">
+                            <ul class="nav nav-tabs rating-nav-tabs">
+                            </ul>
+                            <div class="tab-content rating-content-tabs">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="box box-primary collapsed-box">
+                    <div class="box-header with-border">
+                        <h3 class="box-title"> Autoavaliação </h3>
+                        <div class="box-tools pull-right">
+                            <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button>
+                        </div>
+                    </div>
+                    <div class="box-body col-xs-12">
+                        <div class="col-xs-6 col-xs-offset-3">
+                            <canvas class="self-evaluation-chart" width="50" height="50"></canvas>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="nav-tabs-custom">
+                    <ul class="nav nav-tabs">
+                        <li class="active"><a class="registration-tab-link" href="" data-toggle="tab" aria-expanded="false">Inscrição</a></li>
+                        <li><a class="interview-tab-link" href="" data-toggle="tab" aria-expanded="false">Entrevista</a></li>
+                    </ul>
+                    <div class="tab-content">
+                        <div class="tab-pane active registration-tab-content">
+                        </div>
+                        <div class="tab-pane interview-tab-content">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        
+        <div class="rating-tabs-content row">
+            <div class="col-xs-12">
+                <div class="small-box bg-purple col-xs-12">
+                    <div class="inner col-xs-10">
+                        <span class="text-bold" style="font-size: 1.5em;">
+                            NOTA DO ENTREVISTADOR
+                        </span>
+                    </div>
+                    <div class="inner col-xs-2">
+                        <h1 class="text-right text-bold evaluation-final-rating"></h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="small-box bg-green col-xs-12">
+                    <div class="inner col-xs-10">
+                        <span class="text-bold" style="font-size: 1.5em;">
+                            PERFIL COMO VOLUNTÁRIO
+                        </span>
+                        <p class="evaluation-criteria-1-comments">Bounce Rate</p>
+                    </div>
+                    <div class="inner col-xs-2">
+                        <h1 class="text-right text-bold evaluation-criteria-1">9</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="small-box bg-blue col-xs-12">
+                    <div class="inner col-xs-10">
+                        <span class="text-bold" style="font-size: 1.5em;">
+                            DISPONIBILIDADE
+                        </span>
+                        <p class="evaluation-criteria-2-comments">Bounce Rate</p>
+                    </div>
+                    <div class="inner col-xs-2">
+                        <h1 class="text-right text-bold evaluation-criteria-2">9</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="small-box bg-orange col-xs-12">
+                    <div class="inner col-xs-10">
+                        <span class="text-bold" style="font-size: 1.5em;">
+                            RESPONSABILIDADE E COMPROMETIMENTO
+                        </span>
+                        <p class="evaluation-criteria-3-comments">Bounce Rate</p>
+                    </div>
+                    <div class="inner col-xs-2">
+                        <h1 class="text-right text-bold evaluation-criteria-3">9</h1>
+                    </div>
+                </div>
+            </div>
+            <div class="col-xs-12">
+                <div class="small-box bg-red col-xs-12">
+                    <div class="inner col-xs-10">
+                        <span class="text-bold" style="font-size: 1.5em;">
+                            NOTA GERAL
+                        </span>
+                        <p class="evaluation-overall-rating-comments">Bounce Rate</p>
+                    </div>
+                    <div class="inner col-xs-2">
+                        <h1 class="text-right text-bold evaluation-overall-rating">9</h1>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <div class="box collapsed-box"> 
+            <div class="box-header"> 
+                <h3 class="box-title"></h3> 
+                <div class="box-tools pull-right"> 
+                    <button type="button" class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-plus"></i></button> 
+                </div> 
+            </div> 
+            <div class="box-body">
+            </div> 
+        </div>
+        
+        <div class="col-xs-12 no-padding interviewer-evaluation">
+            <div class="col-xs-6 text-right no-padding">
+                <span class="text-capitalize interviewer-name"></span>
+            </div>
+            <div class="col-xs-1 text-center no-padding">-</div>
+            <div class="col-xs-5 text-left no-padding interviewer-final-rating"></div>
+        </div>
+    </div>
+    
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">            
+            <?php if (isset($message)) : ?>
+                <div class="callout callout-warning">
+                    <h4><?php echo $message; ?></h4>
+                </div>
+            <?php endif; ?> 
+            
+            <p class="text-center">
+                <b>
+                    <?php
+                        $year = $recruitment['recruitmentYear'];
+                        $number = $recruitment['recruitmentNumber'];
+                        echo $number . "º Processo Seletivo de Voluntários de $year";  ?>
+                </b>
+            </p>
+            <div class="info-box">
+                <span class="info-box-icon bg-aqua"><i class="fa fa-info-circle"></i></span>
+
+                <div class="info-box-content">
+                    <span class="info-box-text">Cálculo da nota final do candidato</span>
+                    <span class="info-box-number">Nota do entrevistador = (Nota Critério 1 + Nota Critério 2 + Nota Critério 3 + Nota Parecer * 2) / 5</span>
+                    <span class="info-box-number">Nota final = (Nota do entrevistador 1 + ... + Nota do entrevistador n) / n</span>
+                </div>
+                <!-- /.info-box-content -->
+            </div>
+            <hr>
+            
+            <table id="volunteer-list-table" 
+                   class="table table-bordered table-condensed table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="text-center">Inscrição</th>
+                        <th class="text-center">Candidato</th>
+                        <th class="text-center">Email</th>
+                        <th class="text-center">Cpf</th>
+                        <th class="text-center">Situação</th>
+                        <th class="text-center">Notas dos entrevistadores</th>
+                        <th class="text-center">Nota final</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($candidates !== null): ?>
+                        <?php foreach ($candidates as $candidate): ?>
+                            <tr class="cats-row" data-id="<?php echo $candidate['registrationId']; ?>" >
+                                <td class="details-control"></td>
+                                <td class="text-center"><?php echo Recruitment\Entity\Registration::generateRegistrationNumber($candidate['registrationId'], $year, $number); ?></td>
+                                <td class="text-center"><?php echo $candidate['personFullName']; ?></td>
+                                <td class="text-center"><?php echo $candidate['personEmail']; ?></td>
+                                <td class="text-center"><?php echo $candidate['personCpf']; ?></td>
+                                <td class="text-center"><?php echo $candidate['statusType']; ?></td>
+                                <td class="text-center col-md-2 col-xs-4" id="interviewers-evaluations-<?php echo $candidate['registrationId']; ?>" >
+                                    <?php if ($candidate['ratings']) : ?>
+                                        <?php foreach ($candidate['ratings'] as $interviewerName => $rating) : ?>
+                                            <div class="col-xs-12 no-padding interviewer-evaluation">
+                                                <div class="col-xs-6 text-right no-padding">
+                                                    <span class="text-capitalize interviewer-name">
+                                                        <?php echo $interviewerName; ?>
+                                                    </span>
+                                                </div>
+                                                <div class="col-xs-1 text-center no-padding">-</div>
+                                                <div class="col-xs-5 text-left no-padding interviewer-final-rating">
+                                                    <?php printf('%.3f', $rating); ?>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    <?php else : ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-center" id="final-rating-<?php echo $candidate['registrationId']; ?>" >
+                                    <?php if ($candidate['ratings']) : ?>
+                                        <?php printf('%.3f', $candidate['finalRating']); ?>
+                                    <?php else : ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</section>
+
+<script>
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/recruitment/interview/volunteer-list';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+</script>

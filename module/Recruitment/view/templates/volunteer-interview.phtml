@@ -1,3 +1,4 @@
+<?php $this->headLink()->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/bootstrap-slider/slider.css')); ?>
 <div class="box">
     <div class="box-header with-border">
         <h3 class="box-title">Entrevista</h3>
@@ -8,32 +9,47 @@
         </div>
     </div>
     <div class="box-body">
-        <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('proactivity')); ?>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('startTime')); ?>
         </div>
-        <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('commitmentAndEfficiency')); ?>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('interviewers')); ?>
         </div>
-        <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('volunteerProfile')); ?>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('interviewersInitialComments')); ?>
         </div>
-        <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('interest')); ?>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('interests')); ?>
         </div>
-        <div class="col-xs-12 col-md-12">
+        <div class="col-xs-12">
             <?php echo $this->formRow($form->get('interpersonalRelationship')); ?>
         </div>
-        <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('personality')); ?>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('proactivity')); ?>
         </div>
-        <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('coherence')); ?>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('qualities')); ?>
         </div>
-        <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('testClass')); ?>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('flaws')); ?>
         </div>
-        <div class="col-xs-12 col-md-12">
-            <?php echo $this->formRow($form->get('result')); ?>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('potentialIssues')); ?>
+        </div>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('flexibilityAndResponsability')); ?>
+        </div>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('coherenceTest')); ?>
+        </div>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('expectedContribution')); ?>
+        </div>
+        <div class="col-xs-12 interview-slider">
+            <?php echo $this->formRow($form->get('interestRating')); ?>
+        </div>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('endTime')); ?>
         </div>
     </div>
 </div>

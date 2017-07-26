@@ -87,7 +87,7 @@ class Contact
      * 
      * @return integer
      */
-    function getContactId()
+    public function getContactId()
     {
         return $this->contactId;
     }
@@ -96,7 +96,7 @@ class Contact
      * 
      * @return string
      */
-    function getName()
+    public function getName()
     {
         return $this->name;
     }
@@ -105,7 +105,7 @@ class Contact
      * 
      * @return string
      */
-    function getEmail()
+    public function getEmail()
     {
         return $this->email;
     }
@@ -114,7 +114,7 @@ class Contact
      * 
      * @return integer
      */
-    function getPosition()
+    public function getPosition()
     {
         return $this->position;
     }
@@ -123,7 +123,7 @@ class Contact
      * 
      * @return string
      */
-    function getSubject()
+    public function getSubject()
     {
         return $this->subject;
     }
@@ -132,7 +132,7 @@ class Contact
      * 
      * @return string
      */
-    function getMessage()
+    public function getMessage()
     {
         return $this->message;
     }
@@ -142,7 +142,7 @@ class Contact
      * 
      * @return \DateTime
      */
-    function getDate()
+    public function getDate()
     {
         return $this->date;
     }
@@ -152,7 +152,7 @@ class Contact
      * @param string $name
      * @return Contact
      */
-    function setName($name)
+    public function setName($name)
     {
         $this->name = $name;
         return $this;
@@ -163,7 +163,7 @@ class Contact
      * @param string $email
      * @return Contact
      */
-    function setEmail($email)
+    public function setEmail($email)
     {
         $this->email = $email;
         return $this;
@@ -174,7 +174,7 @@ class Contact
      * @param string $position
      * @return Contact
      */
-    function setPosition($position)
+    public function setPosition($position)
     {
         $this->position = $position;
         return $this;
@@ -185,7 +185,7 @@ class Contact
      * @param string $subject
      * @return Contact
      */
-    function setSubject($subject)
+    public function setSubject($subject)
     {
         $this->subject = $subject;
         return $this;
@@ -196,7 +196,7 @@ class Contact
      * @param string $message
      * @return Contact
      */
-    function setMessage($message)
+    public function setMessage($message)
     {
         $this->message = $message;
         return $this;
@@ -207,7 +207,7 @@ class Contact
      * @param \DateTime $date
      * @return Contact
      */
-    function setDate(\DateTime $date)
+    public function setDate(\DateTime $date)
     {
         $this->date = $date;
         return $this;

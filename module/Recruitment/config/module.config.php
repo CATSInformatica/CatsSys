@@ -482,6 +482,52 @@ return array(
                                 'icon' => 'fa fa-file-text-o',
                             ]
                         ],
+                    ],
+                    [
+                        'label' => 'Volunteer interview',
+                        'route' => 'recruitment/interview',
+                        'action' => 'volunteer-list',
+                        'resource' => 'Recruitment\Controller\Interview',
+                        'privilege' => 'volunteer-list',
+                        'icon' => 'fa fa-file-text-o',
+                        'toolbar' => [
+                            [
+                                'url' => '/recruitment/interview/volunteer-form/$id',
+                                'id' => 'fn-interview',
+                                'title' => 'Entrevista',
+                                'description' => 'Formulário de entrevista',
+                                'class' => 'fa fa-file-text-o bg-green',
+                                'fntype' => 'selectedHttpClick',
+                                'target' => '_blank',
+                            ],
+                            [
+                                'url' => '/recruitment/interview/interviewer-evaluation/$id',
+                                'id' => 'fn-interviewer-evaluation',
+                                'title' => 'Avaliação',
+                                'description' => 'Formulário de avaliação do candidato',
+                                'class' => 'fa fa-file-text-o bg-blue',
+                                'fntype' => 'selectedHttpClick',
+                                'target' => '_blank',
+                            ],
+                        ],
+                        'pages' => [
+                            [
+                                'label' => 'Interview Form',
+                                'route' => 'recruitment/interview',
+                                'action' => 'volunteer-form',
+                                'resource' => 'Recruitment\Controller\Interview',
+                                'privilege' => 'volunteer-form',
+                                'icon' => 'fa fa-file-text-o',
+                            ],                            
+                            [
+                                'label' => 'Interviewer Evaluation Form',
+                                'route' => 'recruitment/interview',
+                                'action' => 'interviewer-evaluation',
+                                'resource' => 'Recruitment\Controller\Interview',
+                                'privilege' => 'interviewer-evaluation',
+                                'icon' => 'fa fa-tag',
+                            ]
+                        ],
                     ]
                 ),
             ),

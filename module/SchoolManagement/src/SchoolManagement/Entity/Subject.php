@@ -105,7 +105,7 @@ class Subject
      * 
      * @return Collection
      */
-    function getChildren()
+    public function getChildren()
     {
         return $this->children;
     }
@@ -114,7 +114,7 @@ class Subject
      * 
      * @return Subject
      */
-    function getParent()
+    public function getParent()
     {
         return $this->parent;
     }
@@ -172,7 +172,7 @@ class Subject
      * @param Subject $child
      * @return Subject
      */
-    function addChild($child)
+    public function addChild($child)
     {
         if (!$this->hasChild($child)) {
             $this->children->add($child);
@@ -185,7 +185,7 @@ class Subject
      * @param Subject $child
      * @return Subject
      */
-    function removeChild($child)
+    public function removeChild($child)
     {
         $this->children->removeElement($child);
         return $this;
@@ -196,7 +196,7 @@ class Subject
      * @param Subject $child
      * @return boolean
      */
-    function hasChild($child)
+    public function hasChild($child)
     {
         return $this->children->contains($child);
     }
@@ -206,7 +206,7 @@ class Subject
      * @param Subject $child
      * @return boolean
      */
-    function hasChildren()
+    public function hasChildren()
     {
         return ($this->children->count() > 0);
     }

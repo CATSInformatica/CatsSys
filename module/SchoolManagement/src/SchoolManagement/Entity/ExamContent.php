@@ -242,7 +242,7 @@ class ExamContent
      * @param Exam $exam
      * @return ExamContent
      */
-    function addExam($exam)
+    public function addExam($exam)
     {
         if (!$this->hasExam($exam)) {
             $this->exams->add($exam);
@@ -256,7 +256,7 @@ class ExamContent
      * @param Exam $exam
      * @return ExamContent
      */
-    function removeExam($exam)
+    public function removeExam($exam)
     {
         $this->exams->removeElement($exam);
         $exam->setContent(null);
@@ -268,7 +268,7 @@ class ExamContent
      * @param Exam $exam
      * @return boolean
      */
-    function hasExam($exam)
+    public function hasExam($exam)
     {
         return $this->exams->contains($exam);
     }

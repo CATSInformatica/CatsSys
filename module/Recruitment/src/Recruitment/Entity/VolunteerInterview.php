@@ -19,7 +19,11 @@
 namespace Recruitment\Entity;
 
 use Doctrine\ORM\Mapping as ORM;
+use Doctrine\Common\Collections\Collection;
+use Doctrine\Common\Collections\ArrayCollection;
+use Recruitment\Entity\InterviewerEvaluation;
 use Recruitment\Entity\Registration;
+use DateTime;
 
 /**
  * ORM da tabela `volunteer_interview`.
@@ -31,6 +35,12 @@ use Recruitment\Entity\Registration;
 class VolunteerInterview
 {
 
+    const INTEREST_RATING_MAX = 10;
+    const INTEREST_RATING_MIN = 0;
+    const INTEREST_RATING_STEP = 1;
+
+    const INTERVIEWER_SEPARATOR = ';';
+    
     /**
      *
      * @var integer
@@ -48,59 +58,113 @@ class VolunteerInterview
     private $registration;
 
     /**
-     * @var string
-     * @ORM\Column(name="volunteer_proactivity", type="string", length=500, nullable=false)
+     * 
+     * @var \DateTime
+     * @ORM\Column(name="interview_date", type="datetime", nullable=true)
      */
-    private $proactivity;
+    private $date;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="interviewers", type="string", length=300, nullable=false)
+     */
+    private $interviewers;
+
+    /**
+     * 
+     * @var \DateTime
+     * @ORM\Column(name="interview_starttime", type="time", nullable=false)
+     */
+    private $startTime;
+
+    /**
+     * 
+     * @var \DateTime
+     * @ORM\Column(name="interview_endtime", type="time", nullable=false)
+     */
+    private $endTime;
 
     /**
      * @var string
-     * @ORM\Column(name="volunteer_commitment_efficiency", type="string", length=500, nullable=false)
+     * @ORM\Column(name="interviewers_initial_comments", type="string", length=500, nullable=false)
      */
-    private $commitmentAndEfficiency;
-
+    private $interviewersInitialComments;
+    
     /**
      * @var string
-     * @ORM\Column(name="volunteer_profile", type="string", length=500, nullable=false)
+     * @ORM\Column(name="volunteer_interests", type="string", length=500, nullable=false)
      */
-    private $volunteerProfile;
-
-    /**
-     * @var string
-     * @ORM\Column(name="volunteer_interest", type="string", length=500, nullable=false)
-     */
-    private $interest;
+    private $interests;
 
     /**
      * @var string
      * @ORM\Column(name="volunteer_interpersonal_relationship", type="string", length=500, nullable=false)
      */
     private $interpersonalRelationship;
-
+    
     /**
      * @var string
-     * @ORM\Column(name="volunteer_personality", type="string", length=500, nullable=false)
+     * @ORM\Column(name="volunteer_proactivity", type="string", length=500, nullable=false)
      */
-    private $personality;
-
+    private $proactivity;
+    
     /**
      * @var string
-     * @ORM\Column(name="volunteer_coherence", type="string", length=500, nullable=false)
+     * @ORM\Column(name="volunteer_qualities", type="string", length=500, nullable=false)
      */
-    private $coherence;
-
+    private $qualities;
+    
     /**
      * @var string
-     * @ORM\Column(name="volunteer_result", type="string", length=500, nullable=false)
+     * @ORM\Column(name="volunteer_flaws", type="string", length=500, nullable=false)
      */
-    private $result;
-
+    private $flaws;
+    
     /**
      * @var string
-     * @ORM\Column(name="volunteer_testclass", type="string", length=500, nullable=true)
+     * @ORM\Column(name="volunteer_potential_issues", type="string", length=500, nullable=false)
      */
-    private $testClass;
+    private $potentialIssues;
+    
+    /**
+     * @var string
+     * @ORM\Column(name="volunteer_flexibility_responsability", type="string", length=500, nullable=false)
+     */
+    private $flexibilityAndResponsability;
+    
+    /**
+     * @var string
+     * @ORM\Column(name="volunteer_coherence_test", type="string", length=500, nullable=false)
+     */
+    private $coherenceTest;
+    
+    /**
+     * @var string
+     * @ORM\Column(name="volunteer_expected_contribution", type="string", length=500, nullable=false)
+     */
+    private $expectedContribution;
+    
+    /**
+     * 
+     * @var integer
+     * @ORM\Column(name="volunteer_interest_rating", type="smallint", nullable=false)
+     */    
+    private $interestRating;
+    
+    /**
+     *
+     * @var Collection
+     * @ORM\OneToMany(targetEntity="InterviewerEvaluation", mappedBy="volunteerInterview")
+     */
+    private $interviewersEvaluations;
+    
 
+    public function __construct() {
+        $this->date = new DateTime('now');
+        $this->interviewersEvaluations = new ArrayCollection();
+    }
+    
     /**
      * @return string
      */
@@ -131,24 +195,6 @@ class VolunteerInterview
      * 
      * @return string
      */
-    public function getCommitmentAndEfficiency()
-    {
-        return $this->commitmentAndEfficiency;
-    }
-
-    /**
-     * 
-     * @return string
-     */
-    public function getVolunteerProfile()
-    {
-        return $this->volunteerProfile;
-    }
-
-    /**
-     * 
-     * @return string
-     */
     public function getInterest()
     {
         return $this->interest;
@@ -165,40 +211,131 @@ class VolunteerInterview
 
     /**
      * 
-     * @return string
+     * @return \DateTime
      */
-    public function getPersonality()
+    public function getDate()
     {
-        return $this->personality;
+        return $this->date;
     }
 
     /**
      * 
      * @return string
      */
-    public function getCoherence()
+    public function getInterviewers()
     {
-        return $this->coherence;
+        return $this->interviewers;
+    }
+
+    /**
+     * 
+     * @return \DateTime
+     */
+    public function getStartTime()
+    {
+        return $this->startTime;
+    }
+    
+    /**
+     * 
+     * @return \DateTime
+     */
+    public function getEndTime()
+    {
+        return $this->endTime;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewersInitialComments()
+    {
+        return $this->interviewersInitialComments;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getInterests()
+    {
+        return $this->interests;
     }
 
     /**
      * 
      * @return string
      */
-    public function getResult()
+    public function getQualities()
     {
-        return $this->result;
+        return $this->qualities;
     }
 
     /**
      * 
      * @return string
      */
-    public function getTestClass()
+    public function getFlaws()
     {
-        return $this->testClass;
+        return $this->flaws;
     }
 
+    /**
+     * 
+     * @return string
+     */
+    public function getPotentialIssues()
+    {
+        return $this->potentialIssues;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getFlexibilityAndResponsability()
+    {
+        return $this->flexibilityAndResponsability;
+    }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getCoherenceTest()
+    {
+        return $this->coherenceTest;
+    }
+
+        /**
+     * 
+     * @return string
+     */
+    public function getExpectedContribution()
+    {
+        return $this->expectedContribution;
+    }
+
+    /**
+     * Inteiro de 0 a 10
+     * 
+     * @return integer
+     */
+    public function getInterestRating()
+    {
+        return $this->interestRating;
+    }
+
+    /**
+     * 
+     * @return Collection
+     */
+    public function getInterviewersEvaluations()
+    {
+        return $this->interviewersEvaluations;
+    }
+    
     /**
      * 
      * @param Registration $registration
@@ -220,26 +357,15 @@ class VolunteerInterview
         $this->proactivity = $proactivity;
         return $this;
     }
-
+    
     /**
      * 
-     * @param string $commitmentAndEfficiency
+     * @param string $interviewersInitialComments
      * @return Recruitment\Entity\VolunteerInterview
      */
-    public function setCommitmentAndEfficiency($commitmentAndEfficiency)
+    public function setInterviewersInitialComments($interviewersInitialComments)
     {
-        $this->commitmentAndEfficiency = $commitmentAndEfficiency;
-        return $this;
-    }
-
-    /**
-     * 
-     * @param string $volunteerProfile
-     * @return Recruitment\Entity\VolunteerInterview
-     */
-    public function setVolunteerProfile($volunteerProfile)
-    {
-        $this->volunteerProfile = $volunteerProfile;
+        $this->interviewersInitialComments = $interviewersInitialComments;
         return $this;
     }
 
@@ -267,45 +393,199 @@ class VolunteerInterview
 
     /**
      * 
-     * @param string $personality
+     * @param string $interviewers
      * @return Recruitment\Entity\VolunteerInterview
      */
-    public function setPersonality($personality)
+    public function setInterviewers($interviewers)
     {
-        $this->personality = $personality;
+        $this->interviewers = $interviewers;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param \DateTime $startTime
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function setStartTime(\DateTime $startTime)
+    {
+        $this->startTime = $startTime;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param \DateTime $endTime
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function setEndTime(\DateTime $endTime)
+    {
+        $this->endTime = $endTime;
         return $this;
     }
 
     /**
      * 
-     * @param string $coherence
+     * @param string $interests
      * @return Recruitment\Entity\VolunteerInterview
      */
-    public function setCoherence($coherence)
+    public function setInterests($interests)
     {
-        $this->coherence = $coherence;
+        $this->interests = $interests;
         return $this;
     }
 
     /**
      * 
-     * @param string $result
+     * @param string $qualities
      * @return Recruitment\Entity\VolunteerInterview
      */
-    public function setResult($result)
+    public function setQualities($qualities)
     {
-        $this->result = $result;
+        $this->qualities = $qualities;
         return $this;
     }
 
     /**
      * 
-     * @param string $testClass
+     * @param string $flaws
      * @return Recruitment\Entity\VolunteerInterview
      */
-    public function setTestClass($testClass)
+    public function setFlaws($flaws)
     {
-        $this->testClass = $testClass;
+        $this->flaws = $flaws;
         return $this;
     }
+
+    /**
+     * 
+     * @param string $potentialIssues
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function setPotentialIssues($potentialIssues)
+    {
+        $this->potentialIssues = $potentialIssues;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $flexibilityAndResponsability
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function setFlexibilityAndResponsability($flexibilityAndResponsability)
+    {
+        $this->flexibilityAndResponsability = $flexibilityAndResponsability;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $coherenceTest
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function setCoherenceTest($coherenceTest)
+    {
+        $this->coherenceTest = $coherenceTest;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $expectedContribution
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function setExpectedContribution($expectedContribution)
+    {
+        $this->expectedContribution = $expectedContribution;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param integer $interestRating
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function setInterestRating($interestRating)
+    {
+        $this->interestRating = $interestRating;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Collection $interviewersEvaluations
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function setInterviewersEvaluations(Collection $interviewersEvaluations)
+    {
+        $this->interviewersEvaluations = $interviewersEvaluations;
+        return $this;
+    }
+
+    /**
+     * @param InterviewerEvaluation $interviewerEvaluation
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function addInterviewerEvaluation(InterviewerEvaluation $interviewerEvaluation)
+    {
+        if (!$this->hasInterviewerEvaluation($interviewerEvaluation)) {
+            $interviewerEvaluation->setVolunteerInterview($this);
+            $this->interviewersEvaluations->add($interviewerEvaluation);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param Collection $interviewersEvaluations
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function addInterviewersEvaluations(Collection $interviewersEvaluations)
+    {
+        foreach ($interviewersEvaluations as $interviewerEvaluation) {
+            if (!$this->hasInterviewerEvaluation($interviewerEvaluation)) {
+                $interviewerEvaluation->setVolunteerInterview($this);
+                $this->interviewersEvaluations->add($interviewerEvaluation);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @param InterviewerEvaluation $interviewerEvaluation
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function removeInterviewerEvaluation(InterviewerEvaluation $interviewerEvaluation)
+    {
+        $interviewerEvaluation->setVolunteerInterview(null);
+        $this->interviewersEvaluations->removeElement($interviewerEvaluation);
+        return $this;
+    }
+
+    /**
+     *
+     * @param Collection $interviewersEvaluations
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function removeInterviewersEvaluations(Collection $interviewersEvaluations)
+    {
+        foreach ($interviewersEvaluations as $interviewerEvaluation) {
+            $interviewerEvaluation->setVolunteerInterview(null);
+            $this->interviewersEvaluations->removeElement($interviewerEvaluation);
+        }
+        return $this;
+    }
+
+    /**
+     * 
+     * @param InterviewerEvaluation $interviewerEvaluation
+     * @return boolean
+     */
+    public function hasInterviewerEvaluation(InterviewerEvaluation $interviewerEvaluation)
+    {
+        return $this->interviewersEvaluations->contains($interviewerEvaluation);
+    }
+    
 }

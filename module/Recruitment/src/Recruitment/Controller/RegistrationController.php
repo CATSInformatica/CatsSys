@@ -9,7 +9,6 @@ namespace Recruitment\Controller;
 
 use Authentication\Service\EmailSenderServiceInterface;
 use Database\Controller\AbstractEntityActionController;
-use DateTime;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 use Exception;
 use InvalidArgumentException;
@@ -334,7 +333,7 @@ class RegistrationController extends AbstractEntityActionController
 
                     // atribui a qual processo seletivo a inscrição pertence
                     $registration->setRecruitment($recruitment);
-
+                    
                     // salva no banco
                     $em->persist($registration);
                     $em->flush();
@@ -922,7 +921,7 @@ class RegistrationController extends AbstractEntityActionController
 
                 $person->setPersonPhoto($targetName);
 
-                $em->persist($person);
+                $em->merge($person);
                 $em->flush();
 
                 return new JsonModel(array(

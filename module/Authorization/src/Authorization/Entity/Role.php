@@ -199,7 +199,7 @@ class Role
      * Get child roles
      * @return Collection
      */
-    function getChildren()
+    public function getChildren()
     {
         return $this->children;
     }
