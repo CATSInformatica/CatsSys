@@ -303,6 +303,7 @@ class RegistrationController extends AbstractEntityActionController
         }
 
         $options = array(
+            'interview' => false,
             'person' => array(
                 'address' => true,
                 'relative' => false,
