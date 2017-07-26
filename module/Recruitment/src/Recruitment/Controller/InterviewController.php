@@ -601,6 +601,7 @@ class InterviewController extends AbstractEntityActionController
                 $person = $registration->getPerson();
                 $data['person'] = $hydrator->extract($person);
                 $addresses = $person->getAddresses();
+                $data['person']['addresses'] = [];
                 foreach ($addresses as $addr) {
                     $data['person']['addresses'][] = $hydrator->extract($addr);
                 }

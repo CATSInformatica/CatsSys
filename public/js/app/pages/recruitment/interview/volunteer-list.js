@@ -144,7 +144,7 @@ define(['app/pages/recruitment/interview/keep-alive',
          * @returns {String}
          */
         createContent = function (info) {
-
+console.log(info);
             var addresses = '';
             for (var i = 0; i < info['person']['addresses'].length; ++i) {
                 addresses += info['person']['addresses'][i]['addressStreet'] + ', ' +
@@ -152,7 +152,7 @@ define(['app/pages/recruitment/interview/keep-alive',
                         info['person']['addresses'][i]['addressNeighborhood'] + ' - ' +
                         info['person']['addresses'][i]['addressCity'] + ' - ' +
                         info['person']['addresses'][i]['addressState'] + ', CEP: ' +
-                        info['person']['addresses'][i]['addressPostalCode'] + '<br>';
+                        info['person']['addresses'][i]['addressPostalCode'];
             }
             
             // Template da área de informações
@@ -286,6 +286,8 @@ define(['app/pages/recruitment/interview/keep-alive',
                 content.find('.interview-tab-content').append(interviewTabContent);
             } else {
                 content.find('.interview-tab-content').append('O candidato ainda não realizou a entrevista.');
+                content.find('.candidate-final-rating').first()
+                        .text('-');
             }
             
             /* Aba de perguntas da entrevista */                
