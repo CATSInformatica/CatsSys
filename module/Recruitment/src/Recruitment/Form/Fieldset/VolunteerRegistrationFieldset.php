@@ -24,8 +24,11 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
             throw new \InvalidArgumentException('The `options` array must contain the key `interview`');
         }
 
-
         parent::__construct($obj, $options);
+        
+        $this->get('person')->get('personFirstName')->setAttribute('placeholder', 'Nome');
+        $this->get('person')->get('personFirstName')->setLabel('Nome (inclua todos, se mais de um)*');
+        $this->get('person')->get('personLastName')->setLabel('Sobrenome (inclua todos, se mais de um)*');
 
         $this
             ->add(array(
@@ -55,7 +58,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                     'rows' => 5,
                 ),
                 'options' => array(
-                    'label' => 'Já fez trabalho voluntário? Descreva*',
+                    'label' => 'O que pensa sobre trabalho voluntário? Já fez? Descreva*',
                 ),
             ))
             ->add(array(
@@ -65,7 +68,17 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                     'rows' => 5,
                 ),
                 'options' => array(
-                    'label' => 'Como e quando nos conheceu?*',
+                    'label' => 'Como e quando conheceu o CATS?*',
+                ),
+            ))
+            ->add(array(
+                'name' => 'extensionProjects',
+                'type' => 'textarea',
+                'attributes' => array(
+                    'rows' => 5,
+                ),
+                'options' => array(
+                    'label' => 'Participa de outro projeto de extensão?*',
                 ),
             ))
             ->add(array(
@@ -75,7 +88,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                     'rows' => 5,
                 ),
                 'options' => array(
-                    'label' => 'Por que escolheu se inscrever?*',
+                    'label' => 'Por que escolheu se inscrever no CATS? Tentou outros projetos?*',
                 ),
             ))
             ->add(array(
@@ -85,17 +98,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                     'rows' => 5,
                 ),
                 'options' => array(
-                    'label' => 'O que espera do trabalho voluntário?*',
-                ),
-            ))
-            ->add(array(
-                'name' => 'whyWorkWithUs',
-                'type' => 'textarea',
-                'attributes' => array(
-                    'rows' => 5,
-                ),
-                'options' => array(
-                    'label' => 'Por que escolheu se inscrever?*',
+                    'label' => 'O que espera do trabalho voluntário no CATS?*',
                 ),
             ))
             ->add(array(
@@ -288,6 +291,23 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                         'options' => array(
                             'min' => 3,
                             'max' => 700,
+                            'inclusive' => true,
+                        ),
+                    ),
+                ),
+            ),
+            'extensionProjects' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StringTrim'),
+                    array('name' => 'StripTags'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'min' => 3,
+                            'max' => 400,
                             'inclusive' => true,
                         ),
                     ),

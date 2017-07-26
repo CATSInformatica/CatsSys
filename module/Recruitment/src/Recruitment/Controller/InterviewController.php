@@ -24,6 +24,10 @@ use Exception;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\RecruitmentStatus;
 use Recruitment\Entity\StudentInterview;
+use Recruitment\Entity\VolunteerInterview;
+use Recruitment\Entity\InterviewerEvaluation;
+use Recruitment\Form\InterviewerEvaluationForm;
+use Recruitment\Form\RegistrationForm;
 use Recruitment\Form\PreInterviewForm;
 use Recruitment\Form\StudentInterviewForm;
 use Recruitment\Form\VolunteerInterviewForm;
@@ -172,16 +176,20 @@ class InterviewController extends AbstractEntityActionController
             try {
                 $em = $this->getEntityManager();
                 $registration = $em->find('Recruitment\Entity\Registration', $id);
-
-                $form = new VolunteerInterviewForm($em, array(
-                    'interview' => true,
-                    'person' => array(
-                        'relative' => false,
-                        'address' => true,
-                        'social_media' => true,
-                    ),
-                ));
-
+                
+                $form = new RegistrationForm(
+                        $em, 
+                        Recruitment::VOLUNTEER_RECRUITMENT_TYPE,
+                        [
+                            'interview' => ($registration->getVolunteerInterview() ? true : false),
+                            'person' => array(
+                                'relative' => false,
+                                'address' => true,
+                                'social_media' => true,
+                            )
+                        ]
+                );
+                
                 $form->bind($registration);
 
                 if ($request->isPost()) {
@@ -195,8 +203,10 @@ class InterviewController extends AbstractEntityActionController
                         throw new RuntimeException('Este candidato ainda não foi convocado para entrevista '
                         . 'ou aula teste');
                     }
-
-                    $form->setData($request->getPost());
+                    
+                    $data = $request->getPost()->toArray();
+                    $data['registrationConsent'] = 1;
+                    $form->setData($data);
 
                     if ($form->isValid()) {
 
@@ -219,13 +229,13 @@ class InterviewController extends AbstractEntityActionController
             } catch (Exception $ex) {
                 return new ViewModel(array(
                     'message' => 'Erro: ' . $ex->getMessage(),
-                    'registration' => null
+                    'registration' => null,
                 ));
             }
         }
 
         return new ViewModel(array(
-            'message' => 'nenhum candidato foi especificado.',
+            'message' => 'Nenhum candidato foi especificado.',
             'registration' => null
         ));
     }
@@ -338,7 +348,7 @@ class InterviewController extends AbstractEntityActionController
     /**
      * Retorna informações do candidato ao processo seletivo de alunos. 
      * 
-     * @return \Recruitment\Controller\JsonModel
+     * @return JsonModel
      */
     public function getStudentInfoAction()
     {
@@ -486,6 +496,372 @@ class InterviewController extends AbstractEntityActionController
         }
 
         return new JsonModel([]);
+    }
+
+    /**
+     * Lista os candidatos de processos seletivos de voluntários convocados para
+     * a entrevista. Candidatos em um dos status:
+     *  - RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW
+     *  - RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS
+     *  - RecruitmentStatus::STATUSTYPE_INTERVIEWED
+     *  - RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED
+     *  - RecruitmentStatus::STATUSTYPE_INTERVIEW_DISAPPROVED
+     *  - RecruitmentStatus::STATUSTYPE_INTERVIEW_WAITINGLIST
+     *  - RecruitmentStatus::STATUSTYPE_TESTCLASS_COMPLETE
+     *  - RecruitmentStatus::STATUSTYPE_TESTCLASS_WAITINGLIST
+     *  - RecruitmentStatus::STATUSTYPE_VOLUNTEER
+     * 
+     * @return ViewModel
+     */
+    public function volunteerListAction()
+    {
+
+        try {
+            $em = $this->getEntityManager();
+            $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')
+                ->findLastClosed(Recruitment::VOLUNTEER_RECRUITMENT_TYPE);
+
+            $candidates = [];
+
+            if (isset($recruitment['recruitmentId'])) {
+                $candidates = $em
+                    ->getRepository('Recruitment\Entity\Registration')
+                    ->findByStatusSimplified($recruitment['recruitmentId'], [
+                        RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
+                        RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS,
+                        RecruitmentStatus::STATUSTYPE_INTERVIEWED,
+                        RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED,
+                        RecruitmentStatus::STATUSTYPE_INTERVIEW_DISAPPROVED,
+                        RecruitmentStatus::STATUSTYPE_INTERVIEW_WAITINGLIST,
+                        RecruitmentStatus::STATUSTYPE_TESTCLASS_COMPLETE,
+                        RecruitmentStatus::STATUSTYPE_TESTCLASS_WAITINGLIST,
+                        RecruitmentStatus::STATUSTYPE_VOLUNTEER,
+                        
+                ]);
+            }
+
+            foreach ($candidates as $i => $candidate) {
+                $candidateRegistration = $em->find('Recruitment\Entity\Registration', $candidate['registrationId']);
+                $candidateInterview = $candidateRegistration->getVolunteerInterview();
+                
+                if ($candidateInterview) {
+                    $candidateEvaluations = $candidateInterview->getInterviewersEvaluations();
+                    $ratingSum = 0;
+                    $numberOfRatings = 0;
+                    $candidates[$i]['ratings'] = [];
+                    
+                    if ($candidateEvaluations) {
+                        foreach ($candidateEvaluations as $candidateEvaluation) {
+                            $candidates[$i]['ratings'][$candidateEvaluation->getInterviewerName()]
+                                    = $candidateEvaluation->getVolunteerFinalRating();
+                            $ratingSum += $candidateEvaluation->getVolunteerFinalRating();
+                            ++$numberOfRatings;
+                        } 
+                    }
+                    
+                    $candidates[$i]['finalRating'] = $ratingSum / $numberOfRatings;
+                } else {
+                    $candidates[$i]['ratings'] = null;
+                    $candidates[$i]['finalRating'] = null;
+                }
+
+                $candidates[$i]['statusType'] = RecruitmentStatus::statusTypeToString($candidates[$i]['statusType']);
+            }
+
+            return new ViewModel([
+                'recruitment' => $recruitment,
+                'candidates' => $candidates,
+            ]);
+        } catch (\Exception $ex) {
+            return new ViewModel([
+                'message' => $ex->getMessage(),
+                'recruitment' => null,
+                'candidates' => null,
+            ]);
+        }
+    }
+
+    /**
+     * Retorna informações do candidato ao processo seletivo de voluntários. 
+     * 
+     * @return JsonModel
+     */
+    public function getVolunteerInfoAction()
+    {
+        $registrationId = $this->params('id', false);
+
+        if ($registrationId) {
+            try {
+                $em = $this->getEntityManager();
+                $hydrator = new DoctrineHydrator($em);
+                $registration = $em->find('Recruitment\Entity\Registration', $registrationId);
+
+                $data = $hydrator->extract($registration);
+                
+                $person = $registration->getPerson();
+                $data['person'] = $hydrator->extract($person);
+                $addresses = $person->getAddresses();
+                foreach ($addresses as $addr) {
+                    $data['person']['addresses'][] = $hydrator->extract($addr);
+                }
+                
+                $volunteerInterview = $registration->getVolunteerInterview();
+                if ($volunteerInterview) {
+                    $data['volunteerInterview'] = $hydrator->extract($volunteerInterview);
+                    unset($data['volunteerInterview']['interviewersEvaluations']);
+                    foreach ($volunteerInterview->getInterviewersEvaluations() as $i => $evaluation) {
+                        $data['volunteerInterview']['interviewersEvaluations'][]
+                                = array_merge(
+                                        $hydrator->extract($evaluation),
+                                        ['volunteerFinalRating' => $evaluation->getVolunteerFinalRating()]
+                                );
+                    }
+                } else {
+                    $data['volunteerInterview']['interviewersEvaluations'] = null;
+                    $data['volunteerInterview'] = null;
+                }
+                
+
+                return new JsonModel([
+                    'info' => $data,
+                    'error' => false,
+                    'message' => null,
+                ]);
+            } catch (\Throwable $ex) {
+                return new JsonModel([
+                    'info' => null,
+                    'error' => true,
+                    'message' => $ex->getMessage(),
+                ]);
+            }
+        }
+
+        return new JsonModel([]);
+    }
+    
+    /**
+     * Retorna as avaliações (notas e comentários) dos entrevistadores de um candidato 
+     * do processo seletivo de voluntários
+     * 
+     * @return JsonModel
+     */
+    public function getInterviewersEvaluationsAction()
+    {
+        $registrationId = $this->params('id', false);
+        
+        if ($registrationId) {
+            try {
+                $em = $this->getEntityManager();
+                $registration = $em->find('Recruitment\Entity\Registration', $registrationId);
+                $volunteerInterview = $registration->getVolunteerInterview();
+                
+                if ($volunteerInterview) {
+                    $ratings = [];
+                    $interviewersEvaluations = $volunteerInterview->getInterviewersEvaluations();
+                    if ($interviewersEvaluations) {
+                        foreach ($interviewersEvaluations as $evaluation) {
+                            $ratings[$evaluation->getInterviewerName()] = [
+                                'volunteerProfileRating' => $evaluation->getVolunteerProfileRating(),
+                                'volunteerProfile' => $evaluation->getVolunteerProfile(),
+                                'volunteerAvailabilityRating' => $evaluation->getVolunteerAvailabilityRating(),
+                                'volunteerAvailability' => $evaluation->getVolunteerAvailability(),
+                                'volunteerResponsabilityAndCommitmentRating' => $evaluation->getVolunteerResponsabilityAndCommitmentRating(),
+                                'volunteerResponsabilityAndCommitment' => $evaluation->getVolunteerResponsabilityAndCommitment(),
+                                'volunteerOverallRating' => $evaluation->getVolunteerOverallRating(),
+                                'volunteerOverallRemarks' => $evaluation->getVolunteerOverallRemarks(),
+                                'volunteerFinalRating' => $evaluation->getVolunteerFinalRating(),
+                            ];
+                        }
+                    }
+                }
+                
+                return new JsonModel([
+                    'ratings' => $ratings,
+                    'error' => false,
+                    'message' => null,
+                ]);
+                
+            } catch (\Throwable $ex) {
+                return new JsonModel([
+                    'ratings' => null,
+                    'error' => true,
+                    'message' => $ex->getMessage(),
+                ]);
+            }
+        }
+        
+        return new JsonModel([
+            'ratings' => null,
+            'error' => false,
+            'message' => null,
+        ]);
+    }
+
+    /**
+     * Formulário de entrevista para candidatos ao PSV.
+     * 
+     * Faz/edita a entrevista do candidato. Se o candidato estiver em um dos
+     * status abaixo ele avançará para o status 
+     * RecruitmentStatus::STATUSTYPE_INTERVIEWED:
+     *  - RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW
+     * 
+     * @return ViewModel
+     */
+    public function volunteerFormAction()
+    {
+        try {
+            $rid = $this->params()->fromRoute('id', null);
+
+            if ($rid) {
+                $em = $this->getEntityManager();
+                $registration = $em->find('Recruitment\Entity\Registration', $rid);
+                $form = new VolunteerInterviewForm(
+                        $em, 
+                        [
+                            'interview' => true,
+                            'person' => array(
+                                'relative' => false,
+                                'address' => true,
+                                'social_media' => true,
+                            )
+                        ]
+                );
+                $person = $registration->getPerson();
+                $interview = $registration->getVolunteerInterview();
+                
+                if ($interview === null) {
+                    $interview = new VolunteerInterview();
+                    $registration->setVolunteerInterview($interview);
+                }
+
+                $form->bind($interview);
+
+                $request = $this->getRequest();
+                
+                if ($request->isPost()) {
+                    $data = $request->getPost();
+                    $form->setData($data);
+                    
+                    if ($form->isValid()) {
+                        $status = (int) $registration
+                                ->getCurrentRegistrationStatus()
+                                ->getRecruitmentStatus()
+                                ->getNumericStatusType();
+
+                        /* Em qualquer um desses status o candidato avança para
+                         * entrevistado. Fora desses status não há modificações
+                         * de status, o candidato apenas tem sua entrevista atualizada.
+                         */
+                        if (in_array($status, [
+                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
+                            ])) {
+                            $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_INTERVIEWED);
+                        }
+                          
+                        //$interview->setInterviewers($data['volunteerInterview']['interviewers']);
+//                        $registration->setVolunteerInterview($interview); 
+                        
+                        $em->persist($registration);
+                        $em->flush();
+
+                        return new ViewModel([
+                            'form' => $form,
+                            'message' => 'Entrevista realizada com sucesso!',
+                            'success' => true,
+                            'person' => $person,
+                            'regId' => $rid,
+                            'registration' => $registration
+                        ]);
+                    }
+                    print_r($form->getMessages());exit;
+                    
+                }
+
+                return new ViewModel([
+                    'form' => $form,
+                    'message' => null,
+                    'person' => $person,
+                    'registration' => $registration
+                ]);
+            }
+
+            return new ViewModel([
+                'form' => null,
+                'message' => 'Nenhum candidato foi escolhido',
+            ]);
+        } catch (\Throwable $ex) {
+
+            return new ViewModel([
+                'form' => null,
+                'message' => $ex->getMessage(),
+            ]);
+        }
+    }
+    
+    /**
+     * Formulário de avaliação de um candidato do PSV. 
+     * Todos os entrevistadores do candidato devem preencher o formulário, que 
+     * auxiliará no processo de seleção.
+     * 
+     * @return ViewModel
+     */
+    public function interviewerEvaluationAction()
+    {
+        try {
+            $rid = $this->params()->fromRoute('id', null);
+
+            if ($rid) {
+                $em = $this->getEntityManager();
+                $registration = $em->find('Recruitment\Entity\Registration', $rid);
+                
+                $volunteerInterview = $registration->getVolunteerInterview();
+                $form = new InterviewerEvaluationForm($em, $volunteerInterview);
+                
+                $interviewerEvaluation = new InterviewerEvaluation();
+                $form->bind($interviewerEvaluation);
+                
+                $request = $this->getRequest();
+                
+                if ($request->isPost()) {
+                    $data = $request->getPost();
+                    $form->setData($data);
+
+                    if ($form->isValid()) {
+                        $pastEvaluation = $em->getRepository('Recruitment\Entity\InterviewerEvaluation')
+                                ->findBy(['interviewerName' => $interviewerEvaluation->getInterviewerName()])[0];
+                        if ($pastEvaluation) {
+                            $volunteerInterview->removeInterviewerEvaluation($pastEvaluation);
+                            $em->remove($pastEvaluation);
+                            $em->flush();
+                        }
+                        
+                        $volunteerInterview->addInterviewerEvaluation($interviewerEvaluation);      
+                        $em->persist($interviewerEvaluation);
+                        $em->flush();
+
+                        return $this->redirect()->toRoute('recruitment/interview', [
+                            'action' => 'volunteer-list',
+                        ]);
+                    }
+                }
+
+                return new ViewModel([
+                    'form' => $form,
+                    'message' => null,
+                ]);
+            }
+
+            return new ViewModel([
+                'form' => null,
+                'message' => 'Nenhum candidato foi escolhido',
+            ]);
+        } catch (\Throwable $ex) {
+
+            return new ViewModel([
+                'form' => null,
+                'message' => $ex->getMessage(),
+            ]);
+        }
     }
 
     /**

@@ -1,0 +1,364 @@
+<?php 
+$this->headLink()->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/bootstrap-slider/slider.css')); 
+$this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
+?>
+
+<section class="content">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <?php if (isset($success)) : 
+                $calloutClass = 'callout-success';
+            else :
+                $calloutClass = 'callout-warning';                
+            endif;
+            ?>
+            
+            <?php if ($message) : ?>
+                <div class="callout <?php echo $calloutClass; ?>">
+                    <h4><?php echo $message; ?></h4>
+                </div>
+            <?php endif; ?>            
+            
+            <?php
+            if ($this->form !== null) :
+                $this->form->prepare();
+                echo $this->form()->openTag($form);
+                $interview = $this->form->get('volunteerInterview'); 
+                ?>
+                <div class="box">
+                    <div class="box-header bg-purple">
+                        <div class="row">
+                            <div class="col-lg-1 col-xs-2">
+                                <br>
+                                <i class="fa fa-exclamation-triangle fa-2x pull-right"></i>
+                            </div>
+                            <div class="col-lg-11 col-xs-10">
+                                <h4 class="text-center text-bold">PREPARAÇÃO</h4>
+                                <p class="text-center">Verifique se o candidato correto foi selecionado e insira a data e o horário de início da entrevista</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body" id="candidate-info" 
+                         data-regid="<?php echo (isset($this->regId)) ? $this->regId : '-1'; ?>">
+                        <p>Candidato(a): <?php echo $this->person->getPersonName(); ?></p>
+
+                        <div class="col-xs-6">
+                            <?php echo $this->formRow($interview->get('startTime')); ?>
+                        </div>
+
+                        <div class="col-xs-6">
+                            <?php echo $this->formRow($interview->get('interviewers')); ?>
+                        </div>
+                    </div>
+                </div>
+                <div class="box">
+                    <div class="box-header bg-green">
+                        <div class="row">
+                            <div class="col-lg-1 col-xs-2">
+                                <br>
+                                <i class="fa fa-exclamation-triangle fa-2x pull-right"></i>
+                            </div>
+                            <div class="col-lg-11 col-xs-10">
+                                <h4 class="text-center text-bold">PARTE 1</h4>
+                                <p class="text-center">Respostas do formulário de inscrição</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box-body">
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <button type="button" class="hide" data-widget="collapse"></button>
+                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
+                                <h3 class="box-title">Apresentação dos entrevistadores</h3>
+                            </div>
+                        </div>
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <button type="button" class="hide" data-widget="collapse"></button>
+                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
+                                <h3 class="box-title">Análise da “tarefinha”. (Pedir pro candidato ler o poema.)</h3>
+                            </div>
+                        </div>
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <button type="button" class="hide" data-widget="collapse"></button>
+                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
+                                <h3 class="box-title">Ocupação (Acadêmica, profissional)</h3>
+                            </div>
+                            <div class="box-body">
+                                <?php echo $this->registration->getOccupation(); ?>
+                            </div>
+                        </div>
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <button type="button" class="hide" data-widget="collapse"></button>
+                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
+                                <h3 class="box-title">Escolaridade (Onde estudou, quando, curso técnico)</h3>
+                            </div>
+                            <div class="box-body">
+                                <?php echo $this->registration->getEducation(); ?>
+                            </div>
+                        </div>
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <button type="button" class="hide" data-widget="collapse"></button>
+                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
+                                <h3 class="box-title">O que pensa sobre trabalho voluntário? Já fez? Descreva</h3>
+                            </div>
+                            <div class="box-body">
+                                <?php echo $this->registration->getVolunteerWork(); ?>
+                            </div>
+                        </div>
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <button type="button" class="hide" data-widget="collapse"></button>
+                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
+                                <h3 class="box-title">Como e quando conheceu o CATS?</h3>
+                            </div>
+                            <div class="box-body">
+                                <?php echo $this->registration->getHowAndWhenKnowUs(); ?>
+                            </div>
+                        </div>
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <button type="button" class="hide" data-widget="collapse"></button>
+                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
+                                <h3 class="box-title">Participa de outro projeto de extensão?</h3>
+                            </div>
+                            <div class="box-body">
+                                <?php echo $this->registration->getExtensionProjects(); ?>
+                            </div>
+                        </div>
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <button type="button" class="hide" data-widget="collapse"></button>
+                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
+                                <h3 class="box-title">Por que escolheu se inscrever no CATS? Tentou outros projetos?</h3>
+                            </div>
+                            <div class="box-body">
+                                <?php echo $this->registration->getWhyWorkWithUs(); ?>
+                            </div>
+                        </div>
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <button type="button" class="hide" data-widget="collapse"></button>
+                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
+                                <h3 class="box-title">O que espera do trabalho voluntário no CATS?</h3>
+                            </div>
+                            <div class="box-body">
+                                <?php echo $this->registration->getVolunteerWithUs(); ?>
+                            </div>
+                        </div>
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <button type="button" class="hide" data-widget="collapse"></button>
+                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
+                                <h3 class="box-title">O que espera do trabalho voluntário no CATS?</h3>
+                            </div>
+                            <div class="box-body">
+                                <?php echo $this->registration->getVolunteerWithUs(); ?>
+                            </div>
+                        </div>
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <h4 class="box-title"><?php echo $this->formLabel($interview->get('interviewersInitialComments')); ?></h4>
+                            </div>
+                            <div class="box-body
+                                <?php echo $this->formElementErrors($interview->get('interviewersInitialComments')) !== "" ? 'has-error' : ''; ?>">
+                                
+                                <?php echo $this->formTextarea($interview->get('interviewersInitialComments')); ?>
+                                <div class="col-xs-12 form-group">
+                                    <?php echo $this->formElementErrors($interview->get('interviewersInitialComments')); ?>                                
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="box">
+                    <div class="box-header bg-navy">
+                        <div class="row">
+                            <div class="col-lg-1 col-xs-2">
+                                <br>
+                                <i class="fa fa-exclamation-triangle fa-2x pull-right"></i>
+                            </div>
+                            <div class="col-lg-11 col-xs-10">
+                                <h4 class="text-center text-bold">PARTE 2</h4>
+                                <p class="text-center">Perguntas ao candidato</p>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($interview->get('interests')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($interview->get('interests')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($interview->get('interests')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($interview->get('interests')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($interview->get('interpersonalRelationship')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($interview->get('interpersonalRelationship')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($interview->get('interpersonalRelationship')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($interview->get('interpersonalRelationship')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($interview->get('proactivity')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($interview->get('proactivity')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($interview->get('proactivity')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($interview->get('proactivity')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($interview->get('qualities')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($interview->get('qualities')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($interview->get('qualities')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($interview->get('qualities')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($interview->get('flaws')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($interview->get('flaws')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($interview->get('flaws')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($interview->get('flaws')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($interview->get('potentialIssues')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($interview->get('potentialIssues')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($interview->get('potentialIssues')); ?>
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($interview->get('potentialIssues')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($interview->get('flexibilityAndResponsability')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($interview->get('flexibilityAndResponsability')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($interview->get('flexibilityAndResponsability')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($interview->get('flexibilityAndResponsability')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($interview->get('coherenceTest')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($interview->get('coherenceTest')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($interview->get('coherenceTest')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($interview->get('coherenceTest')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($interview->get('expectedContribution')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($interview->get('expectedContribution')) !== "" ? 'has-error' : ''; ?>">  
+                            
+                            <?php echo $this->formTextarea($interview->get('expectedContribution')); ?>                            
+                            <div class="col-xs-12 form-group">
+                                <?php echo $this->formElementErrors($interview->get('expectedContribution')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($interview->get('interestRating')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($interview->get('interestRating')) !== "" ? 'has-error' : ''; ?>">  
+                            
+                            <div class="col-xs-10 col-xs-offset-1 interview-slider">
+                                <?php echo $this->formText($interview->get('interestRating')); ?>
+                            </div>
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($interview->get('interestRating')); ?>                                
+                            </div>
+                        </div>
+                    </div>                   
+                </div>
+            
+                <div class="col-xs-12">
+                    <?php echo $this->formRow($interview->get('endTime')); ?>
+                </div>
+
+                <div class="col-xs-12">
+                    <?php echo $this->formRow($form->get('submit')); ?>
+                </div>
+                <?php echo $this->form()->closeTag(); ?>
+            <?php endif; ?>
+        </div>        
+    </div>
+</section>
+
+<style>
+    .interview-checkbox {
+        transform: scale(1.5);
+    }
+    .interview-slider .slider-selection {
+        background: #23c56b;
+    }
+    .interview-slider .slider-handle {
+        border-bottom-color: blue;
+    }
+    .slider-tick-label {
+        margin-top: 1em;
+    }
+</style>
+
+<script>    
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/recruitment/interview/volunteer-form';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+</script>

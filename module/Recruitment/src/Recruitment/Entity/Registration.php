@@ -23,6 +23,8 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Recruitment\Entity\Person;
 use Recruitment\Entity\Recruitment;
+use Recruitment\Entity\StudentInterview;
+use Recruitment\Entity\VolunteerInterview;
 use Doctrine\Common\Collections\Criteria;
 
 /**
@@ -132,6 +134,13 @@ class Registration
      * @ORM\Column(name="registration_howandwhen_knowus", type="string", length=700, nullable=true)
      */
     protected $howAndWhenKnowUs;
+
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="registration_extension_projects", type="string", length=400, nullable=true)
+     */
+    protected $extensionProjects;
 
     /**
      *
@@ -418,6 +427,15 @@ class Registration
      * 
      * @return string
      */
+    public function getExtensionProjects()
+    {
+        return $this->extensionProjects;
+    }
+
+    /**
+     * 
+     * @return string
+     */
     public function getWhyWorkWithUs()
     {
         return $this->whyWorkWithUs;
@@ -698,22 +716,11 @@ class Registration
 
     /**
      * 
-     * @return Recruitment\Entity\VolunteerInterview
+     * @return VolunteerInterview
      */
     public function getVolunteerInterview()
     {
         return $this->volunteerInterview;
-    }
-
-    /**
-     * 
-     * @param Recruitment\Entity\VolunteerInterview $volunteerInterview
-     * @return Recruitment\Entity\Registration
-     */
-    public function setVolunteerInterview(VolunteerInterview $volunteerInterview)
-    {
-        $this->volunteerInterview = $volunteerInterview;
-        return $this;
     }
 
     /**
@@ -727,7 +734,19 @@ class Registration
 
     /**
      * 
-     * @param Recruitment\Entity\StudentInterview $studentInterview
+     * @param VolunteerInterview $volunteerInterview
+     * @return Recruitment\Entity\Registration
+     */
+    public function setVolunteerInterview(VolunteerInterview $volunteerInterview)
+    {
+        $volunteerInterview->setRegistration($this);
+        $this->volunteerInterview = $volunteerInterview;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param StudentInterview $studentInterview
      * @return Recruitment\Entity\Registration
      */
     public function setStudentInterview(StudentInterview $studentInterview)
@@ -736,4 +755,49 @@ class Registration
         $this->studentInterview = $studentInterview;
         return $this;
     }
+   
+    /**
+     * 
+     * @param \DateTime $registrationDate
+     * @return \Recruitment\Entity\Registration
+     */
+    public function setRegistrationDate(\DateTime $registrationDate)
+    {
+        $this->registrationDate = $registrationDate;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Collection $recruitmentKnowAbout
+     * @return \Recruitment\Entity\Registration
+     */
+    public function setRecruitmentKnowAbout(Collection $recruitmentKnowAbout)
+    {
+        $this->recruitmentKnowAbout = $recruitmentKnowAbout;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $extensionProjects
+     * @return \Recruitment\Entity\Registration
+     */
+    public function setExtensionProjects($extensionProjects)
+    {
+        $this->extensionProjects = $extensionProjects;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Collection $registrationStatus
+     * @return \Recruitment\Entity\Registration
+     */
+    public function setRegistrationStatus(Collection $registrationStatus)
+    {
+        $this->registrationStatus = $registrationStatus;
+        return $this;
+    }
+
 }
