@@ -550,16 +550,18 @@ class InterviewController extends AbstractEntityActionController
                     $numberOfRatings = 0;
                     $candidates[$i]['ratings'] = [];
                     
-                    if ($candidateEvaluations) {
+                    if (!$candidateEvaluations->isEmpty()) {
                         foreach ($candidateEvaluations as $candidateEvaluation) {
                             $candidates[$i]['ratings'][$candidateEvaluation->getInterviewerName()]
                                     = $candidateEvaluation->getVolunteerFinalRating();
                             $ratingSum += $candidateEvaluation->getVolunteerFinalRating();
                             ++$numberOfRatings;
                         } 
+                        
+                        $candidates[$i]['finalRating'] = $ratingSum / $numberOfRatings;
+                    } else {                        
+                        $candidates[$i]['finalRating'] = null;
                     }
-                    
-                    $candidates[$i]['finalRating'] = $ratingSum / $numberOfRatings;
                 } else {
                     $candidates[$i]['ratings'] = null;
                     $candidates[$i]['finalRating'] = null;
@@ -729,10 +731,15 @@ class InterviewController extends AbstractEntityActionController
                 );
                 $person = $registration->getPerson();
                 $interview = $registration->getVolunteerInterview();
+                $interviewers = null;
                 
                 if ($interview === null) {
+                    $hasInterview = false;
                     $interview = new VolunteerInterview();
                     $registration->setVolunteerInterview($interview);
+                } else {                    
+                    $hasInterview = true;
+                    $interviewers = $interview->getInterviewers();
                 }
 
                 $form->bind($interview);
@@ -758,20 +765,22 @@ class InterviewController extends AbstractEntityActionController
                             ])) {
                             $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_INTERVIEWED);
                         }
-                          
-                        //$interview->setInterviewers($data['volunteerInterview']['interviewers']);
-//                        $registration->setVolunteerInterview($interview); 
+                    
+                        if ($interviewers !== $data['volunteerInterview']['interviewers']) {
+                            $interview->removeInterviewersEvaluations($interview->getInterviewersEvaluations());
+                        }
                         
                         $em->persist($registration);
                         $em->flush();
-
+                        
                         return new ViewModel([
                             'form' => $form,
                             'message' => 'Entrevista realizada com sucesso!',
                             'success' => true,
                             'person' => $person,
                             'regId' => $rid,
-                            'registration' => $registration
+                            'registration' => $registration,
+                            'hasInterview' => $hasInterview,
                         ]);
                     }
                     print_r($form->getMessages());exit;
@@ -782,7 +791,8 @@ class InterviewController extends AbstractEntityActionController
                     'form' => $form,
                     'message' => null,
                     'person' => $person,
-                    'registration' => $registration
+                    'registration' => $registration,
+                    'hasInterview' => $hasInterview,
                 ]);
             }
 

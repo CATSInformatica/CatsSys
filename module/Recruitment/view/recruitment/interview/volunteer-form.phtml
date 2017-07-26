@@ -48,6 +48,9 @@ $this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
 
                         <div class="col-xs-6">
                             <?php echo $this->formRow($interview->get('interviewers')); ?>
+                            <?php if ($this->hasInterview) : ?>
+                                <label class="text-bold text-red">ATENÇÃO: A alteração deste campo provocará a perda das avaliações existentes deste candidato.</label>
+                            <?php endif; ?>
                         </div>
                     </div>
                 </div>
