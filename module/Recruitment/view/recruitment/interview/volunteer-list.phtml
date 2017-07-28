@@ -2,7 +2,96 @@
 $this->headTitle()->append('PSV - Lista de candidatos')->setSeparator(' - ');
 ?>
 
-<section class="content">    
+<section class="content">     
+    <div class="row">
+        <div class="col-xs-10 col-xs-offset-1">            
+            <?php if (isset($message)) : ?>
+                <div class="callout callout-warning">
+                    <h4><?php echo $message; ?></h4>
+                </div>
+            <?php endif; ?> 
+            
+            <p class="text-center">
+                <b>
+                    <?php
+                        $year = $recruitment['recruitmentYear'];
+                        $number = $recruitment['recruitmentNumber'];
+                        echo $number . "º Processo Seletivo de Voluntários de $year";  ?>
+                </b>
+            </p>
+            <div class="col-xs-12" id="rating-formula">
+                <h4 class="text-uppercase">Cálculo da nota final do candidato</h4>
+                <h4> 
+                    $$ 
+                    \begin{equation}
+                    \begin{split}
+                        Nota_{entrevistador}    & = \frac{(Nota_{Critério 1} + Nota_{Critério 2} + Nota_{Critério 3} + Nota_{Parecer} \times 2)}{5} \\
+                        Nota_{final}            & = \frac{(Nota_{entrevistador 1} + \ldots + Nota_{entrevistador n})}{n}
+                    \end{split}
+                    \end{equation}
+                    $$
+                </h4>
+            </div>
+            <hr>
+            
+            <table id="volunteer-list-table" 
+                   class="table table-bordered table-condensed table-striped table-hover">
+                <thead>
+                    <tr>
+                        <th></th>
+                        <th class="text-center">Inscrição</th>
+                        <th class="text-center">Candidato</th>
+                        <th class="text-center">Email</th>
+                        <th class="text-center">Cpf</th>
+                        <th class="text-center">Situação</th>
+                        <th class="text-center">Notas dos entrevistadores</th>
+                        <th class="text-center">Nota final</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php if ($candidates !== null): ?>
+                        <?php foreach ($candidates as $candidate): ?>
+                            <tr class="cats-row" data-id="<?php echo $candidate['registrationId']; ?>" >
+                                <td class="details-control"></td>
+                                <td class="text-center"><?php echo Recruitment\Entity\Registration::generateRegistrationNumber($candidate['registrationId'], $year, $number); ?></td>
+                                <td class="text-center"><?php echo $candidate['personFullName']; ?></td>
+                                <td class="text-center"><?php echo $candidate['personEmail']; ?></td>
+                                <td class="text-center"><?php echo $candidate['personCpf']; ?></td>
+                                <td class="text-center"><?php echo $candidate['statusType']; ?></td>
+                                <td class="text-center col-md-2 col-xs-4" id="interviewers-evaluations-<?php echo $candidate['registrationId']; ?>" >
+                                    <?php if ($candidate['ratings']) : ?>
+                                        <?php foreach ($candidate['ratings'] as $interviewerName => $rating) : ?>
+                                            <div class="col-xs-12 no-padding interviewer-evaluation">
+                                                <div class="col-xs-6 text-right no-padding">
+                                                    <span class="text-capitalize interviewer-name">
+                                                        <?php echo $interviewerName; ?>
+                                                    </span>
+                                                </div>
+                                                <div class="col-xs-1 text-center no-padding">-</div>
+                                                <div class="col-xs-5 text-left no-padding interviewer-final-rating">
+                                                    <?php printf('%.3f', $rating); ?>
+                                                </div>
+                                            </div>
+                                        <?php endforeach; ?>
+                                    <?php else : ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+                                <td class="text-center" id="final-rating-<?php echo $candidate['registrationId']; ?>" >
+                                    <?php if ($candidate['ratings']) : ?>
+                                        <?php printf('%.3f', $candidate['finalRating']); ?>
+                                    <?php else : ?>
+                                        -
+                                    <?php endif; ?>
+                                </td>
+                            </tr>
+                        <?php endforeach; ?>
+                    <?php endif; ?>
+                </tbody>
+            </table>
+        </div>
+    </div>   
+    
     <div id="template-container" class="hide">
         <div class="row candidate-info">
             <div class="col-md-3">
@@ -168,92 +257,6 @@ $this->headTitle()->append('PSV - Lista de candidatos')->setSeparator(' - ');
             </div>
             <div class="col-xs-1 text-center no-padding">-</div>
             <div class="col-xs-5 text-left no-padding interviewer-final-rating"></div>
-        </div>
-    </div>
-    
-    <div class="row">
-        <div class="col-xs-10 col-xs-offset-1">            
-            <?php if (isset($message)) : ?>
-                <div class="callout callout-warning">
-                    <h4><?php echo $message; ?></h4>
-                </div>
-            <?php endif; ?> 
-            
-            <p class="text-center">
-                <b>
-                    <?php
-                        $year = $recruitment['recruitmentYear'];
-                        $number = $recruitment['recruitmentNumber'];
-                        echo $number . "º Processo Seletivo de Voluntários de $year";  ?>
-                </b>
-            </p>
-            <div class="info-box">
-                <span class="info-box-icon bg-aqua"><i class="fa fa-info-circle"></i></span>
-
-                <div class="info-box-content">
-                    <span class="info-box-text">Cálculo da nota final do candidato</span>
-                    <span class="info-box-number">Nota do entrevistador = (Nota Critério 1 + Nota Critério 2 + Nota Critério 3 + Nota Parecer * 2) / 5</span>
-                    <span class="info-box-number">Nota final = (Nota do entrevistador 1 + ... + Nota do entrevistador n) / n</span>
-                </div>
-                <!-- /.info-box-content -->
-            </div>
-            <hr>
-            
-            <table id="volunteer-list-table" 
-                   class="table table-bordered table-condensed table-striped table-hover">
-                <thead>
-                    <tr>
-                        <th></th>
-                        <th class="text-center">Inscrição</th>
-                        <th class="text-center">Candidato</th>
-                        <th class="text-center">Email</th>
-                        <th class="text-center">Cpf</th>
-                        <th class="text-center">Situação</th>
-                        <th class="text-center">Notas dos entrevistadores</th>
-                        <th class="text-center">Nota final</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    <?php if ($candidates !== null): ?>
-                        <?php foreach ($candidates as $candidate): ?>
-                            <tr class="cats-row" data-id="<?php echo $candidate['registrationId']; ?>" >
-                                <td class="details-control"></td>
-                                <td class="text-center"><?php echo Recruitment\Entity\Registration::generateRegistrationNumber($candidate['registrationId'], $year, $number); ?></td>
-                                <td class="text-center"><?php echo $candidate['personFullName']; ?></td>
-                                <td class="text-center"><?php echo $candidate['personEmail']; ?></td>
-                                <td class="text-center"><?php echo $candidate['personCpf']; ?></td>
-                                <td class="text-center"><?php echo $candidate['statusType']; ?></td>
-                                <td class="text-center col-md-2 col-xs-4" id="interviewers-evaluations-<?php echo $candidate['registrationId']; ?>" >
-                                    <?php if ($candidate['ratings']) : ?>
-                                        <?php foreach ($candidate['ratings'] as $interviewerName => $rating) : ?>
-                                            <div class="col-xs-12 no-padding interviewer-evaluation">
-                                                <div class="col-xs-6 text-right no-padding">
-                                                    <span class="text-capitalize interviewer-name">
-                                                        <?php echo $interviewerName; ?>
-                                                    </span>
-                                                </div>
-                                                <div class="col-xs-1 text-center no-padding">-</div>
-                                                <div class="col-xs-5 text-left no-padding interviewer-final-rating">
-                                                    <?php printf('%.3f', $rating); ?>
-                                                </div>
-                                            </div>
-                                        <?php endforeach; ?>
-                                    <?php else : ?>
-                                        -
-                                    <?php endif; ?>
-                                </td>
-                                <td class="text-center" id="final-rating-<?php echo $candidate['registrationId']; ?>" >
-                                    <?php if ($candidate['ratings']) : ?>
-                                        <?php printf('%.3f', $candidate['finalRating']); ?>
-                                    <?php else : ?>
-                                        -
-                                    <?php endif; ?>
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    <?php endif; ?>
-                </tbody>
-            </table>
         </div>
     </div>
 </section>

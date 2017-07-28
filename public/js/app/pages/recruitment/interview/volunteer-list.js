@@ -17,7 +17,7 @@
 
 define(['app/pages/recruitment/interview/keep-alive', 
     'app/pages/recruitment/interview/interviewers-evaluations', 
-    'datatable', 'chart'], function (keepAlive, interviewersEvaluations) {
+    'datatable', 'chart', 'mathjax'], function (keepAlive, interviewersEvaluations) {
 
     var registrationsTable = null;
     var detailContent = null;
@@ -430,12 +430,17 @@ console.log(info);
 
             });
         };
+        
+        initRatingFormula = function () {
+            MathJax.Hub.Queue(["Typeset", MathJax.Hub, 'rating-formula']);  
+        };
 
         return {
             init: function () {
                 initDataTable();
                 initTableListeners();
                 updateTableCell();
+                initRatingFormula();
                 keepAlive.init();
             }
         };
