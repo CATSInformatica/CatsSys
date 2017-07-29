@@ -52,7 +52,6 @@ define(['moment', 'masks', 'jquery', 'datetimepicker', 'bootstrapslider'], funct
 
         disableSliderIfNeeded = function (value) {
             if (parseInt(value) !== PSA) {
-                console.log();
                 $(".input-slider").slider('disable');
             } else {
                 $(".input-slider").slider('enable');
