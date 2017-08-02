@@ -32,7 +32,8 @@ define(['app/pages/recruitment/interview/keep-alive',
             registrationsTable = $('#volunteer-list-table').DataTable({
                 iDisplayLength: 50,
                 order: [
-                    [7, 'desc'],    // notas finais
+                    [6, 'asc'],     // cargo
+                    [8, 'desc'],    // notas finais
                     [5, 'desc'],    // situação
                     [1, 'asc']      // número de inscrição
                 ]
@@ -89,7 +90,7 @@ define(['app/pages/recruitment/interview/keep-alive',
          * 
          * @param {DOM Element} ctx - contexto onde o gráfico será exibido (canvas)
          */
-        initSelfEvaluationChart = function (ctx) {
+        initSelfEvaluationChart = function (ctx, data) {
             var chart = new Chart(ctx, {
                 type: 'radar',
                 data: {
@@ -104,7 +105,7 @@ define(['app/pages/recruitment/interview/keep-alive',
                     ],
                     datasets: [{
                         label: 'Avaliação do candidato',
-                        data: [10, 9, 3, 5, 2, 3, 5],
+                        data: data,
                         backgroundColor: [
                             'rgba(255, 99, 132, 0.2)',
                             'rgba(54, 162, 235, 0.2)',
@@ -123,7 +124,17 @@ define(['app/pages/recruitment/interview/keep-alive',
                         ],
                         borderWidth: 2
                     }]
+                },
+                options: {
+                    scale: {
+                        ticks: {
+                            min: 0,
+                            suggestedMax: 5,
+                            stepSize: 1
+                        }
+                    }
                 }
+                        
             });
         };
 
@@ -144,7 +155,6 @@ define(['app/pages/recruitment/interview/keep-alive',
          * @returns {String}
          */
         createContent = function (info) {
-console.log(info);
             var addresses = '';
             for (var i = 0; i < info['person']['addresses'].length; ++i) {
                 addresses += info['person']['addresses'][i]['addressStreet'] + ', ' +
@@ -332,7 +342,18 @@ console.log(info);
             content.find('.interview-tab-link').
                     attr('href', '#interview-tab');
             
-            initSelfEvaluationChart($(content.find('canvas.self-evaluation-chart').first()));
+            initSelfEvaluationChart(
+                    $(content.find('canvas.self-evaluation-chart').first()), 
+                    [
+                        info.responsibility, 
+                        info.proactive, 
+                        info.volunteerSpirit,
+                        info.commitment,
+                        info.teamWork,
+                        info.efficiency,
+                        info.courtesy
+                    ]
+            );
             
             return content;
             
@@ -397,33 +418,42 @@ console.log(info);
             window.addEventListener('storage', function (e) {
                 setTimeout(function () {
                     if (e.newValue !== null) { // e.newValue - registrationId
-                        interviewersEvaluations.getInterviewersEvaluations(e.newValue, function (response) {                       
-                        var finalRatings = [];
-                        
-                        var interviewersEvaluationsCell = $('#interviewers-evaluations-' + e.newValue);
-                        interviewersEvaluationsCell
-                                .find('.interviewer-evaluation').remove();
-                        var interviewerEvaluationTemplate = $('#template-container > .interviewer-evaluation').clone();
-                        
-                        for (var interviewerName in response) {
-                            var interviewerEvaluation = interviewerEvaluationTemplate.clone();
-                            finalRatings.push(response[interviewerName].volunteerFinalRating);
+                        interviewersEvaluations.getInterviewersEvaluations(e.newValue, function (response) { 
+                            if (response.length === 0) {
+                                return;
+                            }
                             
-                            interviewerEvaluation
-                                    .find('.interviewer-name').html(interviewerName);
-                            interviewerEvaluation
-                                    .find('.interviewer-final-rating')
-                                    .html(response[interviewerName].volunteerFinalRating.toFixed(3));                          
-                            
-                            interviewersEvaluationsCell.append(interviewerEvaluation);
-                        }
-                        
-                        var finalRating = interviewersEvaluations.getFinalRating(finalRatings);
+                            var finalRatings = [];
+                            var interviewersEvaluationsCell = $('#interviewers-evaluations-' + e.newValue);
+                            interviewersEvaluationsCell.html('');
+                            var interviewerEvaluationTemplate = $('#template-container > .interviewer-evaluation').clone();
+
+                            for (var interviewerName in response) {
+                                var interviewerEvaluation = interviewerEvaluationTemplate.clone();
+                                finalRatings.push(response[interviewerName].volunteerFinalRating);
+
+                                interviewerEvaluation
+                                        .find('.interviewer-name').html(interviewerName);
+                                interviewerEvaluation
+                                        .find('.interviewer-final-rating')
+                                        .html(response[interviewerName].volunteerFinalRating.toFixed(3));                          
+
+                                interviewersEvaluationsCell.append(interviewerEvaluation);
+                            }
+
+                            var finalRating = interviewersEvaluations.getFinalRating(finalRatings);
                             $('#volunteer-list-table')
                                     .DataTable()
                                     .cell($('#final-rating-' + (e.newValue)))
                                     .data(finalRating);
-                            $('#volunteer-list-table').DataTable().order([7, 'desc']).draw();
+                            $('#volunteer-list-table').DataTable()
+                                    .order(
+                                        [6, 'asc'],     // cargo
+                                        [8, 'desc'],    // notas finais
+                                        [5, 'desc'],    // situação
+                                        [1, 'asc']      // número de inscrição
+                                    )
+                                    .draw();
                         });
                     }
                 }, 2000);

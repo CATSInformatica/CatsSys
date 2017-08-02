@@ -22,6 +22,7 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Recruitment\Entity\Registration;
+use AdministrativeStructure\Entity\Job;
 
 /**
  * ORM da tabela `recruitment`.
@@ -254,10 +255,21 @@ class Recruitment
      * @ORM\OneToMany(targetEntity="\Recruitment\Entity\Registration", mappedBy="recruitment")
      */
     private $registrations;
+    
+    /**
+     *
+     * @var Collection 
+     * @ORM\ManyToMany(targetEntity="\AdministrativeStructure\Entity\Job")
+     * @ORM\JoinTable(name="recruitment_open_jobs",
+     *      joinColumns={@ORM\JoinColumn(name="recruitment_id", referencedColumnName="recruitment_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="job_id", referencedColumnName="job_id")})
+     */
+    private $openJobs;
 
     public function __construct()
     {
         $this->registrations = new ArrayCollection();
+        $this->openJobs = new ArrayCollection();
     }
 
     /**
@@ -725,6 +737,15 @@ class Recruitment
 
     /**
      * 
+     * @return Collection
+     */
+    public function getOpenJobs()
+    {
+        return $this->openJobs;
+    }
+    
+    /**
+     * 
      * @param string $subscriptionDescription
      * @return \Recruitment\Entity\Recruitment
      */
@@ -920,4 +941,76 @@ class Recruitment
         $this->enrollmentDescription = $enrollmentDescription;
         return $this;
     }
+    
+    /**
+     * 
+     * @param Collection $openJobs
+     */
+    public function setOpenJobs(Collection $openJobs)
+    {
+        $this->openJobs = $openJobs;
+        return $this;
+    }
+
+    /**
+     * @param Job $job
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function addOpenJob(Job $job)
+    {
+        if (!$this->hasOpenJob($job)) {
+            $this->openJobs->add($job);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param Collection $jobs
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function addOpenJobs(Collection $jobs)
+    {
+        foreach ($jobs as $job) {
+            if (!$this->hasOpenJob($job)) {
+                $this->openJobs->add($job);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @param Job $job
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function removeOpenJob(Job $job)
+    {
+        $this->openJobs->removeElement($job);
+        return $this;
+    }
+
+    /**
+     *
+     * @param Collection $jobs
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function removeOpenJobs(Collection $jobs)
+    {
+        foreach ($jobs as $job) {
+            $this->openJobs->removeElement($job);
+        }
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Job $job
+     * @return boolean
+     */
+    public function hasOpenJob(Job $job)
+    {
+        return $this->openJobs->contains($job);
+    }
+    
 }
