@@ -786,7 +786,6 @@ class InterviewController extends AbstractEntityActionController
                             'hasInterview' => $hasInterview,
                         ]);
                     }
-                    print_r($form->getMessages());exit;
                     
                 }
 
