@@ -304,6 +304,7 @@ class RegistrationController extends AbstractEntityActionController
 
         $options = array(
             'interview' => false,
+            'recruitment' => $recruitment,
             'person' => array(
                 'address' => true,
                 'relative' => false,
@@ -320,7 +321,7 @@ class RegistrationController extends AbstractEntityActionController
             $registration = new Registration();
             $form->bind($registration);
             $form->setData($request->getPost());
-
+            
             if ($form->isValid()) {
 
                 try {

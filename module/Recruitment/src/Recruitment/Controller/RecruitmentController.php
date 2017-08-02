@@ -71,6 +71,7 @@ class RecruitmentController extends AbstractEntityActionController
      * 
      * @return ViewModel
      * @throws RuntimeException
+     * @todo Utilizar o Hydrator também para a coleção de cargos (openJobs), se possível.
      */
     public function createAction()
     {
@@ -82,13 +83,13 @@ class RecruitmentController extends AbstractEntityActionController
             $form = new RecruitmentForm($em);
             $recruitment = new Recruitment();
             $form->bind($recruitment);
-
+            
             if ($request->isPost()) {
                 $fileContainer = $request->getFiles()->toArray();
                 $file = $fileContainer['recruitment']['recruitmentPublicNotice'];
                 $data = $request->getPost();
                 $form->setData($data);
-
+                 
                 if ($form->isValid() && !$file['error'] && $file['size']) {
 
                     try {
@@ -108,8 +109,13 @@ class RecruitmentController extends AbstractEntityActionController
                         }
 
                         $recruitment->setRecruitmentPublicNotice($filename);
+                        
+                        foreach ($data['recruitment']['openJobs'] as $jobId) {
+                            $job = $em->find('AdministrativeStructure\Entity\Job', $jobId);
+                            $recruitment->addOpenJob($job);
+                        }
 
-                        $em->merge($recruitment);
+                        $em->persist($recruitment);
                         $em->flush();
                         
                         $uploadAdapter = new HttpAdapter();
@@ -168,7 +174,7 @@ class RecruitmentController extends AbstractEntityActionController
             if ($id) {
                 $form = new RecruitmentForm($em);
                 $recruitment = $em->find('Recruitment\Entity\Recruitment', $id);
-
+                
                 $currentDate = new \DateTime();
                 $beginDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getRecruitmentBeginDate());
                 if ($beginDate <= $currentDate) {
@@ -177,8 +183,15 @@ class RecruitmentController extends AbstractEntityActionController
                         'form' => null,
                     ));
                 }
-
+                
                 $form->bind($recruitment);
+            
+                $openJobsIds = [];
+                foreach ($recruitment->getOpenJobs() as $openJob) {
+                    $openJobsIds[] = $openJob->getJobId();
+                }
+                $form->get('recruitment')->get('openJobs')->setValue($openJobsIds);
+            
                 $request = $this->getRequest();
                 if ($request->isPost()) {
                     $publicNotice = $recruitment->getRecruitmentPublicNotice();
@@ -196,6 +209,11 @@ class RecruitmentController extends AbstractEntityActionController
                                 . '.pdf';
 
                             $recruitment->setRecruitmentPublicNotice($filename);
+
+                            foreach ($data['recruitment']['openJobs'] as $jobId) {
+                                $job = $em->find('AdministrativeStructure\Entity\Job', $jobId);
+                                $recruitment->addOpenJob($job);
+                            }
 
                             $em->persist($recruitment);
                             $em->flush();

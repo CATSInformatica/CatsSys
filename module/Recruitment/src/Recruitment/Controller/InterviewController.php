@@ -182,6 +182,7 @@ class InterviewController extends AbstractEntityActionController
                         Recruitment::VOLUNTEER_RECRUITMENT_TYPE,
                         [
                             'interview' => ($registration->getVolunteerInterview() ? true : false),
+                            'recruitment' => $registration->getRecruitment(),
                             'person' => array(
                                 'relative' => false,
                                 'address' => true,
@@ -205,7 +206,9 @@ class InterviewController extends AbstractEntityActionController
                     }
                     
                     $data = $request->getPost()->toArray();
-                    $data['registrationConsent'] = 1;
+                    // No caso de alteração pelo sistema, não é necessário habilitar
+                    // o checkbox registrationConsent
+                    $data['registrationConsent'] = 1; 
                     $form->setData($data);
 
                     if ($form->isValid()) {
@@ -216,7 +219,7 @@ class InterviewController extends AbstractEntityActionController
                             $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_TESTCLASS_COMPLETE);
                         }
 
-                        $em->merge($registration);
+                        $em->persist($registration);
                         $em->flush();
                     }
                 }
@@ -543,7 +546,6 @@ class InterviewController extends AbstractEntityActionController
             foreach ($candidates as $i => $candidate) {
                 $candidateRegistration = $em->find('Recruitment\Entity\Registration', $candidate['registrationId']);
                 $candidateInterview = $candidateRegistration->getVolunteerInterview();
-                
                 if ($candidateInterview) {
                     $candidateEvaluations = $candidateInterview->getInterviewersEvaluations();
                     $ratingSum = 0;
@@ -566,8 +568,9 @@ class InterviewController extends AbstractEntityActionController
                     $candidates[$i]['ratings'] = null;
                     $candidates[$i]['finalRating'] = null;
                 }
-
+                
                 $candidates[$i]['statusType'] = RecruitmentStatus::statusTypeToString($candidates[$i]['statusType']);
+                $candidates[$i]['job'] = $candidateRegistration->getJob()->getJobName();
             }
 
             return new ViewModel([

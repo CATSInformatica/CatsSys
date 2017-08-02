@@ -44,6 +44,7 @@ $this->headTitle()->append('PSV - Lista de candidatos')->setSeparator(' - ');
                         <th class="text-center">Email</th>
                         <th class="text-center">Cpf</th>
                         <th class="text-center">Situação</th>
+                        <th class="text-center">Cargo</th>
                         <th class="text-center">Notas dos entrevistadores</th>
                         <th class="text-center">Nota final</th>
                     </tr>
@@ -58,6 +59,7 @@ $this->headTitle()->append('PSV - Lista de candidatos')->setSeparator(' - ');
                                 <td class="text-center"><?php echo $candidate['personEmail']; ?></td>
                                 <td class="text-center"><?php echo $candidate['personCpf']; ?></td>
                                 <td class="text-center"><?php echo $candidate['statusType']; ?></td>
+                                <td class="text-center"><?php echo $candidate['job']; ?></td>
                                 <td class="text-center col-md-2 col-xs-4" id="interviewers-evaluations-<?php echo $candidate['registrationId']; ?>" >
                                     <?php if ($candidate['ratings']) : ?>
                                         <?php foreach ($candidate['ratings'] as $interviewerName => $rating) : ?>

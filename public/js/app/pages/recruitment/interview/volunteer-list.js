@@ -32,7 +32,8 @@ define(['app/pages/recruitment/interview/keep-alive',
             registrationsTable = $('#volunteer-list-table').DataTable({
                 iDisplayLength: 50,
                 order: [
-                    [7, 'desc'],    // notas finais
+                    [6, 'asc'],     // cargo
+                    [8, 'desc'],    // notas finais
                     [5, 'desc'],    // situação
                     [1, 'asc']      // número de inscrição
                 ]
@@ -445,7 +446,14 @@ define(['app/pages/recruitment/interview/keep-alive',
                                     .DataTable()
                                     .cell($('#final-rating-' + (e.newValue)))
                                     .data(finalRating);
-                            $('#volunteer-list-table').DataTable().order([7, 'desc']).draw();
+                            $('#volunteer-list-table').DataTable()
+                                    .order(
+                                        [6, 'asc'],     // cargo
+                                        [8, 'desc'],    // notas finais
+                                        [5, 'desc'],    // situação
+                                        [1, 'asc']      // número de inscrição
+                                    )
+                                    .draw();
                         });
                     }
                 }, 2000);

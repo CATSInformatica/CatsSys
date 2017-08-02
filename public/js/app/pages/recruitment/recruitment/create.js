@@ -29,7 +29,6 @@ define(['moment', 'masks', 'jquery', 'datetimepicker', 'bootstrapslider'], funct
         };
 
         initSliders = function () {
-
             var val;
 
             $('input[name$="Target]"]').each(function () {
@@ -57,12 +56,46 @@ define(['moment', 'masks', 'jquery', 'datetimepicker', 'bootstrapslider'], funct
                 $(".input-slider").slider('enable');
             }
         };
+        
+        /**
+         * Exibe a seleção de cargos apenas quando o usuário selecionar o tipo
+         * do processo seletivo como sendo de voluntários
+         * 
+         */
+        initOpenJobsInput = function () {
+            var openJobsInput = $('[name="recruitment[openJobs][]"]');
+            var recruitmentTypeInput = $('[name="recruitment[recruitmentType]"]');
+            var openJobsContainer = openJobsInput.closest('.open-jobs-container');
+            
+            recruitmentTypeInput.on('change', function () {
+                if (+recruitmentTypeInput.val() === +openJobsInput.data('type-must-be')) {
+                    openJobsContainer.removeClass('hide');
+                } else {
+                    openJobsContainer.addClass('hide');                    
+                }
+            });
+            
+            // em caso de edição de um PSV, exibe a seleção de cargos.
+            recruitmentTypeInput.trigger('change');
+            
+            /**
+             * Permite que o usuário faça múltiplos cliques para selecionar os cargos 
+             * abertos, ao invés de precisar utilizar a tecla Ctrl para manter
+             * as seleções já feitas.
+             */
+            $('[name="recruitment[openJobs][]"] option').mousedown(function(e) {
+                e.preventDefault();
+                $(this).prop('selected', !$(this).prop('selected'));
+                return false;
+            });
+        };
 
         return {
             init: function () {
                 initDatepickers();
                 initMasks();
                 initSliders();
+                initOpenJobsInput();
             }
         };
 

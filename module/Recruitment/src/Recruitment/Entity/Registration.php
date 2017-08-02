@@ -25,6 +25,7 @@ use Recruitment\Entity\Person;
 use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\StudentInterview;
 use Recruitment\Entity\VolunteerInterview;
+use AdministrativeStructure\Entity\Job;
 use Doctrine\Common\Collections\Criteria;
 
 /**
@@ -155,6 +156,14 @@ class Registration
      * @ORM\Column(name="registration_volunteer_workwithus", type="string", length=700, nullable=true)
      */
     protected $volunteerWithUs;
+
+    /**
+     *
+     * @var Job
+     * @ORM\ManyToOne(targetEntity="\AdministrativeStructure\Entity\Job")
+     * @ORM\JoinColumn(name="job_id", referencedColumnName="job_id")
+     */
+    protected $job;
 
     /**
      * self-evaluation levels
@@ -734,6 +743,15 @@ class Registration
 
     /**
      * 
+     * @return Job
+     */
+    public function getJob()
+    {
+        return $this->job;
+    }
+    
+    /**
+     * 
      * @param VolunteerInterview $volunteerInterview
      * @return Recruitment\Entity\Registration
      */
@@ -797,6 +815,16 @@ class Registration
     public function setRegistrationStatus(Collection $registrationStatus)
     {
         $this->registrationStatus = $registrationStatus;
+        return $this;
+    }
+    
+    /**
+     * 
+     * @param Job $job
+     */
+    public function setJob(Job $job)
+    {
+        $this->job = $job;
         return $this;
     }
 

@@ -40,6 +40,8 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
         $this->setHydrator(new DoctrineHydrator($obj))
             ->setObject(new Recruitment());
 
+        $openJobOptions = $this->getJobs($obj);
+        
         $this->add(array(
                 'name' => 'recruitmentNumber',
                 'type' => 'Zend\Form\Element\Select',
@@ -115,6 +117,19 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 ),
                 'attributes' => array(
                     'class' => 'text-center',
+                ),
+            ))
+            ->add(array(
+                'name' => 'openJobs',
+                'type' => 'Zend\Form\Element\Select',
+                'attributes' => array(
+                    'multiple' => 'multiple',
+                    'size' => count($openJobOptions),
+                    'data-type-must-be' => Recruitment::VOLUNTEER_RECRUITMENT_TYPE,
+                ),
+                'options' => array(
+                    'label' => 'Selecione os cargos abertos',
+                    'value_options' => $openJobOptions,
                 ),
             ))
             ->add([
@@ -392,9 +407,35 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
             ++$year => $year,
         );
     }
+    
+    /**
+     * Retorna um array associativo com os ids e nomes de todos os cargos ativos.
+     * O array tem a forma conforme a seguir:
+     *  [
+     *      <id> => <jobName>,
+     *      .
+     *      .
+     *      .
+     *  ]
+     * 
+     * @param ObjectManager $obj - entity manager
+     * @return array
+     */
+    protected function getJobs(ObjectManager $obj) {
+        $jobs = $obj->getRepository('\AdministrativeStructure\Entity\Job')->findBy([
+            'isAvailable' => true
+        ]);
+        $jobNames = [];
+        
+        foreach ($jobs as $job) {
+            $jobNames[$job->getJobId()] = $job->getJobName();
+        }
+        
+        return $jobNames;
+    }
 
     public function getInputFilterSpecification()
-    {
+    {        
         return [
             'recruitmentNumber' => [
                 'required' => true,
@@ -485,6 +526,9 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
             ],
             'recruitmentType' => [
                 'required' => true,
+            ],
+            'openJobs' => [
+                'required' => false,
             ],
             'recruitmentSocioeconomicTarget' => [
                 'required' => false,

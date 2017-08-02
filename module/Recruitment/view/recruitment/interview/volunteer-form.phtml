@@ -86,6 +86,16 @@ $this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
                             <div class="box-header with-border">
                                 <button type="button" class="hide" data-widget="collapse"></button>
                                 <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
+                                <h3 class="box-title">Cargo desejado</h3>
+                            </div>
+                            <div class="box-body">
+                                <?php echo $this->registration->getJob()->getJobName(); ?>
+                            </div>
+                        </div>
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <button type="button" class="hide" data-widget="collapse"></button>
+                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
                                 <h3 class="box-title">Ocupação (Acadêmica, profissional)</h3>
                             </div>
                             <div class="box-body">
@@ -191,6 +201,7 @@ $this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
                             </div>
                         </div>
                     </div>
+                    <br>
                     <div class="box box-solid box-default">
                         <div class="box-header with-border">
                             <h4 class="box-title"><?php echo $this->formLabel($interview->get('interests')); ?></h4>
@@ -350,6 +361,9 @@ $this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
     }
     .slider-tick-label {
         margin-top: 1em;
+    }
+    .box-title label {
+        font-weight: 500;
     }
 </style>
 
