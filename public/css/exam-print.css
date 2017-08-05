@@ -147,7 +147,7 @@
     height: 210mm;
     padding: 10mm;
 }
-#answers-title {
+.tables-pages-header {
     height: 10mm;
 }
 .answers-table > tbody > tr {

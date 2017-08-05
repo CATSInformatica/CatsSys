@@ -25,10 +25,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
              * 
              */
             $('#print-answer-key').click(function () {
-                var answersTablesTitle = $('#answers-tables-title-template > div').clone();
-                answersTablesTitle.attr('id', 'answers-title');
-                
-                generateAnswerKey(answersTablesTitle);
+                generateAnswerKey();
                         
                 $('#answer-key-tables').print({
                     globalStyles: true,
@@ -342,8 +339,11 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
          * impressão para o pdf
          * 
          */
-        generateAnswerKey = function (answersTablesTitle) {
+        generateAnswerKey = function () {
             $('#answer-key-tables').html(''); 
+            
+            var tablesPagesHeader = $('#tables-pages-header-template > div').clone();
+            tablesPagesHeader.find('.tables-pages-header-title').html('GABARITO - ' + $('#exam-application-name').text());
             
             var CSVAnswers = "Numero,Resposta,Disciplina\n";
             var questions = $('.subject-block > .question-block, .parallel-subject-block > .question-block');
@@ -389,7 +389,6 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                 var lastPage = null;
                 if (tablePages.length === 0 || tablePages.last().find('table').length === 4) {
                     var newPage = $('<div class="answer-key-tables-page"></div>');
-                    newPage.append(answersTablesTitle.clone());
                     $('#answer-key-tables').append(newPage);
                 }
                 lastPage = $('#answer-key-tables > .answer-key-tables-page').last();
@@ -443,7 +442,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
              * @param {object} row - jQuery Object da linha a ser anexada
              */
             function appendRow(row) {
-                if ($('.answers-table:last > tbody > tr').length > 22) {
+                    newPage.append(tablesPagesHeader.clone());
                     addTable();
                 }
         
@@ -462,3 +461,5 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
 
     return prepareApplication;
 });
+                var NUMBER_OF_LINES_PER_TABLE = 22;
+                if ($('.answers-table:last > tbody > tr').length > NUMBER_OF_LINES_PER_TABLE) {
