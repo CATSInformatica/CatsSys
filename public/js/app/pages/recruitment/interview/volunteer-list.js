@@ -25,18 +25,36 @@ define(['app/pages/recruitment/interview/keep-alive',
     var volunteerList = (function () {
         
         /**
+         * Retorna o argumento de ordenação da tabela de candidatos
+         * 
+         * @returns {Array}
+         *  array do tipo:
+         *      [
+         *          [<column-number>, <ordering-mode>],
+         *          .
+         *          .
+         *          .
+         *      ]
+         *      
+         *  <ordering-mode> pode ser 'asc' ou 'desc'
+         */
+        getOrdering = function () {
+            return [
+                [6, 'asc'],     // cargo
+                [8, 'desc'],    // notas finais
+                [5, 'desc'],    // situação
+                [1, 'asc']      // número de inscrição
+            ];
+        }
+        
+        /**
          * Inicializa a tabela de candidatos
          * 
          */
         initDataTable = function () {
             registrationsTable = $('#volunteer-list-table').DataTable({
                 iDisplayLength: 50,
-                order: [
-                    [6, 'asc'],     // cargo
-                    [8, 'desc'],    // notas finais
-                    [5, 'desc'],    // situação
-                    [1, 'asc']      // número de inscrição
-                ]
+                order: getOrdering()
             });
         };
         
@@ -66,6 +84,16 @@ define(['app/pages/recruitment/interview/keep-alive',
          * 
          */
         initTableListeners = function () {
+            $('#job-select').on('change', function () {
+                var selectedJobId = +$(this).val();
+                if (selectedJobId > 0) {
+                    $('#volunteer-list-table tr').hide();
+                    $('.job-' + selectedJobId).show();
+                } else {
+                    $('#volunteer-list-table tr').show();                    
+                }
+            });
+            
             $('#volunteer-list-table').on("click", "td.details-control", function () {
                 var tr = $(this).closest("tr");
                 var registrationId = +tr.data("id");
@@ -447,12 +475,7 @@ define(['app/pages/recruitment/interview/keep-alive',
                                     .cell($('#final-rating-' + (e.newValue)))
                                     .data(finalRating);
                             $('#volunteer-list-table').DataTable()
-                                    .order(
-                                        [6, 'asc'],     // cargo
-                                        [8, 'desc'],    // notas finais
-                                        [5, 'desc'],    // situação
-                                        [1, 'asc']      // número de inscrição
-                                    )
+                                    .order(getOrdering())
                                     .draw();
                         });
                     }

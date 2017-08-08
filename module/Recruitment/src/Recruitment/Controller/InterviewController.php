@@ -194,17 +194,6 @@ class InterviewController extends AbstractEntityActionController
                 $form->bind($registration);
 
                 if ($request->isPost()) {
-
-                    $currentStatusType = (int) $registration
-                            ->getCurrentRegistrationStatus()
-                            ->getRecruitmentStatus()
-                            ->getNumericStatusType();
-
-                    if ($currentStatusType == RecruitmentStatus::STATUSTYPE_REGISTERED) {
-                        throw new RuntimeException('Este candidato ainda não foi convocado para entrevista '
-                        . 'ou aula teste');
-                    }
-                    
                     $data = $request->getPost()->toArray();
                     // No caso de alteração pelo sistema, não é necessário habilitar
                     // o checkbox registrationConsent
@@ -212,16 +201,9 @@ class InterviewController extends AbstractEntityActionController
                     $form->setData($data);
 
                     if ($form->isValid()) {
-
-                        if ($currentStatusType === RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW) {
-                            $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_INTERVIEWED);
-                        } else if ($currentStatusType === RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS) {
-                            $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_TESTCLASS_COMPLETE);
-                        }
-
                         $em->persist($registration);
                         $em->flush();
-                    }
+                    }                  
                 }
 
                 return new ViewModel(array(
@@ -523,7 +505,7 @@ class InterviewController extends AbstractEntityActionController
             $em = $this->getEntityManager();
             $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')
                 ->findLastClosed(Recruitment::VOLUNTEER_RECRUITMENT_TYPE);
-
+            
             $candidates = [];
 
             if (isset($recruitment['recruitmentId'])) {
@@ -541,7 +523,14 @@ class InterviewController extends AbstractEntityActionController
                         RecruitmentStatus::STATUSTYPE_VOLUNTEER,
                         
                 ]);
-            }
+                
+                $openJobsEntities = $em->find('Recruitment\Entity\Recruitment', $recruitment['recruitmentId'])->getOpenJobs();
+                $openJobs = [];
+                
+                foreach ($openJobsEntities as $job) {
+                    $openJobs[$job->getJobId()] = $job->getJobName();
+                }                
+            }            
 
             foreach ($candidates as $i => $candidate) {
                 $candidateRegistration = $em->find('Recruitment\Entity\Registration', $candidate['registrationId']);
@@ -570,18 +559,24 @@ class InterviewController extends AbstractEntityActionController
                 }
                 
                 $candidates[$i]['statusType'] = RecruitmentStatus::statusTypeToString($candidates[$i]['statusType']);
-                $candidates[$i]['job'] = $candidateRegistration->getJob()->getJobName();
+                
+                $candidates[$i]['desiredJobs'] = [];
+                foreach ($candidateRegistration->getDesiredJobs() as $job) {
+                    $candidates[$i]['desiredJobs'][$job->getJobId()] = $job->getJobName();
+                }
             }
 
             return new ViewModel([
                 'recruitment' => $recruitment,
                 'candidates' => $candidates,
+                'openJobs' => $openJobs,
             ]);
         } catch (\Exception $ex) {
             return new ViewModel([
                 'message' => $ex->getMessage(),
                 'recruitment' => null,
                 'candidates' => null,
+                'openJobs' => null,
             ]);
         }
     }
@@ -758,15 +753,11 @@ class InterviewController extends AbstractEntityActionController
                                 ->getCurrentRegistrationStatus()
                                 ->getRecruitmentStatus()
                                 ->getNumericStatusType();
-
-                        /* Em qualquer um desses status o candidato avança para
-                         * entrevistado. Fora desses status não há modificações
-                         * de status, o candidato apenas tem sua entrevista atualizada.
-                         */
-                        if (in_array($status, [
-                                RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW,
-                            ])) {
+   
+                        if ($status === RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW) {
                             $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_INTERVIEWED);
+                        } else if ($status === RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS) {
+                            $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_TESTCLASS_COMPLETE);
                         }
                     
                         if ($interviewers !== $data['volunteerInterview']['interviewers']) {

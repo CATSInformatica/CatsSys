@@ -159,11 +159,13 @@ class Registration
 
     /**
      *
-     * @var Job
-     * @ORM\ManyToOne(targetEntity="\AdministrativeStructure\Entity\Job")
-     * @ORM\JoinColumn(name="job_id", referencedColumnName="job_id")
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity="\AdministrativeStructure\Entity\Job")
+     * @ORM\JoinTable(name="registration_desired_jobs",
+     *      joinColumns={@ORM\JoinColumn(name="registration_id", referencedColumnName="registration_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="job_id", referencedColumnName="job_id")})
      */
-    protected $job;
+    protected $desiredJobs;
 
     /**
      * self-evaluation levels
@@ -250,6 +252,7 @@ class Registration
         $this->registrationDate = new \DateTime('now');
         $this->recruitmentKnowAbout = new ArrayCollection();
         $this->registrationStatus = new ArrayCollection();
+        $this->desiredJobs = new ArrayCollection();
     }
 
     /**
@@ -740,16 +743,16 @@ class Registration
     {
         return $this->studentInterview;
     }
-
+    
     /**
      * 
-     * @return Job
+     * @return Collection
      */
-    public function getJob()
+    public function getDesiredJobs()
     {
-        return $this->job;
+        return $this->desiredJobs;
     }
-    
+            
     /**
      * 
      * @param VolunteerInterview $volunteerInterview
@@ -817,15 +820,77 @@ class Registration
         $this->registrationStatus = $registrationStatus;
         return $this;
     }
-    
+
+    /**
+     * 
+     * @param Collection $desiredJobs
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function setDesiredJobs(Collection $desiredJobs)
+    {
+        $this->desiredJobs = $desiredJobs;
+        return $this;
+    }
+        
+    /**
+     * @param Job $job
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function addDesiredJob(Job $job)
+    {
+        if (!$this->hasDesiredJob($job)) {
+            $this->desiredJobs->add($job);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param Collection $jobs
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function addDesiredJobs(Collection $jobs)
+    {
+        foreach ($jobs as $job) {
+            if (!$this->hasDesiredJob($job)) {
+                $this->desiredJobs->add($job);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @param Job $job
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function removeDesiredJob(Job $job)
+    {
+        $this->desiredJobs->removeElement($job);
+        return $this;
+    }
+
+    /**
+     *
+     * @param Collection $jobs
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function removeDesiredJobs(Collection $jobs)
+    {
+        foreach ($jobs as $job) {
+            $this->desiredJobs->removeElement($job);
+        }
+        return $this;
+    }
+
     /**
      * 
      * @param Job $job
+     * @return boolean
      */
-    public function setJob(Job $job)
+    public function hasDesiredJob(Job $job)
     {
-        $this->job = $job;
-        return $this;
+        return $this->desiredJobs->contains($job);
     }
 
 }

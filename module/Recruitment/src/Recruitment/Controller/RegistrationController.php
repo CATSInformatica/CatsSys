@@ -10,6 +10,7 @@ namespace Recruitment\Controller;
 use Authentication\Service\EmailSenderServiceInterface;
 use Database\Controller\AbstractEntityActionController;
 use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
+use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
 use InvalidArgumentException;
 use Recruitment\Entity\Recruitment;
@@ -259,6 +260,7 @@ class RegistrationController extends AbstractEntityActionController
      * @todo
      *      - Concluir o template do comprovante de inscrição
      *      - Mostrar o comprovante de inscrição no navegador após concluir a inscrição.
+     *      - Utilizar o Hydrator também para a coleção de cargos desejados (desiredJobs), se possível.
      * 
      * Exibe o formulário de inscrição (alunos e voluntários) e faz a validação do envio.
      * 
@@ -274,7 +276,6 @@ class RegistrationController extends AbstractEntityActionController
      * Caso a pessoa não possua cadastro será criada uma nova pessoa e uma nova inscrição, ou seja:
      *  - Insert Recruitment\Entity\Person
      *  - Insert Recruitment\Entity\Registration
-     * 
      * 
      * @return ViewModel Formulário de inscrição
      */
@@ -320,10 +321,11 @@ class RegistrationController extends AbstractEntityActionController
 
             $registration = new Registration();
             $form->bind($registration);
-            $form->setData($request->getPost());
+            $data = $request->getPost();
+            $form->setData($data);
             
             if ($form->isValid()) {
-
+                
                 try {
                     // verifica se a pessoa já está cadastrada.
                     $this->adjustPerson($registration);
@@ -331,7 +333,17 @@ class RegistrationController extends AbstractEntityActionController
                     $this->updateRegistrationStatus(
                         $registration, RecruitmentStatus::STATUSTYPE_REGISTERED, $registration->getRegistrationDateAsDateTime()
                     );
-
+                    
+                    if ($type === Recruitment::VOLUNTEER_RECRUITMENT_TYPE) {
+                        $jobs = new ArrayCollection();
+                        foreach ($data['registration']['desiredJobs'] as $jobId) {
+                            $job = $em->find('AdministrativeStructure\Entity\Job', $jobId);
+                            $jobs->add($job);
+                        }
+                        
+                        $registration->setDesiredJobs($jobs);
+                    }
+                    
                     // atribui a qual processo seletivo a inscrição pertence
                     $registration->setRecruitment($recruitment);
                     
@@ -392,7 +404,7 @@ class RegistrationController extends AbstractEntityActionController
                     ));
                 } catch (Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
-
+                        
                         if ($type == Recruitment::STUDENT_RECRUITMENT_TYPE) {
                             $message = 'Já existe uma inscrição associada ao CPF informado. Por favor, consulte a área do candidato';
                         } else {

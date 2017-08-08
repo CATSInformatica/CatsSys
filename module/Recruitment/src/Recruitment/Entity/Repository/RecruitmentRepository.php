@@ -52,12 +52,12 @@ class RecruitmentRepository extends EntityRepository
     {
         return $this->_em
                 ->createQuery('SELECT r FROM Recruitment\Entity\Recruitment r '
-                    . 'WHERE r.recruitmentType = :type'// AND '
-                    //. ':date BETWEEN r.recruitmentBeginDate and r.recruitmentEndDate'
+                    . 'WHERE r.recruitmentType = :type AND '
+                    . ':date BETWEEN r.recruitmentBeginDate and r.recruitmentEndDate'
                 )
                 ->setParameters(array(
                     'type' => $type,
-                    //'date' => $date,
+                    'date' => $date,
                 ))
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
