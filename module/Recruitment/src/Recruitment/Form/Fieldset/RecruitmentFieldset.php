@@ -425,13 +425,13 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
         $jobs = $obj->getRepository('\AdministrativeStructure\Entity\Job')->findBy([
             'isAvailable' => true
         ]);
-        $jobNames = [];
+        $jobsNames = [];
         
         foreach ($jobs as $job) {
-            $jobNames[$job->getJobId()] = $job->getJobName();
+            $jobsNames[$job->getJobId()] = $job->getJobName();
         }
         
-        return $jobNames;
+        return $jobsNames;
     }
 
     public function getInputFilterSpecification()

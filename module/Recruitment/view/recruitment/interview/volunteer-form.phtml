@@ -86,10 +86,16 @@ $this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
                             <div class="box-header with-border">
                                 <button type="button" class="hide" data-widget="collapse"></button>
                                 <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
-                                <h3 class="box-title">Cargo desejado</h3>
+                                <h3 class="box-title">Cargo(s) desejado(s)</h3>
                             </div>
                             <div class="box-body">
-                                <?php echo $this->registration->getJob()->getJobName(); ?>
+                                <ul>
+                                    <?php foreach ($this->registration->getDesiredJobs() as $job) : ?>
+                                    <li>
+                                        <?php echo $job->getJobName(); ?>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
                             </div>
                         </div>
                         <div class="box box-solid box-default">

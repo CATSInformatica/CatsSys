@@ -15,13 +15,16 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(['app/pages/recruitment/interview/profile', 'app/pages/recruitment/interview/volunteer-form'], function (profile, volunteerForm) {
+define(['app/pages/recruitment/interview/profile', 
+    'app/pages/recruitment/interview/volunteer-form', 
+    'app/pages/recruitment/registration/registration'], function (profile, volunteerForm, registrationForm) {
     var volunteerProfile = (function () {
         
         return {
             init: function () {
                 profile.init();
                 volunteerForm.initSlider();
+                registrationForm.initDesiredJobsInput();
             }
         };
     }());

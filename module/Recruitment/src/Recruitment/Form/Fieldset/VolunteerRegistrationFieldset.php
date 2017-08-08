@@ -40,16 +40,19 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
         
         $this
             ->add(array(
-                'name' => 'job',
+                'name' => 'desiredJobs',
                 'type' => 'DoctrineModule\Form\Element\ObjectSelect',
+                'attributes' => array(
+                    'multiple' => 'multiple',
+                    'size' => count($openJobsOptions),
+                    'class' => 'allow-multiple-clicks',
+                ),
                 'options' => array(
-                    'label' => 'Cargo desejado',
+                    'label' => 'Cargo(s) desejado(s)',
+                    'value_options' => $openJobsOptions,
                     'object_manager' => $obj,
                     'target_class' => 'AdministrativeStructure\Entity\Job',
                     'property' => 'jobName',
-                    'display_empty_item' => true,
-                    'empty_item_label' => 'Selecione o cargo desejado',
-                    'value_options' => $openJobsOptions,
                 ),
             ))
             ->add(array(
@@ -262,16 +265,18 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
     private function getOpenJobsOptions(Recruitment $recruitment) {
         $jobs = $recruitment->getOpenJobs();
         $jobsNames = [];
+        
         foreach ($jobs as $job) {
             $jobsNames[$job->getJobId()] = $job->getJobName();
         }
+        
         return $jobsNames;
     }
 
     public function getInputFilterSpecification()
     {
         return array(
-            'job' => array(
+            'desiredJobs' => array(
                 'required' => true,
             ),
             'occupation' => array(
