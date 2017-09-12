@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -44,7 +44,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
      *      },
      * ...
      * }
-     * 
+     *
      * @type object
      */
     var studentAnswers = null;
@@ -54,29 +54,29 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
      * finalTemplate = {
      *      groups: ["Group 1", "Group 2", ...],
      *      answers: [
-     *          {group: "Group 1", answer: "A"}, 
-     *          {group: "Group 1", answer: "D"}, 
-     *          ..., 
-     *          {group: "Group 2", answer: "C"}, 
+     *          {group: "Group 1", answer: "A"},
+     *          {group: "Group 1", answer: "D"},
+     *          ...,
+     *          {group: "Group 2", answer: "C"},
      *          ...
      *      ]
      * }
-     * 
+     *
      * Exemplo
      * finalTemplate = {
      *      groups: [
-     *          "Linguagens Códigos e Suas Tecnologias", 
+     *          "Linguagens Códigos e Suas Tecnologias",
      *          "Ciências da Natureza e Suas Tecnologias"
      *      ],
      *      answers: [
-     *          {group: "Linguagens Códigos e Suas Tecnologias", answer: "A"}, 
-     *          {group: "Linguagens Códigos e Suas Tecnologias", answer: "D"}, 
+     *          {group: "Linguagens Códigos e Suas Tecnologias", answer: "A"},
+     *          {group: "Linguagens Códigos e Suas Tecnologias", answer: "D"},
      *          ...,
-     *          {group: "Ciências da Natureza e Suas Tecnologias", answer: "C"}, 
+     *          {group: "Ciências da Natureza e Suas Tecnologias", answer: "C"},
      *          ...
      *      ]
      * }
-     * 
+     *
      * @type object
      */
     var finalTemplate = {
@@ -270,7 +270,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
 
     /**
      * Gabarito
-     * 
+     *
      * @returns {undefined}
      */
     createTemplateTable = function () {
@@ -302,7 +302,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
     };
     /**
      * Cria o vetor de respostas combinando com os nomes dos alunos
-     * 
+     *
      * @returns {undefined}
      */
     processStudents = function () {
@@ -331,7 +331,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
     };
     /**
      * Organiza o gabarito.
-     * 
+     *
      * @returns {undefined}
      */
     processTemplate = function () {
@@ -341,7 +341,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
         finalTemplate.answers = [];
         var group = null;
         for (var i = 1; i < csvData.template[1].length; i++) {
-            group = csvData.template[0][i].split("]")[0].substring(1);
+            group = csvData.template[0][i].split(".")[0];
             if (lastGroup !== group) {
                 lastGroup = group;
                 finalTemplate.groups.push(group);
@@ -356,7 +356,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
     };
     /**
      * Lê os arquivos csv
-     * 
+     *
      * @returns {undefined}
      */
     bindImportEvent = function () {
@@ -384,7 +384,7 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
 
 
     /**
-     * 
+     *
      * @param {type} classId
      * @returns {jqXHR} promise
      */
@@ -413,6 +413,6 @@ define(['bootbox', 'datatable', 'jquerycsv'], function (bootbox) {
             }
         };
     }());
-    
+
     return preview;
 });
