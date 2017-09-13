@@ -65,7 +65,7 @@ class Warning
      * 
      * @return integer
      */
-    function getWarningId()
+    public function getWarningId()
     {
         return $this->warningId;
     }
@@ -74,7 +74,7 @@ class Warning
      * 
      * @return SchoolManagement\Entity\Enrollment
      */
-    function getEnrollment()
+    public function getEnrollment()
     {
         return $this->enrollment;
     }
@@ -83,7 +83,7 @@ class Warning
      * 
      * @return SchoolManagement\Entity\WarningType
      */
-    function getWarningType()
+    public function getWarningType()
     {
         return $this->warningType;
     }
@@ -92,7 +92,7 @@ class Warning
      * 
      * @return DateTime
      */
-    function getWarningDate()
+    public function getWarningDate()
     {
         return $this->warningDate;
     }
@@ -101,7 +101,7 @@ class Warning
      * 
      * @return string
      */
-    function getWarningComment()
+    public function getWarningComment()
     {
         return $this->warningComment;
     }
@@ -111,7 +111,7 @@ class Warning
      * @param $enrollment
      * @return Warning
      */
-    function setEnrollment(Enrollment $enrollment)
+    public function setEnrollment(Enrollment $enrollment)
     {
         $enrollment->addWarning($this);
         $this->enrollment = $enrollment;
@@ -123,7 +123,7 @@ class Warning
      * @param $warningType
      * @return Warning
      */
-    function setWarningType(WarningType $warningType)
+    public function setWarningType(WarningType $warningType)
     {
         $this->warningType = $warningType;
         return $this;
@@ -134,7 +134,7 @@ class Warning
      * @param $warningDate
      * @return Warning
      */
-    function setWarningDate(\DateTime $warningDate)
+    public function setWarningDate(\DateTime $warningDate)
     {
         $this->warningDate = $warningDate;
         return $this;
@@ -145,7 +145,7 @@ class Warning
      * @param $warningComment
      * @return Warning
      */
-    function setWarningComment($warningComment)
+    public function setWarningComment($warningComment)
     {
         $this->warningComment = $warningComment;
         return $this;

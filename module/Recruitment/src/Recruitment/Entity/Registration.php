@@ -23,6 +23,9 @@ use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
 use Recruitment\Entity\Person;
 use Recruitment\Entity\Recruitment;
+use Recruitment\Entity\StudentInterview;
+use Recruitment\Entity\VolunteerInterview;
+use AdministrativeStructure\Entity\Job;
 use Doctrine\Common\Collections\Criteria;
 
 /**
@@ -136,6 +139,13 @@ class Registration
     /**
      *
      * @var string
+     * @ORM\Column(name="registration_extension_projects", type="string", length=400, nullable=true)
+     */
+    protected $extensionProjects;
+
+    /**
+     *
+     * @var string
      * @ORM\Column(name="registration_whywork_withus", type="string", length=700, nullable=true)
      */
     protected $whyWorkWithUs;
@@ -146,6 +156,16 @@ class Registration
      * @ORM\Column(name="registration_volunteer_workwithus", type="string", length=700, nullable=true)
      */
     protected $volunteerWithUs;
+
+    /**
+     *
+     * @var Collection
+     * @ORM\ManyToMany(targetEntity="\AdministrativeStructure\Entity\Job")
+     * @ORM\JoinTable(name="registration_desired_jobs",
+     *      joinColumns={@ORM\JoinColumn(name="registration_id", referencedColumnName="registration_id")},
+     *      inverseJoinColumns={@ORM\JoinColumn(name="job_id", referencedColumnName="job_id")})
+     */
+    protected $desiredJobs;
 
     /**
      * self-evaluation levels
@@ -232,6 +252,7 @@ class Registration
         $this->registrationDate = new \DateTime('now');
         $this->recruitmentKnowAbout = new ArrayCollection();
         $this->registrationStatus = new ArrayCollection();
+        $this->desiredJobs = new ArrayCollection();
     }
 
     /**
@@ -412,6 +433,15 @@ class Registration
     public function getHowAndWhenKnowUs()
     {
         return $this->howAndWhenKnowUs;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getExtensionProjects()
+    {
+        return $this->extensionProjects;
     }
 
     /**
@@ -698,22 +728,11 @@ class Registration
 
     /**
      * 
-     * @return Recruitment\Entity\VolunteerInterview
+     * @return VolunteerInterview
      */
     public function getVolunteerInterview()
     {
         return $this->volunteerInterview;
-    }
-
-    /**
-     * 
-     * @param Recruitment\Entity\VolunteerInterview $volunteerInterview
-     * @return Recruitment\Entity\Registration
-     */
-    public function setVolunteerInterview(VolunteerInterview $volunteerInterview)
-    {
-        $this->volunteerInterview = $volunteerInterview;
-        return $this;
     }
 
     /**
@@ -724,10 +743,31 @@ class Registration
     {
         return $this->studentInterview;
     }
+    
+    /**
+     * 
+     * @return Collection
+     */
+    public function getDesiredJobs()
+    {
+        return $this->desiredJobs;
+    }
+            
+    /**
+     * 
+     * @param VolunteerInterview $volunteerInterview
+     * @return Recruitment\Entity\Registration
+     */
+    public function setVolunteerInterview(VolunteerInterview $volunteerInterview)
+    {
+        $volunteerInterview->setRegistration($this);
+        $this->volunteerInterview = $volunteerInterview;
+        return $this;
+    }
 
     /**
      * 
-     * @param Recruitment\Entity\StudentInterview $studentInterview
+     * @param StudentInterview $studentInterview
      * @return Recruitment\Entity\Registration
      */
     public function setStudentInterview(StudentInterview $studentInterview)
@@ -736,4 +776,121 @@ class Registration
         $this->studentInterview = $studentInterview;
         return $this;
     }
+   
+    /**
+     * 
+     * @param \DateTime $registrationDate
+     * @return \Recruitment\Entity\Registration
+     */
+    public function setRegistrationDate(\DateTime $registrationDate)
+    {
+        $this->registrationDate = $registrationDate;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Collection $recruitmentKnowAbout
+     * @return \Recruitment\Entity\Registration
+     */
+    public function setRecruitmentKnowAbout(Collection $recruitmentKnowAbout)
+    {
+        $this->recruitmentKnowAbout = $recruitmentKnowAbout;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $extensionProjects
+     * @return \Recruitment\Entity\Registration
+     */
+    public function setExtensionProjects($extensionProjects)
+    {
+        $this->extensionProjects = $extensionProjects;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Collection $registrationStatus
+     * @return \Recruitment\Entity\Registration
+     */
+    public function setRegistrationStatus(Collection $registrationStatus)
+    {
+        $this->registrationStatus = $registrationStatus;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Collection $desiredJobs
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function setDesiredJobs(Collection $desiredJobs)
+    {
+        $this->desiredJobs = $desiredJobs;
+        return $this;
+    }
+        
+    /**
+     * @param Job $job
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function addDesiredJob(Job $job)
+    {
+        if (!$this->hasDesiredJob($job)) {
+            $this->desiredJobs->add($job);
+        }
+
+        return $this;
+    }
+
+    /**
+     *
+     * @param Collection $jobs
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function addDesiredJobs(Collection $jobs)
+    {
+        foreach ($jobs as $job) {
+            if (!$this->hasDesiredJob($job)) {
+                $this->desiredJobs->add($job);
+            }
+        }
+        return $this;
+    }
+
+    /**
+     * @param Job $job
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function removeDesiredJob(Job $job)
+    {
+        $this->desiredJobs->removeElement($job);
+        return $this;
+    }
+
+    /**
+     *
+     * @param Collection $jobs
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function removeDesiredJobs(Collection $jobs)
+    {
+        foreach ($jobs as $job) {
+            $this->desiredJobs->removeElement($job);
+        }
+        return $this;
+    }
+
+    /**
+     * 
+     * @param Job $job
+     * @return boolean
+     */
+    public function hasDesiredJob(Job $job)
+    {
+        return $this->desiredJobs->contains($job);
+    }
+
 }

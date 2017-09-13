@@ -1,7 +1,7 @@
 <?php
 
 /*
- * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
+ * Copyright (C) 2017 Gabriel Pereira <rickardch@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -19,28 +19,29 @@
 
 namespace Recruitment\Form;
 
-use Zend\Form\Form;
 use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
-use Recruitment\Form\Fieldset\VolunteerInterviewFieldset;
+use Recruitment\Form\Fieldset\InterviewerEvaluationFieldset;
+use Recruitment\Entity\VolunteerInterview;
+use Zend\Form\Form;
 
 /**
- * Description of VolunteerInterviewForm
+ * Description of InterviewerEvaluationForm
  *
- * @author Márcio Dias <marciojr91@gmail.com>
+ * @author Gabriel Pereira <rickardch@gmail.com>
  */
-class VolunteerInterviewForm extends Form
+class InterviewerEvaluationForm extends Form
 {
-
-    public function __construct(ObjectManager $obj, $options = null)
+    
+     public function __construct(ObjectManager $obj, VolunteerInterview $interview)
     {
-        parent::__construct('volunteerInterviewForm');
+        parent::__construct('interviewerEvaluationForm');
         $this->setHydrator(new DoctrineHydrator($obj));
-        
-        $volunteerInterviewFieldset = new VolunteerInterviewFieldset($obj, $options);
-        $volunteerInterviewFieldset->setUseAsBaseFieldset(true);
-        $this->add($volunteerInterviewFieldset);
-        
+
+        $interviewerEvaluationFieldset = new InterviewerEvaluationFieldset($obj, $interview);
+        $interviewerEvaluationFieldset->setUseAsBaseFieldset(true);
+        $this->add($interviewerEvaluationFieldset);
+
         $this->add(array(
             'name' => 'submit',
             'type' => 'submit',
@@ -50,5 +51,5 @@ class VolunteerInterviewForm extends Form
             )
         ));
     }
-
+    
 }

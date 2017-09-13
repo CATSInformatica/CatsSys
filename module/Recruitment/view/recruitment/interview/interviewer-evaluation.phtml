@@ -1,0 +1,145 @@
+<?php 
+    $this->headLink()->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/bootstrap-slider/slider.css')); 
+    $this->headTitle()->append('PSV - Avaliação do candidato')->setSeparator(' - ');
+?>
+<section class="content">
+    <div class="row">
+        <div class="col-md-10 col-md-offset-1">
+            <?php if (isset($message)) : ?>
+                <div class="callout callout-warning">
+                    <h4><?php echo $message; ?></h4>
+                </div>
+            <?php endif; ?>      
+            
+            <?php
+            if ($this->form !== null) :
+                $this->form->prepare();
+                echo $this->form()->openTag($form);
+                $evaluation = $this->form->get('interviewerEvaluationFieldset'); 
+                ?>
+            
+                <div class="col-xs-12">
+                    <?php echo $this->formRow($evaluation->get('interviewerName')); ?>
+                </div>
+            
+                <div class="col-xs-12">  
+                    <div class="green-slider form-group 
+                        <?php echo $this->formElementErrors($evaluation->get('volunteerProfileRating')) !== "" ? 'has-error' : ''; ?>" >
+                        <div class="callout callout-success">
+                            <h4>
+                                <label>
+                                    <?php echo $this->formLabel($evaluation->get('volunteerProfileRating')); ?>
+                                </label>                                
+                            </h4>                            
+                        </div>
+                        <br>
+                        <?php echo $this->formText($evaluation->get('volunteerProfileRating')); ?> 
+                        <?php echo $this->formElementErrors($evaluation->get('volunteerProfileRating')); ?>  
+                    </div>         
+                </div>
+            
+                <div class="col-xs-12">
+                    <?php echo $this->formRow($evaluation->get('volunteerProfile')); ?>
+                </div>
+            
+                <div class="col-xs-12">
+                    <div class="blue-slider form-group 
+                        <?php echo $this->formElementErrors($evaluation->get('volunteerAvailabilityRating')) !== "" ? 'has-error' : ''; ?>" >
+                        <div class="callout callout-info">
+                            <h4>
+                                <label>
+                                    <?php echo $this->formLabel($evaluation->get('volunteerAvailabilityRating')); ?>
+                                </label>                                
+                            </h4>                            
+                        </div>
+                        <br>
+                        <?php echo $this->formText($evaluation->get('volunteerAvailabilityRating')); ?> 
+                        <?php echo $this->formElementErrors($evaluation->get('volunteerAvailabilityRating')); ?>  
+                    </div>   
+                </div>
+            
+                <div class="col-xs-12">
+                    <?php echo $this->formRow($evaluation->get('volunteerAvailability')); ?>
+                </div>
+            
+                <div class="col-xs-12">
+                    <div class="orange-slider form-group 
+                        <?php echo $this->formElementErrors($evaluation->get('volunteerResponsabilityAndCommitmentRating')) !== "" ? 'has-error' : ''; ?>" >
+                        <div class="callout callout-warning">
+                            <h4>
+                                <label>
+                                    <?php echo $this->formLabel($evaluation->get('volunteerResponsabilityAndCommitmentRating')); ?>
+                                </label>                                
+                            </h4>                            
+                        </div>
+                        <br>
+                        <?php echo $this->formText($evaluation->get('volunteerResponsabilityAndCommitmentRating')); ?> 
+                        <?php echo $this->formElementErrors($evaluation->get('volunteerResponsabilityAndCommitmentRating')); ?>  
+                    </div>   
+                </div>
+            
+                <div class="col-xs-12">
+                    <?php echo $this->formRow($evaluation->get('volunteerResponsabilityAndCommitment')); ?>
+                </div>
+            
+                <div class="col-xs-12">
+                    <div class="red-slider form-group 
+                        <?php echo $this->formElementErrors($evaluation->get('volunteerOverallRating')) !== "" ? 'has-error' : ''; ?>" >
+                        <div class="callout callout-danger">
+                            <h4>
+                                <label>
+                                    <?php echo $this->formLabel($evaluation->get('volunteerOverallRating')); ?>
+                                </label>                                
+                            </h4>                            
+                        </div>
+                        <br>
+                        <?php echo $this->formText($evaluation->get('volunteerOverallRating')); ?> 
+                        <?php echo $this->formElementErrors($evaluation->get('volunteerOverallRating')); ?>  
+                    </div> 
+                </div>
+            
+                <div class="col-xs-12">
+                    <?php echo $this->formRow($evaluation->get('volunteerOverallRemarks')); ?>
+                </div>
+            
+                <div class="col-xs-12">
+                    <?php echo $this->formRow($form->get('submit')); ?>
+                </div>
+                <?php echo $this->form()->closeTag(); ?>
+            <?php endif; ?>
+        </div>        
+    </div>
+</section>
+
+<style>
+    
+    .green-slider .slider-selection {
+        background: #00a65a;
+    }
+    
+    .blue-slider .slider-selection {
+        background: #00c0ef;
+    }
+    
+    .orange-slider .slider-selection {
+        background: #f39c12;
+    }
+    
+    .red-slider .slider-selection {
+        background: #dd4b39;
+    }
+    
+</style>
+
+<script>    
+    appConfig = (function () {
+        var scriptSrc = 'app/pages/recruitment/interview/interviewer-evaluation';
+
+        return {
+            getScriptSrc: function () {
+                return scriptSrc;
+            }
+        };
+
+    })();
+</script>

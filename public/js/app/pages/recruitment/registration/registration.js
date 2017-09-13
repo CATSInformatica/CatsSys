@@ -39,12 +39,31 @@ define(['moment', 'masks', 'app/models/Service', 'jquery', 'datetimepicker'], fu
                 dataHolder: $('input[name*=addressPostalCode]')
             });
         };
+       
+        /**
+         * Permite que o usuário faça múltiplos cliques para selecionar os cargos 
+         * desejados, ao invés de precisar utilizar a tecla Ctrl para manter
+         * as seleções já feitas.
+         * A funcionalidade é aplicada a qualquer campo do tipo 'select' que possua
+         * a classe 'allow-multiple-clicks'
+         */
+        initDesiredJobsInput = function () {  
+            $('.allow-multiple-clicks option').mousedown(function(e) {
+                e.preventDefault();
+                $(this).prop('selected', !$(this).prop('selected'));
+                return false;
+            });
+        };
 
         return {
             init: function () {
                 initDatepickers();
                 initMasks();
                 initServices();
+                initDesiredJobsInput();
+            },
+            initDesiredJobsInput: function() {
+                initDesiredJobsInput();
             }
         };
     }());

@@ -210,6 +210,9 @@ $addresses = $person->getAddresses();
                                 array(
                                 'form' => $regForm,
                             ));
+        
+                            echo $this->formRow($form->get('registrationCsrf'));
+                            
                         }
                         ?>
 

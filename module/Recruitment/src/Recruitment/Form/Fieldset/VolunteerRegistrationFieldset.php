@@ -5,6 +5,7 @@ namespace Recruitment\Form\Fieldset;
 use Doctrine\Common\Persistence\ObjectManager;
 use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Recruitment\Entity\Registration;
+use Recruitment\Entity\Recruitment;
 use Zend\InputFilter\InputFilterProviderInterface;
 
 /**
@@ -20,14 +21,40 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
         $this->setHydrator(new DoctrineHydrator($obj))
             ->setObject(new Registration());
 
-        if (is_array($options) && !array_key_exists('interview', $options)) {
-            throw new \InvalidArgumentException('The `options` array must contain the key `interview`');
+        if (is_array($options)) {
+            if (!array_key_exists('interview', $options)) {
+                throw new \InvalidArgumentException('The `options` array must contain the key `interview`');
+            }
+            if (!array_key_exists('recruitment', $options)) {
+                throw new \InvalidArgumentException('The `options` array must contain the key `recruitment`');
+            }
         }
 
-
         parent::__construct($obj, $options);
-
+        
+        $this->get('person')->get('personFirstName')->setAttribute('placeholder', 'Nome');
+        $this->get('person')->get('personFirstName')->setLabel('Nome (inclua todos, se mais de um)*');
+        $this->get('person')->get('personLastName')->setLabel('Sobrenome (inclua todos, se mais de um)*');
+        
+        $openJobsOptions = $this->getOpenJobsOptions($options['recruitment']);
+        
         $this
+            ->add(array(
+                'name' => 'desiredJobs',
+                'type' => 'DoctrineModule\Form\Element\ObjectSelect',
+                'attributes' => array(
+                    'multiple' => 'multiple',
+                    'size' => count($openJobsOptions),
+                    'class' => 'allow-multiple-clicks',
+                ),
+                'options' => array(
+                    'label' => 'Cargo(s) desejado(s)',
+                    'value_options' => $openJobsOptions,
+                    'object_manager' => $obj,
+                    'target_class' => 'AdministrativeStructure\Entity\Job',
+                    'property' => 'jobName',
+                ),
+            ))
             ->add(array(
                 'name' => 'occupation',
                 'type' => 'textarea',
@@ -55,7 +82,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                     'rows' => 5,
                 ),
                 'options' => array(
-                    'label' => 'Já fez trabalho voluntário? Descreva*',
+                    'label' => 'O que pensa sobre trabalho voluntário? Já fez? Descreva*',
                 ),
             ))
             ->add(array(
@@ -65,7 +92,17 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                     'rows' => 5,
                 ),
                 'options' => array(
-                    'label' => 'Como e quando nos conheceu?*',
+                    'label' => 'Como e quando conheceu o CATS?*',
+                ),
+            ))
+            ->add(array(
+                'name' => 'extensionProjects',
+                'type' => 'textarea',
+                'attributes' => array(
+                    'rows' => 5,
+                ),
+                'options' => array(
+                    'label' => 'Participa de outro projeto de extensão?*',
                 ),
             ))
             ->add(array(
@@ -75,7 +112,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                     'rows' => 5,
                 ),
                 'options' => array(
-                    'label' => 'Por que escolheu se inscrever?*',
+                    'label' => 'Por que escolheu se inscrever no CATS? Tentou outros projetos?*',
                 ),
             ))
             ->add(array(
@@ -85,17 +122,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                     'rows' => 5,
                 ),
                 'options' => array(
-                    'label' => 'O que espera do trabalho voluntário?*',
-                ),
-            ))
-            ->add(array(
-                'name' => 'whyWorkWithUs',
-                'type' => 'textarea',
-                'attributes' => array(
-                    'rows' => 5,
-                ),
-                'options' => array(
-                    'label' => 'Por que escolheu se inscrever?*',
+                    'label' => 'O que espera do trabalho voluntário no CATS?*',
                 ),
             ))
             ->add(array(
@@ -221,10 +248,37 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
             $this->add(new VolunteerInterviewFieldset($obj));
         }
     }
+    
+    /**
+     * Retorna um array associativo com os ids e nomes dos cargos abertos do PSV.
+     * O array tem a forma conforme a seguir:
+     *  [
+     *      <id> => <jobName>,
+     *      .
+     *      .
+     *      .
+     *  ]
+     * 
+     * @param Recruitment $recruitment - PSV
+     * @return array
+     */
+    private function getOpenJobsOptions(Recruitment $recruitment) {
+        $jobs = $recruitment->getOpenJobs();
+        $jobsNames = [];
+        
+        foreach ($jobs as $job) {
+            $jobsNames[$job->getJobId()] = $job->getJobName();
+        }
+        
+        return $jobsNames;
+    }
 
     public function getInputFilterSpecification()
     {
         return array(
+            'desiredJobs' => array(
+                'required' => true,
+            ),
             'occupation' => array(
                 'required' => true,
                 'filters' => array(
@@ -288,6 +342,23 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                         'options' => array(
                             'min' => 3,
                             'max' => 700,
+                            'inclusive' => true,
+                        ),
+                    ),
+                ),
+            ),
+            'extensionProjects' => array(
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StringTrim'),
+                    array('name' => 'StripTags'),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'StringLength',
+                        'options' => array(
+                            'min' => 3,
+                            'max' => 400,
                             'inclusive' => true,
                         ),
                     ),
