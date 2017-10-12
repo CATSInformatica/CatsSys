@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -89,7 +89,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
         /**
          * Done
-         * 
+         *
          * @returns {undefined}
          */
         addDataToTable = function () {
@@ -117,7 +117,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
         /**
          * Done
-         * 
+         *
          * @returns {undefined}
          */
         readAnswers = function () {
@@ -163,26 +163,26 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
                 ans = loadedAnswers[loadedCsvData[i][0]].answers;
                 questionCounter = chosenExam.content.questionsStartAtNumber;
-                
+
                 loadedSubjects.forEach(function (subject) {
                     group = mapToFileGroup[subject.name];
                     objFg = fileGroups[group];
-                    
+
                     var ansArr = loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount);
-                    
+
                     for(var q = 0; q < ansArr.length; q++, questionCounter++) {
                         ans[questionCounter] = ansArr[q];
                     }
                 });
             }
-            
+
             console.log('loadedAnswers', loadedAnswers);
-            
+
         };
 
         /**
          * Done
-         * 
+         *
          * @returns {undefined}
          */
         adjustGroups = function () {
@@ -203,7 +203,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
         /**
          * Done
-         * 
+         *
          * @returns {undefined}
          */
         drawGroups = function () {
@@ -261,7 +261,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
         /**
          * Done
-         * 
+         *
          * @returns {undefined}
          */
         mountGroups = function () {
@@ -272,7 +272,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
             var lastLabel = null;
             header.forEach(function (item, index) {
                 if (index > 0) {
-                    var label = item.split(']', 1)[0].substr(1);
+                    var label = item.split('.')[0];
                     if (label !== lastLabel) {
                         fileGroups[label] = {startAt: index, amount: 0};
                         lastLabel = label;
@@ -284,7 +284,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
         /**
          * Done
-         * 
+         *
          * @returns {undefined}
          */
         getExams = function () {
@@ -306,7 +306,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
         /**
          * Done
-         * 
+         *
          * @returns {undefined}
          */
         fetchData = function () {
@@ -353,7 +353,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
         /**
          * Done
-         * 
+         *
          * @returns {undefined}
          */
         readSubjects = function () {
@@ -390,7 +390,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
         /**
          * Done
-         * 
+         *
          * @returns {undefined}
          */
         createStudentTable = function () {
@@ -417,7 +417,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
         /**
          * Done
-         * 
+         *
          * @param {type} $tr
          * @returns {undefined}
          */
@@ -456,7 +456,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                         } else {
                             len = 0;
                         }
-                        
+
                         console.log('len', len);
 
                         for (var i = 0; i < len; i++) {
@@ -478,7 +478,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         };
 
         /**
-         * 
+         *
          */
         getPrevAnswers = function (registration, examId) {
             return $.ajax({
@@ -493,7 +493,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
         /**
          * Done
-         * 
+         *
          * @returns {undefined}
          */
         createCandidateTable = function () {
@@ -516,7 +516,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
         /**
          * Done
-         * 
+         *
          * @param {type} classId
          * @returns {jqXHR} promise
          */
@@ -532,7 +532,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
         /**
          * Done
-         * 
+         *
          * @param {type} recId
          * @returns {jqXHR}
          */
