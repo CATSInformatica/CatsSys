@@ -84,7 +84,7 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'name' => 'interviewHomeSitComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Situação da casa e localização',
+                    'label' => 'Situação da casa e localização (Verificar a infraestrutura, acabamento, localização e afins, além de perguntar se a casa é própria, cedida, alugada ou financiada. Falar pro candidato dar uma nota de 1 a 5 para a casa levando em consideração os parâmetros anteriores)',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -104,7 +104,8 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'name' => 'interviewFamIncComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Membros da família e renda',
+                    'label' => 'Membros da família e renda (quantidade de membros, contribuição com a renda,
+grau de escolaridade e profissão)',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -114,7 +115,7 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'name' => 'interviewFamProbComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Problemas com os membros (Procure por vícios, drogas. Doenças graves ou crônicas.)',
+                    'label' => 'Problemas com os membros (Procure por vícios, drogas. Doenças graves ou crônicas, gastos com saúde)',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -135,6 +136,16 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'type' => 'textarea',
                 'options' => [
                     'label' => 'Trabalhos do candidato e rotina atual (atividades e hábitos)',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewSecondarySchool',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Escola em que cursou ensino fundamental e médio (Verificar se já fez cursinho ou ensino superior)',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -232,7 +243,7 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'name' => 'interviewMaxScholarity',
                 'type' => 'radio',
                 'options' => [
-                    'label' => 'Qual a maior escolaridade registrada entre os membros da família?',
+                    'label' => 'Qual a escolaridade do provedor da família?',
                     'value_options' => StudentInterview::getInterviewMaxScholarityArray(),
                 ],
             ])
@@ -257,7 +268,7 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'name' => 'interviewMaxPosition',
                 'type' => 'radio',
                 'options' => [
-                    'label' => 'Maior nível ocupacional dentre os membros da família?',
+                    'label' => 'Qual o nível ocupacional do provedor da família?',
                     'value_options' => StudentInterview::getInterviewMaxPositionArray(),
                 ],
             ])
@@ -362,10 +373,30 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 ],
             ])
             ->add([
+                'name' => 'intervewUnemploymentInFamily',
+                'type' => 'checkbox',
+                'options' => [
+                    'label' => 'Desemprego recente na família',
+                    'use_hidden_element' => true,
+                    'checked_value' => StudentInterview::UNEMPLOYMENT_IN_FAMILY_YES,
+                    'unchecked_value' => StudentInterview::UNEMPLOYMENT_IN_FAMILY_NO,
+                ],
+            ])
+            ->add([
+                'name' => 'intervewChemicalDependency',
+                'type' => 'checkbox',
+                'options' => [
+                    'label' => 'Dependência química',
+                    'use_hidden_element' => true,
+                    'checked_value' => StudentInterview::CHEMICAL_DEPENDENCY_YES,
+                    'unchecked_value' => StudentInterview::CHEMICAL_DEPENDENCY_NO,
+                ],
+            ])
+            ->add([
                 'name' => 'interviewStudentVulnerability',
                 'type' => 'radio',
                 'options' => [
-                    'label' => 'Em que perfil de vulnerabilidade o candidato se encaixa?',
+                    'label' => 'Em que perfil de vulnerabilidade o candidato se encaixa? (lembre-se que renda é avaliado como socioeconômico e não vulnerabilidade)',
                     'value_options' => StudentInterview::getInterviewStudentVulnerabilityArray(),
                 ],
             ])
@@ -453,6 +484,9 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
             'interviewRoutComm' => [
                 'required' => false,
             ],
+            'interviewSecondarySchool' => [
+                'required' => true,
+            ],
             'interviewStudBehaComm' => [
                 'required' => false,
             ],
@@ -517,6 +551,12 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'required' => false,
             ],
             'intervewFamilyPropAndGoods' => [
+                'required' => false,
+            ],
+            'intervewUnemploymentInFamily' => [
+                'required' => false,
+            ],
+            'intervewChemicalDependency' => [
                 'required' => false,
             ],
             'interviewStudentVulnerability' => [

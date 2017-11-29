@@ -134,6 +134,14 @@ class StudentInterview
      * @ORM\Column(name="student_interview_routcomm", type="string", length=500, nullable=true);
      */
     private $interviewRoutComm;
+    
+    /**
+     * Escola em que cursou o ensino fundamental e médio
+     * 
+     * @var string 
+     * @ORM\Column(name="student_interview_secondary_school", type="string", length=500, nullable=true)
+     */
+    private $interviewSecondarySchool;
 
     /**
      * Histórico escolar e comportamento como aluno.
@@ -394,16 +402,45 @@ class StudentInterview
      */
     private $intervewFamilyPropAndGoods;
 
+    const UNEMPLOYMENT_IN_FAMILY_YES = 'Desemprego recente na família';
+    const UNEMPLOYMENT_IN_FAMILY_NO = 'Sem desemprego recente na família';
+
+    /**
+     * Algum provedor recentemente desempregado
+     * @var string
+     * @ORM\Column(name="student_interview_unemploymentinfamily", type="string", length=50, nullable=true)
+     */
+    private $intervewUnemploymentInFamily;
+
+    const CHEMICAL_DEPENDENCY_YES = 'Dependência química';
+    const CHEMICAL_DEPENDENCY_NO = 'Sem dependência química';
+
+    /**
+     * Possui dependência química
+     * @var string
+     * @ORM\Column(name="student_interview_chemicaldependency", type="string", length=50, nullable=true)
+     */
+    private $intervewChemicalDependency;
+
     const VULNERABILITY_HIGH = 'ALTA VULNERABILIDADE';
-    const VULNERABILITY_HIGH_DESC = 'o candidato apresenta grande dificuldade em satisfazer suas necessidades básicas, o que pode resultar em abandono dos estudos por insuficiência de recurso social ou moral. O candidato classificado nesse índice, caso aprovado, com certeza precisará de apoio para se manter firme nos estudos, necessitando de acompanhamento para não desistir, devido a vários problemas sérios que acompanham seu contexto social. Poderá receber a bolsa da mensalidade, além de outros auxílios psicológicos.';
+    const VULNERABILITY_HIGH_DESC = 'o candidato apresenta grandes problemas
+relacionados ao seu contexto social como ausência de um ambiente familiar propício ao seu
+desenvolvimento, exposição a riscos psicológicos e sociais, incerteza quanto aos estudos e
+grande responsabilidade com terceiros.';
     const VULNERABILITY_MIDDLE = 'MÉDIA VULNERABILIDADE';
-    const VULNERABILITY_MIDDLE_DESC = 'o candidato apresenta nível de dificuldade intermediário em satisfazer suas necessidades básicas. O candidato classificado provavelmente solicitará apoio e acompanhamento para não desistir, sendo que apresenta algum problema sério, ou vários pequenos que acompanham seu contexto social.';
+    const VULNERABILITY_MIDDLE_DESC = 'o candidato apresenta nível de dificuldade
+intermediário em satisfazer suas necessidades básicas e alguns problemas relacionados ao seu
+contexto social.';
     const VULNERABILITY_LOW = 'BAIXA VULNERABILIDADE';
-    const VULNERABILITY_LOW_DESC = 'o candidato apresenta nível de dificuldade pequeno para satisfazer suas necessidades básicas. Ele aproveitará o apoio, contudo não necessita de acompanhamento especial durante o ano. Possui algum problema pequeno que acompanha seu contexto social.';
-    const VULNERABILITY_TEMPORARY = 'VULNERABILIDADE TEMPORÁRIA';
-    const VULNERABILITY_TEMPORARY_DESC = 'o candidato apresenta uma necessidade de apoio momentâneo para permanecer nos estudos. Sua situação atualmente é de relativa vulnerabilidade, em comparação a outros momentos. Nesse caso o mesmo poderá ser aprovado, de acordo com a disponibilidade de vagas e parecer quanto a sua responsabilidade e interesse.';
+    const VULNERABILITY_LOW_DESC = 'o candidato apresenta nível de dificuldade pequeno
+para satisfazer suas necessidades básicas e permanecer nos estudos.';
+    const VULNERABILITY_TEMPORARY = 'VULNERABILIDADE MODERADA';
+    const VULNERABILITY_TEMPORARY_DESC = 'candidatos com vulnerabilidade muito baixa ou
+passando por um momento de vulnerabilidade temporária.';
     const VULNERABILITY_NONE = 'NENHUMA VULNERABILIDADE';
-    const VULNERABILITY_NONE_DESC = 'o candidato e sua família possuem condições estáveis e suficientes para sua manutenção. Não apresenta nenhum tipo de problema ligado a seu contexto social';
+    const VULNERABILITY_NONE_DESC = 'o candidato e sua família possuem condições
+estáveis e suficientes para sua manutenção. Não apresenta nenhum tipo de problema ligado a
+seu contexto social.';
 
     /**
      * Em que perfil de vulnerabilidade o candidato se encaixa.
@@ -1008,8 +1045,8 @@ class StudentInterview
     {
         return [
             self::HOME_SITUATION_UNSATISFACTORY => self::HOME_SITUATION_UNSATISFACTORY,
-            self::HOME_SITUATION_GOOD => self::HOME_SITUATION_GOOD,
             self::HOME_SITUATION_REGULAR => self::HOME_SITUATION_REGULAR,
+            self::HOME_SITUATION_GOOD => self::HOME_SITUATION_GOOD,
             self::HOME_SITUATION_GREAT => self::HOME_SITUATION_GREAT,
         ];
     }
