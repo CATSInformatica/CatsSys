@@ -92,6 +92,9 @@
 
                                 <div class="col-md-12 col-xs-12">
                                     <div class="col-md-12 col-xs-12">
+                                        <?php echo $this->formRow($interview->get('interviewSecondarySchool')); ?>
+                                    </div>
+                                    <div class="col-md-12 col-xs-12">
                                         <?php echo $this->formRow($interview->get('interviewStudBehaComm')); ?>
                                     </div>
                                     <div class="col-md-12 col-xs-12">
@@ -183,6 +186,8 @@
                                     <?php echo $this->formRow($interview->get('intervewNeedToWork')); ?>
                                     <?php echo $this->formRow($interview->get('interviewSingleton')); ?>
                                     <?php echo $this->formRow($interview->get('intervewFamilyPropAndGoods')); ?>
+                                    <?php echo $this->formRow($interview->get('intervewUnemploymentInFamily')); ?>
+                                    <?php echo $this->formRow($interview->get('intervewChemicalDependency')); ?>
                                 </div>
                                 <div class="col-md-8 col-xs-12 text-justify">
                                     <?php echo $this->formRow($interview->get('interviewStudentVulnerability')); ?>

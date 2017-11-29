@@ -51,16 +51,11 @@ class StudentInterviewForm extends Form implements InputFilterProviderInterface
                     'value_options' => [
                         'Apresentem-se, falem sobre si mesmo, o que estuda, onde
                     estuda, quais atividades exerce.',
-                        'Pergunte ao candidato o que ele conhece sobre nós, e,
-                    posteriormente, explique nosso funcionamento de modo geral.',
+                        'Pergunte ao candidato como ele conheceu o CATS e o que ele sabe sobre nós, e posteriormente, explique nosso funcionamento de modo geral.',
                         'Fale para o candidato sobre a entrevista, explique sobre
                      esse momento inicial de apresentação, sobre o segundo
                      momento sobre a situação socioeconômica/vulnerabilidade, e um terceiro
-                     sobre o candidato como estudante.',
-                        'Leia sobre como o candidato conheceu o processo seletivo
-                     e se conhece alguém que que já foi aluno. Peça para
-                     ele comentar. A partir de agora, o foco da conversa estará
-                     no candidato.'
+                     sobre o candidato como estudante.'
                     ]
                 ]
             ])
