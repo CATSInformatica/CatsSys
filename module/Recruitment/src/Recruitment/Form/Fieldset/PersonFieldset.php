@@ -79,10 +79,10 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
             'name' => 'personFirstName',
             'type' => 'text',
             'attributes' => array(
-                'placeholder' => 'Primeiro Nome',
+                'placeholder' => 'Nome Completo',
             ),
             'options' => array(
-                'label' => 'Nome*',
+                'label' => 'Nome Completo*',
             ),
         ));
 
