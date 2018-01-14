@@ -418,7 +418,7 @@ return array(
                         'icon' => 'fa fa-file-text-o',
                     ),
                     array(
-                        'label' => 'Candidate Access',
+                        'label' => 'Student Candidate Access',
                         'route' => 'recruitment/registration',
                         'action' => 'access',
                         'resource' => 'Recruitment\Controller\Registration',
@@ -442,6 +442,24 @@ return array(
                                         'icon' => 'fa fa-file-o',
                                     ]
                                 ],
+                            ]
+                        ],
+                    ),
+                    array(
+                        'label' => 'Volunteer Candidate Access',
+                        'route' => 'recruitment/registration',
+                        'action' => 'volunteerAccess',
+                        'resource' => 'Recruitment\Controller\Registration',
+                        'privilege' => 'volunteerAccess',
+                        'icon' => 'fa fa-file-text-o',
+                        'pages' => [
+                            [
+                                'label' => 'Área do Candidato',
+                                'route' => 'recruitment/registration',
+                                'action' => 'volunteerCandidate',
+                                'resource' => 'Recruitment\Controller\Registration',
+                                'privilege' => 'volunteerCandidate',
+                                'icon' => 'fa fa-user',
                             ]
                         ],
                     ),
