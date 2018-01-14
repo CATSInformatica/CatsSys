@@ -209,6 +209,126 @@ class RegistrationController extends AbstractEntityActionController
             ]);
         }
     }
+    
+    public function volunteerCandidateAction() {
+        try {
+            
+            $this->layout('application-clean/layout');
+
+            $volunteerContainer = new Container('volunteerCandidate');
+
+            //se o id não estiver na sessão, redireciona para a página de acesso
+            if (!$volunteerContainer->offsetExists('vRegId')) {
+                return $this->redirect()->toRoute('recruitment/registration', array(
+                        'action' => 'volunteerAccess',
+                ));
+            }
+
+            $id = $volunteerContainer->offsetGet('vRegId');
+            $em = $this->getEntityManager();
+            $registration = $em->find('Recruitment\Entity\Registration', $id);
+            $recruitment = $registration->getRecruitment();
+
+            // para o formulário de edição de dados do candidato
+            $request = $this->getRequest();
+            $form = new RegistrationForm($em);
+            $form->bind($registration);
+            if ($request->isPost()) {
+
+                $form->setData($request->getPost());
+
+                if ($form->isValid()) {
+                    $em->merge($registration);
+                    $em->flush();
+                }
+            }
+            
+            
+            // Testes para decidir a situaçao dos blocos
+            $currentRegistrationStatus = $registration->getCurrentRegistrationStatus();
+            $currentRecStatus = $currentRegistrationStatus->getRecruitmentStatus()->getNumericStatusType();
+            $interviewDate = '';
+            $testClassDate = '';
+            $currentDate = new \DateTime('now');
+
+            $blockStatus = [
+                'registration' => false,
+                'interviewWaitingList' => false,
+                'interview' => false,
+                'interviewed' => false,
+                'testClassWaitingList' => false,
+                'testClass' => false,
+                'testClassDone' => false,
+                'result' => false,
+                'resultApproved' => false,
+            ];
+
+            foreach ($registration->getRegistrationStatus() as $regStatus) {
+                switch ($regStatus->getRecruitmentStatus()->getNumericStatusType()) {  
+                    case RecruitmentStatus::STATUSTYPE_TESTCLASS_COMPLETE:
+                        $blockStatus['testClassWaitingList'] = false;  
+                        $blockStatus['testClass'] = true;
+                        $blockStatus['testClassDone'] = true;  
+                        break;
+                    case RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS:
+                        $blockStatus['testClassWaitingList'] = false;  
+                        $blockStatus['testClass'] = true;
+                        $blockStatus['testClassDone'] = false;  
+                        $testClassDate = $currentRegistrationStatus->getTimestamp('d/m/Y');
+                        break;
+                    case RecruitmentStatus::STATUSTYPE_TESTCLASS_WAITINGLIST:
+                        $blockStatus['testClassWaitingList'] = true;  
+                        $blockStatus['testClass'] = false;
+                        $blockStatus['testClassDone'] = false;  
+                        break;
+                    case RecruitmentStatus::STATUSTYPE_INTERVIEWED:
+                        $blockStatus['interviewWaitingList'] = false;
+                        $blockStatus['interview'] = true;
+                        $blockStatus['interviewed'] = true;
+                        break;
+                    case RecruitmentStatus::STATUSTYPE_CALLEDFOR_INTERVIEW:
+                        $blockStatus['interviewWaitingList'] = false;
+                        $blockStatus['interview'] = true;
+                        $blockStatus['interviewed'] = false;
+                        $interviewDate = $currentRegistrationStatus->getTimestamp('d/m/Y');
+                        break;
+                    case RecruitmentStatus::STATUSTYPE_INTERVIEW_WAITINGLIST:
+                        $blockStatus['interviewWaitingList'] = true;
+                        $blockStatus['interview'] = false;
+                        $blockStatus['interviewed'] = false;
+                        break;
+                    case RecruitmentStatus::STATUSTYPE_REGISTERED:
+                        $blockStatus['registration'] = true;
+                        break;
+                }
+            }
+            
+            switch ($currentRecStatus) {  
+                case RecruitmentStatus::STATUSTYPE_INTERVIEW_DISAPPROVED: 
+                    $blockStatus['result'] = true;
+                    $blockStatus['resultApproved'] = false;
+                    break;
+                case RecruitmentStatus::STATUSTYPE_INTERVIEW_APPROVED:
+                    $blockStatus['result'] = true;
+                    $blockStatus['resultApproved'] = true;
+                    break;
+            }
+            
+
+            return new ViewModel([
+                'registration' => $registration,
+                'blockStatus' => $blockStatus,
+                'interviewDate' => $interviewDate,
+                'testClassDate' => $testClassDate,
+                'recruitment' => $registration->getRecruitment(),
+                'form' => $form,
+            ]);
+        } catch (Exception $ex) {
+            return new ViewModel([
+                'registration' => null,
+            ]);
+        }
+    }
 
     public function accessAction()
     {
@@ -253,6 +373,51 @@ class RegistrationController extends AbstractEntityActionController
             'message' => $message,
             'form' => $form,
         ));
+    }
+    
+    public function volunteerAccessAction() {
+        $this->layout('application-clean/layout');
+        $request = $this->getRequest();
+        $form = new \Recruitment\Form\CpfForm();
+
+        if ($request->isPost()) {
+            $data = $request->getPost();
+            $form->setData($data);
+
+            if ($form->isValid()) {
+                $data = $form->getData();
+
+                try {
+                    $em = $this->getEntityManager();
+
+                    $registration = $em->getRepository('Recruitment\Entity\Registration')
+                        ->findOneByPersonCpf($data['person_cpf'], Recruitment::VOLUNTEER_RECRUITMENT_TYPE);
+
+                    if ($registration !== null) {
+                        $studentContainer = new Container('volunteerCandidate');
+                        $studentContainer->offsetSet('vRegId', $registration->getRegistrationId());
+
+                        return $this->redirect()->toRoute('recruitment/registration', array(
+                                'action' => 'volunteerCandidate'
+                        ));
+                    }
+                } catch (Exception $ex) {
+                    $message = 'Erro inesperado. Não foi possível encontrar uma inscrição associada a este cpf.'
+                        . $ex->getMessage();
+                }
+                $message = 'Cpf não encontrado';
+            } else {
+                $message = null;
+            }
+        } else {
+            $message = null;
+        }
+
+        return new ViewModel(array(
+            'message' => $message,
+            'form' => $form,
+        )); 
+        
     }
 
     /**

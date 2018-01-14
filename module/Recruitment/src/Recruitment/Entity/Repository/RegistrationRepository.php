@@ -32,12 +32,13 @@ class RegistrationRepository extends EntityRepository
 {
 
     /**
-     * Busca a última inscrição com cpf $cpf do processo seletivo de alunos
+     * Busca a última inscrição com cpf $cpf de um processo seletivo do tipo $type
      * 
      * @param string $cpf
+     * @param int $type
      * @return mixed Recruitment\Entity\Registration | null
      */
-    public function findOneByPersonCpf($cpf)
+    public function findOneByPersonCpf($cpf, $type = Recruitment::STUDENT_RECRUITMENT_TYPE)
     {
         return $this->_em
                 ->createQuery('SELECT r FROM Recruitment\Entity\Registration r '
@@ -48,7 +49,7 @@ class RegistrationRepository extends EntityRepository
                     . 'ORDER BY r.registrationId DESC')
                 ->setParameters(array(
                     'cpf' => $cpf,
-                    'rtype' => Recruitment::STUDENT_RECRUITMENT_TYPE,
+                    'rtype' => $type,
                 ))
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
