@@ -448,17 +448,17 @@ return array(
                     array(
                         'label' => 'Volunteer Candidate Access',
                         'route' => 'recruitment/registration',
-                        'action' => 'volunteerAccess',
+                        'action' => 'volunteer-access',
                         'resource' => 'Recruitment\Controller\Registration',
-                        'privilege' => 'volunteerAccess',
+                        'privilege' => 'volunteer-access',
                         'icon' => 'fa fa-file-text-o',
                         'pages' => [
                             [
                                 'label' => 'Área do Candidato',
                                 'route' => 'recruitment/registration',
-                                'action' => 'volunteerCandidate',
+                                'action' => 'volunteer-candidate',
                                 'resource' => 'Recruitment\Controller\Registration',
-                                'privilege' => 'volunteerCandidate',
+                                'privilege' => 'volunteer-candidate',
                                 'icon' => 'fa fa-user',
                             ]
                         ],
