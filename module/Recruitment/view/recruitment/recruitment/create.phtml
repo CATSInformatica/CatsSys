@@ -5,6 +5,12 @@ $this
 
 ?>
 
+<style>
+    .specific-field {
+        display: none;
+    }
+</style>
+
 <section class="content">
     <p><?php echo $this->message; ?></p>
     <div class="row">
@@ -52,25 +58,20 @@ $this
                     <?php echo $this->formRow($fs->get('recruitmentType')); ?>
                 </div>
 
-                <div class="col-xs-12 col-md-12 open-jobs-container hide">
+                <div class="col-xs-12 col-md-12 specific-field type-volunteer">
                     <?php echo $this->formRow($fs->get('openJobs')); ?>
                 </div>
 
-                <div class="col-xs-12 col-md-12">
-                    <hr>
-                    <h4 class="text-center">Os Campos a seguir são apenas para processos seletivos de alunos</h4>
-                </div>
-
-                <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('recruitmentSocioeconomicTarget')); ?>
                     <p class="text-center">Quanto maior o número, melhor a condição socioeconômica do candidato</p>
 
                 </div>
-                <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('recruitmentVulnerabilityTarget')); ?>
                     <p class="text-center">Quanto maior o número, mais vulnerável é o candidato</p>
                 </div>
-                <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('recruitmentStudentTarget')); ?>
                     <p class="text-center">Quanto maior o número, maior é a capacidade de aprendizado do candidato</p>
                 </div>
@@ -79,47 +80,51 @@ $this
                     <?php echo $this->formRow($fs->get('subscriptionDescription')); ?>
                 </div>
 
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6 specific-field type-student">
                     <?php echo $this->formRow($fs->get('confirmationStartDate')); ?>
                 </div>
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6 specific-field type-student">
                     <?php echo $this->formRow($fs->get('confirmationEndDate')); ?>
                 </div>
 
-                <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('confirmationDescription')); ?>
                 </div>
 
-                <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('examDate')); ?>
                 </div>
-                <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('examDescription')); ?>
                 </div>
 
-                <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('examResultDate')); ?>
                 </div>
-                <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('examResultDescription')); ?>
                 </div>
 
-                <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('preInterviewStartDate')); ?>
                 </div>
-                <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('preInterviewDescription')); ?>
                 </div>
 
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6 specific-field type-student">
                     <?php echo $this->formRow($fs->get('interviewStartDate')); ?>
                 </div>
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6 specific-field type-student">
                     <?php echo $this->formRow($fs->get('interviewEndDate')); ?>
                 </div>
                 
                 <div class="col-xs-12 col-md-12">
                     <?php echo $this->formRow($fs->get('interviewDescription')); ?>
+                </div>
+                
+                <div class="col-xs-12 col-md-12 specific-field type-volunteer">
+                    <?php echo $this->formRow($fs->get('testClassDescription')); ?>
                 </div>
                 
                 <div class="col-xs-12 col-md-12">
@@ -130,15 +135,15 @@ $this
                     <?php echo $this->formRow($fs->get('resultDescription')); ?>
                 </div>
                 
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6 specific-field type-student">
                     <?php echo $this->formRow($fs->get('enrollmentStartDate')); ?>
                 </div>
                 
-                <div class="col-xs-12 col-md-6">
+                <div class="col-xs-12 col-md-6 specific-field type-student">
                     <?php echo $this->formRow($fs->get('enrollmentEndDate')); ?>
                 </div>
                 
-                <div class="col-xs-12 col-md-12">
+                <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('enrollmentDescription')); ?>
                 </div>
 

@@ -10,6 +10,9 @@
     </div>
     <div class="box-body">
         <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('date')); ?>
+        </div>
+        <div class="col-xs-12">
             <?php echo $this->formRow($form->get('startTime')); ?>
         </div>
         <div class="col-xs-12">
@@ -17,6 +20,29 @@
         </div>
         <div class="col-xs-12">
             <?php echo $this->formRow($form->get('interviewersInitialComments')); ?>
+        </div>
+        <div class="col-xs-12">
+            <?php echo $this->formRow($regForm->get('volunteerWork')); ?>
+        </div>
+
+        <div class="col-xs-12">
+            <?php echo $this->formRow($regForm->get('howAndWhenKnowUs')); ?>
+        </div>
+
+        <div class="col-xs-12">
+            <?php echo $this->formRow($regForm->get('extensionProjects')); ?>
+        </div>
+
+        <div class="col-xs-12">
+            <?php echo $this->formRow($regForm->get('whyWorkWithUs')); ?>
+        </div>
+
+        <div class="col-xs-12">
+            <?php echo $this->formRow($regForm->get('volunteerWithUs')); ?>
+        </div>
+        
+        <div class="col-xs-12">
+            <?php echo $this->formRow($form->get('hometown')); ?>
         </div>
         <div class="col-xs-12">
             <?php echo $this->formRow($form->get('interests')); ?>

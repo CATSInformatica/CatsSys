@@ -105,6 +105,9 @@
                                                         Sua entrevista ainda não foi agendada.
                                                     <?php endif; ?>
                                                 </p>
+                                                <span>
+                                                    <?php echo $recruitment->getInterviewDescription(); ?>
+                                                </span>
                                             </div>
                                             <div class="icon">
                                                 <i class="fa fa-commenting-o"></i>
@@ -131,10 +134,10 @@
                                                         Sua aula teste foi agendada para o dia 
                                                             <?php echo $testClassDate; ?>
                                                     <?php endif; ?>
-                                                    <span>
-                                                        <?php echo $recruitment->getInterviewDescription(); ?>
-                                                    </span>
                                                 </p>
+                                                <span>
+                                                    <?php echo $recruitment->getTestClassDescription(); ?>
+                                                </span>
                                             </div>
                                             <div class="icon">
                                                 <i class="fa fa-commenting-o"></i>
@@ -162,10 +165,10 @@
                                                 <?php else: ?>
                                                     O resultado ainda não foi divulgado.
                                                 <?php endif; ?>
-                                                <span>
-                                                    <?php echo $recruitment->getResultDescription(); ?>
-                                                </span>
                                             </p>
+                                            <span>
+                                                <?php echo $recruitment->getResultDescription(); ?>
+                                            </span>
                                         </div>
                                         <div class="icon">
                                             <i class="fa fa fa-gavel"></i>

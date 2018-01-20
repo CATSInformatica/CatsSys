@@ -159,6 +159,13 @@ class VolunteerInterview
      */
     private $interviewersEvaluations;
     
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="volunteer_hometown", type="string", length=40, nullable=true) 
+     */
+    private $hometown;
+    
 
     public function __construct() {
         $this->date = new DateTime('now');
@@ -587,5 +594,27 @@ class VolunteerInterview
     {
         return $this->interviewersEvaluations->contains($interviewerEvaluation);
     }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getHometown()
+    {
+        return $this->hometown;
+    }
+
+    /**
+     * 
+     * @param string $hometown
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    public function setHometown($hometown)
+    {
+        $this->hometown = $hometown;
+        return $this;
+    }
+
+
     
 }

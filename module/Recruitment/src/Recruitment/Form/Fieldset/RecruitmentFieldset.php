@@ -117,6 +117,8 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 ),
                 'attributes' => array(
                     'class' => 'text-center',
+                    'data-student-type' => Recruitment::STUDENT_RECRUITMENT_TYPE,
+                    'data-volunteer-type' => Recruitment::VOLUNTEER_RECRUITMENT_TYPE,
                 ),
             ))
             ->add(array(
@@ -125,7 +127,6 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 'attributes' => array(
                     'multiple' => 'multiple',
                     'size' => count($openJobOptions),
-                    'data-type-must-be' => Recruitment::VOLUNTEER_RECRUITMENT_TYPE,
                 ),
                 'options' => array(
                     'label' => 'Selecione os cargos abertos',
@@ -335,8 +336,21 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 ],
                 'attributes' => [
                     'rows' => 6,
-                    'placeholder' => 'Os candidatos convocados deverão comparecer ao campus da UNIFEI para a entrevista. O dia de entrevista é definido pela colocação na prova. '
+                    'data-student-placeholder' => 'Os candidatos convocados deverão comparecer ao campus da UNIFEI para a entrevista. O dia de entrevista é definido pela colocação na prova. '
                     . 'As datas e documentos exigidos para a entrevista podem ser conferidos no edital (seção VIII).',
+                    'data-volunteer-placeholder' => 'Os candidatos convocados deverão comparecer ao campus da UNIFEI para a entrevista. O dia de entrevista é agendado mediante a convocação do candidato.',
+                    'class' => 'undefined-placeholder',
+                ]
+            ])
+            ->add([
+                'name' => 'testClassDescription',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Descrição para a aula teste',
+                ],
+                'attributes' => [
+                    'rows' => 6,
+                    'placeholder' => 'Os candidatos que desejam lecionar são convocados a apresentar uma aula teste.',
                 ]
             ])
             ->add(array(
@@ -358,8 +372,10 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 ],
                 'attributes' => [
                     'rows' => 6,
-                    'placeholder' => 'O resultado da entrevista será liberado no dia 20/07. Os candidatos aprovados deverão aguardar o período de matrícula e aqueles em lista de espera '
+                    'data-student-placeholder' => 'O resultado da entrevista será liberado no dia 20/07. Os candidatos aprovados deverão aguardar o período de matrícula e aqueles em lista de espera '
                     . 'poderão ser chamados caso haja desistência de candidatos aprovados.',
+                    'data-volunteer-placeholder' => 'O resultado será liberado no dia 20/07. Os candidatos aprovados deverão aguardar o contato de um voluntário do CATS.',
+                    'class' => 'undefined-placeholder',
                 ]
             ])
             ->add(array(

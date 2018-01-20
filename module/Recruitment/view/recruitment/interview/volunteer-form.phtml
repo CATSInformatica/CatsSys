@@ -23,7 +23,8 @@ $this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
             if ($this->form !== null) :
                 $this->form->prepare();
                 echo $this->form()->openTag($form);
-                $interview = $this->form->get('volunteerInterview'); 
+                $regForm = $this->form->get('registration');
+                $interview = $regForm->get('volunteerInterview'); 
                 ?>
                 <div class="box">
                     <div class="box-header bg-purple">
@@ -42,11 +43,15 @@ $this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
                          data-regid="<?php echo (isset($this->regId)) ? $this->regId : '-1'; ?>">
                         <p>Candidato(a): <?php echo $this->person->getPersonName(); ?></p>
 
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
+                            <?php echo $this->formRow($interview->get('date')); ?>
+                        </div>
+                        
+                        <div class="col-xs-4">
                             <?php echo $this->formRow($interview->get('startTime')); ?>
                         </div>
 
-                        <div class="col-xs-6">
+                        <div class="col-xs-4">
                             <?php echo $this->formRow($interview->get('interviewers')); ?>
                             <?php if ($this->hasInterview) : ?>
                                 <label class="text-bold text-red">ATENÇÃO: A alteração deste campo provocará a perda das avaliações existentes deste candidato.</label>
@@ -86,22 +91,6 @@ $this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
                             <div class="box-header with-border">
                                 <button type="button" class="hide" data-widget="collapse"></button>
                                 <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
-                                <h3 class="box-title">Cargo(s) desejado(s)</h3>
-                            </div>
-                            <div class="box-body">
-                                <ul>
-                                    <?php foreach ($this->registration->getDesiredJobs() as $job) : ?>
-                                    <li>
-                                        <?php echo $job->getJobName(); ?>
-                                    </li>
-                                    <?php endforeach; ?>
-                                </ul>
-                            </div>
-                        </div>
-                        <div class="box box-solid box-default">
-                            <div class="box-header with-border">
-                                <button type="button" class="hide" data-widget="collapse"></button>
-                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
                                 <h3 class="box-title">Ocupação (Acadêmica, profissional)</h3>
                             </div>
                             <div class="box-body">
@@ -122,60 +111,16 @@ $this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
                             <div class="box-header with-border">
                                 <button type="button" class="hide" data-widget="collapse"></button>
                                 <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
-                                <h3 class="box-title">O que pensa sobre trabalho voluntário? Já fez? Descreva</h3>
+                                <h3 class="box-title">Cargo(s) desejado(s)</h3>
                             </div>
                             <div class="box-body">
-                                <?php echo $this->registration->getVolunteerWork(); ?>
-                            </div>
-                        </div>
-                        <div class="box box-solid box-default">
-                            <div class="box-header with-border">
-                                <button type="button" class="hide" data-widget="collapse"></button>
-                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
-                                <h3 class="box-title">Como e quando conheceu o CATS?</h3>
-                            </div>
-                            <div class="box-body">
-                                <?php echo $this->registration->getHowAndWhenKnowUs(); ?>
-                            </div>
-                        </div>
-                        <div class="box box-solid box-default">
-                            <div class="box-header with-border">
-                                <button type="button" class="hide" data-widget="collapse"></button>
-                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
-                                <h3 class="box-title">Participa de outro projeto de extensão?</h3>
-                            </div>
-                            <div class="box-body">
-                                <?php echo $this->registration->getExtensionProjects(); ?>
-                            </div>
-                        </div>
-                        <div class="box box-solid box-default">
-                            <div class="box-header with-border">
-                                <button type="button" class="hide" data-widget="collapse"></button>
-                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
-                                <h3 class="box-title">Por que escolheu se inscrever no CATS? Tentou outros projetos?</h3>
-                            </div>
-                            <div class="box-body">
-                                <?php echo $this->registration->getWhyWorkWithUs(); ?>
-                            </div>
-                        </div>
-                        <div class="box box-solid box-default">
-                            <div class="box-header with-border">
-                                <button type="button" class="hide" data-widget="collapse"></button>
-                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
-                                <h3 class="box-title">O que espera do trabalho voluntário no CATS?</h3>
-                            </div>
-                            <div class="box-body">
-                                <?php echo $this->registration->getVolunteerWithUs(); ?>
-                            </div>
-                        </div>
-                        <div class="box box-solid box-default">
-                            <div class="box-header with-border">
-                                <button type="button" class="hide" data-widget="collapse"></button>
-                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
-                                <h3 class="box-title">O que espera do trabalho voluntário no CATS?</h3>
-                            </div>
-                            <div class="box-body">
-                                <?php echo $this->registration->getVolunteerWithUs(); ?>
+                                <ul>
+                                    <?php foreach ($this->registration->getDesiredJobs() as $job) : ?>
+                                    <li>
+                                        <?php echo $job->getJobName(); ?>
+                                    </li>
+                                    <?php endforeach; ?>
+                                </ul>
                             </div>
                         </div>
                         <div class="box box-solid box-default">
@@ -208,6 +153,84 @@ $this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
                         </div>
                     </div>
                     <br>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($regForm->get('howAndWhenKnowUs')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($regForm->get('howAndWhenKnowUs')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($regForm->get('howAndWhenKnowUs')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($regForm->get('howAndWhenKnowUs')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($regForm->get('volunteerWork')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($regForm->get('volunteerWork')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($regForm->get('volunteerWork')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($regForm->get('volunteerWork')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($regForm->get('extensionProjects')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($regForm->get('extensionProjects')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($regForm->get('extensionProjects')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($regForm->get('extensionProjects')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($regForm->get('whyWorkWithUs')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($regForm->get('whyWorkWithUs')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($regForm->get('whyWorkWithUs')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($regForm->get('whyWorkWithUs')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($regForm->get('volunteerWithUs')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($regForm->get('volunteerWithUs')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formTextarea($regForm->get('volunteerWithUs')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($regForm->get('volunteerWithUs')); ?>                                
+                            </div>
+                        </div>
+                    </div>
+                    <div class="box box-solid box-default">
+                        <div class="box-header with-border">
+                            <h4 class="box-title"><?php echo $this->formLabel($interview->get('hometown')); ?></h4>
+                        </div>
+                        <div class="box-body
+                            <?php echo $this->formElementErrors($interview->get('hometown')) !== "" ? 'has-error' : ''; ?>">
+                            
+                            <?php echo $this->formText($interview->get('hometown')); ?>                            
+                            <div class="col-xs-12 form-group">                                
+                                <?php echo $this->formElementErrors($interview->get('hometown')); ?>                                
+                            </div>
+                        </div>
+                    </div>
                     <div class="box box-solid box-default">
                         <div class="box-header with-border">
                             <h4 class="box-title"><?php echo $this->formLabel($interview->get('interests')); ?></h4>
@@ -349,6 +372,9 @@ $this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
                 <div class="col-xs-12">
                     <?php echo $this->formRow($form->get('submit')); ?>
                 </div>
+            
+                <?php echo $this->formRow($form->get('registrationCsrf')); ?>
+            
                 <?php echo $this->form()->closeTag(); ?>
             <?php endif; ?>
         </div>        

@@ -126,8 +126,14 @@ define(['app/pages/administrative-structure/department/departments', 'moment'], 
                                 volunteerWrapper
                                         .find(".recruitment-form-wrapper-closed").show();
                             } else {
+
+                                if (volunteerData.showSubscriptionLink) {
+                                    volunteerWrapper
+                                            .find(".recruitment-form-wrapper-opened").show();
+                                }
+                                
                                 volunteerWrapper
-                                        .find(".recruitment-form-wrapper-opened").show();
+                                        .find(".recruitment-form-wrapper-candidate").show();
                             }
 
                             type += recruitmentTypes.VOLUNTEER;
