@@ -54,6 +54,125 @@ define(['moment', 'masks', 'app/models/Service', 'jquery', 'datetimepicker'], fu
                 return false;
             });
         };
+        
+        /**
+         * Rege o funcionamento do campo "Nome Completo"
+         * O candidato preenche seu nome completo e então seleciona, dentre as
+         * partes do seu nome, quais são referentes ao sobrenome
+         * 
+         */
+        initFullNameField = function () {
+            $('#full-name-field-wrapper').show();
+            $('.name-field').hide();
+            
+            var lastNameSelect = $('#last-name-select');
+            
+            /**
+             * As partes mudam sempre que há uma alteração no campo
+             */
+            $('#full-name-field').on('input', function() {
+                lastNameSelect.children('.partial-name').remove();
+                var partialNames = $('#full-name-field').val().split(' ');
+                
+                if (partialNames.length > 0) {
+                    $('#last-name-select').show();
+                } else {
+                    $('#last-name-select').hide();
+                }
+                    
+                
+                for (var i = 0; i < partialNames.length; ++i) {
+                    if (partialNames[i] === "") {
+                        continue;
+                    }
+                    
+                    var partialNameTemplate = $('#partial-name-template > div').clone();
+                    partialNameTemplate.find('.partial-name-text').attr('value', partialNames[i]);
+                    partialNameTemplate.find('.partial-name-text').html(partialNames[i]);
+                    lastNameSelect.append(partialNameTemplate);
+                }
+                
+                $('.partial-name-text').on('click', function() {
+                    var selectedName = $(this).val();
+                    if ($(this).hasClass('last-name-bg')) {
+                        setLastName(false, $(this));
+                    } else {
+                        setLastName(true, $(this));
+                    }
+                });
+            });
+            
+            updateFullNameField();
+            $('#full-name-field').trigger('input');
+            updateLastNameField();
+            
+            $('form').submit(function() {
+                var firstName = "";
+                var lastName = "";
+                
+                lastNameSelect.find('.partial-name-text').each(function() {
+                    if ($(this).hasClass('last-name-bg')) {
+                        if (lastName !== "") {
+                            lastName += " ";
+                        }
+                        lastName += $(this).val();
+                    } else {
+                        if (firstName !== "") {
+                            firstName += " ";                            
+                        }
+                        firstName += $(this).val();
+                    }
+                });
+
+                $('input[name="registration[person][personFirstName]"').val(firstName);
+                $('input[name="registration[person][personLastName]"').val(lastName);
+            });
+            
+            /**
+             * Identifica, através da classe .last-name-bg, quais partes do nome
+             * completo são sobrenomes.
+             * 
+             * @param bool ln - true, se sobrenome
+             * @param Object wrapper - objeto jQuery que representa o wrapper da
+             *  parte do nome
+             */
+            function setLastName(ln, wrapper) {
+                if (ln) {
+                    wrapper.addClass('last-name-bg');
+                    wrapper.removeClass('btn-default');
+                    wrapper.addClass('btn-primary');                    
+                } else {
+                    wrapper.removeClass('last-name-bg');
+                    wrapper.addClass('btn-default');
+                    wrapper.removeClass('btn-primary');                    
+                }                
+            }
+            
+            /**
+             * Em caso de edição, concatena o texto dos campos de primeiro nome e
+             * sobrenome para formar o nome completo.
+             */
+            function updateFullNameField() {
+                var firstName = $('input[name="registration[person][personFirstName]"').val();
+                var lastName = $('input[name="registration[person][personLastName]"').val();  
+                
+                $('#full-name-field').val(firstName + " " + lastName);
+            }
+            
+            /**
+             * Em caso de edição, identifica os sobrenomes na lista de partes a
+             * partir do campo de sobrenome.
+             */
+            function updateLastNameField() {
+                var lastName = $('input[name="registration[person][personLastName]"').val();  
+                var partialLastName = lastName.split(' ');                
+                lastNameSelect.find('.partial-name-text').each(function() {
+                    if (partialLastName.includes($(this).val())) {
+                        setLastName(true, $(this));
+                    }
+                });                
+            }
+        };
 
         return {
             init: function () {
@@ -61,6 +180,7 @@ define(['moment', 'masks', 'app/models/Service', 'jquery', 'datetimepicker'], fu
                 initMasks();
                 initServices();
                 initDesiredJobsInput();
+                initFullNameField();
             },
             initDesiredJobsInput: function() {
                 initDesiredJobsInput();

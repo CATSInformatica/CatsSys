@@ -41,42 +41,46 @@ define(['moment', 'masks', 'jquery', 'datetimepicker', 'bootstrapslider'], funct
             $('.input-slider').slider({
                 tooltip: 'always'
             });
-
-            $('select[name$="recruitmentType]"]').on('change', function () {
-                disableSliderIfNeeded($(this).val());
-            });
-
-            disableSliderIfNeeded($('select[name$="recruitmentType]"]').val());
-        };
-
-        disableSliderIfNeeded = function (value) {
-            if (parseInt(value) !== PSA) {
-                $(".input-slider").slider('disable');
-            } else {
-                $(".input-slider").slider('enable');
-            }
         };
         
         /**
-         * Exibe a seleção de cargos apenas quando o usuário selecionar o tipo
-         * do processo seletivo como sendo de voluntários
+         * Exibe os campos específicos de cada tipo de processo seletivo após
+         * a seleção do campo recruitment[recruitmentType]
          * 
          */
-        initOpenJobsInput = function () {
-            var openJobsInput = $('[name="recruitment[openJobs][]"]');
+        initSpecificFields = function () {
             var recruitmentTypeInput = $('[name="recruitment[recruitmentType]"]');
-            var openJobsContainer = openJobsInput.closest('.open-jobs-container');
+            var form = $('form');
+            var studentType = +recruitmentTypeInput.data('student-type');
+            var volunteerType = +recruitmentTypeInput.data('volunteer-type')
             
             recruitmentTypeInput.on('change', function () {
-                if (+recruitmentTypeInput.val() === +openJobsInput.data('type-must-be')) {
-                    openJobsContainer.removeClass('hide');
+                var type = +recruitmentTypeInput.val();
+                
+                if (type === studentType) {
+                    form.find('.type-student').show();
+                    form.find('.type-volunteer').hide();
+                    
+                    form.find('.undefined-placeholder').each(function() {
+                        $(this).attr('placeholder', $(this).data('student-placeholder'));
+                    });
+                } else if (type === volunteerType) {
+                    form.find('.type-volunteer').show(); 
+                    form.find('.type-student').hide();   
+                    
+                    form.find('.undefined-placeholder').each(function() {
+                        $(this).attr('placeholder', $(this).data('volunteer-placeholder'));
+                    });                                    
                 } else {
-                    openJobsContainer.addClass('hide');                    
+                    form.find('.specific-field').hide();
                 }
             });
             
-            // em caso de edição de um PSV, exibe a seleção de cargos.
+            // para casos de edição
             recruitmentTypeInput.trigger('change');
+        };
+        
+        initOpenJobsInput = function () {
             
             /**
              * Permite que o usuário faça múltiplos cliques para selecionar os cargos 
@@ -88,6 +92,7 @@ define(['moment', 'masks', 'jquery', 'datetimepicker', 'bootstrapslider'], funct
                 $(this).prop('selected', !$(this).prop('selected'));
                 return false;
             });
+            
         };
 
         return {
@@ -95,6 +100,7 @@ define(['moment', 'masks', 'jquery', 'datetimepicker', 'bootstrapslider'], funct
                 initDatepickers();
                 initMasks();
                 initSliders();
+                initSpecificFields();
                 initOpenJobsInput();
             }
         };

@@ -30,7 +30,6 @@ use Recruitment\Form\InterviewerEvaluationForm;
 use Recruitment\Form\RegistrationForm;
 use Recruitment\Form\PreInterviewForm;
 use Recruitment\Form\StudentInterviewForm;
-use Recruitment\Form\VolunteerInterviewForm;
 use Recruitment\Service\AddressService;
 use Recruitment\Service\RegistrationStatusService;
 use Recruitment\Service\RelativeService;
@@ -182,6 +181,7 @@ class InterviewController extends AbstractEntityActionController
                         Recruitment::VOLUNTEER_RECRUITMENT_TYPE,
                         [
                             'interview' => ($registration->getVolunteerInterview() ? true : false),
+                            'interviewForm' => false,
                             'recruitment' => $registration->getRecruitment(),
                             'person' => array(
                                 'relative' => false,
@@ -203,7 +203,7 @@ class InterviewController extends AbstractEntityActionController
                     if ($form->isValid()) {
                         $em->persist($registration);
                         $em->flush();
-                    }                  
+                    }
                 }
 
                 return new ViewModel(array(
@@ -716,15 +716,18 @@ class InterviewController extends AbstractEntityActionController
             if ($rid) {
                 $em = $this->getEntityManager();
                 $registration = $em->find('Recruitment\Entity\Registration', $rid);
-                $form = new VolunteerInterviewForm(
+                $form = new RegistrationForm(
                         $em, 
+                        Recruitment::VOLUNTEER_RECRUITMENT_TYPE,
                         [
                             'interview' => true,
+                            'interviewForm' => true,
+                            'recruitment' => $registration->getRecruitment(),
                             'person' => array(
                                 'relative' => false,
-                                'address' => true,
-                                'social_media' => true,
-                            )
+                                'address' => false,
+                                'social_media' => false,
+                            ),
                         ]
                 );
                 $person = $registration->getPerson();
@@ -740,12 +743,13 @@ class InterviewController extends AbstractEntityActionController
                     $interviewers = $interview->getInterviewers();
                 }
 
-                $form->bind($interview);
+                $form->bind($registration);
 
                 $request = $this->getRequest();
                 
                 if ($request->isPost()) {
                     $data = $request->getPost();
+                    $data['registrationConsent'] = 1; 
                     $form->setData($data);
                     
                     if ($form->isValid()) {
@@ -759,8 +763,8 @@ class InterviewController extends AbstractEntityActionController
                         } else if ($status === RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS) {
                             $this->updateRegistrationStatus($registration, RecruitmentStatus::STATUSTYPE_TESTCLASS_COMPLETE);
                         }
-                    
-                        if ($interviewers !== $data['volunteerInterview']['interviewers']) {
+                        
+                        if ($interviewers !== $data['registration']['volunteerInterview']['interviewers']) {
                             $interview->removeInterviewersEvaluations($interview->getInterviewersEvaluations());
                         }
                         

@@ -341,8 +341,8 @@ class RecruitmentController extends AbstractEntityActionController
             $srHasOffset = false;
 
             $volunteerRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-                ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::VOLUNTEER_RECRUITMENT_TYPE, $currentDate);
-            $vrHasOffiset = false;
+                ->findNotEndedByTypeAsArray(Recruitment::VOLUNTEER_RECRUITMENT_TYPE, $currentDate);
+            $vrHasOffset = false;
 
             // nenhum processo seletivo de alunos aberto, buscar por processos seletivos de alunos 
             // abertos dentro dos próximos dias
@@ -357,7 +357,7 @@ class RecruitmentController extends AbstractEntityActionController
             if ($volunteerRecruitment === null) {
                 $volunteerRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')
                     ->findByTypeAndBetweenBeginAndEndDatesAsArray(Recruitment::VOLUNTEER_RECRUITMENT_TYPE, $date);
-                $vrHasOffiset = true;
+                $vrHasOffset = true;
             }
 
             if ($studentRecruitment === null && $volunteerRecruitment == null) {
@@ -371,6 +371,11 @@ class RecruitmentController extends AbstractEntityActionController
                 $srSubscriptionLink = true;
             }
 
+            $vrSubscriptionLink = false;
+            if (!$vrHasOffset && $currentDate <= $volunteerRecruitment['recruitmentEndDate']) {
+                $vrSubscriptionLink = true;
+            }
+
             return new JsonModel([
                 'recruitments' => [
                     'student' => [
@@ -380,7 +385,8 @@ class RecruitmentController extends AbstractEntityActionController
                     ],
                     'volunteer' => [
                         'content' => $volunteerRecruitment,
-                        'offset' => $vrHasOffiset,
+                        'offset' => $vrHasOffset,
+                        'showSubscriptionLink' => $vrSubscriptionLink,
                     ],
                 ]
             ]);

@@ -247,6 +247,13 @@ class Recruitment
      */
     private $enrollmentDescription;
 
+    /**
+     *
+     * @var string
+     * @ORM\Column(name="recruitment_tstcdesc", type="string", length=800, nullable=true)
+     */
+    private $testClassDescription;
+
     // /new
 
     /**
@@ -1012,5 +1019,27 @@ class Recruitment
     {
         return $this->openJobs->contains($job);
     }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getTestClassDescription()
+    {
+        return $this->testClassDescription;
+    }
+
+    /**
+     * 
+     * @param string $testClassDescription
+     * @return Recruitment\Entity\Recruitment
+     */
+    public function setTestClassDescription($testClassDescription)
+    {
+        $this->testClassDescription = $testClassDescription;
+        return $this;
+    }
+
+
     
 }
