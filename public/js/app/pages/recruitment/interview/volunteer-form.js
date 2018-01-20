@@ -15,12 +15,12 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(['app/pages/recruitment/interview/keep-alive', 'datetimepicker', 'bootstrapslider'], function (keepAlive) {
+define(['app/pages/recruitment/interview/keep-alive', 'app/pages/recruitment/registration/registration', 'datetimepicker', 'bootstrapslider'], function (keepAlive, registration) {
     
     var volunteerForm = (function () {
 
         /**
-         * Inicializa os seletores de hora
+         * Inicializa os seletores de data e hora
          * 
          */
         initDatepickers = function () {
@@ -28,6 +28,11 @@ define(['app/pages/recruitment/interview/keep-alive', 'datetimepicker', 'bootstr
             $('.interview-time').closest('.input-group').datetimepicker({
                 format: 'HH:mm',
                 useCurrent: true,
+                locale: 'pt-br'
+            });
+            
+            $('#interview-date').closest('.input-group').datetimepicker({
+                format: 'DD/MM/YYYY',
                 locale: 'pt-br'
             });
             
@@ -119,6 +124,9 @@ define(['app/pages/recruitment/interview/keep-alive', 'datetimepicker', 'bootstr
             },
             initSlider: function() {
                 initSlider();
+            },
+            initDatepickers: function() {
+                initDatepickers();
             }
         };
     }());

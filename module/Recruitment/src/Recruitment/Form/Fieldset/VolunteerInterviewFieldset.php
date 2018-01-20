@@ -25,6 +25,19 @@ class VolunteerInterviewFieldset extends Fieldset implements InputFilterProvider
 
         $this
             ->add([
+                'name' => 'date',
+                'type' => 'DateTime',
+                'options' => [
+                    'label' => 'Data da entrevista',
+                    'add-on-prepend' => '<i class="fa fa-calendar-o"></i>',
+                    'format' => 'd/m/Y'
+                ],
+                'attributes' => [
+                    'class' => 'datepicker',
+                    'id' => 'interview-date',
+                ]
+            ])
+            ->add([
                 'name' => 'startTime',
                 'type' => 'DateTime',
                 'options' => [
@@ -46,11 +59,22 @@ class VolunteerInterviewFieldset extends Fieldset implements InputFilterProvider
                 'name' => 'interviewersInitialComments',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Comentários dos entrevistadores',
+                    'label' => 'Comentários dos entrevistadores (Colocar a ordem de preferência dos cargos desejados)',
                 ],
                 'attributes' => [
                     'rows' => 6,
                     'class' => 'col-xs-12 form-control',
+                ],
+            ])
+            ->add([
+                'name' => 'hometown',
+                'type' => 'text',
+                'options' => [
+                    'label' => 'Cidade de origem',
+                ],
+                'attributes' => [
+                    'class' => 'col-xs-12 form-control',
+                    'maxlength' => 40,
                 ],
             ])
             ->add([
@@ -183,6 +207,28 @@ class VolunteerInterviewFieldset extends Fieldset implements InputFilterProvider
     public function getInputFilterSpecification()
     {
         return [
+            'date' => [
+                'required' => true,
+                'filters' => array(
+                    array('name' => 'StripTags'),
+                    array('name' => 'StringTrim'),
+                    array(
+                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'options' => array(
+                            'inputFormat' => 'd/m/Y',
+                            'outputFormat' => 'Y-m-d'
+                        ),
+                    ),
+                ),
+                'validators' => array(
+                    array(
+                        'name' => 'Date',
+                        'options' => array(
+                            'format' => 'Y-m-d',
+                        ),
+                    ),
+                ),
+            ],
             'startTime' => [
                 'required' => true
             ],
@@ -214,6 +260,22 @@ class VolunteerInterviewFieldset extends Fieldset implements InputFilterProvider
                         'options' => [
                             'min' => 3,
                             'max' => 500,
+                        ],
+                    ],
+                ],
+            ],
+            'hometown' => [
+                'required' => true,
+                'filters' => [
+                    ['name' => 'StringTrim'],
+                    ['name' => 'StripTags']
+                ],
+                'validators' => [
+                    [
+                        'name' => 'StringLength',
+                        'options' => [
+                            'min' => 3,
+                            'max' => 40,
                         ],
                     ],
                 ],

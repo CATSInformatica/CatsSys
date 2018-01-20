@@ -24,6 +24,7 @@ define(['app/pages/recruitment/interview/profile',
             init: function () {
                 profile.init();
                 volunteerForm.initSlider();
+                volunteerForm.initDatepickers();
                 registrationForm.initDesiredJobsInput();
             }
         };
