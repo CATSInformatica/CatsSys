@@ -67,10 +67,18 @@ define(['moment', 'masks', 'app/models/Service', 'jquery', 'datetimepicker'], fu
             
             var lastNameSelect = $('#last-name-select');
             
+            var nameInputTimer;
+            var doneTypingInterval = 3000;
+            
             /**
              * As partes mudam sempre que há uma alteração no campo
              */
             $('#full-name-field').on('input', function() {
+                clearTimeout(nameInputTimer);
+                nameInputTimer = setTimeout(handleNameInput, doneTypingInterval);
+            });
+            
+            function handleNameInput() {
                 lastNameSelect.children('.partial-name').remove();
                 var partialNames = $('#full-name-field').val().split(' ');
                 
@@ -87,9 +95,9 @@ define(['moment', 'masks', 'app/models/Service', 'jquery', 'datetimepicker'], fu
                     }
                     
                     var partialNameTemplate = $('#partial-name-template > div').clone();
-                    partialNameTemplate.find('.partial-name-text').attr('value', partialNames[i]);
-                    partialNameTemplate.find('.partial-name-text').html(partialNames[i]);
-                    lastNameSelect.append(partialNameTemplate);
+                    partialNameTemplate.find('.partial-name-text').first().attr('value', partialNames[i]);
+                    partialNameTemplate.find('.partial-name-text').first().html(partialNames[i]);
+                    lastNameSelect.append(partialNameTemplate[0]);
                 }
                 
                 $('.partial-name-text').on('click', function() {
@@ -100,10 +108,10 @@ define(['moment', 'masks', 'app/models/Service', 'jquery', 'datetimepicker'], fu
                         setLastName(true, $(this));
                     }
                 });
-            });
+            }
             
             updateFullNameField();
-            $('#full-name-field').trigger('input');
+            handleNameInput();
             updateLastNameField();
             
             $('form').submit(function() {
