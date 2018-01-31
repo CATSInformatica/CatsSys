@@ -35,7 +35,7 @@ abstract class RegistrationFieldset extends Fieldset
 
         // se o formulário de entrevista, não é necessário adicionar os campos
         // relativos à pessoa
-        if (!$options['interviewForm']) {
+        if (!isset($options['interviewForm']) || (isset($options['interviewForm']) && !$options['interviewForm'])) {
             $this->add($person);
         }
     }

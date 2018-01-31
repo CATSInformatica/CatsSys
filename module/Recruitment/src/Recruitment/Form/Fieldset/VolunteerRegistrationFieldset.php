@@ -39,7 +39,9 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
 
         parent::__construct($obj, $options);
         
-        $this->interviewForm = $options['interviewForm'];
+        if (isset($options['interviewForm'])) {
+            $this->interviewForm = $options['interviewForm'];
+        }
         
         $openJobsOptions = $this->getOpenJobsOptions($options['recruitment']);
         
