@@ -34,7 +34,7 @@ final class StudentRegistrationFieldset extends RegistrationFieldset implements 
             'name' => 'recruitmentKnowAbout',
             'type' => 'DoctrineModule\Form\Element\ObjectMultiCheckbox',
             'options' => array(
-                'label' => 'Por qual(is) meio(s) você soube do processo seletivo de alunos?*',
+                'label' => 'Por qual(is) meio(s) você soube deste processo seletivo?*',
                 'object_manager' => $obj,
                 'target_class' => 'Recruitment\Entity\RecruitmentKnowAbout',
                 'property' => 'recruitmentKnowAboutDescription',
