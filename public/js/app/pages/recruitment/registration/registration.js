@@ -188,7 +188,7 @@ define(['moment', 'masks', 'app/models/Service', 'jquery', 'datetimepicker'], fu
                 initMasks();
                 initServices();
                 initDesiredJobsInput();
-                initFullNameField();
+                //initFullNameField();
             },
             initDesiredJobsInput: function() {
                 initDesiredJobsInput();

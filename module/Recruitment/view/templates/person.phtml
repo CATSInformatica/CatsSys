@@ -8,16 +8,16 @@
         </div>
     </div>
     <div class="box-body">
-        <div class="col-xs-12 col-md-12" id="full-name-field-wrapper" style="display: none;">
+<!--        <div class="col-xs-12 col-md-12" id="full-name-field-wrapper" style="display: none;">
             <div class="form-group 
-                 <?php echo $this->formElementErrors($form->get('personFirstName')) !== "" ? 'has-error' : ''; ?>
-                 <?php echo $this->formElementErrors($form->get('personLastName')) !== "" ? 'has-error' : ''; ?>
+                 <?php //echo $this->formElementErrors($form->get('personFirstName')) !== "" ? 'has-error' : ''; ?>
+                 <?php //echo $this->formElementErrors($form->get('personLastName')) !== "" ? 'has-error' : ''; ?>
                  ">
                 <label class="control-label">
                     Nome Completo*
                 </label>
                 <input type="text" placeholder="Nome completo" class="form-control" id="full-name-field">            
-                <?php echo $this->formElementErrors($form->get('personFirstName')); ?> 
+                <?php //echo $this->formElementErrors($form->get('personFirstName')); ?> 
                 <label class="control-label">
                     Selecione seu sobrenome*
                 </label>
@@ -28,17 +28,23 @@
                             </button>
                         </div>
                     </div>
-                    <!--
+                    
                         Lista de nomes entra aqui
-                    -->
+                    
                 </div>    
-                <?php echo $this->formElementErrors($form->get('personLastName')); ?>
+                <?php //echo $this->formElementErrors($form->get('personLastName')); ?>
             </div>
+        </div>-->
+        <div class="col-xs-12 col-md-12">
+            <p><strong>Atenção:</strong> preencha os campos a seguir com cuidado.</p>
+            <p>Siga os exemplos abaixo. O nome é mostrado em <span class="text-green">verde</span> e o sobrenome em <span class="text-blue">azul</span>.</p>
+            <p><span class="text-green">Magno</span> <span class="text-blue">Lopes Salgado</span></p>
+            <p><span class="text-green">Ana Carolina</span> <span class="text-blue">da Silva</span></p>
         </div>
-        <div class="col-xs-12 col-md-4 name-field">
+        <div class="col-xs-12 col-md-4">
             <?php echo $this->formRow($form->get('personFirstName')); ?>
         </div>
-        <div class="col-xs-12 col-md-8 name-field">
+        <div class="col-xs-12 col-md-8">
             <?php echo $this->formRow($form->get('personLastName')); ?>
         </div>
         <div class="col-xs-12 col-md-12">
