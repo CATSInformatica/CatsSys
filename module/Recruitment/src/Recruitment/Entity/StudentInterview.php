@@ -1578,4 +1578,65 @@ seu contexto social.';
         
         return $grade;
     }
+    
+    /**
+     * 
+     * @return string
+     */
+    public function getInterviewSecondarySchool()
+    {
+        return $this->interviewSecondarySchool;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getIntervewUnemploymentInFamily()
+    {
+        return $this->intervewUnemploymentInFamily;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getIntervewChemicalDependency()
+    {
+        return $this->intervewChemicalDependency;
+    }
+
+    /**
+     * 
+     * @param string $interviewSecondarySchool
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewSecondarySchool($interviewSecondarySchool)
+    {
+        $this->interviewSecondarySchool = $interviewSecondarySchool;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $intervewUnemploymentInFamily
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setIntervewUnemploymentInFamily($intervewUnemploymentInFamily)
+    {
+        $this->intervewUnemploymentInFamily = $intervewUnemploymentInFamily;
+        return $this;
+    }
+
+    /**
+     * 
+     * @param string $intervewChemicalDependency
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setIntervewChemicalDependency($intervewChemicalDependency)
+    {
+        $this->intervewChemicalDependency = $intervewChemicalDependency;
+        return $this;
+    }
+    
 }
