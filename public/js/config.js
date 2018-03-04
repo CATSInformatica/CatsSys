@@ -17,7 +17,7 @@ requirejs.config({
         jmaskedinput: 'jquery.maskedinput/dist/jquery.maskedinput.min',
         slimscroll: 'jquery-slimscroll/jquery.slimscroll.min',
         pace: 'AdminLTE/plugins/pace/pace.min',
-        adminlte: 'AdminLTE/dist/js/adminlte.min',
+        adminlte: 'AdminLTE/dist/js/app.min',
         bootbox: 'bootbox.js/bootbox',
         'datatables.net': 'datatables.net/js/jquery.dataTables.min',
         datatable: 'datatables.net-bs/js/dataTables.bootstrap.min',
@@ -86,7 +86,10 @@ requirejs.config({
     }
 });
 
-define(['jquery', 'bootstrap', 'adminlte'], function () {
+define(['adminlte'], function () {
+
+    // $('#leftMainMenu').tree();
+
     // for file inputs
     $(document).on('change', '.btn-file :file', function () {
         var input = $(this),
