@@ -97,7 +97,7 @@ Exiting...
 fi
 echo
 echo 'Installing Required Packages: PHP, MySql, Git';
-sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom git
+sudo apt-get install php php-fpm mysql-server php-mysql php-gd php-apcu php-intl php-dom git
 echo 'Installing Required Packages: Composer, Apache';
 
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
@@ -159,8 +159,8 @@ apache)
 # vim: syntax=apache ts=4 sw=4 sts=4 sr noet
 EOF
     echo 'Changing php.ini max_post_size to 20MB and upload_max_filesize to 15MB'
-    sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php/7.0/apache2/php.ini
-    sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php/7.0/apache2/php.ini
+    sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php/7.1/apache2/php.ini
+    sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php/7.1/apache2/php.ini
     ;;
 nginx)
     echo "installing Nginx"
@@ -179,7 +179,7 @@ server {
 
     location ~ \.php\$ {
         # Pass the PHP requests to FastCGI server (php-fpm)
-        fastcgi_pass unix:/var/run/php/php7.0-fpm.sock;
+        fastcgi_pass unix:/var/run/php/php7.1-fpm.sock;
         fastcgi_param SCRIPT_FILENAME \$document_root\$fastcgi_script_name;
 	fastcgi_param APP_ENV development;
         include fastcgi_params;
@@ -194,8 +194,8 @@ server {
 }
 EOF
 
-    sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php/7.0/fpm/php.ini
-    sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php/7.0/fpm/php.ini
+    sudo sed -i 's/.*post_max_size.*/post_max_size = 20M/' /etc/php/7.1/fpm/php.ini
+    sudo sed -i 's/.*upload_max_filesize.*/upload_max_filesize = 15M/' /etc/php/7.1/fpm/php.ini
 
     sudo service nginx restart;
     ;;
