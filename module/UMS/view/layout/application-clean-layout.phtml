@@ -17,10 +17,12 @@
                 'rel' => 'shortcut icon',
                 'type' => 'image/vnd.microsoft.icon',
                 'href' => $this->basePath('/img/favicon.ico')))
+            // Sans Pro
+            ->appendStylesheet('https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,600,700,300italic,400italic,600italic')
             // Bootstrap
-            ->appendStylesheet($this->basePath('vendor/AdminLTE/bootstrap/css/bootstrap.min.css'))
+            ->appendStylesheet($this->basePath('vendor/bootstrap/dist/css/bootstrap.min.css'))
             // DataTable
-            ->appendStylesheet($this->basePath('vendor/AdminLTE/plugins/datatables/dataTables.bootstrap.css'))
+            ->appendStylesheet($this->basePath('vendor/datatables.net-bs/css/dataTables.bootstrap.min.css'))
             // Datepicker
             ->appendStylesheet($this->basePath('vendor/eonasdan-bootstrap-datetimepicker/build/css/bootstrap-datetimepicker.min.css'))
             // Font Awesome

@@ -15,7 +15,7 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-@import url("/vendor/AdminLTE/bootstrap/css/bootstrap.min.css");
+@import url("/vendor/bootstrap/dist/css/bootstrap.min.css");
 @import url("/vendor/AdminLTE/dist/css/AdminLTE.min.css");
 
 .print-page, .content-questions, #exam-temp {

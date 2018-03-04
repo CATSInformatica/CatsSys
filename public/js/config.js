@@ -8,19 +8,19 @@
 requirejs.config({
     baseUrl: '/vendor',
     paths: {
-        jquery: 'AdminLTE/plugins/jQuery/jquery-2.2.3.min',
+        jquery: 'jquery/dist/jquery.min',
+        bootstrap: 'bootstrap/dist/js/bootstrap.min',
         jqueryui: 'AdminLTE/plugins/jQueryUI/jquery-ui.min',
         jquerycsv: 'jquery-csv/src/jquery.csv',
         jquerycolumnizer: 'jquery.columnizer/src/jquery.columnizer.min',
-        bootstrap: 'AdminLTE/bootstrap/js/bootstrap.min',
         bootstrapslider: 'AdminLTE/plugins/bootstrap-slider/bootstrap-slider',
         jmaskedinput: 'jquery.maskedinput/dist/jquery.maskedinput.min',
-        slimscroll: 'AdminLTE/plugins/slimScroll/jquery.slimscroll.min',
+        slimscroll: 'jquery-slimscroll/jquery.slimscroll.min',
         pace: 'AdminLTE/plugins/pace/pace.min',
-        adminlte: 'AdminLTE/dist/js/app.min',
+        adminlte: 'AdminLTE/dist/js/adminlte.min',
         bootbox: 'bootbox.js/bootbox',
-        jquerydatatable: 'AdminLTE/plugins/datatables/jquery.dataTables.min',
-        datatable: 'AdminLTE/plugins/datatables/dataTables.bootstrap.min',
+        'datatables.net': 'datatables.net/js/jquery.dataTables.min',
+        datatable: 'datatables.net-bs/js/dataTables.bootstrap.min',
         datetimepicker: 'eonasdan-bootstrap-datetimepicker/build/js/bootstrap-datetimepicker.min',
         moment: 'moment/min/moment-with-locales.min',
         dropzone: 'dropzone/dist/min/dropzone-amd-module.min',
@@ -44,7 +44,7 @@ requirejs.config({
             deps: ['bootstrap']
         },
         datatable: {
-            deps: ['jquery', 'bootstrap', 'jquerydatatable']
+            deps: ['jquery', 'bootstrap', 'datatables.net']
         },
         datetimepicker: {
             deps: ['jquery', 'bootstrap', 'moment']
