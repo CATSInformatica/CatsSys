@@ -21,12 +21,13 @@
                 </div>
                 <?php echo $this->form()->closeTag(); ?>
             </div>
+            <input id="showDesiredJobs" type="hidden" value="1">
         </div>
         <br>
         <div class="row">
             <div class="col-xs-12 col-md-8 col-md-offset-2">
                 <div class="table-responsive">
-                    <table class="table table-condensed table-bordered" id="recruitment-table">
+                    <table class="table table-condensed table-bordered" id="recruitment-table" data-show-desired-jobs="1">
                         <thead>
                         <th>Nº de Inscrição</th>
                         <th>Data</th>

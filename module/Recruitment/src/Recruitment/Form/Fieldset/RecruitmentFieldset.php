@@ -804,7 +804,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 'required' => false,
             ],
             'resultDate' => [
-                'required' => false,
+                'required' => true,
                 'filters' => [
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
