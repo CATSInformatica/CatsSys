@@ -1,7 +1,7 @@
 <?php
 $container = $this->container;
 ?>
-<ul class="<?php echo $this->navigation($container)->menu()->getUlClass(); ?>" data-widget="tree">
+<ul id="leftMainMenu" class="<?php echo $this->navigation($container)->menu()->getUlClass(); ?>">
     <?php foreach ($container as $page): ?>
 
         <?php
