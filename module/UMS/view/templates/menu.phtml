@@ -1,7 +1,7 @@
 <?php
 $container = $this->container;
 ?>
-<ul class="<?php echo $this->navigation($container)->menu()->getUlClass(); ?>">
+<ul class="<?php echo $this->navigation($container)->menu()->getUlClass(); ?>" data-widget="tree">
     <?php foreach ($container as $page): ?>
 
         <?php
@@ -15,7 +15,7 @@ $container = $this->container;
         <?php $hasChildren = $page->hasPages() ?>
 
         <?php if (!$hasChildren): ?>
-            <li <?php echo ($page->isActive() ? 'class="active"' : ''); ?> >
+            <li class="<?php echo $page->isActive() ? 'active' : ''; ?>">
                 <a href="<?php echo $page->getHref() ?>">
 
                     <?php if ($page->get("icon") !== ""): ?>

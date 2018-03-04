@@ -1,0 +1,2 @@
+-- insert into job values (1, 1, 6, null, 'DIRETOR DE RH', 'Diretor de RH...', 1, '2018-03-04 09:43:09', null);
+-- insert into job values (2, 1, 7, 1, 'ENTREVISTADOR', 'Faz entrevistas de processo seletivo de alunos e voluntários', 1, '2018-03-04 09:43:38', null);

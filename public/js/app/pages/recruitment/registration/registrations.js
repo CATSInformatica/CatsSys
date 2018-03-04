@@ -42,6 +42,7 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                     },
                     dataSrc: function (data) {
                         var result = [];
+                        console.log('data', data);
                         for (var i = 0; i < data.length; i++) {
                             result.push({
                                 DT_RowClass: "cats-row",
