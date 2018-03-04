@@ -622,7 +622,12 @@ class RegistrationController extends AbstractEntityActionController
                         $statusType = $status->getRecruitmentStatus()->getStatusType();
                         $person = $r->getPerson();
 
-                        $result[] = array(
+                        $dJobs = [];
+                        foreach($r->getDesiredJobs() as $j) {
+                            $dJobs[] = $j->getJobName();
+                        }
+
+                        $result[] = [
                             'registrationId' => $r->getRegistrationId(),
                             'registrationNumber' => $r->getRegistrationNumber(),
                             'registrationDate' => $r->getRegistrationDate(),
@@ -631,11 +636,12 @@ class RegistrationController extends AbstractEntityActionController
                             'personRg' => $person->getPersonRg(),
                             'personPhone' => $person->getPersonPhone(),
                             'personEmail' => $person->getPersonEmail(),
-                            'status' => array(
+                            'status' => [
                                 'type' => $statusType,
                                 'timestamp' => $timestamp,
-                            )
-                        );
+                            ],
+                            'desiredJobs' => $dJobs
+                        ];
                     }
                 }
             }

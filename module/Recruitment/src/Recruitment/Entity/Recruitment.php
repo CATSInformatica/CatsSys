@@ -948,16 +948,6 @@ class Recruitment
         $this->enrollmentDescription = $enrollmentDescription;
         return $this;
     }
-    
-    /**
-     * 
-     * @param Collection $openJobs
-     */
-    public function setOpenJobs(Collection $openJobs)
-    {
-        $this->openJobs = $openJobs;
-        return $this;
-    }
 
     /**
      * @param Job $job
@@ -980,10 +970,9 @@ class Recruitment
     public function addOpenJobs(Collection $jobs)
     {
         foreach ($jobs as $job) {
-            if (!$this->hasOpenJob($job)) {
-                $this->openJobs->add($job);
-            }
+            $this->addOpenJob($job);
         }
+
         return $this;
     }
 
@@ -993,7 +982,9 @@ class Recruitment
      */
     public function removeOpenJob(Job $job)
     {
-        $this->openJobs->removeElement($job);
+        if ($this->hasOpenJob($job)) {
+            $this->openJobs->removeElement($job);
+        }
         return $this;
     }
 
@@ -1005,7 +996,7 @@ class Recruitment
     public function removeOpenJobs(Collection $jobs)
     {
         foreach ($jobs as $job) {
-            $this->openJobs->removeElement($job);
+            $this->removeOpenJob($job);
         }
         return $this;
     }

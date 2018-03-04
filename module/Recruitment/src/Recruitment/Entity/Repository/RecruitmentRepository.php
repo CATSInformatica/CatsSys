@@ -84,6 +84,7 @@ class RecruitmentRepository extends EntityRepository
         
         $edate = clone $date;
         $edate->sub(new \DateInterval('P30D'));
+
         return $this->_em
                 ->createQuery('SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
                     . 'r.recruitmentEndDate, r.recruitmentPublicNotice '

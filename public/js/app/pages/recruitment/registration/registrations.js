@@ -27,7 +27,10 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
         };
         initDataTable = function () {
 
-            var recruitmentTable = $('#recruitment-table').DataTable({
+            var recruitmentTable = $('#recruitment-table');
+            var showDesiredJobs = recruitmentTable.attr('data-show-desired-jobs');
+
+            var dt = recruitmentTable.DataTable({
                 iDisplayLength: 100,
                 dom: 'lftip',
 //                paging: false,
@@ -42,8 +45,10 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                     },
                     dataSrc: function (data) {
                         var result = [];
+                        console.log('data', data);
                         for (var i = 0; i < data.length; i++) {
-                            result.push({
+
+                            var dRow = {
                                 DT_RowClass: "cats-row",
                                 DT_RowAttr: {
                                     "data-id": data[i].registrationId
@@ -55,8 +60,16 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                                 4: data[i].personRg,
                                 5: data[i].personPhone,
                                 6: data[i].personEmail,
-                                7: data[i].status.type + '<br>' + data[i].status.timestamp
-                            });
+                            };
+
+                            if(showDesiredJobs) {
+                                dRow['7'] = data[i].desiredJobs.join(', ');
+                                dRow['8'] = data[i].status.type + '<br>' + data[i].status.timestamp;
+                            } else {
+                                dRow['7'] = data[i].status.type + '<br>' + data[i].status.timestamp;
+                            }
+
+                            result.push(dRow);
                         }
 
                         return result;
@@ -65,7 +78,7 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                 columnDefs: [{targets: 6, className: 'text-center'}]
             });
             $('button[name=submit]').click(function () {
-                recruitmentTable.ajax.reload();
+                dt.ajax.reload();
             });
         };
         initMasks = function () {
