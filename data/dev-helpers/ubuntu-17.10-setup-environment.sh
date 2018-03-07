@@ -109,20 +109,6 @@ composer self-update
 curl -sL https://deb.nodesource.com/setup_8.x | sudo -E bash -
 sudo apt-get install -y nodejs
 
-
-# echo 'Installing php-apcu-bc';
-
-# if [ `getconf LONG_BIT` = "64" ]
-# then
-#     APCUBC="amd64"
-# else
-#     APCUBC="i386"
-# fi
-
-# wget "http://ftp.us.debian.org/debian/pool/main/p/php-apcu-bc/php-apcu-bc_1.0.3-2_$APCUBC.deb" -P "$HOME/Downloads/";
-# sudo dpkg -i "$HOME/Downloads/php-apcu-bc_1.0.3-2_$APCUBC.deb";
-# rm "$HOME/Downloads/php-apcu-bc_1.0.3-2_$APCUBC.deb";
-
 echo 'Installing bower';
 sudo npm install -g bower
 
@@ -240,26 +226,32 @@ tee $HOME/vhosts/cats-lab/config/autoload/local.php > /dev/null <<EOF
 * localmente
 */
 return [
-   'doctrine' => [
-       'connection' => [
-           'orm_default' => [
-               'params' => [
-                   'user'     => '$mysqluser',
-                   'password' => '$mysqlpass',
-                   'dbname'   => 'catssys',
-               ],
-           ],
-       ],
-   ],
-   'email' => [
-      'recruitment' => [
+    'doctrine' => [
+        'connection' => [
+            'orm_default' => [
+                'params' => [
+                    'user'     => '$mysqluser',
+                    'password' => '$mysqlpass',
+                    'dbname'   => 'catssys',
+                ],
+            ],
+        ],
+    ],
+    'email' => [
+        'recruitment' => [
             'from' => 'name@yourdomain.com',
             'from_name' => 'Your Name',
             'replyTo' => [
                 'replyto@yourdomain.com' => 'Reply name',
             ],
-      ],
-   ],
+        ],
+        'contact' => [
+            /* lista de pares do tipo: email => nome */
+            'to' => [
+                'contact@exemple.com' => 'Recebedor de emails de contato',
+            ],
+        ],
+    ],
 ];
 EOF
 
