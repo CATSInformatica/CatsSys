@@ -836,7 +836,10 @@ class InterviewController extends AbstractEntityActionController
 
                     if ($form->isValid()) {
                         $pastEvaluation = $em->getRepository('Recruitment\Entity\InterviewerEvaluation')
-                                ->findBy(['interviewerName' => $interviewerEvaluation->getInterviewerName()])[0];
+                                ->findBy([
+                                    'interviewerName' => $interviewerEvaluation->getInterviewerName(),
+                                    'volunteerInterview' => $volunteerInterview
+                                    ])[0];
                         if ($pastEvaluation) {
                             $volunteerInterview->removeInterviewerEvaluation($pastEvaluation);
                             $em->remove($pastEvaluation);
