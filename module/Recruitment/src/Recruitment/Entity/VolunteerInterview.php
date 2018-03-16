@@ -225,6 +225,7 @@ class VolunteerInterview
         return $this->date;
     }
 
+    
     /**
      * 
      * @return string
@@ -341,6 +342,16 @@ class VolunteerInterview
     public function getInterviewersEvaluations()
     {
         return $this->interviewersEvaluations;
+    }
+    
+    /**
+     * 
+     * @param DateTime $date
+     * @return Recruitment\Entity\VolunteerInterview
+     */
+    function setDate(\DateTime $date) {
+        $this->date = $date;
+        return $this;
     }
     
     /**

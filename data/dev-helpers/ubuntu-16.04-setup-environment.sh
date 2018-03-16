@@ -229,26 +229,32 @@ tee $HOME/vhosts/cats-lab/config/autoload/local.php > /dev/null <<EOF
 * localmente
 */
 return [
-   'doctrine' => [
-       'connection' => [
-           'orm_default' => [
-               'params' => [
-                   'user'     => '$mysqluser',
-                   'password' => '$mysqlpass',
-                   'dbname'   => 'catssys',
-               ],
-           ],
-       ],
-   ],
-   'email' => [
-      'recruitment' => [
+    'doctrine' => [
+        'connection' => [
+            'orm_default' => [
+                'params' => [
+                    'user'     => '$mysqluser',
+                    'password' => '$mysqlpass',
+                    'dbname'   => 'catssys',
+                ],
+            ],
+        ],
+    ],
+    'email' => [
+        'recruitment' => [
             'from' => 'name@yourdomain.com',
             'from_name' => 'Your Name',
             'replyTo' => [
                 'replyto@yourdomain.com' => 'Reply name',
             ],
-      ],
-   ],
+        ],
+        'contact' => [
+            /* lista de pares do tipo: email => nome */
+            'to' => [
+                'contact@exemple.com' => 'Recebedor de emails de contato',
+            ],
+        ],
+    ],
 ];
 EOF
 
