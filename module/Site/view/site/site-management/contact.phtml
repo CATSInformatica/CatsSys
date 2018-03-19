@@ -3,6 +3,7 @@
         <div class="col-xs-12 col-md-10 col-md-offset-1">
             <table class="table table-bordered table-striped" id="contact-table">
                 <thead>
+                    <th>Id</th>
                     <th>Identificação</th>
                     <th>Relação</th>
                     <th>Data e Hora</th>
@@ -12,6 +13,7 @@
                 <tbody>
                     <?php foreach ($contacts as $contact) : ?>
                         <tr>
+                            <td><?php echo $contact->getContactId(); ?></td>
                             <td>
                                 <span class="text-bold">Nome: </span> <?php echo $contact->getName(); ?>
                                 <br>

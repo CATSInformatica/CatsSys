@@ -11,7 +11,8 @@ define(['jquery', 'datatable'], function () {
         initDataTable = function () {
             $('#contact-table').DataTable({
                 dom: 'lftip',
-                paging: false
+                paging: false,
+                order: [[ 0, 'desc' ]]
             });
         };
 
