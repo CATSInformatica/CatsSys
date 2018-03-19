@@ -43,6 +43,8 @@ class IndexControllerFactory implements FactoryInterface
             $emailService->addTo($email, $name);
         }   
         
+        $emailService->setFrom($emailOptions['from'], $emailOptions['from_name']);
+        
         $controller = new IndexController($emailService);
         
         $em = $sl->get('Doctrine\ORM\EntityManager');

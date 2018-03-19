@@ -61,18 +61,14 @@ class IndexController extends AbstractEntityActionController
             if ($form->isValid()) {            
                 $contact->setDate(new DateTime('now'));
                 
-                if ($contact->getEmail()) {
-                    if ($contact->getName()) {
-                        $this->emailService->setFrom($contact->getEmail(), $contact->getName());
-                    } else {
-                        $this->emailService->setFrom($contact->getEmail(), 'Anônimo');   
-                    }
-                } else {
-                    $this->emailService->setFrom(' ');
-                }
+                $bodyHeader = 
+                          'Nome: ' . ($contact->getName() ? $contact->getName() : 'Anônimo') . "\n"
+                        . 'Email: ' . ($contact->getEmail() ? $contact->getEmail() : '-') . "\n"
+                        . 'Data: ' . $contact->getDate()->format("d/m/Y") . "\n"
+                        . "\n";
                     
                 $this->emailService->setSubject($contact->getSubject() . '[' . $contact->getPosition() . ']');
-                $this->emailService->setBody($contact->getMessage());
+                $this->emailService->setBody($bodyHeader . $contact->getMessage());
                 $this->emailService->setIsHtml(false);
 
                 $this->emailService->send(); 
