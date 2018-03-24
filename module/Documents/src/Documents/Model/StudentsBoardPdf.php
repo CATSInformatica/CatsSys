@@ -18,7 +18,7 @@
 
 namespace Documents\Model;
 
-use fpdf\FPDF;
+use FPDF;
 
 /**
  * Description of StudentsBoardPdf
