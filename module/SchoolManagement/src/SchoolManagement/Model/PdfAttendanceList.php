@@ -8,7 +8,6 @@
 
 namespace SchoolManagement\Model;
 
-//use fpdf\FPDF;
 use Documents\Model\DefaultPdf;
 
 /**

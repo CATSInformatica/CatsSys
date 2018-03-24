@@ -97,9 +97,10 @@ Exiting...
 fi
 echo
 echo 'Installing Required Packages: PHP, MySql, Git';
-sudo apt-get install php php-fpm mysql-server php-mysql php-gd php-apcu php-intl php-dom git
+sudo apt-get install php php-fpm mysql-server php-mysql php-gd php-apcu php-intl php-dom php-mbstring git
 echo 'Installing Required Packages: Composer, Apache';
 
+# Composer
 php -r "copy('https://getcomposer.org/installer', 'composer-setup.php');"
 php -r "if (hash_file('SHA384', 'composer-setup.php') === '544e09ee996cdf60ece3804abc52599c22b1f40f4323403c44d44fdfdd586475ca9813a858088ffbc1f233e9b180f061') { echo 'Installer verified'; } else { echo 'Installer corrupt'; unlink('composer-setup.php'); } echo PHP_EOL;"
 sudo php composer-setup.php --install-dir=/usr/bin
@@ -258,14 +259,15 @@ EOF
 cp $HOME/vhosts/vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist $HOME/vhosts/cats-lab/config/autoload/zenddevelopertools.local.php
 
 echo 'Setting permissions for data directories'
-sudo chmod 777 $HOME/vhosts/cats-lab/data/DoctrineORMModule/Proxy
-sudo chmod 777 $HOME/vhosts/cats-lab/data/cache
-sudo chmod 777 $HOME/vhosts/cats-lab/public/docs
-sudo chmod 777 $HOME/vhosts/cats-lab/data/fonts
-sudo chmod 777 $HOME/vhosts/cats-lab/data/profile
-sudo chmod 777 $HOME/vhosts/cats-lab/data/captcha
-sudo chmod 777 $HOME/vhosts/cats-lab/data/session
-sudo chmod 777 $HOME/vhosts/cats-lab/data/email
+sudo chmod a+w $HOME/vhosts/cats-lab/data/DoctrineORMModule/Proxy
+sudo chmod a+w $HOME/vhosts/cats-lab/data/DoctrineModule/cache
+sudo chmod a+w $HOME/vhosts/cats-lab/data/cache
+sudo chmod a+w $HOME/vhosts/cats-lab/public/docs
+sudo chmod a+w $HOME/vhosts/cats-lab/data/fonts
+sudo chmod a+w $HOME/vhosts/cats-lab/data/profile
+sudo chmod a+w $HOME/vhosts/cats-lab/data/captcha
+sudo chmod a+w $HOME/vhosts/cats-lab/data/session
+sudo chmod a+w $HOME/vhosts/cats-lab/data/email
 sudo chmod a+w $HOME/vhosts/cats-lab/data/script
 
 echo 'Creating database CatsSys.'

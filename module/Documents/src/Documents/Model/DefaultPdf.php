@@ -8,7 +8,7 @@
 
 namespace Documents\Model;
 
-use fpdf\FPDF;
+use FPDF;
 
 /**
  * Rodapé e o cabeçalho dos pdfs

@@ -97,20 +97,7 @@ Exiting...
 fi
 echo
 echo 'Installing Required Packages: PHP, Composer Apache, MySql, Git';
-sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom composer npm git
-
-echo 'Installing php-apcu-bc';
-
-if [ `getconf LONG_BIT` = "64" ]
-then
-    APCUBC="amd64"
-else
-    APCUBC="i386"
-fi
-
-wget "http://ftp.us.debian.org/debian/pool/main/p/php-apcu-bc/php-apcu-bc_1.0.3-2_$APCUBC.deb" -P "$HOME/Downloads/";
-sudo dpkg -i "$HOME/Downloads/php-apcu-bc_1.0.3-2_$APCUBC.deb";
-rm "$HOME/Downloads/php-apcu-bc_1.0.3-2_$APCUBC.deb";
+sudo apt-get install php mysql-server php-mysql php-gd php-apcu php-intl php-dom php-mbstring composer npm git
 
 echo 'Installing bower';
 sudo npm install -g bower
@@ -261,14 +248,15 @@ EOF
 cp $HOME/vhosts/vendor/zendframework/zend-developer-tools/config/zenddevelopertools.local.php.dist $HOME/vhosts/cats-lab/config/autoload/zenddevelopertools.local.php
 
 echo 'Setting permissions for data directories'
-sudo chmod 777 $HOME/vhosts/cats-lab/data/DoctrineORMModule/Proxy
-sudo chmod 777 $HOME/vhosts/cats-lab/data/cache
-sudo chmod 777 $HOME/vhosts/cats-lab/public/docs
-sudo chmod 777 $HOME/vhosts/cats-lab/data/fonts
-sudo chmod 777 $HOME/vhosts/cats-lab/data/profile
-sudo chmod 777 $HOME/vhosts/cats-lab/data/captcha
-sudo chmod 777 $HOME/vhosts/cats-lab/data/session
-sudo chmod 777 $HOME/vhosts/cats-lab/data/email
+sudo chmod a+w $HOME/vhosts/cats-lab/data/DoctrineORMModule/Proxy
+sudo chmod a+w $HOME/vhosts/cats-lab/data/DoctrineModule/cache
+sudo chmod a+w $HOME/vhosts/cats-lab/data/cache
+sudo chmod a+w $HOME/vhosts/cats-lab/public/docs
+sudo chmod a+w $HOME/vhosts/cats-lab/data/fonts
+sudo chmod a+w $HOME/vhosts/cats-lab/data/profile
+sudo chmod a+w $HOME/vhosts/cats-lab/data/captcha
+sudo chmod a+w $HOME/vhosts/cats-lab/data/session
+sudo chmod a+w $HOME/vhosts/cats-lab/data/email
 sudo chmod a+w $HOME/vhosts/cats-lab/data/script
 
 echo 'Creating database CatsSys.'
