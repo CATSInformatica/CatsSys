@@ -3,11 +3,11 @@
 /**
  * TODO
  * O modulo Auth é responsável por autenticação e autorização
- * rotas deverão ser ajustadas para: 
+ * rotas deverão ser ajustadas para:
  * auth --> página de login
  * auth/login --> página de login
  * auth/logout --> página de logout (retorna para página de login)
- * 
+ *
  */
 
 namespace Authentication\Controller;
@@ -30,7 +30,6 @@ use Zend\View\Model\ViewModel;
  */
 class LoginController extends AbstractActionController
 {
-
     protected $authService;
 
     public function __construct($authService)
@@ -59,14 +58,17 @@ class LoginController extends AbstractActionController
 
             if ($loginForm->isValid()) {
                 $data = $loginForm->getData();
-                if ($this->userAuthentication($data)) {
-                    return $this->redirect()->toRoute('ums');
-                } else {
-                    $message = 'Credenciais inválidas.';
+                try {
+                    if ($this->userAuthentication($data)) {
+                        return $this->redirect()->toRoute('ums');
+                    } else {
+                        $message = 'Credenciais inválidas.';
+                    }
+                } catch (\Throwable $e) {
+                    die($e->getMessage());
                 }
             }
         }
-
         return new ViewModel(array(
             'form' => $loginForm,
             'message' => $message,
@@ -77,8 +79,8 @@ class LoginController extends AbstractActionController
     {
         $auth = $this->authService;
         $adapter = $auth->getAdapter();
-        $adapter->setIdentityValue($data['username']);
-        $adapter->setCredentialValue($data['password']);
+        $adapter->setIdentity($data['username']);
+        $adapter->setCredential($data['password']);
         $authResult = $auth->authenticate();
 
         if ($authResult->isValid()) {
@@ -130,5 +132,4 @@ class LoginController extends AbstractActionController
 
         return $this->redirect()->toRoute('authentication/login');
     }
-
 }
