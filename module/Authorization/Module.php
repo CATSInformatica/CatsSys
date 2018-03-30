@@ -53,9 +53,6 @@ class Module
         $routeMatch = $e->getRouteMatch();
         $sm = $application->getServiceManager();
 
-        // Authentication
-//        $auth = $sm->get('Zend\Authentication\AuthenticationService');
-
         /**
          * @Todo check if session container 'User' still exists
          */
