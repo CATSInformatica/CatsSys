@@ -68,33 +68,29 @@
     display: block; 
     page-break-after: always;
 }
-.page {
-    height: 297mm; 
-    width: 210mm; 
-    display: block; 
-    page-break-after: always;
-}
-
 
 /*  Header  */
 .exam-header {
-    width: 196mm;
-    height: 24mm;
-    border-bottom: 0.5mm solid lightgray;
-    padding: 5mm 0 2mm;
-    margin-left: 7mm;
+    width: 186mm;
+    height: 30mm;
+    border-bottom: 0.5mm solid #dadada;
+    padding: 5mm 0;
 }
 .cats-logo {
-    height: 14mm;
     padding-top: 1mm;
 }
 .header-text {
-    font-size: 10pt;
+    font-size: 11pt;
+    line-height: 1.9;
+}
+
+.exam-header, .exam-footer {
+    margin-left: 12mm;
 }
 
 /*  Content  */
 .exam-content {
-    height: 261mm;
+    height: 256mm;
 }
 .exam-content, .content-questions, #exam-temp {
     padding: 2mm 7mm;
@@ -126,19 +122,24 @@
 }
 .q-divider {
     margin: 1.2mm;
-    border-top-color: lightgray;
+    border-top-color: #dadada;
 }
 
 /*  Footer  */
 .exam-footer {
-    width: 196mm;
-    height: 12mm;
-    border-top: 0.5mm solid lightgray;
-    padding: 1mm 3mm 4mm;
-    margin-left: 7mm;
+    width: 188mm;
+    height: 11mm;
+    border-top: 0.5mm solid #dadada;
+    padding: 1mm;
+}
+.page-number, .page-text {
+    margin: 0 1mm;
+}
+.page-text {
+    color: #aaaaaa !important;
 }
 
-/*Gabarito*/
+/* Gabarito */
 #answer-key-tables {
     width: 297mm;
 }
@@ -151,7 +152,7 @@
     height: 10mm;
 }
 .answers-table > tbody > tr {
-    border: 1px solid #ddd !important;
+    border: 1px solid #ddd !important;    
     line-height: 2;
 }
 .answers-table > tbody > tr:nth-child(odd):not(.highlighted-row) > td {
