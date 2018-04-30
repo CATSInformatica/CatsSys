@@ -51,7 +51,6 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
              * 
              */
             $('.print-exam').click(function () {
-                console.time('print time');
                 var contentInfoBlock = $(this).closest('.content-info-block');
                 var contentId = +contentInfoBlock.data('content-id');
                 
@@ -86,7 +85,6 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                         MathJax.Hub.Queue(["Typeset", MathJax.Hub, printDiv.data('div-id')], function () {
                             var printCallback = function() {
                                 printDiv.html('');
-                                console.timeEnd('print time');
 
                                 showOnlyAppropriateButtons(contentInfoBlock, false);
                             };
@@ -103,7 +101,7 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                                 manuallyCopyFormValues: true,
                                 deferred: $.Deferred().done(printCallback),
                                 timeout: 1000,
-                                title: contentInfoBlock.find('.exam-name').first().text(),
+                                title: null,
                                 doctype: '<!doctype html>'
                             });
                         }); 
@@ -267,7 +265,6 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                     examPage.find('.page-number').first().text(pageNumber++);
                     printDiv.append(examPage);
                     
-                    console.time('columnize');
                     $('#exam-temp').columnize({
                         columns: 2,
                         target: '#' + printDiv.data('div-id') + ' .page:last .exam-content',
@@ -275,7 +272,6 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                             height: examPage.find('.exam-content').first().height(),
                             id: '#exam-temp',
                             doneFunc: function () {
-                                console.timeEnd('columnize');
                                 var questionsLeft = $('#exam-temp').find('.question-block');
                                 
                                 if (questionsLeft.length > 0 
