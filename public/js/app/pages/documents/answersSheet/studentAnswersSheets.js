@@ -26,8 +26,23 @@ define(['jszip', 'filesaver'], function (JSZip) {
     var asModule = (function () {
 
         initTemplate = function () {
-
-            $.get('/img/exam-answers-template.svg', function (data) {
+            
+            var templateType = ($('input[name=template-type]:checked')).val();
+            var url;
+            
+            switch (templateType) {
+                case 'Prova':
+                    url = '/img/exam-answers-template.svg';
+                    break;
+                case 'PSA':
+                    url = '/img/psa-answers-template.svg';
+                    break;
+                default:
+                    url = '';
+            }
+            
+            $("#template-container").empty();
+            $.get(url, function (data) {
                 // Get the SVG tag, ignore the rest
                 svgTemplate = jQuery(data).find('svg');
 
@@ -44,6 +59,10 @@ define(['jszip', 'filesaver'], function (JSZip) {
 
 
         addListeners = function () {
+                
+            $('input[name="template-type"]').change(function () {
+                initTemplate();
+            });
 
             $("#process-template").click(function () {
                 if (svgTemplate !== null) {
