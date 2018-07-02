@@ -210,31 +210,50 @@ define(['jquery', 'mathjax', 'jquerycolumnizer', 'jqueryprint'], function () {
                     .find('.exam-content')
                     .first()
                     .height();
+            
+            var SAFETY_MARGIN = 100;
+            var EMPTY_HEIGHT = 20;
+            
             // por enquanto, assume-se que existe apenas uma disciplina 
             // de coluna única, que ficará no topo da prova e terá 
             // como título o nome do base subject
-            examTemp.find('.single-column-block').each(function() {
-                var singleColumnSubjectPage = $("#exam-page-template > div").clone();
-                
-                if ($(this).height() < examContentHeight) {
-                    var singleColumnSubjectBlock = $(this).clone();
-                    var baseSubjectName =  $(this)
-                            .closest('.base-subject-block').find('h3').first().text();
-                    
-                    singleColumnSubjectBlock.find('.title').first().text(baseSubjectName);
-                    singleColumnSubjectBlock.find('.question-block')
-                            .css('text-align', 'justify');
+            examTemp.find('.single-column-block').each(function() {                
+                var singleColumnSubjectBlock = $(this).clone();
+                var baseSubjectName =  $(this)
+                        .closest('.base-subject-block').find('h3').first().text();
 
-                    singleColumnSubjectPage.find('.exam-content')
-                            .append(singleColumnSubjectBlock);
-                    singleColumnSubjectPage.find('.page-number').text(pageNumber);
-                    ++pageNumber;
-                } else {
-                    // repartir conteúdo
-                    ++pageNumber;
-                }
+                singleColumnSubjectBlock.find('.title').first().text(baseSubjectName);
+                singleColumnSubjectBlock.find('.question-block')
+                        .css('text-align', 'justify');
                 
-                printDiv.append(singleColumnSubjectPage);
+                printDiv.append($("#exam-page-template > div").clone());
+                var singleColumnSubjectPage = printDiv.find('.page').last();
+                var height = 0;
+                var lastElemHeight;
+                singleColumnSubjectBlock.find('.question-block').children().each(function () {       
+                    var pageContent = singleColumnSubjectPage.find('.exam-content');
+                    pageContent.append($(this));
+                    
+                    lastElemHeight = pageContent.children().last().outerHeight();
+                    if (lastElemHeight === 0) {
+                        lastElemHeight = EMPTY_HEIGHT;
+                    }
+                    
+                    if (height + lastElemHeight < examContentHeight - SAFETY_MARGIN) {
+                        height += lastElemHeight;
+                    } else {
+                        height = lastElemHeight;
+                        var lastElem = pageContent.children().last().detach();
+                        
+                        singleColumnSubjectPage.find('.page-number').text(pageNumber);
+                        ++pageNumber;
+                        
+                        printDiv.append($("#exam-page-template > div").clone());
+                        singleColumnSubjectPage = printDiv.find('.page').last();
+                        singleColumnSubjectPage.find('.exam-content').append(lastElem);
+                    }
+                });
+                
                 $(this).closest('.base-subject-block').remove();
             });
             
