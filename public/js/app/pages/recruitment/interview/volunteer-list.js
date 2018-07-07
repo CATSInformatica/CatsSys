@@ -40,12 +40,12 @@ define(['app/pages/recruitment/interview/keep-alive',
          */
         getOrdering = function () {
             return [
-                [6, 'asc'],     // cargo
-                [8, 'desc'],    // notas finais
+                [6, 'asc'],     // cargo desejado
+                [9, 'desc'],    // nota final
                 [5, 'desc'],    // situação
                 [1, 'asc']      // número de inscrição
             ];
-        }
+        };
         
         /**
          * Inicializa a tabela de candidatos
@@ -112,59 +112,59 @@ define(['app/pages/recruitment/interview/keep-alive',
             });
         };
         
-        /**
-         * Exibe um gráfico do tipo radar para representar a autoavaliação feita
-         * pelo candidato no momento da inscrição
-         * 
-         * @param {DOM Element} ctx - contexto onde o gráfico será exibido (canvas)
-         */
-        initSelfEvaluationChart = function (ctx, data) {
-            var chart = new Chart(ctx, {
-                type: 'radar',
-                data: {
-                    labels: [
-                        "Responsabilidade", 
-                        "Proatividade", 
-                        "Espírito Voluntário", 
-                        "Comprometimento", 
-                        "Trabalho em Grupo", 
-                        "Eficiência", 
-                        "Cortesia"
-                    ],
-                    datasets: [{
-                        label: 'Avaliação do candidato',
-                        data: data,
-                        backgroundColor: [
-                            'rgba(255, 99, 132, 0.2)',
-                            'rgba(54, 162, 235, 0.2)',
-                            'rgba(255, 206, 86, 0.2)',
-                            'rgba(75, 192, 192, 0.2)',
-                            'rgba(153, 102, 255, 0.2)',
-                            'rgba(255, 159, 64, 0.2)'
-                        ],
-                        borderColor: [
-                            'rgba(255,99,132,1)',
-                            'rgba(54, 162, 235, 1)',
-                            'rgba(255, 206, 86, 1)',
-                            'rgba(75, 192, 192, 1)',
-                            'rgba(153, 102, 255, 1)',
-                            'rgba(255, 159, 64, 1)'
-                        ],
-                        borderWidth: 2
-                    }]
-                },
-                options: {
-                    scale: {
-                        ticks: {
-                            min: 0,
-                            suggestedMax: 5,
-                            stepSize: 1
-                        }
-                    }
-                }
-                        
-            });
-        };
+//        /**
+//         * Exibe um gráfico do tipo radar para representar a autoavaliação feita
+//         * pelo candidato no momento da inscrição
+//         * 
+//         * @param {DOM Element} ctx - contexto onde o gráfico será exibido (canvas)
+//         */
+//        initSelfEvaluationChart = function (ctx, data) {
+//            var chart = new Chart(ctx, {
+//                type: 'radar',
+//                data: {
+//                    labels: [
+//                        "Responsabilidade", 
+//                        "Proatividade", 
+//                        "Espírito Voluntário", 
+//                        "Comprometimento", 
+//                        "Trabalho em Grupo", 
+//                        "Eficiência", 
+//                        "Cortesia"
+//                    ],
+//                    datasets: [{
+//                        label: 'Avaliação do candidato',
+//                        data: data,
+//                        backgroundColor: [
+//                            'rgba(255, 99, 132, 0.2)',
+//                            'rgba(54, 162, 235, 0.2)',
+//                            'rgba(255, 206, 86, 0.2)',
+//                            'rgba(75, 192, 192, 0.2)',
+//                            'rgba(153, 102, 255, 0.2)',
+//                            'rgba(255, 159, 64, 0.2)'
+//                        ],
+//                        borderColor: [
+//                            'rgba(255,99,132,1)',
+//                            'rgba(54, 162, 235, 1)',
+//                            'rgba(255, 206, 86, 1)',
+//                            'rgba(75, 192, 192, 1)',
+//                            'rgba(153, 102, 255, 1)',
+//                            'rgba(255, 159, 64, 1)'
+//                        ],
+//                        borderWidth: 2
+//                    }]
+//                },
+//                options: {
+//                    scale: {
+//                        ticks: {
+//                            min: 0,
+//                            suggestedMax: 5,
+//                            stepSize: 1
+//                        }
+//                    }
+//                }
+//                        
+//            });
+//        };
 
         /**
          * Mostra um icone de carregamento.
@@ -318,7 +318,10 @@ define(['app/pages/recruitment/interview/keep-alive',
                 );
                 interviewTabContent += createExpandableBox(
                     "De 0 a 10, quanto você quer entrar no CATS?",
-                    info.volunteerInterview.interestRating
+                    info.volunteerInterview.interestRating 
+                            + (info.volunteerInterview.interestJustification == null 
+                                ? "" 
+                                : "<br>Justificativa: " + info.volunteerInterview.interestJustification)
                 );
         
                 content.find('.interview-tab-content').append(interviewTabContent);
@@ -370,18 +373,18 @@ define(['app/pages/recruitment/interview/keep-alive',
             content.find('.interview-tab-link').
                     attr('href', '#interview-tab');
             
-            initSelfEvaluationChart(
-                    $(content.find('canvas.self-evaluation-chart').first()), 
-                    [
-                        info.responsibility, 
-                        info.proactive, 
-                        info.volunteerSpirit,
-                        info.commitment,
-                        info.teamWork,
-                        info.efficiency,
-                        info.courtesy
-                    ]
-            );
+//            initSelfEvaluationChart(
+//                    $(content.find('canvas.self-evaluation-chart').first()), 
+//                    [
+//                        info.responsibility, 
+//                        info.proactive, 
+//                        info.volunteerSpirit,
+//                        info.commitment,
+//                        info.teamWork,
+//                        info.efficiency,
+//                        info.courtesy
+//                    ]
+//            );
             
             return content;
             

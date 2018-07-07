@@ -45,7 +45,18 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
         
         $openJobsOptions = $this->getOpenJobsOptions($options['recruitment']);
         
-        $this        
+        $this   
+            ->add(array(
+                'name' => 'desiredJob',
+                'type' => 'DoctrineModule\Form\Element\ObjectSelect',
+                'options' => array(
+                    'label' => 'Cargo desejado',
+                    'value_options' => $openJobsOptions,
+                    'object_manager' => $obj,
+                    'target_class' => 'AdministrativeStructure\Entity\Job',
+                    'property' => 'jobName',
+                ),
+            ))
             ->add(array(
                 'name' => 'desiredJobs',
                 'type' => 'DoctrineModule\Form\Element\ObjectSelect',
@@ -55,7 +66,7 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
                     'class' => 'allow-multiple-clicks',
                 ),
                 'options' => array(
-                    'label' => 'Cargo(s) desejado(s)',
+                    'label' => 'Outro(s) cargo(s) de interesse (opcional)',
                     'value_options' => $openJobsOptions,
                     'object_manager' => $obj,
                     'target_class' => 'AdministrativeStructure\Entity\Job',
@@ -175,8 +186,11 @@ final class VolunteerRegistrationFieldset extends RegistrationFieldset implement
     public function getInputFilterSpecification()
     {
         return array(
-            'desiredJobs' => array(
+            'desiredJob' => array(
                 'required' => !$this->interviewForm,
+            ),
+            'desiredJobs' => array(
+                'required' => false,
             ),
             'occupation' => array(
                 'required' => !$this->interviewForm,

@@ -191,6 +191,17 @@ class VolunteerInterviewFieldset extends Fieldset implements InputFilterProvider
                 ],
             ])
             ->add([
+                'name' => 'interestJustification',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Justificativa',
+                ],
+                'attributes' => [
+                    'rows' => 4,
+                    'class' => 'col-xs-12 form-control',
+                ],
+            ])
+            ->add([
                 'name' => 'endTime',
                 'type' => 'DateTime',
                 'options' => [
@@ -437,6 +448,22 @@ class VolunteerInterviewFieldset extends Fieldset implements InputFilterProvider
                             'max' => VolunteerInterview::INTEREST_RATING_MAX,
                             'inclusive' => true                            
                         ]
+                    ],
+                ],
+            ],
+            'interestJustification' => [
+                'required' => true,
+                'filters' => [
+                    ['name' => 'StringTrim'],
+                    ['name' => 'StripTags']
+                ],
+                'validators' => [
+                    [
+                        'name' => 'StringLength',
+                        'options' => [
+                            'min' => 3,
+                            'max' => 500,
+                        ],
                     ],
                 ],
             ],

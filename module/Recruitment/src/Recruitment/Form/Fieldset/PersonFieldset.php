@@ -150,7 +150,7 @@ class PersonFieldset extends Fieldset implements InputFilterProviderInterface
                 'placeholder' => 'Ex: (35)99999-9999',
             ),
             'options' => array(
-                'label' => 'Telefone ou celular*',
+                'label' => 'Telefone ou celular (WhatsApp)*',
             ),
         ));
 

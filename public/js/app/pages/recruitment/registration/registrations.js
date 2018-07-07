@@ -15,16 +15,16 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
          * private functions
          */
 
-        initDatepickers = function () {
-            $("input[name=timestamp]").closest(".input-group").datetimepicker({
-                format: 'DD/MM/YYYY HH:mm',
-                minDate: moment().subtract(6, 'months'),
-                useCurrent: false,
-                maxDate: moment().add(1, 'years'),
-                locale: 'pt-br',
-                viewDate: moment()
-            });
-        };
+//        initDatepickers = function () {
+//            $("input[name=timestamp]").closest(".input-group").datetimepicker({
+//                format: 'DD/MM/YYYY HH:mm',
+//                minDate: moment().subtract(6, 'months'),
+//                useCurrent: false,
+//                maxDate: moment().add(1, 'years'),
+//                locale: 'pt-br',
+//                viewDate: moment()
+//            });
+//        };
         initDataTable = function () {
 
             var recruitmentTable = $('#recruitment-table');
@@ -58,12 +58,13 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                                 3: data[i].personCpf,
                                 4: data[i].personRg,
                                 5: data[i].personPhone,
-                                6: data[i].personEmail,
+                                6: data[i].personEmail
                             };
 
                             if(showDesiredJobs) {
-                                dRow['7'] = data[i].desiredJobs.join(', ');
-                                dRow['8'] = data[i].status.type + '<br>' + data[i].status.timestamp;
+                                dRow['7'] = data[i].desiredJob;
+                                dRow['8'] = data[i].desiredJobs.join(';<br>');
+                                dRow['9'] = data[i].status.type + '<br>' + data[i].status.timestamp;
                             } else {
                                 dRow['7'] = data[i].status.type + '<br>' + data[i].status.timestamp;
                             }
@@ -80,16 +81,16 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                 dt.ajax.reload();
             });
         };
-        initMasks = function () {
-            masks.bind({
-                datetimeNoSeconds: 'input[name=timestamp]'
-            });
-        };
+//        initMasks = function () {
+//            masks.bind({
+//                datetimeNoSeconds: 'input[name=timestamp]'
+//            });
+//        };
         return {
             init: function () {
-                initDatepickers();
+//                initDatepickers();
                 initDataTable();
-                initMasks();
+//                initMasks();
             },
             getDataOf: function (action) {
 
@@ -98,9 +99,9 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                         studentClass: $("select[name=studentClasses]").val()
                     };
                 }
-                return {
-                    timestamp: $('input[name=timestamp]').val()
-                };
+//                return {
+//                    timestamp: $('input[name=timestamp]').val()
+//                };
             },
             getCallbackOf: function (action) {
 
