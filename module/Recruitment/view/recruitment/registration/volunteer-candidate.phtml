@@ -97,8 +97,7 @@
                                                     <?php if ($blockStatus['interviewed']) : ?>
                                                         Sua entrevista foi realizada com sucesso.    
                                                     <?php elseif ($blockStatus['interview']) : ?>
-                                                        Sua entrevista foi agendada para o dia 
-                                                            <?php echo $interviewDate; ?>. Cheque seu email.
+                                                        Sua entrevista foi agendada. Cheque seu email.
                                                     <?php elseif ($blockStatus['interviewWaitingList']) : ?>
                                                         Você está na lista de espera.
                                                     <?php else : ?>
@@ -131,8 +130,7 @@
                                                     <?php elseif ($blockStatus['testClassWaitingList']) : ?>
                                                         Você está na lista de espera.
                                                     <?php else : ?>
-                                                        Sua aula teste foi agendada para o dia 
-                                                            <?php echo $testClassDate; ?>
+                                                        Sua aula teste foi agendada.
                                                     <?php endif; ?>
                                                 </p>
                                                 <span>

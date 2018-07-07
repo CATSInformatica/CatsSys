@@ -102,12 +102,12 @@ class RegistrationController extends AbstractEntityActionController
         try {
             $em = $this->getEntityManager();
             $form = new SearchRegistrationsForm($em, Recruitment::VOLUNTEER_RECRUITMENT_TYPE);
-            $timestampForm = new TimestampForm();
+//            $timestampForm = new TimestampForm();
 
             return new ViewModel(array(
                 'message' => null,
                 'form' => $form,
-                'timestamp' => $timestampForm,
+//                'timestamp' => $timestampForm,
             ));
         } catch (\Exception $ex) {
             return new ViewModel(array(
@@ -646,7 +646,7 @@ class RegistrationController extends AbstractEntityActionController
                                 'type' => $statusType,
                                 'timestamp' => $timestamp,
                             ],
-                            'desiredJob' => $r->getDesiredJob()->getJobName(),
+                            'desiredJob' => ($r->getDesiredJob() === null ? "-" : $r->getDesiredJob()->getJobName()),
                             'desiredJobs' => $dJobs
                         ];
                     }
