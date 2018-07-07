@@ -153,6 +153,12 @@ class VolunteerInterview
     private $interestRating;
     
     /**
+     * @var string
+     * @ORM\Column(name="volunteer_interest_justification", type="string", length=500, nullable=true)
+     */
+    private $interestJustification;
+    
+    /**
      *
      * @var Collection
      * @ORM\OneToMany(targetEntity="InterviewerEvaluation", mappedBy="volunteerInterview")
@@ -623,6 +629,24 @@ class VolunteerInterview
     public function setHometown($hometown)
     {
         $this->hometown = $hometown;
+        return $this;
+    }
+
+    /**
+     * 
+     * @return string
+     */
+    public function getInterestJustification() {
+        return $this->interestJustification;
+    }
+
+    /**
+     * 
+     * @param string $interestJustification
+     * @return VolunteerInterview
+     */
+    public function setInterestJustification($interestJustification) {
+        $this->interestJustification = $interestJustification;
         return $this;
     }
 

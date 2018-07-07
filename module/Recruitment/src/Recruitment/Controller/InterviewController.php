@@ -560,6 +560,12 @@ class InterviewController extends AbstractEntityActionController
                 
                 $candidates[$i]['statusType'] = RecruitmentStatus::statusTypeToString($candidates[$i]['statusType']);
                 
+                if ($candidateRegistration->getDesiredJob() === null) {
+                    $candidates[$i]['desiredJob'] = "-";
+                } else {
+                    $candidates[$i]['desiredJob'] = $candidateRegistration->getDesiredJob()->getJobName();
+                }
+                
                 $candidates[$i]['desiredJobs'] = [];
                 foreach ($candidateRegistration->getDesiredJobs() as $job) {
                     $candidates[$i]['desiredJobs'][$job->getJobId()] = $job->getJobName();

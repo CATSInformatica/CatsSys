@@ -4,7 +4,7 @@ $this->headTitle()->append('PSV - Lista de candidatos')->setSeparator(' - ');
 
 <section class="content">     
     <div class="row">
-        <div class="col-xs-10 col-xs-offset-1">            
+        <div class="col-xs-12">            
             <?php if (isset($message)) : ?>
                 <div class="callout callout-warning">
                     <h4><?php echo $message; ?></h4>
@@ -56,7 +56,8 @@ $this->headTitle()->append('PSV - Lista de candidatos')->setSeparator(' - ');
                         <th class="text-center">Email</th>
                         <th class="text-center">Cpf</th>
                         <th class="text-center">Situação</th>
-                        <th class="text-center">Cargo(s) desejado(s)</th>
+                        <th class="text-center">Cargo desejado</th>
+                        <th class="text-center">Outro(s) cargo(s) de interesse</th>
                         <th class="text-center">Notas dos entrevistadores</th>
                         <th class="text-center">Nota final</th>
                     </tr>
@@ -76,6 +77,7 @@ $this->headTitle()->append('PSV - Lista de candidatos')->setSeparator(' - ');
                                 <td class="text-center"><?php echo $candidate['personEmail']; ?></td>
                                 <td class="text-center"><?php echo $candidate['personCpf']; ?></td>
                                 <td class="text-center"><?php echo $candidate['statusType']; ?></td>
+                                <td class="text-center"><?php echo $candidate['desiredJob']; ?></td>
                                 <td>
                                     <ul>
                                         <?php foreach ($candidate['desiredJobs'] as $jobId => $jobName) : ?>
@@ -171,7 +173,7 @@ $this->headTitle()->append('PSV - Lista de candidatos')->setSeparator(' - ');
                         </div>
                     </div>
                 </div>
-                <div class="box box-primary collapsed-box">
+<!--                <div class="box box-primary collapsed-box">
                     <div class="box-header with-border">
                         <h3 class="box-title"> Autoavaliação </h3>
                         <div class="box-tools pull-right">
@@ -183,7 +185,7 @@ $this->headTitle()->append('PSV - Lista de candidatos')->setSeparator(' - ');
                             <canvas class="self-evaluation-chart" width="50" height="50"></canvas>
                         </div>
                     </div>
-                </div>
+                </div>-->
                 
                 <div class="nav-tabs-custom">
                     <ul class="nav nav-tabs">
