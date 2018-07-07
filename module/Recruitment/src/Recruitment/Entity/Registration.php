@@ -159,6 +159,14 @@ class Registration
 
     /**
      *
+     * @var Job
+     * @ORM\ManyToOne(targetEntity="\AdministrativeStructure\Entity\Job")
+     * @ORM\JoinColumn(name="job_id", referencedColumnName="job_id")
+     */
+    protected $desiredJob;
+
+    /**
+     *
      * @var Collection
      * @ORM\ManyToMany(targetEntity="\AdministrativeStructure\Entity\Job")
      * @ORM\JoinTable(name="registration_desired_jobs",
@@ -891,6 +899,24 @@ class Registration
     public function hasDesiredJob(Job $job)
     {
         return $this->desiredJobs->contains($job);
+    }
+        
+    /**
+     * 
+     * @return Job
+     */
+    public function getDesiredJob() {
+        return $this->desiredJob;
+    }
+
+    /**
+     * 
+     * @param Job $desiredJob
+     * @return Registration
+     */
+    public function setDesiredJob(Job $desiredJob) {
+        $this->desiredJob = $desiredJob;
+        return $this;
     }
 
 }

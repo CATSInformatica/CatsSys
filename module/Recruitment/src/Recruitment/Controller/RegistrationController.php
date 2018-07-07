@@ -102,12 +102,12 @@ class RegistrationController extends AbstractEntityActionController
         try {
             $em = $this->getEntityManager();
             $form = new SearchRegistrationsForm($em, Recruitment::VOLUNTEER_RECRUITMENT_TYPE);
-            $timestampForm = new TimestampForm();
+//            $timestampForm = new TimestampForm();
 
             return new ViewModel(array(
                 'message' => null,
                 'form' => $form,
-                'timestamp' => $timestampForm,
+//                'timestamp' => $timestampForm,
             ));
         } catch (\Exception $ex) {
             return new ViewModel(array(
@@ -483,7 +483,7 @@ class RegistrationController extends AbstractEntityActionController
                 new RegistrationForm($em, $type, $options));
 
         if ($request->isPost()) {
-
+            
             $registration = new Registration();
             $form->bind($registration);
             $data = $request->getPost();
@@ -500,13 +500,19 @@ class RegistrationController extends AbstractEntityActionController
                     );
                     
                     if ($type === Recruitment::VOLUNTEER_RECRUITMENT_TYPE) {
-                        $jobs = new ArrayCollection();
-                        foreach ($data['registration']['desiredJobs'] as $jobId) {
-                            $job = $em->find('AdministrativeStructure\Entity\Job', $jobId);
-                            $jobs->add($job);
-                        }
+                        $jobId = $data['registration']['desiredJob'];
+                        $job = $em->find('AdministrativeStructure\Entity\Job', $jobId);
+                        $registration->setDesiredJob($job);
                         
-                        $registration->setDesiredJobs($jobs);
+                        if (isset($data['registration']['desiredJobs'])) {
+                            $jobs = new ArrayCollection();
+                            foreach ($data['registration']['desiredJobs'] as $jobId) {
+                                $job = $em->find('AdministrativeStructure\Entity\Job', $jobId);
+                                $jobs->add($job);
+                            }
+
+                            $registration->setDesiredJobs($jobs);
+                        }
                     }
                     
                     // atribui a qual processo seletivo a inscrição pertence
@@ -626,7 +632,7 @@ class RegistrationController extends AbstractEntityActionController
                         foreach($r->getDesiredJobs() as $j) {
                             $dJobs[] = $j->getJobName();
                         }
-
+                        
                         $result[] = [
                             'registrationId' => $r->getRegistrationId(),
                             'registrationNumber' => $r->getRegistrationNumber(),
@@ -640,6 +646,7 @@ class RegistrationController extends AbstractEntityActionController
                                 'type' => $statusType,
                                 'timestamp' => $timestamp,
                             ],
+                            'desiredJob' => ($r->getDesiredJob() === null ? "-" : $r->getDesiredJob()->getJobName()),
                             'desiredJobs' => $dJobs
                         ];
                     }
