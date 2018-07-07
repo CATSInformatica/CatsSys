@@ -111,7 +111,17 @@ $this->headTitle()->append('PSV - Entrevista')->setSeparator(' - ');
                             <div class="box-header with-border">
                                 <button type="button" class="hide" data-widget="collapse"></button>
                                 <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
-                                <h3 class="box-title">Cargo(s) desejado(s)</h3>
+                                <h3 class="box-title">Cargo desejado</h3>
+                            </div>
+                            <div class="box-body">
+                                <?php echo $this->registration->getDesiredJob()->getJobName(); ?>
+                            </div>
+                        </div>
+                        <div class="box box-solid box-default">
+                            <div class="box-header with-border">
+                                <button type="button" class="hide" data-widget="collapse"></button>
+                                <span class="margin-r-5"><input type="checkbox" class="interview-checkbox"></span>
+                                <h3 class="box-title">Outros cargos de interesse</h3>
                             </div>
                             <div class="box-body">
                                 <ul>

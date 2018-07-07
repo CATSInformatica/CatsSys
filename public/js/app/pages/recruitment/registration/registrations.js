@@ -58,12 +58,13 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                                 3: data[i].personCpf,
                                 4: data[i].personRg,
                                 5: data[i].personPhone,
-                                6: data[i].personEmail,
+                                6: data[i].personEmail
                             };
 
                             if(showDesiredJobs) {
-                                dRow['7'] = data[i].desiredJobs.join(', ');
-                                dRow['8'] = data[i].status.type + '<br>' + data[i].status.timestamp;
+                                dRow['7'] = data[i].desiredJob;
+                                dRow['8'] = data[i].desiredJobs.join(';<br>');
+                                dRow['9'] = data[i].status.type + '<br>' + data[i].status.timestamp;
                             } else {
                                 dRow['7'] = data[i].status.type + '<br>' + data[i].status.timestamp;
                             }
