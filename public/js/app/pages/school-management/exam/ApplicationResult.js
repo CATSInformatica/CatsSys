@@ -88,7 +88,17 @@ define(['moment'], function (moment) {
 
                 getApplicationResult().then(function (results) {
                     if (results.length) {
-                        createLoadedResultTable(results);
+                        // ordena o resultado antes de adicionar na tabela (1º, 2º, 3º, ...)
+                        createLoadedResultTable(results.sort(function(prev, next){
+                            intPrev = parseInt(prev.position);
+                            intNext = parseInt(next.position);
+                            if(intPrev < intNext) {
+                                return -1;
+                            } else if(intNext < intPrev) {
+                                return 1;
+                            }                            
+                            return 0;
+                        }));
                     }
 
                 });
