@@ -99,9 +99,7 @@ define(['moment', 'masks', 'datetimepicker', 'datatable'], function (moment, mas
                         studentClass: $("select[name=studentClasses]").val()
                     };
                 }
-//                return {
-//                    timestamp: $('input[name=timestamp]').val()
-//                };
+                return {};
             },
             getCallbackOf: function (action) {
 
