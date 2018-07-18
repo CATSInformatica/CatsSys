@@ -41,7 +41,7 @@
 
                                     <tr class="result-row">
                                         <td class="text-center <?php echo $class; ?> position"></td>
-                                        <td class="text-center <?php echo $class; ?>"> <?php echo $result['status']; ?> </td>
+                                        <td class="text-center <?php echo $class; ?>"> <?php echo ($result['status'] === \Recruitment\Entity\RecruitmentStatus::STATUSTYPEDESC_INTERVIEWED ? "LISTA DE ESPERA" : $result['status']); ?> </td>
                                         <td class="text-center <?php echo $class; ?>"> <?php echo $result['registrationNumber']; ?> </td>
                                         <td class="text-center <?php echo $class; ?> socioeconomic" data-value='<?php echo $result['socioeconomic']; ?>'></td>
                                         <td class="text-center <?php echo $class; ?> vulnerability" data-value='<?php echo $result['vulnerability']; ?>'></td>
