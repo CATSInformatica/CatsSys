@@ -151,4 +151,25 @@ class RecruitmentRepository extends EntityRepository
                 ->setMaxResults(1)
                 ->getOneOrNullResult();
     }
+
+    /**
+     * Busca o último processo seletivo do tipo $type aberto.
+     * 
+     * @param int $type Tipo de processo seletivo [aluno, voluntário]
+     * @return array|null Informações do processo seletivo encontrado ou null.
+     */
+    public function findLastOpened($type)
+    {
+        return $this->_em
+                ->createQuery('SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
+                    . 'r.recruitmentBeginDate, r.recruitmentSocioeconomicTarget, r.recruitmentVulnerabilityTarget, r.recruitmentStudentTarget '
+                    . 'FROM Recruitment\Entity\Recruitment r '
+                    . 'WHERE r.recruitmentType = :type AND '
+                    . 'r.recruitmentBeginDate < CURRENT_DATE() '
+                    . 'ORDER BY r.recruitmentId DESC'
+                )
+                ->setParameter('type', $type)
+                ->setMaxResults(1)
+                ->getOneOrNullResult();
+    }
 }
