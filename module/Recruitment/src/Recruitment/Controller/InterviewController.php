@@ -504,7 +504,7 @@ class InterviewController extends AbstractEntityActionController
         try {
             $em = $this->getEntityManager();
             $recruitment = $em->getRepository('Recruitment\Entity\Recruitment')
-                ->findLastClosed(Recruitment::VOLUNTEER_RECRUITMENT_TYPE);
+                ->findLastOpened(Recruitment::VOLUNTEER_RECRUITMENT_TYPE);
             
             $candidates = [];
 
