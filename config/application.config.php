@@ -40,12 +40,6 @@ $modules = array(
     'FinancialManagement',
 );
 
-if ($env === 'development') {
-    // zend developer tools helper to see doctrine operations, database MER and other things
-//    $modules[] = 'ZendDeveloperTools';
-}
-
-
 return array(
 // This should be an array of module namespaces used in the application.
     'modules' => $modules,

@@ -1,6 +1,6 @@
 -- Cargos para voluntários
-insert into job values (1, 1, 6, null, 'DIRETOR DE RH', 'Diretor de RH...', 1, '2018-03-04 09:43:09', null);
-insert into job values (2, 1, 7, 1, 'ENTREVISTADOR', 'Faz entrevistas de processo seletivo de alunos e voluntários', 1, '2018-03-04 09:43:38', null);
+insert into job values (1, 1, 4, null, 'DIRETOR DE RH', 'Diretor de RH...', 1, '2018-03-04 09:43:09', null);
+insert into job values (2, 1, 3, 1, 'ENTREVISTADOR', 'Faz entrevistas de processo seletivo de alunos e voluntários', 1, '2018-03-04 09:43:38', null);
 
 -- Processo seletivo de voluntários
 INSERT INTO `recruitment` VALUES (7,1,2018,'2018-01-05 00:00:00','2018-02-03 23:59:59','201812.pdf',2,4,5,6,'aaaaaaa',NULL,NULL,'',NULL,'',NULL,'',NULL,'',NULL,NULL,'bbbbbbb','2018-02-10 23:59:59','dddddddd',NULL,NULL,'','cccccccc');
@@ -18,8 +18,8 @@ insert into person_has_address VALUES
 (8, 21774);
 
 INSERT INTO `registration` VALUES
-(3,7,NULL,7,NULL,NULL,'2018-03-04 11:47:38','aaaa','bbbbbbb',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
-(4,7,NULL,8,NULL,NULL,'2018-03-04 11:47:38','aaaa','bbbbbbb',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
+(3,7,NULL,7,NULL,NULL,NULL,'2018-03-04 11:47:38','aaaa','bbbbbbb',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL),
+(4,7,NULL,8,NULL,NULL,NULL,'2018-03-04 11:47:38','aaaa','bbbbbbb',NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
 
 INSERT INTO `registration_desired_jobs` VALUES (3,1),(3,2),(4,2);
 

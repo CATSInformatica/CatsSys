@@ -1,5 +1,5 @@
 LOCK TABLES `resource` WRITE;
-INSERT INTO `resource` VALUES 
+INSERT INTO `resource` VALUES
 (1,'Authentication\\Controller\\Login'),
 (2,'Authentication\\Controller\\User'),
 (3,'Authorization\\Controller\\Index'),
@@ -45,7 +45,7 @@ INSERT INTO `role_parent` VALUES (4,3);
 UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
-INSERT INTO `user` VALUES 
+INSERT INTO `user` VALUES
 (2,'fcadmin','$2y$10$JDJ5JDEwJEd2aHRFUnJ3N.3GAusoQDlpCMaJ9Bp.uLPAyhECLyrEe','$2y$10$GvhtERrw4T.CRjZn3HjNBuK.qahSBQahtVQc9gow151c16mkrJIje',1,'2015-12-12 11:08:24'),
 (3,'fcmember','$2y$10$JDJ5JDEwJDFHdTBXTDZlM.bNrNv0hRukZgy8DnqxTgHq71RoEg8hi','$2y$10$1Gu0WL6e0FNwVMXU38VtT.KlSGlFtsu6adEUOr9ZdwFqroxCgt4/O',1,'2016-01-04 19:49:56');
 UNLOCK TABLES;
@@ -55,7 +55,7 @@ INSERT INTO `user_has_role` VALUES (4,3),(5,2);
 UNLOCK TABLES;
 
 LOCK TABLES `privilege` WRITE;
-INSERT INTO `privilege` VALUES 
+INSERT INTO `privilege` VALUES
 (9,1,3,NULL,1),
 (10,2,3,NULL,1),
 (11,3,3,'index',1),
@@ -66,12 +66,12 @@ INSERT INTO `privilege` VALUES
 UNLOCK TABLES;
 
 LOCK TABLES `recruitment` WRITE;
-INSERT INTO `recruitment` VALUES (1,2,2016,'2015-12-23 00:00:00','2016-05-11 00:00:00','201621.pdf',1,3,2,3,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL);
-INSERT INTO `recruitment` VALUES (4,1,2017,'2016-11-20 00:00:00','2017-01-25 23:59:59','201711.pdf',1,4,5,6,'aaaaaaaaaaaaaaaaaabbbbbbbbbbbb','2017-01-19 00:00:00','2017-01-26 00:00:00','asa sdasdasdasdasd','2017-01-28 00:00:00','asd asdfg hgfhfghfghfgrtyrtyrt','2017-01-30 00:00:00','zaxdf saddfdghfgh  sfwserr etrt yeyhfg hfg hfghfh','2017-02-06 00:00:00','gh hjkl   kilui ui o78oii  uiu iuil uilul','2017-02-06 00:00:00','2017-02-10 00:00:00','fg fg rtert ertbhfhfghfg jhgj gh jg','2017-02-11 00:00:00','asd fsdf sdfsdg dfgdf wter tfg dfgdf g fff','2017-02-11 00:00:00','2017-02-20 00:00:00','fd sdfsdf sdfsdfsdfsds dsdf');
+INSERT INTO `recruitment` VALUES (1,2,2016,'2015-12-23 00:00:00','2016-05-11 00:00:00','201621.pdf',1,3,2,3,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL, NULL);
+INSERT INTO `recruitment` VALUES (4,1,2017,'2016-11-20 00:00:00','2017-01-25 23:59:59','201711.pdf',1,4,5,6,'aaaaaaaaaaaaaaaaaabbbbbbbbbbbb','2017-01-19 00:00:00','2017-01-26 00:00:00','asa sdasdasdasdasd','2017-01-28 00:00:00','asd asdfg hgfhfghfghfgrtyrtyrt','2017-01-30 00:00:00','zaxdf saddfdghfgh  sfwserr etrt yeyhfg hfg hfghfh','2017-02-06 00:00:00','gh hjkl   kilui ui o78oii  uiu iuil uilul','2017-02-06 00:00:00','2017-02-10 00:00:00','fg fg rtert ertbhfhfghfg jhgj gh jg','2017-02-11 00:00:00','asd fsdf sdfsdg dfgdf wter tfg dfgdf g fff','2017-02-11 00:00:00','2017-02-20 00:00:00','fd sdfsdf sdfsdfsdfsds dsdf', NULL);
 UNLOCK TABLES;
 
 LOCK TABLES `recruitment_know_about` WRITE;
-INSERT INTO `recruitment_know_about` VALUES 
+INSERT INTO `recruitment_know_about` VALUES
 (2,'Alunos da UNIFEI'),
 (3,'Alunos do CATS'),
 (4,'Amigos'),
@@ -93,7 +93,7 @@ INSERT INTO `warning_type` VALUES (1,'INDISCIPLINA [ORAL]','Advertência dada or
 UNLOCK TABLES;
 
 LOCK TABLES `recruitment_status` WRITE;
-INSERT INTO `recruitment_status` VALUES 
+INSERT INTO `recruitment_status` VALUES
 (1, 0),
 (2, 1),
 (3, 2),
@@ -133,7 +133,7 @@ UNLOCK TABLES;
 
 LOCK TABLES `subject` WRITE;
 /*!40000 ALTER TABLE `subject` DISABLE KEYS */;
-INSERT INTO `subject` VALUES 
+INSERT INTO `subject` VALUES
 (42,NULL,'MATEMÁTICA E SUAS TECNOLOGIAS','MATEMÁTICA E SUAS TECNOLOGIAS'),
 (43,NULL,'CIÊNCIAS HUMANAS E SUAS TECNOLOGIAS','CIÊNCIAS HUMANAS E SUAS TECNOLOGIAS'),
 (44,NULL,'LINGUAGENS, CÓDIGOS E SUAS TECNOLOGIAS','LINGUAGENS, CÓDIGOS E SUAS TECNOLOGIAS'),
@@ -149,4 +149,3 @@ INSERT INTO `subject` VALUES
 (61,46,'POLINÔMIOS','Polinômios');
 /*!40000 ALTER TABLE `subject` ENABLE KEYS */;
 UNLOCK TABLES;
-

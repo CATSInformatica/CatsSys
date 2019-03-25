@@ -1,0 +1,36 @@
+# v2 syntax
+version: '2'
+
+# Named volumes
+volumes:
+  # MySQL Data
+  catssys-mysql-data:
+    driver: local
+
+services:
+
+  # MySQL (5.7)
+  mysql:
+    image: mysql:5.7
+    container_name: catssys-mysql
+    volumes:
+      - catssys-mysql-data:/var/lib/mysql
+    ports:
+      - "13306:3306"
+    environment:
+      - MYSQL_ROOT_PASSWORD=catssys
+      - MYSQL_DATABASE=catssys
+      - MYSQL_USER=catssys
+      - MYSQL_PASSWORD=catssys
+
+  php:
+    image: ambientum/php:7.2-nginx
+    container_name: catssys-php
+    volumes:
+      - .:/var/www/app
+      - ./nginx/99_overrides.ini:/etc/php7/conf.d/99_overrides.ini
+      - ./nginx/catssys.conf:/etc/nginx/sites/laravel.conf
+    ports:
+      - "8080:8080"
+    links:
+      - mysql
