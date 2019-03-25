@@ -33,10 +33,12 @@ Link para a documentação:
 OBS: Caso queria apenas utilizar o projeto no comando `clone` abaixo utilize a url:
 https://github.com/CATSInformatica/CatsSys
 
-Se quiser contribuir com desenvolvimento será necessário fazer um [fork](https://help.github.com/articles/fork-a-repo/) e utilizar a url dele.
+Se quiser contribuir com desenvolvimento será necessário fazer um [fork](https://help.github.com/articles/fork-a-repo/) e utilizar a url dele. Todo código deve ser deselvolvido em um ramo filho do ramo **develop**
 
 ```
     git clone https://github.com/catsinformatica/catssys.git
+    cd catssys
+    git checkout develop
 ```
 ### Gerar arquivo de configuração local
 
