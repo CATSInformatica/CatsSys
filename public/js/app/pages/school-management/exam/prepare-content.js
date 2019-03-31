@@ -560,7 +560,7 @@ define(['jquery', 'datatable', 'datetimepicker'], function () {
                 }
 
                 if(pageClicked != currentConfig.page) {
-                    currentConfig.page = pageClicked;
+                    currentConfig.page = parseInt(pageClicked);
                     questionTable.DataTable().ajax.reload();
                 }
             });
