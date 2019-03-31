@@ -139,6 +139,9 @@ Intencionalmente o git foi configurado para não sincronizar alguns arquivos:
 
 ## Quarta Parte
 
+
+### Acessando o sistema
+
 Abra o navegador e digite http://localhost:8080/. Será exibida uma página que representa o site. Clique em login e insira as credenciais:
 
 ```
@@ -146,4 +149,13 @@ Abra o navegador e digite http://localhost:8080/. Será exibida uma página que 
     password: 177598230afbg#
 ```
 
-Importante: o ambiente de desenvolvimento fica disponível enquanto o comando `docker-compose up` estiver executando. Assim, sempre que quiser desenvolver é necessário acessar a pasta do projeto e executar este comando.
+### Banco de dados
+
+Digite ou cole no terminal (fora do container do php):
+
+```
+mysql -h 127.0.0.1 -u catssys -pcatssys catssys --port=13306
+```
+
+Importante: o ambiente de desenvolvimento fica disponível enquanto o coman
+do `docker-compose up` estiver executando. Assim, sempre que quiser desenvolver é necessário acessar a pasta do projeto e executar este comand

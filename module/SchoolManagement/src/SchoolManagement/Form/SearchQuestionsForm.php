@@ -19,7 +19,7 @@ class SearchQuestionsForm extends Form implements InputFilterProviderInterface
     {
         parent::__construct($name, $options);
         $subjects = $obj->getRepository('SchoolManagement\Entity\Subject')->findAll();
-        
+
         $this
             ->add(array(
                 'name' => 'subject',
@@ -35,11 +35,19 @@ class SearchQuestionsForm extends Form implements InputFilterProviderInterface
                 'options' => array(
                     'label' => 'Tipo',
                     'value_options' => array(
-                        ExamQuestion::QUESTION_TYPE_CLOSED => "Questão Fechada", 
+                        ExamQuestion::QUESTION_TYPE_CLOSED => "Questão Fechada",
                         ExamQuestion::QUESTION_TYPE_OPEN => "Questão Aberta",
                         -1 => "Todas",
                     ),
                 ),
+            ))
+            ->add(array(
+                'name' => 'totalPage',
+                'type' => 'number',
+            ))
+            ->add(array(
+                'name' => 'page',
+                'type' => 'number',
             ))
             ->add(array(
                 'name' => 'submit',
@@ -74,6 +82,12 @@ class SearchQuestionsForm extends Form implements InputFilterProviderInterface
             ),
             'questionType' => array(
                 'required' => true,
+            ),
+            'totalPage' => array(
+                'required' => false,
+            ),
+            'page' => array(
+                'required' => false,
             ),
         );
     }

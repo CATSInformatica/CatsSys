@@ -5,18 +5,18 @@
             ->setSeparator(' - ');
     ?>
     <p><?php echo $this->message; ?></p>
-    
-    <div class="row">  
-        <?php 
-            if (!$this->editAllowed) : 
+
+    <div class="row">
+        <?php
+            if (!$this->editAllowed) :
                 $boxWidthClass = 'col-xs-12';
                 $questionSelectionBoxClass = 'hide';
-            else : 
+            else :
                 $boxWidthClass = 'col-xs-6';
                 $questionSelectionBoxClass = '';
-            endif; 
-        ?> 
-        
+            endif;
+        ?>
+
         <div class="<?php echo $boxWidthClass; ?>">
             <div class="box box-success color-palette-box no-margin">
                 <div class="box-header with-border">
@@ -24,13 +24,13 @@
                     <div class="box-tools pull-right">
                         <button class="btn btn-box-tool" data-widget="collapse"><i class="fa fa-minus"></i></button>
                     </div><!-- /.box-tools -->
-                </div>   
-                <div class="box-body">       
+                </div>
+                <div class="box-body">
                     <?php if (!$this->editAllowed) : ?>
                         <h4>Não é possível selecionar questões pois esse conteúdo está associado a uma ou mais provas.</h4>
                     <?php else : ?>
-                        <?php 
-                            $colors = ['purple', 'orange', 'navy', 'maroon', 'teal'];
+                        <?php
+                            $colors = ['purple', 'orange', 'navy', 'maroon', 'black'];
                         ?>
                         <style>
                             .nav-tabs-custom>.nav-tabs>li.active  {
@@ -39,94 +39,100 @@
 
                             #content-info > .nav-tabs > li > a {
                                 color: white;
-                            } 
+                            }
                             #content-info > .nav-tabs > li.active > a {
                                 color: black;
-                            } 
+                            }
 
                         </style>
-                        <div class="col-xs-12 no-padding nav-tabs-custom" 
-                             id="content-info" 
+                        <div class="col-xs-12 no-padding nav-tabs-custom"
+                             id="content-info"
                              data-id="<?php echo $this->contentId; ?>"
                              style="border: thin lightgray solid; ">
                             <ul class="nav nav-tabs margin-bottom">
-                                
+
                                 <?php $i = 0; ?>
                                 <?php foreach ($this->groupsData as $baseSubjectId => $baseSubject) : ?>
-                                
+
                                     <li class=" no-margin bg-<?php echo $colors[$i % count($colors)]; ?>
-                                        <?php 
+                                        <?php
                                         if ($i === 0) :
                                             echo " active ";
-                                        endif; 
-                                        ?>">
-                                        
-                                        <a class="text-white" 
-                                           href="#base-subject-info-<?php echo $baseSubjectId; ?>" 
+                                        endif;
+                                        ?>"
+                                        title="<?php echo $baseSubject['name']; ?>"
+                                    >
+
+                                        <a class="text-white"
+                                           href="#base-subject-info-<?php echo $baseSubjectId; ?>"
                                            data-toggle="tab"
                                            style="border-right: 0; border-left: 0;">
-                                            <?php echo $baseSubject['name']; ?>
+                                            <?php echo substr($baseSubject['name'], 0, 20); ?>
                                         </a>
                                     </li>
-                                    
+
                                     <?php ++$i; ?>
-                                <?php endforeach; ?>  
-                                    
+                                <?php endforeach; ?>
+
                             </ul>
 
-                            <div class="tab-content"
-                                 style="border-right: thick maroon solid">
-                                
+                            <div class="tab-content" style="border-right: thick maroon solid">
+                                <p class="text-justify">
+                                    <b>Importante</b>: Apenas questões associadas a matérias de 2º e 3º nível são exibidas.<br>
+                                    <b>Exemplo</b>: Questões associadas diretamente á matéria MATEMÁTICA E SUAS TECNOLOGIAS não são exibidas, mas questões de ÁLGEBRA e POLINÔMIOS são.
+                                </p>
                                 <?php $i = 0; ?>
                                 <?php foreach ($this->groupsData as $baseSubjectId => $baseSubject) : ?>
-                                    <div class="tab-pane base-subject-info nav-tabs-custom no-margin <?php 
+                                    <div class="tab-pane base-subject-info nav-tabs-custom no-margin <?php
                                                     if ($i === 0) :
                                                         echo " active ";
-                                                    endif; 
-                                                    ?>"  
+                                                    endif;
+                                                    ?>"
                                          id="base-subject-info-<?php echo $baseSubjectId; ?>"
                                          data-id="<?php echo $baseSubjectId; ?>"
                                          data-name="<?php echo $baseSubject['name']; ?>">
 
-                                        <ul class="nav nav-tabs margin-bottom">  
-                                            
+                                        <ul class="nav nav-tabs margin-bottom">
+
                                             <?php $j = 0; ?>
                                             <?php foreach ($baseSubject['subgroups'] as $subjectId => $subject) : ?>
                                                 <li class="
-                                                    <?php 
+                                                    <?php
                                                     if ($j === 0) :
                                                         echo " active ";
-                                                    endif; 
-                                                    ?>">
-                                                    
-                                                    <a href="#subject-info-<?php echo $subjectId; ?>" 
+                                                    endif;
+                                                    ?>"
+                                                    title="<?php echo $subject['name']; ?>"
+                                                >
+
+                                                    <a href="#subject-info-<?php echo $subjectId; ?>"
                                                        data-toggle="tab">
-                                                        <?php echo $subject['name']; ?>
+                                                        <?php echo substr($subject['name'], 0, 15); ?>
                                                     </a>
-                                                </li>  
-                                                
-                                                <?php ++$j; ?>                                         
+                                                </li>
+
+                                                <?php ++$j; ?>
                                             <?php endforeach; ?>
-                                                
+
                                         </ul>
 
                                         <div class="tab-content">
-                                            
-                                            <?php $j = 0; ?> 
+
+                                            <?php $j = 0; ?>
                                             <?php foreach ($baseSubject['subgroups'] as $subjectId => $subject) : ?>
-                                            
+
                                                 <div class="tab-pane subject-info row
-                                                    <?php 
+                                                    <?php
                                                     if ($j === 0) :
                                                         echo " active ";
-                                                    endif; 
+                                                    endif;
                                                     ?>
-                                                    " 
+                                                    "
                                                     data-id="<?php echo $subjectId; ?>"
                                                     data-name="<?php echo $subject['name']; ?>"
-                                                    id="subject-info-<?php echo $subjectId; ?>">        
+                                                    id="subject-info-<?php echo $subjectId; ?>">
                                                     <div class="col-xs-11">
-                                                        
+
                                                         <?php foreach ($subject['subgroups'] as $topicId => $topic) : ?>
                                                             <button class="btn btn-flat topic-info
                                                                     bg-<?php echo $colors[$i % count($colors)]; ?>"
@@ -136,8 +142,8 @@
                                                                     id="topic-info-<?php echo $topicId; ?>">
                                                                 <?php echo $topic['name'];  ?>
                                                             </button>
-                                                        <?php endforeach; ?> 
-                                                        
+                                                        <?php endforeach; ?>
+
                                                         <button class="btn btn-flat topic-info
                                                                 bg-<?php echo $colors[$i % count($colors)]; ?>"
                                                                 style="cursor: pointer;"
@@ -150,17 +156,17 @@
                                                     <div class="col-xs-1 no-padding">
                                                         <div class="info-box-content no-margin">
                                                             <span class="info-box-number">
-                                                                <span class="q-added">0</span> 
-                                                                / 
-                                                                <span class="q-amount text-blue">0</span>                                                                
-                                                            </span>                                                            
+                                                                <span class="q-added">0</span>
+                                                                /
+                                                                <span class="q-amount text-blue">0</span>
+                                                            </span>
                                                         </div>
                                                     </div>
                                                 </div>
-                                            
-                                                <?php ++$j; ?> 
+
+                                                <?php ++$j; ?>
                                             <?php endforeach; ?>
-                                            
+
                                         </div>
                                     </div>
                                     <?php ++$i; ?>
@@ -169,13 +175,13 @@
 
                             <div class="info-box-content no-margin">
                                 <span class="info-box-number text-center">
-                                    <span id="added-questions">0</span> 
-                                    / 
+                                    <span id="added-questions">0</span>
+                                    /
                                     <span id="questions-count" class="text-blue">0</span>
-                                </span>                                                            
+                                </span>
                             </div>
                         </div>
-                    <?php endif; ?> 
+                    <?php endif; ?>
                 </div>
             </div>
             <!-- /.box-body -->
@@ -188,9 +194,9 @@
                     </div><!-- /.box-tools -->
                 </div>
 
-                <div class="box-body">  
+                <div class="box-body">
                     <div class="col-xs-12" id="questions">
-                        <div class="row"> 
+                        <div class="row">
                             <div class="col-xs-3 no-padding">
                                 <div class="col-xs-12">
                                     <a class="btn btn-app no-margin col-xs-12 autosaving" data-autosave="off">
@@ -219,7 +225,7 @@
                                     </a>
                                 </div>
                             </div>
-                        </div> 
+                        </div>
                         <div class="row text-center">
                             <h4 id="table-content-title">TÍTULO</h4>
                         </div>
@@ -236,8 +242,8 @@
                                     </tbody>
                                 </table>
                             </div>
-                        </div> 
-                        <div class="row"> 
+                        </div>
+                        <div class="row">
                             <div class="col-xs-3 no-padding">
                                 <div class="col-xs-12">
                                     <a class="btn btn-app no-margin col-xs-12 autosaving" data-autosave="off">
@@ -266,7 +272,7 @@
                                     </a>
                                 </div>
                             </div>
-                        </div>   
+                        </div>
                     </div>
                 </div>
             </div>
@@ -294,7 +300,7 @@
                 <!-- /.col -->
             </div>
         </div>
-        
+
         <div class="col-xs-12">
             <div class="box box-default">
                 <div class="box-header with-border">
@@ -309,7 +315,7 @@
                         <?php echo $this->questionsStartAtNumber; ?>
                     </span>
                 </div><!-- /.box-body -->
-            </div><!-- /.box -->   
+            </div><!-- /.box -->
         </div>
     </div>
 </section>

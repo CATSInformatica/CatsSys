@@ -44,10 +44,13 @@ use Zend\View\Model\ViewModel;
  */
 class SchoolExamController extends AbstractEntityActionController
 {
+    const DEFAULT_TOTAL_QUESTIONS = 45;
+    const DEFAULT_TOTAL_MAX_QUESTIONS = 100;
+    const DEFAULT_PAGE_MAX = 10000;
 
     /**
      * Exibe uma tabela com todas as provas aplicadas
-     * 
+     *
      * @return ViewModel
      */
     public function applicationsAction()
@@ -70,7 +73,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Exibe um formulário para criação de uma aplicação de prova
-     * 
+     *
      * @return ViewModel
      */
     public function createApplicationAction()
@@ -131,7 +134,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Exibe um formulário para edição de uma aplicação de prova
-     * 
+     *
      * @return ViewModel
      */
     public function editApplicationAction()
@@ -151,7 +154,7 @@ class SchoolExamController extends AbstractEntityActionController
                 $selectedExams = $application->getExams()->toArray();
 
                 $exams = array_merge($exams, $selectedExams);
-                
+
                 $form = new ExamApplicationForm($em);
                 $form->bind($application);
                 $form->get('submit')->setAttribute('value', 'Editar Aplicação de Prova');
@@ -198,7 +201,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Remove a aplicação de simulado selecionada
-     * 
+     *
      * @return JsonModel
      */
     public function deleteApplicationAction()
@@ -236,9 +239,9 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * Exibe uma interface para visualização e geração de PDFs referentes 
+     * Exibe uma interface para visualização e geração de PDFs referentes
      * a aplicação de prova
-     * 
+     *
      * @return ViewModel
      */
     public function prepareApplicationAction()
@@ -267,7 +270,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Exibe uma tabela com todas as provas
-     * 
+     *
      * @return ViewModel
      */
     public function examsAction()
@@ -290,7 +293,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Exibe o formulário de criação de provas
-     * 
+     *
      * @return ViewModel
      */
     public function createExamAction()
@@ -336,7 +339,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Exibe o formulário de edição de provas
-     * 
+     *
      * @return ViewModel
      */
     public function editExamAction()
@@ -391,7 +394,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Remove o simulado selecionado
-     * 
+     *
      * @return JsonModel
      */
     public function deleteExamAction()
@@ -432,7 +435,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Exibe uma tabela com todos os conteúdos
-     * 
+     *
      * @return ViewModel
      */
     public function contentsAction()
@@ -454,7 +457,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Exibe uma página para criação de um conteúdo de prova
-     * 
+     *
      * @return ViewModel
      */
     public function createContentAction()
@@ -469,7 +472,7 @@ class SchoolExamController extends AbstractEntityActionController
                     ->findAll();
             $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')
                 ->findBy(['parent' => null]);
-            
+
             $numberOfQuantityFields = 0;
             foreach ($baseSubjects as $baseSubject) {
                 $numberOfQuantityFields += count($baseSubject->getChildren());
@@ -477,19 +480,19 @@ class SchoolExamController extends AbstractEntityActionController
 
             $form = new ExamContentForm($em, $numberOfQuantityFields);
             $form->bind($examContent);
-            
+
             if ($request->isPost()) {
                 $raw = $request->getPost();
                 $form->setData($raw);
-                
+
                 if ($form->isValid()) {
                     $config = $raw['contentJson'];
                     $examContent->setConfig($config);
                     $em->persist($examContent);
                     $em->flush();
-                    
+
                     return $this->redirect()
-                            ->toRoute('school-management/school-exam', 
+                            ->toRoute('school-management/school-exam',
                                     array('action' => 'contents'));
                 } else {
                     $message = 'Certifique-se de que todas as quantidades '
@@ -518,40 +521,40 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * Formulário de edição de um conteúdo, se esse conteúdo já tiver sido 
+     * Formulário de edição de um conteúdo, se esse conteúdo já tiver sido
      * utilizado em alguma prova, permite editar apenas a descrição
-     * 
+     *
      * @return ViewModel
      */
     public function editContentAction()
     {
         $contentId = $this->params('id', false);
 
-        if ($contentId) {        
+        if ($contentId) {
             $request = $this->getRequest();
             $message = null;
-            
+
             try {
                 $em = $this->getEntityManager();
 
                 $contents = $em->getRepository('SchoolManagement\Entity\ExamContent')
                         ->findAll();
-                
+
                 $examContent = $em->find('SchoolManagement\Entity\ExamContent', $contentId);
                 $editAllowed = $this->isExamContentEditable($examContent);
-                
+
                 $baseSubjects = $em->getRepository('SchoolManagement\Entity\Subject')
                 ->findBy(['parent' => null]);
-            
+
                 $numberOfQuantityFields = 0;
                 foreach ($baseSubjects as $baseSubject) {
                     $numberOfQuantityFields += count($baseSubject->getChildren());
                 }
-                
+
                 $form = new ExamContentForm($em, $numberOfQuantityFields);
                 $form->bind($examContent);
                 $form->get('submit')->setAttribute('value', 'Editar Conteúdo');
-                
+
                 if ($request->isPost()) {
                     $raw = $request->getPost();
                     $form->setData($raw);
@@ -561,9 +564,9 @@ class SchoolExamController extends AbstractEntityActionController
                         $examContent->setConfig($config);
                         $em->persist($examContent);
                         $em->flush();
-                    
+
                         return $this->redirect()
-                                ->toRoute('school-management/school-exam', 
+                                ->toRoute('school-management/school-exam',
                                         array('action' => 'contents'));
                     }
                 } else {
@@ -593,9 +596,9 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Verifica se é possível editar o conteúdo de prova.
-     * 
+     *
      * Só permite edição se o conteúdo nunca foi aplicado antes.
-     * 
+     *
      * @param ExamContent $content Conteúdo de prova
      */
     private function isExamContentEditable(ExamContent $content)
@@ -615,7 +618,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Remove o conteúdo selecionado
-     * 
+     *
      * @return JsonModel
      */
     public function deleteContentAction()
@@ -656,7 +659,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Exibe uma interface para adicionar, remover e ordenar as questões de um conteúdo.
-     * 
+     *
      * @return ViewModel
      */
     public function prepareContentAction()
@@ -668,7 +671,7 @@ class SchoolExamController extends AbstractEntityActionController
             try {
                 $content = $em->find('SchoolManagement\Entity\ExamContent', $contentId);
                 $config = json_decode($content->getConfig(), true);
-               
+
                 $groupsData = $this->getGroupsData($config);
                 $editAllowed = $this->isExamContentEditable($content);
 
@@ -692,11 +695,11 @@ class SchoolExamController extends AbstractEntityActionController
             }
         }
     }
-    
+
     /**
      * Extrai informações sobre as disciplinas que fazem parte de uma configuração
      * de conteúdo.
-     * 
+     *
      * @param array $examConfig - configuração de um conteúdo de prova
      * @return array - array indexado pelo id da respectiva disciplina que possui
      *      o nome e os subgrupos de determinado grupo
@@ -713,8 +716,8 @@ class SchoolExamController extends AbstractEntityActionController
      *                      ...
      *                  ]
      *              ],
-     *              ...            
-     *          ]    
+     *              ...
+     *          ]
      *      ],
      *      ...
      *  ]
@@ -722,7 +725,7 @@ class SchoolExamController extends AbstractEntityActionController
     private function getGroupsData($examConfig) {
         $em = $this->getEntityManager();
         $groupsData = [];
-        
+
         foreach ($examConfig['groups'] as $group) {
             // disciplina base
             $groupsData[$group['id']] = [
@@ -730,13 +733,13 @@ class SchoolExamController extends AbstractEntityActionController
                 'subgroups' => [],
             ];
 
-            foreach ($group['subgroups'] as $subgroup) {                        
+            foreach ($group['subgroups'] as $subgroup) {
                 if (!isset($subgroup['id'])) {
                     foreach ($subgroup as $parallelSubgroup) {
                         // disciplina paralela
                         $groupsData[$group['id']]['subgroups'][$parallelSubgroup['id']] = [
                             'name' => $parallelSubgroup['subgroupName'],
-                            'subgroups' => [],                            
+                            'subgroups' => [],
                         ];
 
                         $subject = $em->getRepository('SchoolManagement\Entity\Subject')
@@ -744,7 +747,7 @@ class SchoolExamController extends AbstractEntityActionController
 
                         foreach ($subject->getChildren() as $topic) {
                             $groupsData[$group['id']]['subgroups'][$subgroup['id']]['subgroups'][$topic->getSubjectId()] = [
-                                'name' => $topic->getSubjectName()            
+                                'name' => $topic->getSubjectName()
                             ];
                         }
                     }
@@ -752,7 +755,7 @@ class SchoolExamController extends AbstractEntityActionController
                     // disciplina
                     $groupsData[$group['id']]['subgroups'][$subgroup['id']] = [
                         'name' => $subgroup['subgroupName'],
-                        'subgroups' => [],                            
+                        'subgroups' => [],
                     ];
 
                     $subject = $em->getRepository('SchoolManagement\Entity\Subject')
@@ -760,19 +763,19 @@ class SchoolExamController extends AbstractEntityActionController
 
                     foreach ($subject->getChildren() as $topic) {
                         $groupsData[$group['id']]['subgroups'][$subgroup['id']]['subgroups'][$topic->getSubjectId()] = [
-                            'name' => $topic->getSubjectName()            
+                            'name' => $topic->getSubjectName()
                         ];
                     }
                 }
             }
         }
-        
+
         return $groupsData;
     }
 
     /**
      * Salva as questões selecionadas na preparação do simulado
-     * 
+     *
      * @return JsonModel
      */
     public function saveContentAction()
@@ -811,7 +814,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Retorna o conteúdo que possui o id passado por parâmetro
-     * 
+     *
      * @return JsonModel
      *  {
      *      description => <string>,
@@ -829,7 +832,7 @@ class SchoolExamController extends AbstractEntityActionController
 
                 $examContent = $em->find('SchoolManagement\Entity\ExamContent', (int) $data['contentId']);
                 $contentConfig = $examContent->getConfig();
-                
+
                 return new JsonModel([
                     'description' => $examContent->getDescription(),
                     'config' => $contentConfig
@@ -840,13 +843,13 @@ class SchoolExamController extends AbstractEntityActionController
         }
         return new JsonModel(['questions' => []]);
     }
-    
+
     /**
      * Extrai as informações sobre as questões passadas por parâmetro
-     * 
-     * 
+     *
+     *
      * @param array $questions array de objetos do tipo ExamQuestion
-     * 
+     *
      * @return array
      *  [
      *      [
@@ -868,14 +871,14 @@ class SchoolExamController extends AbstractEntityActionController
             $alternatives = [];
             $answerOptions = $q->getAnswerOptions()->toArray();
             $correctAlternative = -1;
-            
+
             foreach ($answerOptions as $i => $ao) {
                 $alternatives[$i] = $ao->getExamAnswerDescription();
                 if ($ao->getIsCorrect()) {
                     $correctAlternative = $i;
                 }
             }
-            
+
             $result[] = array(
                 'questionId' => $q->getExamQuestionId(),
                 'questionEnunciation' => $q->getExamQuestionEnunciation(),
@@ -886,11 +889,11 @@ class SchoolExamController extends AbstractEntityActionController
         }
         return $result;
     }
-    
+
     /**
      * Recebe um array com ids de questões ($data['questions']), carrega essas
      * questões e as retorna
-     * 
+     *
      * @return JsonModel
      *  [
      *      [
@@ -910,17 +913,17 @@ class SchoolExamController extends AbstractEntityActionController
     {
         $request = $this->getRequest();
         $result = [];
-        
+
         if ($request->isPost()) {
             try {
                 $em = $this->getEntityManager();
-               
+
                 $data = $request->getPost();
-                
+
                 if (!isset($data['questions'])) {
                     return new JsonModel($result);
                 }
-                
+
                 if (is_array($data['questions'])) {
                     $questions = [];
                     foreach ($data['questions'] as $questionId) {
@@ -931,7 +934,7 @@ class SchoolExamController extends AbstractEntityActionController
                 }
 
                 $result = $this->extractQuestionsInfo($questions);
-                    
+
             } catch (Exception $ex) {
                 $result[] = array(
                     'questionId' => -1,
@@ -946,8 +949,10 @@ class SchoolExamController extends AbstractEntityActionController
     }
 
     /**
-     * Retorna todas as questões cadastradas para a matéria $data['subject'] do tipo $data['questionType']
-     * 
+     * Retorna uma certa quantidade de questões cadastradas para a matéria $data['subject'] do tipo $data['questionType'].
+     *
+     * Se $data['totalPage'] for especificado retornar N = min(100, $totalPage) questões. Se P = $data['page'] for especificado retorna N questões da página P.
+     *
      * @return JsonModel
      *  Retorno do tipo: [
      *      {
@@ -964,7 +969,12 @@ class SchoolExamController extends AbstractEntityActionController
     public function getSubjectQuestionsAction()
     {
         $request = $this->getRequest();
-        $result = [];
+        $result = [
+            'questions' => [],
+            'totalPage' => self::DEFAULT_TOTAL_MAX_QUESTIONS,
+            'page' => 1,
+            'total' => 0
+        ];
 
         if ($request->isPost()) {
             try {
@@ -976,30 +986,46 @@ class SchoolExamController extends AbstractEntityActionController
                     $data = $form->getData();
                     $subject = $em->getReference('SchoolManagement\Entity\Subject', $data['subject']);
                     $questionType = $data['questionType'];
+
+                    // paginação
+                    $limit = isset($data['totalPage']) ? min(self::DEFAULT_TOTAL_MAX_QUESTIONS, $data['totalPage']) : self::DEFAULT_TOTAL_QUESTIONS;
+                    $page = isset($data['page']) ? max(1, $data['page']) : 1;
+                    $offset = min(self::DEFAULT_PAGE_MAX, $limit * ($page - 1));
+
+                    $searchArr = ['subject' => $subject];
+
                     if ($questionType > 0) { // Um tipo específico de questão foi selecionado
-                        $questions = $em->getRepository('SchoolManagement\Entity\ExamQuestion')->findBy(
-                                [
-                                    'examQuestionType' => $questionType,
-                                    'subject' => $subject,
-                                ],
-                                [
-                                    'examQuestionId' => 'DESC'
-                                ]);
-                    } else {
-                        $questions = $em->getRepository('SchoolManagement\Entity\ExamQuestion')->findBy([
-                            'subject' => $subject,
-                        ]);
+                        $searchArr['examQuestionType'] = $questionType;
                     }
-                    $result = $this->extractQuestionsInfo($questions);
+
+                    $questions = $em->getRepository('SchoolManagement\Entity\ExamQuestion')->findBy(
+                        $searchArr,
+                        [
+                            'examQuestionId' => 'DESC'
+                        ],
+                        $limit,
+                        $offset
+                    );
+
+                    $result['totalPage'] = count($questions);
+                    $result['page'] = $page;
+
+                    if($questions) {
+                        $result['questions'] = $this->extractQuestionsInfo($questions);
+                        $count = $em
+                            ->getRepository('SchoolManagement\Entity\ExamQuestion')
+                            ->count($subject, $questionType);
+                        $result['total'] = $count;
+                    }
                 }
             } catch (Exception $ex) {
-                $result[] = array(
+                $result['questions'][] = [
                     'questionId' => -1,
                     'questionEnunciation' => 'Erro: ' . $ex,
                     'questionAlternatives' => -1,
                     'questionCorrectAlternative' => -1,
                     'questionSubjectId' => -1,
-                );
+                ];
             }
         }
         return new JsonModel($result);
@@ -1007,7 +1033,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Exibe em uma tabela todas as questões cadastradas
-     * 
+     *
      * @return ViewModel
      */
     public function questionAction()
@@ -1031,7 +1057,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Exibe um formulário para adicionar uma questão ao banco de questões
-     * 
+     *
      * @return ViewModel
      */
     public function addQuestionAction()
@@ -1071,7 +1097,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Exibe um formulário para edição da questão selecionada
-     * 
+     *
      * @return ViewModel
      */
     public function editQuestionAction()
@@ -1172,7 +1198,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Remove a questão selecionada do banco de dados
-     * 
+     *
      * @return JsonModel
      */
     public function deleteQuestionAction()
@@ -1206,7 +1232,7 @@ class SchoolExamController extends AbstractEntityActionController
 
     /**
      * Retorna todas as provas associadas à applicação de prova $appId.
-     * 
+     *
      * @return JsonModel
      */
     public function getExamsAction()

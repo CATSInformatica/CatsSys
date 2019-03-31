@@ -12,7 +12,7 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @author Gabriel Pereira <rickardch@gmail.com>
  * @ORM\Table(name="exam_question")
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="SchoolManagement\Entity\Repository\ExamQuestionRepository")
  */
 class ExamQuestion
 {
@@ -24,7 +24,7 @@ class ExamQuestion
 
     /**
      *
-     * @var integer 
+     * @var integer
      * @ORM\Column(name="exam_question_id", type="integer", nullable=false)
      * @ORM\Id
      * @ORM\GeneratedValue(strategy="IDENTITY")
@@ -33,14 +33,14 @@ class ExamQuestion
 
     /**
      *
-     * @var string 
+     * @var string
      * @ORM\Column(name="exam_question_enunciation", type="text", nullable=false)
      */
     private $examQuestionEnunciation;
 
     /**
      *
-     * @var integer 
+     * @var integer
      * @ORM\Column(name="exam_question_type", type="integer", nullable=false)
      */
     private $examQuestionType;
@@ -66,7 +66,7 @@ class ExamQuestion
     }
 
     /**
-     * 
+     *
      * @return integer
      */
     public function getExamQuestionId()
@@ -75,7 +75,7 @@ class ExamQuestion
     }
 
     /**
-     * 
+     *
      * @return string
      */
     public function getExamQuestionEnunciation()
@@ -84,7 +84,7 @@ class ExamQuestion
     }
 
     /**
-     * 
+     *
      * @return integer
      */
     public function getExamQuestionType()
@@ -93,7 +93,7 @@ class ExamQuestion
     }
 
     /**
-     * 
+     *
      * @return Subject
      */
     public function getSubject()
@@ -102,7 +102,7 @@ class ExamQuestion
     }
 
     /**
-     * 
+     *
      * @return Doctrine\Common\Collections\ArrayCollection
      */
     public function getAnswerOptions()
@@ -111,7 +111,7 @@ class ExamQuestion
     }
 
     /**
-     * 
+     *
      * @param string $examQuestionEnunciation
      * @return ExamQuestion
      */
@@ -122,7 +122,7 @@ class ExamQuestion
     }
 
     /**
-     * 
+     *
      * @param integer $examQuestionType
      * @return ExamQuestion
      */
@@ -133,7 +133,7 @@ class ExamQuestion
     }
 
     /**
-     * 
+     *
      * @param Subject $subject
      * @return ExamQuestion
      */
@@ -160,7 +160,7 @@ class ExamQuestion
     }
 
     /**
-     * 
+     *
      * @param Collection $answers
      * @return ExamQuestion
      */
@@ -173,7 +173,7 @@ class ExamQuestion
     }
 
     /**
-     * 
+     *
      * @param ExamAnswer $answer
      * @return boolean
      */
@@ -184,7 +184,7 @@ class ExamQuestion
 
     /**
      * Retorna a resposta correta ou null caso seja uma questao aberta
-     * 
+     *
      * @return null|ExamAnswer
      */
     public function getCorrectAnswerOption()
@@ -199,27 +199,27 @@ class ExamQuestion
 
             return $result->toArray()[0];
         }
-        
+
         return null;
     }
-    
+
     /**
      * Converte a resposta correta em uma letra. Caso nao exista uma resposta
      * correta retorna null.
-     * 
+     *
      * @return string|null
      */
     public function getConvertedCorrectAnswer()
     {
         $ascii = ord('A');
-        
+
         foreach($this->answerOptions as $answer) {
             if($answer->getIsCorrect()) {
                 return chr($ascii);
             }
             $ascii++;
         }
-        
+
         return null;
     }
 }
