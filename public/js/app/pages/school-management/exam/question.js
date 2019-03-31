@@ -161,7 +161,7 @@ define(['jquery', 'datatable', 'mathjax'], function () {
                 }
 
                 if(pageClicked != currentConfig.page) {
-                    currentConfig.page = pageClicked;
+                    currentConfig.page = parseInt(pageClicked);
                     questionTable.DataTable().ajax.reload();
                 }
             });
