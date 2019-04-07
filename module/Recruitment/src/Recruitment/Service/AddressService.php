@@ -12,15 +12,11 @@ use Recruitment\Entity\Person;
  */
 trait AddressService
 {
-
-    /**
-     * @see Database\Service\EntityManagerService
-     */
     abstract protected function getEntityManager();
 
     /**
      * Faz as verificações para evitar violações de restrição unique nos endereços
-     * 
+     *
      * @param Person $person
      * @return void
      */

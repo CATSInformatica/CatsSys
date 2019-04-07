@@ -12,10 +12,6 @@ use Recruitment\Entity\Registration;
  */
 trait PersonService
 {
-
-    /**
-     * @see Database\Service\EntityManagerService
-     */
     abstract protected function getEntityManager();
 
     /**
@@ -43,7 +39,7 @@ trait PersonService
             $person->addAddresses($newPerson->getAddresses());
             $newPerson->removeAddresses($newPerson->getAddresses());
             $registration->setPerson($person);
-            
+
         } else {
             $this->adjustAddresses($newPerson);
             //imagem padrão do perfil

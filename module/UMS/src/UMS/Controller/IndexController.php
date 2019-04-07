@@ -10,7 +10,6 @@ namespace UMS\Controller;
 
 use Zend\Mvc\Controller\AbstractActionController;
 use Zend\View\Model\ViewModel;
-use Database\Service\EntityManagerService;
 /**
  * Description of IndexController
  *
@@ -18,13 +17,10 @@ use Database\Service\EntityManagerService;
  */
 class IndexController extends AbstractActionController
 {
-
-    use EntityManagerService; // doctrine entity manager
-
     public function indexAction()
-    {        
+    {
         $message = 'Welcome to UMS.';
-        
+
         return new ViewModel(array(
             'message' => $message
         ));

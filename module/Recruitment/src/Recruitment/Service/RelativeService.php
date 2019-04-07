@@ -11,10 +11,6 @@ use Recruitment\Entity\Person;
  */
 trait RelativeService
 {
-
-    /**
-     * @see Database\Service\EntityManagerService
-     */
     abstract protected function getEntityManager();
 
     /**

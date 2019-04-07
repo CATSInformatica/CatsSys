@@ -15,14 +15,10 @@ use Recruitment\Entity\RegistrationStatus;
  */
 trait RegistrationStatusService
 {
-
-    /**
-     * @see Database\Service\EntityManagerService
-     */
     abstract protected function getEntityManager();
 
     /**
-     * 
+     *
      * @param Registration $registration
      * @param type $statusType
      * @param DateTime $timestamp
