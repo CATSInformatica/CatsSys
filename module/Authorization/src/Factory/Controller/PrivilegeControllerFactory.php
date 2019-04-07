@@ -20,8 +20,9 @@
 namespace Authorization\Factory\Controller;
 
 use Authorization\Controller\PrivilegeController;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Cria uma instância do controller PrivilegeController e injeta o EntityManager
@@ -33,8 +34,7 @@ class PrivilegeControllerFactory implements FactoryInterface
     public function createService(ContainerInterface $container)
     {
         $controller = new PrivilegeController();
-        $sl = $container->getServiceLocator();
-        $em = $sl->get('Doctrine\ORM\EntityManager');
+        $em = $container->get(EntityManager::class);
 
         $controller->setEntityManager($em);
 

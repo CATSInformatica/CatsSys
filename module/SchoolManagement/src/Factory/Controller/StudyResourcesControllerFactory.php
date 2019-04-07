@@ -20,8 +20,9 @@
 namespace SchoolManagement\Factory\Controller;
 
 use SchoolManagement\Controller\StudyResourcesController;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Instancia o controller StudyResourcesController e injeta o EntityManager
@@ -35,8 +36,7 @@ class StudyResourcesControllerFactory implements FactoryInterface
     {
 
         $controller = new StudyResourcesController();
-        $sl = $container->getServiceLocator();
-        $em = $sl->get('Doctrine\ORM\EntityManager');
+        $em = $container->get(EntityManager::class);
         $controller->setEntityManager($em);
         return $controller;
     }

@@ -20,8 +20,9 @@
 namespace Documents\Factory\Controller;
 
 use Documents\Controller\GeneratePdfController;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Cria uma instância do controller GeneratePdfController e injeta o EntityManager
@@ -33,8 +34,7 @@ class GeneratePdfControllerFactory implements FactoryInterface
     public function createService(ContainerInterface $container)
     {
         $controller = new GeneratePdfController();
-        $sl = $container->getServiceLocator();
-        $em = $sl->get('Doctrine\ORM\EntityManager');
+        $em = $container->get(EntityManager::class);
 
         $controller->setEntityManager($em);
 

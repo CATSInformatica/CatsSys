@@ -8,19 +8,18 @@
 
 namespace UMS\Factory;
 
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
-use Zend\Session\Container;
+use Zend\Session\Container as SessionContainer;
 use Zend\View\Helper\Navigation as NavigationHelper;
 
 class NavigationViewFactory implements FactoryInterface
 {
-
     public function createService(ContainerInterface $container)
     {
-        $session = new Container('User');
+        $session = new SessionContainer('User');
         $role = $session->activeRole;
-        $acl = $container->getServiceLocator()->get('acl');
+        $acl = $container->get('acl');
         $navigation = $this->createHelper($container);
         $navigation->setAcl($acl)->setRole($role);
 
@@ -33,5 +32,4 @@ class NavigationViewFactory implements FactoryInterface
         $helper->setServiceLocator($container);
         return $helper;
     }
-
 }

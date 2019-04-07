@@ -20,8 +20,9 @@
 namespace SchoolManagement\Factory\Controller;
 
 use SchoolManagement\Controller\SchoolAttendanceController;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Instancia o controller SchoolAttendanceController e injeta o EntityManager e  DbalConnection
@@ -30,20 +31,15 @@ use Interop\Container\ContainerInterface;
  */
 class SchoolAttendanceControllerFactory implements FactoryInterface
 {
-
     public function createService(ContainerInterface $container)
     {
-
-
-        $sl = $container->getServiceLocator();
-        $controller = new SchoolAttendanceController($sl->get('ViewRenderer'));
-        $em = $sl->get('Doctrine\ORM\EntityManager');
-        $conn = $sl->get('doctrine.connection.orm_default');
+        $controller = new SchoolAttendanceController($container->get('ViewRenderer'));
+        $em = $container->get(EntityManager::class);
+        $conn = $em->getConnection();
 
         $controller->setEntityManager($em);
         $controller->setDbalConnection($conn);
 
         return $controller;
     }
-
 }

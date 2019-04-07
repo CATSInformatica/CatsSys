@@ -20,9 +20,10 @@
 namespace Recruitment\Factory\Controller;
 
 use Recruitment\Controller\RegistrationController;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
 use Authentication\Factory\Controller\Helper\CreateEmailSenderService;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Cria uma instância do controller RegistrationController e injeta o EntityManager e o serviço de emails.
@@ -35,18 +36,17 @@ class RegistrationControllerFactory implements FactoryInterface
 
     public function createService(ContainerInterface $container)
     {
-        $sl = $container->getServiceLocator();
-
-        $emailOptions = $sl->get('config')['email']['recruitment'];
-        $mailgunOptions = $sl->get('config')['mailgun'];
+        $config = $container->get('config');
+        $emailOptions = $config['email']['recruitment'];
+        $mailgunOptions = $config['mailgun'];
         $emailService = $this->createEmailSenderService($mailgunOptions);
 
         $emailService->setFrom($emailOptions['from']['email'], $emailOptions['from']['name']);
         $emailService->setReplyTo($emailOptions['replyTo']['email'], $emailOptions['replyTo']['name']);
 
-        $viewRenderer = $sl->get('ViewRenderer');
+        $viewRenderer = $container->get('ViewRenderer');
         $controller = new RegistrationController($emailService, $viewRenderer);
-        $em = $sl->get('Doctrine\ORM\EntityManager');
+        $em = $container->get(EntityManager::class);
 
         $controller->setEntityManager($em);
 

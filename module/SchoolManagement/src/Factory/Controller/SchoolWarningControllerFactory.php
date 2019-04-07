@@ -20,8 +20,9 @@
 namespace SchoolManagement\Factory\Controller;
 
 use SchoolManagement\Controller\SchoolWarningController;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Instancia o controller SchoolWarningController e injeta o EntityManager
@@ -33,10 +34,8 @@ class SchoolWarningControllerFactory implements FactoryInterface
 
     public function createService(ContainerInterface $container)
     {
-
         $controller = new SchoolWarningController();
-        $sl = $container->getServiceLocator();
-        $em = $sl->get('Doctrine\ORM\EntityManager');
+        $em = $container->get(EntityManager::class);
         $controller->setEntityManager($em);
         return $controller;
     }

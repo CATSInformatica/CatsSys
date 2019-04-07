@@ -20,8 +20,9 @@
 namespace Documents\Factory\Controller;
 
 use Documents\Controller\StudentAnswersSheetsController;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Cria uma instância do controller GeneratePdfController e injeta o EntityManager
@@ -34,8 +35,7 @@ class StudentAnswersSheetsControllerFactory implements FactoryInterface
     public function createService(ContainerInterface $container)
     {
         $controller = new StudentAnswersSheetsController();
-        $sl = $container->getServiceLocator();
-        $em = $sl->get('Doctrine\ORM\EntityManager');
+        $em = $container->get(EntityManager::class);
 
         $controller->setEntityManager($em);
 

@@ -20,8 +20,9 @@
 namespace AdministrativeStructure\Factory\Controller;
 
 use AdministrativeStructure\Controller\JobController;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Cria uma instância de JobController e injeta o EntityManager
@@ -33,9 +34,8 @@ class JobControllerFactory implements FactoryInterface
 
     public function createService(ContainerInterface $container)
     {
-        $sm = $container->getServiceLocator();
         $controller = new JobController();
-        $controller->setEntityManager($sm->get('Doctrine\ORM\EntityManager'));
+        $controller->setEntityManager($container->get(EntityManager::class));
         return $controller;
     }
 

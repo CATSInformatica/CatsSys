@@ -8,7 +8,7 @@
 
 namespace Authorization\Factory\Acl;
 
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
 use Authorization\Controller\Plugin\IsAllowed as IsAllowedControllerPlugin;
 

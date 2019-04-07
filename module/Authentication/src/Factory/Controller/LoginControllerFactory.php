@@ -20,8 +20,9 @@
 namespace Authentication\Factory\Controller;
 
 use Authentication\Controller\LoginController;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Zend\Authentication\AuthenticationService;
 
 /**
  * Cria uma instância do controller LoginController e injeta o EntityManager
@@ -30,11 +31,9 @@ use Interop\Container\ContainerInterface;
  */
 class LoginControllerFactory implements FactoryInterface
 {
-
     public function createService(ContainerInterface $container)
     {
-        $sm = $container->getServiceLocator();
-        $authService = $sm->get('Zend\Authentication\AuthenticationService');
+        $authService = $container->get(AuthenticationService::class);
         $controller = new LoginController($authService);
 
         return $controller;

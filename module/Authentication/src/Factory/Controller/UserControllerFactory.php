@@ -20,8 +20,9 @@
 namespace Authentication\Factory\Controller;
 
 use Authentication\Controller\UserController;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Cria uma instância do controller UserController e injeta o EntityManager
@@ -34,8 +35,7 @@ class UserControllerFactory implements FactoryInterface
     public function createService(ContainerInterface $container)
     {
         $controller = new UserController();
-        $sl = $container->getServiceLocator();
-        $em = $sl->get('Doctrine\ORM\EntityManager');
+        $em = $container->get(EntityManager::class);
 
         $controller->setEntityManager($em);
 

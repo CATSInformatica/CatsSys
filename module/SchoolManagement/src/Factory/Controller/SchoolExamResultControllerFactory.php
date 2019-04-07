@@ -20,8 +20,9 @@
 namespace SchoolManagement\Factory\Controller;
 
 use SchoolManagement\Controller\SchoolExamResultController;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Instancia o controller SchoolExamResultController e injeta o EntityManager
@@ -32,8 +33,7 @@ class SchoolExamResultControllerFactory implements FactoryInterface
 {
     public function createService(ContainerInterface $container)
     {
-        $sl = $container->getServiceLocator();
-        $em = $sl->get('Doctrine\ORM\EntityManager');
+        $em = $container->get(EntityManager::class);
         $controller = new SchoolExamResultController();
         $controller->setEntityManager($em);
 

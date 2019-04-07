@@ -20,8 +20,9 @@
 namespace Authorization\Factory\Controller;
 
 use Authorization\Controller\ResourceController;
-use Zend\ServiceManager\FactoryInterface;
+use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Cria uma instância do controller ResourceController e injeta o EntityManager
@@ -34,8 +35,7 @@ class ResourceControllerFactory implements FactoryInterface
     public function createService(ContainerInterface $container)
     {
         $controller = new ResourceController();
-        $sl = $container->getServiceLocator();
-        $em = $sl->get('Doctrine\ORM\EntityManager');
+        $em = $container->get(EntityManager::class);
 
         $controller->setEntityManager($em);
 
