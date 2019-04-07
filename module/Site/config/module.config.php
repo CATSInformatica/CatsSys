@@ -9,7 +9,7 @@ return array(
             'Site\Controller\SiteManagement' => Factory\Controller\SiteManagementControllerFactory::class,
         ),
     ),
-    
+
     'router' => array(
         'routes' => array(
             'home' => array(
@@ -47,7 +47,7 @@ return array(
                             ),
                         ),
                     ),
-                    
+
                 ),
             ),
         ),

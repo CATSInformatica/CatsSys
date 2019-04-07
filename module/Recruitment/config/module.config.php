@@ -536,7 +536,7 @@ return array(
                                 'resource' => 'Recruitment\Controller\Interview',
                                 'privilege' => 'volunteer-form',
                                 'icon' => 'fa fa-file-text-o',
-                            ],                            
+                            ],
                             [
                                 'label' => 'Interviewer Evaluation Form',
                                 'route' => 'recruitment/interview',

@@ -13,5 +13,20 @@
         "evandotpro/edp-module-layouts": "^1.0",
         "neilime/zf2-twb-bundle": "^3.3",
         "setasign/fpdf": "^1.8"
+    },
+    "autoload": {
+        "psr-4": {
+            "AdministrativeStructure\\": "module/AdministrativeStructure/src/",
+            "Authentication\\": "module/Authentication/src/",
+            "Authorization\\": "module/Authorization/src/",
+            "Database\\": "module/Database/src/",
+            "Documents\\": "module/Documents/src/",
+            "FinancialManagement\\": "module/FinancialManagement/src/",
+            "Recruitment\\": "module/Recruitment/src/",
+            "SchoolManagement\\": "module/SchoolManagement/src/",
+            "Site\\": "module/Site/src/",
+            "UMS\\": "module/UMS/src/",
+            "Version\\": "module/Version/src/"
+        }
     }
 }
