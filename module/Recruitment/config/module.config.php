@@ -7,15 +7,15 @@
 
 namespace Recruitment;
 
-use Authorization\Factory\Acl\CaptchaViewFactory;
 use Zend\Router\Http\Segment;
 use Zend\Router\Http\Literal;
+use Recruitment\Factory\CaptchaViewFactory;
 
 return [
     'controllers' => [
         'factories' => [
             'Recruitment\Controller\Captcha' => Factory\Controller\CaptchaControllerFactory::class,
-            'Recruitment\Controller\CsvViewer' => Factory\Controller\Controller\CsvViewerControllerFactory::class,
+            'Recruitment\Controller\CsvViewer' => Factory\Controller\CsvViewerControllerFactory::class,
             'Recruitment\Controller\Recruitment' => Factory\Controller\RecruitmentControllerFactory::class,
             'Recruitment\Controller\Registration' => Factory\Controller\RegistrationControllerFactory::class,
             'Recruitment\Controller\PreInterview' => Factory\Controller\PreInterviewControllerFactory::class,

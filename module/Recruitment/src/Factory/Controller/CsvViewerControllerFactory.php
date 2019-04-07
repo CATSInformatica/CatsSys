@@ -28,7 +28,7 @@ use Recruitment\Controller\CsvViewerController;
  *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
-class CaptchaControllerFactory implements FactoryInterface
+class CsvViewerControllerFactory implements FactoryInterface
 {
     public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {

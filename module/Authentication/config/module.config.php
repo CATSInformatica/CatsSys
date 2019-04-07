@@ -8,16 +8,10 @@
 
 namespace Authentication;
 
-use Zend\Authentication\AuthenticationService;
 use Zend\Router\Http\Segment;
 use Zend\Router\Http\Literal;
 
 return [
-   'service_manager' => [
-       'factories' => [
-            AuthenticationService::class => 'doctrine.authenticationservice.orm_default',
-       ]
-    ],
     'controllers' => [
         'factories' => [
             'Authentication\Controller\Login' => Factory\Controller\LoginControllerFactory::class,

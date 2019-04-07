@@ -25,8 +25,8 @@ class Module
         $application = $e->getApplication();
         $sm = $application->getServiceManager();
         $translator = $sm->get('translator');
-        $translator->addTranslationFile('phpArray', __DIR__ . '/language_php/Captcha.php', 'default', 'pt_BR');
-        $translator->addTranslationFile('phpArray', __DIR__ . '/language_php/Validate.php', 'default', 'pt_BR');
+        $translator->addTranslationFile('phpArray', __DIR__ . '/../language_php/Captcha.php', 'default', 'pt_BR');
+        $translator->addTranslationFile('phpArray', __DIR__ . '/../language_php/Validate.php', 'default', 'pt_BR');
         AbstractValidator::setDefaultTranslator(new Translator($translator));
     }
 

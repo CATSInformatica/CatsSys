@@ -49,7 +49,6 @@ class RegistrationControllerFactory implements FactoryInterface
         $em = $container->get(EntityManager::class);
 
         $controller->setEntityManager($em);
-
         return $controller;
     }
 }

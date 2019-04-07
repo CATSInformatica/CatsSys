@@ -6,7 +6,7 @@
  * and open the template in the editor.
  */
 
-namespace Authorization\Factory\Acl;
+namespace Recruitment\Factory;
 
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;

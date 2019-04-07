@@ -61,16 +61,16 @@ class IndexController extends AbstractEntityActionController
 
             if ($form->isValid()) {
                 $contact->setDate(new DateTime('now'));
+                $position = Contact::POSITIONS_DESCRIPTION[$contact->getPosition()] ?? 'Não definido';
 
-                $bodyHeader =
-                          'Nome: ' . ($contact->getName() ? $contact->getName() : 'Anônimo') . "\n"
-                        . 'Email: ' . ($contact->getEmail() ? $contact->getEmail() : '-') . "\n"
-                        . 'Data: ' . $contact->getDate()->format("d/m/Y") . "\n"
-                        . "\n";
+                $bodyHeader = 'Nome: ' . ($contact->getName() ? $contact->getName() : 'Anônimo') . "<br>"
+                        . 'Email: ' . ($contact->getEmail() ? $contact->getEmail() : '-') . "<br>"
+                        . 'Data: ' . $contact->getDate()->format("d/m/Y") . "<br>"
+                        . "Relação com o CATS: $position <br><br>";
 
                 $this
                     ->emailService
-                    ->setSubject($contact->getSubject() . '[' . $contact->getPosition() . ']')
+                    ->setSubject('Contato de familiacats.com.br: ' . $contact->getSubject())
                     ->setBody($bodyHeader . $contact->getMessage())
                     ->send();
 

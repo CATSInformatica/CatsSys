@@ -157,5 +157,4 @@ Digite ou cole no terminal (fora do container do php):
 mysql -h 127.0.0.1 -u catssys -pcatssys catssys --port=13306
 ```
 
-Importante: o ambiente de desenvolvimento fica disponível enquanto o coman
-do `docker-compose up` estiver executando. Assim, sempre que quiser desenvolver é necessário acessar a pasta do projeto e executar este comand
+Importante: o ambiente de desenvolvimento fica disponível enquanto o comando `docker-compose up` estiver executando. Assim, sempre que quiser desenvolver é necessário acessar a pasta do projeto e executar este comand
