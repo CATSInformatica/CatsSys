@@ -11,6 +11,7 @@ namespace Authorization\Factory\Acl;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
 use Authorization\View\Helper\IsAllowed as IsAllowedViewHelper;
+use Zend\Authentication\AuthenticationService;
 
 /**
  * Description of IsAllowedViewFactory
@@ -22,7 +23,7 @@ class IsAllowedViewFactory implements FactoryInterface
 
     public function createService(ContainerInterface $container)
     {
-        $auth = $container->get('Zend\Authentication\AuthenticationService');
+        $auth = $container->get(AuthenticationService::class);
         $acl = $container->get('acl');
         $helper = new IsAllowedViewHelper($auth, $acl);
         return $helper;

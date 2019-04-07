@@ -11,6 +11,7 @@ namespace Authorization\Factory\Acl;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
 use Authorization\Controller\Plugin\IsAllowed as IsAllowedControllerPlugin;
+use Zend\Authentication\AuthenticationService;
 
 /**
  * Description of IsAllowedControllerFactory
@@ -22,11 +23,9 @@ class IsAllowedControllerFactory implements FactoryInterface
 
     public function createService(ContainerInterface $container)
     {
-        $auth = $container->get('Zend\Authentication\AuthenticationService');
+        $auth = $container->get(AuthenticationService::class);
         $acl = $container->get('acl');
         $plugin = new IsAllowedControllerPlugin($auth, $acl);
         return $plugin;
     }
-
-//put your code here
 }

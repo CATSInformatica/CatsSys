@@ -24,6 +24,7 @@ use Site\Controller\IndexController;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
 use Authentication\Factory\Controller\Helper\CreateEmailSenderService;
+use Doctrine\ORM\EntityManager;
 
 /**
  * Description of IndexControllerFactory
@@ -45,7 +46,7 @@ class IndexControllerFactory implements FactoryInterface
 
         $controller = new IndexController($emailService);
 
-        $em = $container->get('Doctrine\ORM\EntityManager');
+        $em = $container->get(EntityManager::class);
         $controller->setEntityManager($em);
 
         return $controller;
