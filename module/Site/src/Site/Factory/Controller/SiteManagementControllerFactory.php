@@ -21,7 +21,7 @@ namespace Site\Factory\Controller;
 
 use Site\Controller\SiteManagementController;
 use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 use Site\Entity\Contact;
 
 
@@ -33,11 +33,11 @@ use Site\Entity\Contact;
 class SiteManagementControllerFactory implements FactoryInterface
 {
 
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ContainerInterface $container)
     {
-        $sl = $serviceLocator->getServiceLocator();
+        $sl = $container->getServiceLocator();
         $controller = new SiteManagementController();
-        
+
         $em = $sl->get('Doctrine\ORM\EntityManager');
         $controller->setEntityManager($em);
 

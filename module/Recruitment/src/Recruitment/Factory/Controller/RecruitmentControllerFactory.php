@@ -21,7 +21,7 @@ namespace Recruitment\Factory\Controller;
 
 use Recruitment\Controller\RecruitmentController;
 use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
 /**
  * Cria uma instância do controller RecruitmentController e injeta o EntityManager
@@ -31,10 +31,10 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class RecruitmentControllerFactory implements FactoryInterface
 {
 
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ContainerInterface $container)
     {
         $controller = new RecruitmentController();
-        $sl = $serviceLocator->getServiceLocator();
+        $sl = $container->getServiceLocator();
         $em = $sl->get('Doctrine\ORM\EntityManager');
 
         $controller->setEntityManager($em);

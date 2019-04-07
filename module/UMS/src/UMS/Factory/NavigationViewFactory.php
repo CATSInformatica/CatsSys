@@ -9,28 +9,28 @@
 namespace UMS\Factory;
 
 use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 use Zend\Session\Container;
 use Zend\View\Helper\Navigation as NavigationHelper;
 
 class NavigationViewFactory implements FactoryInterface
 {
 
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ContainerInterface $container)
     {
         $session = new Container('User');
         $role = $session->activeRole;
-        $acl = $serviceLocator->getServiceLocator()->get('acl');
-        $navigation = $this->createHelper($serviceLocator);
+        $acl = $container->getServiceLocator()->get('acl');
+        $navigation = $this->createHelper($container);
         $navigation->setAcl($acl)->setRole($role);
 
         return $navigation;
     }
 
-    private function createHelper(ServiceLocatorInterface $serviceLocator)
+    private function createHelper(ContainerInterface $container)
     {
         $helper = new NavigationHelper();
-        $helper->setServiceLocator($serviceLocator);
+        $helper->setServiceLocator($container);
         return $helper;
     }
 

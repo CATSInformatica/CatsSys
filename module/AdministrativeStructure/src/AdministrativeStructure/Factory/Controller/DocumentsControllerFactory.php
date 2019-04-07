@@ -21,7 +21,7 @@ namespace AdministrativeStructure\Factory\Controller;
 
 use AdministrativeStructure\Controller\DocumentsController;
 use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
 /**
  * Cria uma instância de DocumentsController e injeta o EntityManager
@@ -31,12 +31,12 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class DocumentsControllerFactory implements FactoryInterface
 {
 
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {        
-        $sm = $serviceLocator->getServiceLocator();
+    public function createService(ContainerInterface $container)
+    {
+        $sm = $container->getServiceLocator();
         $controller = new DocumentsController();
-        $controller->setEntityManager($sm->get('Doctrine\ORM\EntityManager'));        
+        $controller->setEntityManager($sm->get('Doctrine\ORM\EntityManager'));
         return $controller;
     }
-    
+
 }

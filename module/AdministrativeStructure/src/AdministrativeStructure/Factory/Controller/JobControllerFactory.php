@@ -21,7 +21,7 @@ namespace AdministrativeStructure\Factory\Controller;
 
 use AdministrativeStructure\Controller\JobController;
 use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
 /**
  * Cria uma instância de JobController e injeta o EntityManager
@@ -31,12 +31,12 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class JobControllerFactory implements FactoryInterface
 {
 
-    public function createService(ServiceLocatorInterface $serviceLocator)
-    {        
-        $sm = $serviceLocator->getServiceLocator();
+    public function createService(ContainerInterface $container)
+    {
+        $sm = $container->getServiceLocator();
         $controller = new JobController();
-        $controller->setEntityManager($sm->get('Doctrine\ORM\EntityManager'));        
+        $controller->setEntityManager($sm->get('Doctrine\ORM\EntityManager'));
         return $controller;
     }
-    
+
 }

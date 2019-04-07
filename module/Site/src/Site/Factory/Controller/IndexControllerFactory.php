@@ -22,7 +22,7 @@ namespace Site\Factory\Controller;
 use Authentication\Service\EmailSenderService;
 use Site\Controller\IndexController;
 use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 use Authentication\Factory\Controller\Helper\CreateEmailSenderService;
 
 /**
@@ -34,9 +34,9 @@ class IndexControllerFactory implements FactoryInterface
 {
     use CreateEmailSenderService;
 
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ContainerInterface $container)
     {
-        $sl = $serviceLocator->getServiceLocator();
+        $sl = $container->getServiceLocator();
 
         $emailOptions = $sl->get('config')['email']['contact'];
         $mailgunOptions = $sl->get('config')['mailgun'];

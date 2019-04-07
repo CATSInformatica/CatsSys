@@ -21,7 +21,7 @@ namespace Recruitment\Factory\Controller;
 
 use Recruitment\Controller\PreInterviewController;
 use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
 /**
  * Cria uma instância do controller PreInterviewController e injeta o EntityManager
@@ -31,10 +31,10 @@ use Zend\ServiceManager\ServiceLocatorInterface;
 class PreInterviewControllerFactory implements FactoryInterface
 {
 
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ContainerInterface $container)
     {
         $controller = new PreInterviewController();
-        $sl = $serviceLocator->getServiceLocator();
+        $sl = $container->getServiceLocator();
         $em = $sl->get('Doctrine\ORM\EntityManager');
 
         $controller->setEntityManager($em);

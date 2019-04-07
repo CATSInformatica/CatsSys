@@ -21,7 +21,7 @@ namespace FinancialManagement\Factory\Controller;
 
 use FinancialManagement\Controller\CashFlowController;
 use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 
 /**
  * Cria uma instância do controller CashFlowController e injeta o EntityManager
@@ -30,10 +30,10 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class CashFlowControllerFactory implements FactoryInterface
 {
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ContainerInterface $container)
     {
         $controller = new CashFlowController();
-        $sl = $serviceLocator->getServiceLocator();
+        $sl = $container->getServiceLocator();
         $em = $sl->get('Doctrine\ORM\EntityManager');
 
         $controller->setEntityManager($em);

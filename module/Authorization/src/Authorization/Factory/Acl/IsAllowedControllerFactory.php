@@ -9,7 +9,7 @@
 namespace Authorization\Factory\Acl;
 
 use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 use Authorization\Controller\Plugin\IsAllowed as IsAllowedControllerPlugin;
 
 /**
@@ -20,10 +20,10 @@ use Authorization\Controller\Plugin\IsAllowed as IsAllowedControllerPlugin;
 class IsAllowedControllerFactory implements FactoryInterface
 {
 
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ContainerInterface $container)
     {
-        $auth = $serviceLocator->get('Zend\Authentication\AuthenticationService');
-        $acl = $serviceLocator->get('acl');
+        $auth = $container->get('Zend\Authentication\AuthenticationService');
+        $acl = $container->get('acl');
         $plugin = new IsAllowedControllerPlugin($auth, $acl);
         return $plugin;
     }

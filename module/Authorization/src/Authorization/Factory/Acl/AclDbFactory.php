@@ -9,20 +9,20 @@
 namespace Authorization\Factory\Acl;
 
 use Zend\ServiceManager\FactoryInterface;
-use Zend\ServiceManager\ServiceLocatorInterface;
+use Interop\Container\ContainerInterface;
 use Authorization\Acl\AclDb;
 
 /**
  * Description of AclDbFactory
  *
- * @author marcio
+ * @author Márcio Dias <marciojr91@gmail.com>
  */
 class AclDbFactory implements FactoryInterface
 {
 
-    public function createService(ServiceLocatorInterface $serviceLocator)
+    public function createService(ContainerInterface $container)
     {
-        return new AclDb($serviceLocator->get('Doctrine\ORM\EntityManager'));
+        return new AclDb($container->get('Doctrine\ORM\EntityManager'));
     }
 
 }
