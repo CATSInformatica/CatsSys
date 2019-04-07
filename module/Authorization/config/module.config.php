@@ -8,198 +8,196 @@
 
 namespace Authorization;
 
-return array(
-    'controllers' => array(
-        'invokables' => array(
-            'Authorization\Controller\Index' => 'Authorization\Controller\IndexController',
-        ),
-        'factories' => array(
+return [
+    'controllers' => [
+        'factories' => [
             'Authorization\Controller\Privilege' => Factory\Controller\PrivilegeControllerFactory::class,
             'Authorization\Controller\Role' => Factory\Controller\RoleControllerFactory::class,
             'Authorization\Controller\Resource' => Factory\Controller\ResourceControllerFactory::class,
-        ),
-    ),
-    'router' => array(
-        'routes' => array(
-            'authorization' => array(
+            'Authorization\Controller\Index' =>Factory\Controller\IndexControllerFactory::class,
+        ],
+    ],
+    'router' => [
+        'routes' => [
+            'authorization' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/authorization',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller' => 'Authorization\Controller\Index',
                         'action' => 'index',
-                    ),
-                ),
+                    ],
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'default' => array(
+                'child_routes' => [
+                    'default' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/index[/:action]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'Authorization\Controller\Index',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Authorization\Controller\Index',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                    'role' => array(
+                            ],
+                        ],
+                    ],
+                    'role' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/role[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'Authorization\Controller\Role',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Authorization\Controller\Role',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                    'resource' => array(
+                            ],
+                        ],
+                    ],
+                    'resource' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/resource[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'Authorization\Controller\Resource',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Authorization\Controller\Resource',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                    'privilege' => array(
+                            ],
+                        ],
+                    ],
+                    'privilege' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/privilege[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'Authorization\Controller\Privilege',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Authorization\Controller\Privilege',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'doctrine' => array(
-        'driver' => array(
-            'authorization_driver' => array(
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'doctrine' => [
+        'driver' => [
+            'authorization_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(
+                'paths' => [
                     __DIR__ . '/../src/Authorization/Entity',
-                ),
-            ),
-            'orm_default' => array(
-                'drivers' => array(
+                ],
+            ],
+            'orm_default' => [
+                'drivers' => [
                     'Authorization\Entity' => 'authorization_driver',
-                ),
-            ),
-        ),
-    ),
-    'view_manager' => array(
-        'template_path_stack' => array(
+                ],
+            ],
+        ],
+    ],
+    'view_manager' => [
+        'template_path_stack' => [
             __DIR__ . '/../view',
-        ),
-        'template_map' => array(
+        ],
+        'template_map' => [
             'empty/layout' => __DIR__ . '/../view/layout/empty-layout.phtml',
-        ),
-    ),
-    'service_manager' => array(
-        'factories' => array(
+        ],
+    ],
+    'service_manager' => [
+        'factories' => [
             'acl' => 'Authorization\Factory\Acl\AclDbFactory'
-        ),
-    ),
-    'view_helpers' => array(
-        'factories' => array(
+        ],
+    ],
+    'view_helpers' => [
+        'factories' => [
             'isAllowed' => 'Authorization\Factory\Acl\IsAllowedViewFactory',
-        ),
-    ),
-    'controller_plugins' => array(
-        'factories' => array(
+        ],
+    ],
+    'controller_plugins' => [
+        'factories' => [
             'isAllowed' => 'Authorization\Factory\Acl\IsAllowedControllerFactory',
-        ),
-    ),
-    'navigation' => array(
-        'default' => array(
-            array(
+        ],
+    ],
+    'navigation' => [
+        'default' => [
+            [
                 'label' => 'Role',
                 'uri' => '#',
                 'icon' => 'fa fa-file-o',
                 'order' => 3,
                 'resource' => 'Authorization\Controller\Role',
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show roles',
                         'route' => 'authorization/role',
                         'action' => 'index',
                         'icon' => 'fa fa-files-o',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/authorization/role/delete/$id',
                                 'title' => 'Remover',
                                 'description' => 'Remove um papel selecionado',
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
-                            ),
-//                            array(
+                            ],
+//                            [
 //                                'url' => '/authorization/role/edit/$id',
 //                                'title' => 'Editar',
 //                                'description' => 'Editar um papel selecionado',
 //                                'class' => 'fa fa-edit bg-blue',
 //                                'fntype' => 'selectedHttpClick',
 //                                'target' => '_blank',
-//                            ),
-                        ),
-                    ),
-                    array(
+//                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Create a role',
                         'route' => 'authorization/role',
                         'action' => 'create',
                         'icon' => 'fa fa-file-o'
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Add role to a user',
                         'route' => 'authorization/role',
                         'action' => 'add-role-to-user',
                         'icon' => 'fa fa-file-o'
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Remove user roles',
                         'route' => 'authorization/role',
                         'action' => 'remove-user-role',
                         'icon' => 'fa fa-close'
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Users x roles',
                         'route' => 'authorization/role',
                         'action' => 'users-x-roles',
                         'icon' => 'fa fa-users',
-                    ),
-                )
-            ),
-            array(
+                    ],
+                ]
+            ],
+            [
                 'label' => 'Resource',
                 'uri' => '#',
                 'icon' => 'fa fa-retweet',
                 'order' => 4,
                 'resource' => 'Authorization\Controller\Resource',
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show resources',
                         'route' => 'authorization/resource',
                         'action' => 'index',
@@ -213,23 +211,23 @@ return array(
                                 'fntype' => 'selectedAjaxClick',
                             ],
                         ],
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Create a resource',
                         'route' => 'authorization/resource',
                         'action' => 'create',
                         'icon' => 'fa fa-retweet'
-                    ),
-                )
-            ),
-            array(
+                    ],
+                ]
+            ],
+            [
                 'label' => 'Privilege',
                 'uri' => '#',
                 'icon' => 'fa fa-bullseye',
                 'order' => 5,
                 'resource' => 'Authorization\Controller\Privilege',
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show privileges',
                         'route' => 'authorization/privilege',
                         'action' => 'index',
@@ -243,15 +241,15 @@ return array(
                                 'fntype' => 'selectedAjaxClick',
                             ],
                         ],
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Create a privilege',
                         'route' => 'authorization/privilege',
                         'action' => 'create',
                         'icon' => 'fa fa-bullseye'
-                    ),
-                )
-            ),
-        ),
-    ),
-);
+                    ],
+                ]
+            ],
+        ],
+    ],
+];

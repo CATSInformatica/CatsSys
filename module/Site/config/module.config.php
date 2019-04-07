@@ -2,114 +2,114 @@
 
 namespace Site;
 
-return array(
-    'controllers' => array(
-        'factories' => array(
+return [
+    'controllers' => [
+        'factories' => [
             'Site\Controller\Index' => Factory\Controller\IndexControllerFactory::class,
             'Site\Controller\SiteManagement' => Factory\Controller\SiteManagementControllerFactory::class,
-        ),
-    ),
+        ],
+    ],
 
-    'router' => array(
-        'routes' => array(
-            'home' => array(
+    'router' => [
+        'routes' => [
+            'home' => [
                 'type' => 'Zend\Mvc\Router\Http\Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/',
-                    'defaults' => array(
+                    'defaults' => [
                         'controller' => 'Site\Controller\Index',
                         'action' => 'index',
-                    ),
-                ),
-            ),
+                    ],
+                ],
+            ],
             // The following is a route to simplify getting started creating
             // new controllers and actions without needing to create a new
             // module. Simply drop new controllers in, and you can access them
             // using the path /site/:controller/:action
-            'site' => array(
+            'site' => [
                 'type' => 'Segment',
-                'options' => array(
+                'options' => [
                     'route' => '/site',
-                ),
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'site-management' => array(
+                'child_routes' => [
+                    'site-management' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/site-management[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Site\Controller\SiteManagement',
                                 'action' => 'contact'
-                            ),
-                        ),
-                    ),
+                            ],
+                        ],
+                    ],
 
-                ),
-            ),
-        ),
-    ),
-    'view_manager' => array(
-        'strategies' => array(
+                ],
+            ],
+        ],
+    ],
+    'view_manager' => [
+        'strategies' => [
             'ViewJsonStrategy'
-        ),
-        'template_path_stack' => array(
+        ],
+        'template_path_stack' => [
             __DIR__ . '/../view',
-        ),
-        'template_map' => array(
+        ],
+        'template_map' => [
             'layout/layout' => __DIR__ . '/../view/layout/layout.phtml',
-        ),
+        ],
         'display_exceptions' => true,
-    ),
-    'view_helpers' => array(
-        'invokables' => array(
+    ],
+    'view_helpers' => [
+        'invokables' => [
             'CaptchaImageViewHelper' => 'Recruitment\View\Helper\CaptchaImage',
-        ),
-    ),
+        ],
+    ],
     // Doctrine configuration
-    'doctrine' => array(
-        'driver' => array(
-            'site_driver' => array(
+    'doctrine' => [
+        'driver' => [
+            'site_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(
+                'paths' => [
                     __DIR__ . '/../src/Site/Entity',
-                ),
-            ),
-            'orm_default' => array(
-                'drivers' => array(
+                ],
+            ],
+            'orm_default' => [
+                'drivers' => [
                     'Site\Entity' => 'site_driver',
-                ),
-            ),
-        ),
-    ),
+                ],
+            ],
+        ],
+    ],
     // Placeholder for console routes
-    'console' => array(
-        'router' => array(
-            'routes' => array(
-            ),
-        ),
-    ),
-    'navigation' => array(
-        'default' => array(
-            array(
+    'console' => [
+        'router' => [
+            'routes' => [
+            ],
+        ],
+    ],
+    'navigation' => [
+        'default' => [
+            [
                 'label' => 'Site Management',
                 'uri' => '#',
                 'icon' => 'fa fa-gears',
                 'resource' => 'Site\Controller\SiteManagement',
                 'order' => 20,
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Contact',
                         'route' => 'site/site-management',
                         'action' => 'contact',
                         'icon' => 'fa fa-commenting'
-                    ),
-                ),
-            ),
-        ),
-    ),
-);
+                    ],
+                ],
+            ],
+        ],
+    ],
+];

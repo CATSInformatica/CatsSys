@@ -8,99 +8,105 @@
 
 namespace Authentication;
 
-return array(
-//    'service_manager' => [],
-    'controllers' => array(
-        'factories' => array(
+use Zend\Authentication\AuthenticationService;
+
+return [
+   'service_manager' => [
+       'factories' => [
+            AuthenticationService::class => 'doctrine.authenticationservice.orm_default',
+       ]
+    ],
+    'controllers' => [
+        'factories' => [
             'Authentication\Controller\Login' => Factory\Controller\LoginControllerFactory::class,
             'Authentication\Controller\User' => Factory\Controller\UserControllerFactory::class,
-        ),
-    ),
-    'router' => array(
-        'routes' => array(
-            'authentication' => array(
+        ],
+    ],
+    'router' => [
+        'routes' => [
+            'authentication' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/authentication',
-                    'defaults' => array(
+                    'defaults' => [
                         '__NAMESPACE__' => 'Authentication\Controller',
                         'controller' => 'Login',
                         'action' => 'login',
-                    ),
-                ),
+                    ],
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'login' => array(
+                'child_routes' => [
+                    'login' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/login[/:action]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Authentication\Controller\Login',
                                 'action' => 'login',
-                            ),
-                        ),
-                    ),
-                    'user' => array(
+                            ],
+                        ],
+                    ],
+                    'user' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/user[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'Authentication\Controller\User',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Authentication\Controller\User',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'view_manager' => array(
-        'template_map' => array(
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'view_manager' => [
+        'template_map' => [
             'login/layout' => __DIR__ . '/../view/layout/login-layout.phtml',
-        ),
-        'template_path_stack' => array(
+        ],
+        'template_path_stack' => [
             __DIR__ . '/../view/',
-        ),
+        ],
         'display_exceptions' => true,
-    ),
+    ],
     // Doctrine configuration
-    'doctrine' => array(
-        'authentication' => array(
-            'orm_default' => array(
+    'doctrine' => [
+        'authentication' => [
+            'orm_default' => [
                 'object_manager' => 'Doctrine\ORM\EntityManager',
                 'identity_class' => 'Authentication\Entity\User',
                 'identity_property' => 'userName',
                 'credential_property' => 'userPassword',
                 'credential_callable' => 'Authentication\Service\UserService::verifyHashedPassword',
-            ),
-        ),
-        'driver' => array(
-            'authentication_driver' => array(
+            ],
+        ],
+        'driver' => [
+            'authentication_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(
+                'paths' => [
                     __DIR__ . '/../src/Authentication/Entity',
-                ),
-            ),
-            'orm_default' => array(
-                'drivers' => array(
+                ],
+            ],
+            'orm_default' => [
+                'drivers' => [
                     'Authentication\Entity' => 'authentication_driver',
-                ),
-            ),
-        ),
-    ),
-    'session' => array(
-        'config' => array(
+                ],
+            ],
+        ],
+    ],
+    'session' => [
+        'config' => [
             'class' => 'Zend\Session\Config\SessionConfig',
-            'options' => array(
+            'options' => [
                 'name' => 'User',
                 'use_cookies' => true,
                 'cookie_lifetime' => 7200, // session alive for 2 hours
@@ -108,64 +114,64 @@ return array(
                 'cookie_secure' => false,
                 'remember_me_seconds' => 3600, // remember me for 1 hour
                 'gc_maxlifetime' => 7200, // session alive for 2 hours
-            )
-        ),
+            ],
+        ],
         'storage' => 'Zend\Session\Storage\SessionArrayStorage',
-        'validators' => array(
-            array(
+        'validators' => [
+            [
                 'Zend\Session\Validator\RemoteAddr',
                 'Zend\Session\Validator\HttpUserAgent',
-            )
-        )
-    ),
-    'navigation' => array(
-        'default' => array(
-            array(
+            ],
+        ],
+    ],
+    'navigation' => [
+        'default' => [
+            [
                 'label' => 'User',
                 'uri' => '#',
                 'icon' => 'fa fa-user',
                 'order' => 2,
                 'resource' => 'Authorization\Controller\Privilege',
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show users',
                         'route' => 'authentication/user',
                         'action' => 'index',
                         'icon' => 'fa fa-users',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/authentication/user/delete/$id',
                                 'title' => 'Remover',
                                 'description' => 'Remove um usuário selecionado',
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/authentication/user/edit/$id',
                                 'title' => 'Editar',
                                 'description' => 'Editar o usuário selecionado',
                                 'class' => 'fa fa-edit bg-blue',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '_blank',
-                            ),
-                        ),
-                        'pages' => array(
-                            array(
+                            ],
+                        ],
+                        'pages' => [
+                            [
                                 'label' => 'Edit user',
                                 'route' => 'authentication/user',
                                 'action' => 'edit',
                                 'icon' => 'fa fa-user',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Create a user',
                         'route' => 'authentication/user',
                         'action' => 'create',
                         'icon' => 'fa fa-user-plus'
-                    ),
-                )
-            ),
-        ),
-    ),
-);
+                    ],
+                ],
+            ],
+        ],
+    ],
+];

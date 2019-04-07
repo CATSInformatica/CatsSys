@@ -2,133 +2,131 @@
 
 namespace SchoolManagement;
 
-return array(
-    'controllers' => array(
-        'factories' => array(
-            'SchoolManagement\Controller\SchoolAttendance' =>
-            Factory\Controller\SchoolAttendanceControllerFactory::class,
+return [
+    'controllers' => [
+        'factories' => [
+            'SchoolManagement\Controller\SchoolAttendance' => Factory\Controller\SchoolAttendanceControllerFactory::class,
             'SchoolManagement\Controller\Enrollment' => Factory\Controller\EnrollmentControllerFactory::class,
             'SchoolManagement\Controller\StudentClass' => Factory\Controller\StudentClassControllerFactory::class,
             'SchoolManagement\Controller\SchoolWarning' => Factory\Controller\SchoolWarningControllerFactory::class,
             'SchoolManagement\Controller\StudyResources' => Factory\Controller\StudyResourcesControllerFactory::class,
             'SchoolManagement\Controller\SchoolSubject' => Factory\Controller\SchoolSubjectControllerFactory::class,
             'SchoolManagement\Controller\SchoolExam' => Factory\Controller\SchoolExamControllerFactory::class,
-            'SchoolManagement\Controller\SchoolExamResult' =>
-            Factory\Controller\SchoolExamResultControllerFactory::class,
-        ),
-    ),
-    'router' => array(
-        'routes' => array(
-            'school-management' => array(
+            'SchoolManagement\Controller\SchoolExamResult' => Factory\Controller\SchoolExamResultControllerFactory::class,
+        ],
+    ],
+    'router' => [
+        'routes' => [
+            'school-management' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/school-management',
-                ),
+                ],
                 'may_terminate' => false,
-                'child_routes' => array(
-                    'enrollment' => array(
+                'child_routes' => [
+                    'enrollment' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/enrollment[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'SchoolManagement\Controller\Enrollment',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'SchoolManagement\Controller\Enrollment',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                    'student-class' => array(
+                            ],
+                        ],
+                    ],
+                    'student-class' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/student-class[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'SchoolManagement\Controller\StudentClass',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'SchoolManagement\Controller\StudentClass',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                    'school-warning' => array(
+                            ],
+                        ],
+                    ],
+                    'school-warning' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/school-warning[/:action[/:sid[/:swid]]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'SchoolManagement\Controller\SchoolWarning',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'sid' => '[0-9]+',
                                 'swid' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'SchoolManagement\Controller\SchoolWarning',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                    'school-attendance' => array(
+                            ],
+                        ],
+                    ],
+                    'school-attendance' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/school-attendance/:action[/:id]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'SchoolManagement\Controller\SchoolAttendance',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'SchoolManagement\Controller\SchoolAttendance',
-                            ),
-                        ),
-                    ),
-                    'study-resources' => array(
+                            ],
+                        ],
+                    ],
+                    'study-resources' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/study-resources[/:action]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'SchoolManagement\Controller\StudyResources',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'SchoolManagement\Controller\StudyResources',
-                            ),
-                        ),
-                    ),
-                    'school-subject' => array(
+                            ],
+                        ],
+                    ],
+                    'school-subject' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/school-subject[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'SchoolManagement\Controller\SchoolSubject',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'SchoolManagement\Controller\SchoolSubject',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                    'school-exam' => array(
+                            ],
+                        ],
+                    ],
+                    'school-exam' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/school-exam[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'SchoolManagement\Controller\SchoolExam',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'SchoolManagement\Controller\SchoolExam',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
+                            ],
+                        ],
+                    ],
                     'school-exam-result' => [
                         'type' => 'Segment',
                         'options' => [
@@ -142,78 +140,78 @@ return array(
                             ],
                         ],
                     ],
-                ),
-            ),
-        ),
-    ),
-    'view_manager' => array(
-        'strategies' => array(
+                ],
+            ],
+        ],
+    ],
+    'view_manager' => [
+        'strategies' => [
             'ViewJsonStrategy',
-        ),
-        'template_path_stack' => array(
+        ],
+        'template_path_stack' => [
             __DIR__ . '/../view/',
-        ),
-        'template_map' => array(
+        ],
+        'template_map' => [
             'download-csv/template' => __DIR__ . '/../view/templates/download-csv.phtml',
-        ),
+        ],
         'display_exceptions' => true,
-    ),
+    ],
     // Doctrine configuration
-    'doctrine' => array(
-        'driver' => array(
-            'school-management_driver' => array(
+    'doctrine' => [
+        'driver' => [
+            'school-management_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(
+                'paths' => [
                     __DIR__ . '/../src/SchoolManagement/Entity',
-                ),
-            ),
-            'orm_default' => array(
-                'drivers' => array(
+                ],
+            ],
+            'orm_default' => [
+                'drivers' => [
                     'SchoolManagement\Entity' => 'school-management_driver',
-                ),
-            ),
-        ),
-    ),
-    'navigation' => array(
-        'default' => array(
-            array(
+                ],
+            ],
+        ],
+    ],
+    'navigation' => [
+        'default' => [
+            [
                 'label' => 'Class',
                 'uri' => '#',
                 'icon' => 'fa fa-graduation-cap',
                 'order' => 9,
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show classes',
                         'route' => 'school-management/student-class',
                         'action' => 'index',
                         'resource' => 'SchoolManagement\Controller\StudentClass',
                         'privilege' => 'index',
                         'icon' => 'fa fa-graduation-cap',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/student-class/show-students-by-class/$id',
                                 'title' => 'Ver alunos',
                                 'description' => 'Exibe informações de alunos matriculados na turma escolhida',
                                 'class' => 'fa fa-users bg-green',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '_blank',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/school-management/school-attendance/printList/$id',
                                 'title' => 'Imprimir chamada',
                                 'description' => 'Permite imprimir a lista de chamada da turma selecionada',
                                 'class' => 'fa fa-file-text-o bg-white',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '_blank',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/school-management/student-class/delete/$id',
                                 'title' => 'Remover',
                                 'description' => 'Permite remover uma turma que ainda não possua alunos',
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
-                            ),
+                            ],
                             [
                                 'url' => '/school-management/student-class/student-board/$id',
                                 'title' => 'Quadro de alunos',
@@ -221,96 +219,96 @@ return array(
                                 'class' => 'fa fa-odnoklassniki-square bg-blue',
                                 'fntype' => 'selectedHttpClick',
                             ],
-                        ),
-                        'pages' => array(
-                            array(
+                        ],
+                        'pages' => [
+                            [
                                 'label' => 'Print list',
                                 'route' => 'school-management/school-attendance',
                                 'action' => 'printList',
                                 'icon' => 'fa fa-file-text-o',
-                            ),
-                            array(
+                            ],
+                            [
                                 'label' => 'Students',
                                 'route' => 'school-management/student-class',
                                 'action' => 'show-students-by-class',
                                 'icon' => 'fa fa-users',
-                            ),
+                            ],
                             [
                                 'label' => 'Student board',
                                 'route' => 'school-management/student-class',
                                 'action' => 'student-board',
                                 'icon' => 'fa fa-odnoklassniki-square',
                             ],
-                        ),
-                    ),
-                    array(
+                        ],
+                    ],
+                    [
                         'label' => 'Create a class',
                         'route' => 'school-management/student-class',
                         'action' => 'create',
                         'resource' => 'SchoolManagement\Controller\StudentClass',
                         'privilege' => 'create',
                         'icon' => 'fa fa-graduation-cap'
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Enroll',
                         'route' => 'school-management/enrollment',
                         'action' => 'index',
                         'resource' => 'SchoolManagement\Controller\Enrollment',
                         'privilege' => 'index',
                         'icon' => 'fa fa-users',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/enrollment/enroll/$id',
                                 'id' => 'fn-enroll',
                                 'title' => 'Matricular',
                                 'description' => 'Matricula o candidato em uma turma.',
                                 'class' => 'fa fa-check bg-green',
                                 'fntype' => 'ajaxPostSelectedClick',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Manage enrollments',
                         'route' => 'school-management/enrollment',
                         'action' => 'manage',
                         'resource' => 'SchoolManagement\Controller\Enrollment',
                         'privilege' => 'manage',
                         'icon' => 'fa fa-ticket',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/enrollment/unenroll/$id',
                                 'id' => 'fn-unenroll',
                                 'title' => 'Desmatricular',
                                 'description' => 'Remove a matrícula do candidato na turma selecionada.',
                                 'class' => 'fa fa-trash bg-red',
                                 'fntype' => 'ajaxPostSelectedClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/school-management/enrollment/close-enroll/$id',
                                 'id' => 'fn-close-enroll',
                                 'title' => 'Encerrar Matrícula',
                                 'description' => 'Faz o encerramento da matrícula de alunos.',
                                 'class' => 'fa fa-close bg-blue',
                                 'fntype' => 'ajaxPostSelectedClick',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-            array(
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            [
                 'label' => 'Warning',
                 'uri' => '#',
                 'icon' => 'fa fa-exclamation-triangle',
                 'order' => 10,
                 'resource' => 'SchoolManagement\Controller\SchoolWarning',
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show warnings',
                         'route' => 'school-management/school-warning',
                         'action' => 'index',
                         'icon' => 'fa fa-exclamation-triangle',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/school-warning/delete/$id',
                                 'title' => 'Remover',
                                 'id' => 'warning-delete',
@@ -318,22 +316,22 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                                 'hideOnSuccess' => true,
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Create a warning',
                         'route' => 'school-management/school-warning',
                         'action' => 'create',
                         'icon' => 'fa fa-exclamation-triangle'
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Given warnings',
                         'route' => 'school-management/school-warning',
                         'action' => 'given',
                         'icon' => 'fa fa-exclamation-triangle',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/school-warning/delete-given/$id',
                                 'title' => 'Remover',
                                 'id' => 'given-warning-delete',
@@ -341,124 +339,124 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                                 'hideOnSuccess' => true,
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Give a warning',
                         'route' => 'school-management/school-warning',
                         'action' => 'give',
                         'icon' => 'fa fa-exclamation-triangle'
-                    ),
-                ),
-            ),
-            array(
+                    ],
+                ],
+            ],
+            [
                 'label' => 'Attendance',
                 'uri' => '#',
                 'icon' => 'fa fa-check',
                 'order' => 11,
                 'resource' => 'SchoolManagement\Controller\SchoolAttendance',
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Upload lists',
                         'route' => 'school-management/school-attendance',
                         'action' => 'importList',
                         'icon' => 'fa fa-upload',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/school-attendance/save',
                                 'title' => 'Enviar Lista',
                                 'id' => 'attendance-list-save',
                                 'description' => 'Salva ou atualiza a lista selecionada',
                                 'class' => 'fa fa-upload bg-green',
                                 'fntype' => 'ajaxPostClick',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Generate lists',
                         'route' => 'school-management/school-attendance',
                         'action' => 'generateList',
                         'icon' => 'fa fa-download',
-                        'pages' => array(
-                            array(
+                        'pages' => [
+                            [
                                 'label' => 'Download list',
                                 'route' => 'school-management/school-attendance',
                                 'action' => 'downloadList',
                                 'icon' => 'fa fa-download',
-                            ),
-                        ),
-                    ),
+                            ],
+                        ],
+                    ],
                     [
                         'label' => 'Generate lists v2',
                         'route' => 'school-management/school-attendance',
                         'action' => 'generateListV2',
                         'icon' => 'fa fa-list-alt',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/school-attendance/save',
                                 'title' => 'Enviar Lista',
                                 'id' => 'attendance-listv2-save',
                                 'description' => 'Salva ou atualiza a lista selecionada',
                                 'class' => 'fa fa-upload bg-green',
                                 'fntype' => 'ajaxPostClick',
-                            ),
-                        ),
+                            ],
+                        ],
                     ],
-                    array(
+                    [
                         'label' => 'Add allowance',
                         'route' => 'school-management/school-attendance',
                         'action' => 'addAllowance',
                         'icon' => 'fa fa-thumbs-o-up',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/school-attendance/saveAllowance',
                                 'title' => 'Salvar Abono',
                                 'id' => 'allowance-save',
                                 'description' => 'Salva os abonos escolhidos',
                                 'class' => 'fa fa-hdd-o bg-green',
                                 'fntype' => 'ajaxPostClick',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Edit allowance',
                         'route' => 'school-management/school-attendance',
                         'action' => 'allowance',
                         'icon' => 'fa fa-thumbs-o-up',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/school-attendance/deleteAllowance/$id',
                                 'title' => 'Remover Abono',
                                 'id' => 'allowance-delete',
                                 'description' => 'Remove os abonos selecionados',
                                 'class' => 'fa fa-close bg-red',
                                 'fntype' => 'selectedAjaxClick',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Analyze',
                         'route' => 'school-management/school-attendance',
                         'action' => 'analyze',
                         'icon' => 'fa fa-calculator',
-                    ),
-                ),
-            ),
-            array(
+                    ],
+                ],
+            ],
+            [
                 'label' => 'Subject',
                 'uri' => '#',
                 'icon' => 'fa fa-book',
                 'order' => 13,
                 'resource' => 'SchoolManagement\Controller\SchoolSubject',
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show Subjects',
                         'route' => 'school-management/school-subject',
                         'action' => 'index',
                         'icon' => 'fa fa-list-alt',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/school-subject/delete/$id',
                                 'title' => 'Remover',
                                 'id' => 'subject-delete',
@@ -466,47 +464,47 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                                 'hideOnSuccess' => true,
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/school-management/school-subject/edit/$id',
                                 'title' => 'Editar',
                                 'id' => 'subject-edit',
                                 'description' => 'Permite editar a disciplina selecionada',
                                 'class' => 'fa fa-pencil-square-o bg-blue',
                                 'fntype' => 'selectedHttpClick',
-                            ),
-                        ),
-                        'pages' => array(
-                            array(
+                            ],
+                        ],
+                        'pages' => [
+                            [
                                 'label' => 'Edit Subject',
                                 'route' => 'school-management/school-subject',
                                 'action' => 'edit',
                                 'icon' => 'fa fa-list-alt',
-                            ),
-                            array(
+                            ],
+                            [
                                 'label' => 'Create Subject',
                                 'route' => 'school-management/school-subject',
                                 'action' => 'create',
                                 'icon' => 'fa fa-list-alt',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-            array(
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+            [
                 'label' => 'Exam',
                 'uri' => '#',
                 'icon' => 'fa fa-book',
                 'order' => 15,
                 'resource' => 'SchoolManagement\Controller\SchoolExam',
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show Exam Contents',
                         'route' => 'school-management/school-exam',
                         'action' => 'contents',
                         'icon' => 'fa fa-files-o',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/school-exam/edit-content/$id',
                                 'privilege' => 'edit-content',
                                 'title' => 'Editar Configuração',
@@ -515,8 +513,8 @@ return array(
                                 'class' => 'fa fa-pencil-square-o bg-blue',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '__blank',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/school-management/school-exam/prepare-content/$id',
                                 'privilege' => 'prepare-content',
                                 'title' => 'Montar',
@@ -525,8 +523,8 @@ return array(
                                 'class' => 'fa fa-check-circle bg-green',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '__blank',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/school-management/school-exam/delete-content/$id',
                                 'privilege' => 'delete-content',
                                 'title' => 'Remover',
@@ -535,22 +533,22 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                                 'hideOnSuccess' => true,
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Create Exam Content',
                         'route' => 'school-management/school-exam',
                         'action' => 'create-content',
                         'icon' => 'fa fa-file-word-o',
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Show Exams',
                         'route' => 'school-management/school-exam',
                         'action' => 'exams',
                         'icon' => 'fa fa-files-o',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/school-exam/edit-exam/$id',
                                 'privilege' => 'edit-exam',
                                 'title' => 'Editar',
@@ -559,8 +557,8 @@ return array(
                                 'class' => 'fa fa-check-circle bg-green',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '__blank',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/school-management/school-exam/delete-exam/$id',
                                 'privilege' => 'delete-exam',
                                 'title' => 'Remover',
@@ -569,22 +567,22 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                                 'hideOnSuccess' => true,
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Create Exam',
                         'route' => 'school-management/school-exam',
                         'action' => 'create-exam',
                         'icon' => 'fa fa-file-text-o',
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Show Exam Applications',
                         'route' => 'school-management/school-exam',
                         'action' => 'applications',
                         'icon' => 'fa fa-book',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/school-exam/edit-application/$id',
                                 'privilege' => 'edit-application',
                                 'title' => 'Editar',
@@ -593,8 +591,8 @@ return array(
                                 'class' => 'fa fa-check-circle bg-green',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '__blank',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/school-management/school-exam/prepare-application/$id',
                                 'privilege' => 'prepare-application',
                                 'title' => 'Imprimir',
@@ -603,8 +601,8 @@ return array(
                                 'class' => 'fa fa-check-circle bg-green',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '__blank',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/school-management/school-exam/delete-application/$id',
                                 'privilege' => 'delete-application',
                                 'title' => 'Remover',
@@ -613,17 +611,17 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                                 'hideOnSuccess' => true,
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Create Exam Application',
                         'route' => 'school-management/school-exam',
                         'action' => 'create-application',
                         'icon' => 'fa fa-book',
-                    ),
-                ),
-            ),
+                    ],
+                ],
+            ],
             [
                 'label' => 'Exam Result',
                 'uri' => '#',
@@ -703,29 +701,29 @@ return array(
                     ],
                 ],
             ],
-            array(
+            [
                 'label' => 'Question Bank',
                 'uri' => '#',
                 'icon' => 'fa fa-database',
                 'order' => 14,
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show Questions',
                         'route' => 'school-management/school-exam',
                         'action' => 'question',
                         'resource' => 'SchoolManagement\Controller\SchoolExam',
                         'privilege' => 'question',
                         'icon' => 'fa fa-question-circle',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/school-management/school-exam/edit-question/$id',
                                 'title' => 'Editar',
                                 'id' => 'question-edit',
                                 'description' => 'Permite editar a questão selecionada',
                                 'class' => 'fa fa-pencil-square-o bg-blue',
                                 'fntype' => 'selectedHttpClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/school-management/school-exam/delete-question/$id',
                                 'title' => 'Remover',
                                 'id' => 'question-delete',
@@ -733,33 +731,33 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                                 'hideOnSuccess' => true,
-                            ),
-                        ),
-                        'pages' => array(
-                            array(
+                            ],
+                        ],
+                        'pages' => [
+                            [
                                 'label' => 'Get Questions',
                                 'route' => 'school-management/school-exam',
                                 'action' => 'get-subject-questions',
                                 'icon' => 'fa fa-list-alt',
-                            ),
-                            array(
+                            ],
+                            [
                                 'label' => 'Edit Question',
                                 'route' => 'school-management/school-exam',
                                 'action' => 'edit-question',
                                 'icon' => 'fa fa-list-alt',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Add Question',
                         'route' => 'school-management/school-exam',
                         'action' => 'add-question',
                         'resource' => 'SchoolManagement\Controller\SchoolExam',
                         'privilege' => 'add-question',
                         'icon' => 'fa fa-question-circle',
-                    ),
-                ),
-            ),
-        ),
-    ),
-);
+                    ],
+                ],
+            ],
+        ],
+    ],
+];

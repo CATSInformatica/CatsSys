@@ -7,145 +7,143 @@
 
 namespace Recruitment;
 
-return array(
-    'controllers' => array(
-        'invokables' => array(
-            'Recruitment\Controller\Captcha' => Controller\CaptchaController::class,
-            'Recruitment\Controller\CsvViewer' => Controller\CsvViewerController::class,
-        ),
-        'factories' => array(
+return [
+    'controllers' => [
+        'factories' => [
+            'Recruitment\Controller\Captcha' => Factory\Controller\CaptchaControllerFactory::class,
+            'Recruitment\Controller\CsvViewer' => Factory\Controller\Controller\CsvViewerControllerFactory::class,
             'Recruitment\Controller\Recruitment' => Factory\Controller\RecruitmentControllerFactory::class,
             'Recruitment\Controller\Registration' => Factory\Controller\RegistrationControllerFactory::class,
             'Recruitment\Controller\PreInterview' => Factory\Controller\PreInterviewControllerFactory::class,
             'Recruitment\Controller\Interview' => Factory\Controller\InterviewControllerFactory::class,
             'Recruitment\Controller\Address' => Factory\Controller\AddressControllerFactory::class,
-        ),
-    ),
-    'router' => array(
-        'routes' => array(
-            'recruitment' => array(
+        ],
+    ],
+    'router' => [
+        'routes' => [
+            'recruitment' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/recruitment',
-                    'defaults' => array(
+                    'defaults' => [
                         '__NAMESPACE__' => 'Recruitment\Controller',
                         'controller' => 'Recruitment',
                         'action' => 'index',
-                    ),
-                ),
+                    ],
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'recruitment' => array(
+                'child_routes' => [
+                    'recruitment' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/recruitment[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'controller' => 'Recruitment\Controller\Recruitment',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Recruitment\Controller\Recruitment',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                    'registration' => array(
+                            ],
+                        ],
+                    ],
+                    'registration' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/registration[/:action[/:id[/:sid]]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 '__NAMESPACE__' => 'Recruitment\Controller',
                                 'controller' => 'Registration',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
                                 'sid' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Recruitment\Controller\Registration',
                                 'action' => 'index',
-                            ),
-                        )
-                    ),
-                    'captcha' => array(
+                            ],
+                        ],
+                    ],
+                    'captcha' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/captcha[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 '__NAMESPACE__' => 'Recruitment\Controller',
                                 'controller' => 'Captcha',
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Recruitment\Controller\Captcha',
                                 'action' => 'generate',
-                            ),
-                        ),
-                    ),
-                    'pre-interview' => array(
+                            ],
+                        ],
+                    ],
+                    'pre-interview' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/pre-interview[/:action]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Recruitment\Controller\PreInterview',
                                 'action' => 'index',
-                            ),
-                        )
-                    ),
-                    'interview' => array(
+                            ],
+                        ],
+                    ],
+                    'interview' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/interview[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Recruitment\Controller\Interview',
-                            ),
-                        ),
-                    ),
-                    'address' => array(
+                            ],
+                        ],
+                    ],
+                    'address' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/address[/:action]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Recruitment\Controller\Address',
-                            ),
-                        ),
-                    ),
-                    'csv-viewer' => array(
+                            ],
+                        ],
+                    ],
+                    'csv-viewer' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/csv-viewer[/:action]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*'
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Recruitment\Controller\CsvViewer',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'view_manager' => array(
-        'strategies' => array(
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'view_manager' => [
+        'strategies' => [
             'ViewJsonStrategy',
             'Zend\View\Strategy\PhpRendererStrategy',
-        ),
-        'template_path_stack' => array(
+        ],
+        'template_path_stack' => [
             __DIR__ . '/../view/',
-        ),
-        'template_map' => array(
+        ],
+        'template_map' => [
             'profile/template' => __DIR__ . '/../view/templates/profile.phtml',
             'person/template' => __DIR__ . '/../view/templates/person.phtml',
             'relative/template' => __DIR__ . '/../view/templates/relative.phtml',
@@ -160,111 +158,111 @@ return array(
             'family-health/template' => __DIR__ . '/../view/templates/family-health.phtml',
             'family-income-expense/template' => __DIR__ . '/../view/templates/family-income-expense.phtml',
             'family-properties/template' => __DIR__ . '/../view/templates/family-properties.phtml',
-        ),
+        ],
         'display_exceptions' => true,
-    ),
-    'view_helpers' => array(
-        'invokables' => array(
+    ],
+    'view_helpers' => [
+        'invokables' => [
             'CaptchaImageViewHelper' => 'Recruitment\View\Helper\CaptchaImage',
-        ),
-    ),
+        ],
+    ],
     // Doctrine configuration
-    'doctrine' => array(
-        'driver' => array(
-            'recruitment_driver' => array(
+    'doctrine' => [
+        'driver' => [
+            'recruitment_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(
+                'paths' => [
                     __DIR__ . '/../src/Recruitment/Entity',
-                ),
-            ),
-            'orm_default' => array(
-                'drivers' => array(
+                ],
+            ],
+            'orm_default' => [
+                'drivers' => [
                     'Recruitment\Entity' => 'recruitment_driver',
-                ),
-            ),
-        ),
-    ),
-    'navigation' => array(
-        'default' => array(
-            array(
+                ],
+            ],
+        ],
+    ],
+    'navigation' => [
+        'default' => [
+            [
                 'label' => 'Recruitment',
                 'uri' => '#',
                 'icon' => 'fa fa-users',
                 'order' => 6,
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show recruitments',
                         'route' => 'recruitment/recruitment',
                         'action' => 'index',
                         'resource' => 'Recruitment\Controller\Recruitment',
                         'icon' => 'fa fa-users',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/recruitment/recruitment/public-notice/$id',
                                 'title' => 'Edital',
                                 'description' => 'Ler edital',
                                 'class' => 'fa fa-file-pdf-o bg-green',
                                 'fntype' => 'selectedHttpClick',
                                 'target' => '_blank',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/recruitment/recruitment/delete/$id',
                                 'title' => 'Remover',
                                 'description' => 'Remove um processo seletivo existente',
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Create a recruitment',
                         'route' => 'recruitment/recruitment',
                         'action' => 'create',
                         'resource' => 'Recruitment\Controller\Recruitment',
                         'privilege' => 'create',
                         'icon' => 'fa fa-user-plus'
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'CSV Viewer',
                         'route' => 'recruitment/csv-viewer',
                         'action' => 'index',
                         'resource' => 'Recruitment\Controller\CsvViewer',
                         'privilege' => 'csv-viewer',
                         'icon' => 'fa fa-info-circle',
-                    ),
-                ),
-            ),
-            array(
+                    ],
+                ],
+            ],
+            [
                 'label' => 'Inscrições',
                 'uri' => '#',
                 'icon' => 'fa fa-users',
                 'order' => 7,
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show student registrations',
                         'route' => 'recruitment/registration',
                         'action' => 'index',
                         'resource' => 'Recruitment\Controller\Registration',
                         'privilege' => 'index',
                         'icon' => 'fa fa-users',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/recruitment/interview/student/$id',
                                 'title' => 'Perfil do Candidato',
                                 'description' => 'Analizar Perfil do Candidato',
                                 'class' => 'fa fa-file-text-o bg-blue',
                                 'target' => '_blank',
                                 'fntype' => 'selectedHttpClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/recruitment/registration/confirmation/$id',
                                 'id' => 'fn-confirmation',
                                 'title' => 'Confirmar',
                                 'description' => 'Confirmar/Desconfirmar a inscrição do candidato.',
                                 'class' => 'fa fa-check bg-green',
                                 'fntype' => 'ajaxPostSelectedClick',
-                            ),
+                            ],
                             [
                                 'url' => '/recruitment/registration/exam-disapprove/$id',
                                 'id' => 'fn-exam-disapprove',
@@ -281,51 +279,51 @@ return array(
                                 'class' => 'fa fa-tasks bg-white',
                                 'fntype' => 'ajaxPostSelectedClick',
                             ],
-                            array(
+                            [
                                 'url' => '/recruitment/registration/convocation/$id',
                                 'id' => 'fn-convocation',
                                 'title' => 'Convocar',
                                 'description' => 'Convocar/Desconvocar o candidato para a pré-entrevista.',
                                 'class' => 'fa fa-users bg-blue fn-ajaxClick',
                                 'fntype' => 'ajaxPostSelectedClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/recruitment/registration/acceptance/$id',
                                 'title' => 'Aprovar Candidato',
                                 'id' => 'fn-acceptance',
                                 'description' => 'Aprova/remove aprovação do candidato. A aprovação é condição suficiente para a matrícula.',
                                 'class' => 'fa fa-graduation-cap bg-yellow',
                                 'fntype' => 'ajaxPostSelectedClick',
-                            ),
-                        ),
-                        'pages' => array(
-                            array(
+                            ],
+                        ],
+                        'pages' => [
+                            [
                                 'label' => 'Student',
                                 'route' => 'recruitment/interview',
                                 'action' => 'student',
                                 'resource' => 'Recruitment\Controller\Interview',
                                 'privilege' => 'student',
                                 'icon' => 'fa fa-user',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Show volunteer registrations',
                         'route' => 'recruitment/registration',
                         'action' => 'volunteer-registrations',
                         'resource' => 'Recruitment\Controller\Registration',
                         'privilege' => 'volunteer-registrations',
                         'icon' => 'fa fa-users',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/recruitment/interview/volunteer/$id',
                                 'title' => 'Perfil do Candidato',
                                 'description' => 'Analizar Perfil do Candidato',
                                 'class' => 'fa fa-user-plus bg-navy',
                                 'target' => '_blank',
                                 'fntype' => 'selectedHttpClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 // const STATUSTYPE_CALLEDFOR_INTERVIEW = 1;
                                 'url' => '/recruitment/registration/updateStatus/$id/1',
                                 'title' => 'Convocar (entrevista)',
@@ -333,8 +331,8 @@ return array(
                                 'description' => 'Convocar o candidato para a entrevista na data escolhida',
                                 'class' => 'fa fa-users bg-green',
                                 'fntype' => 'ajaxPostSelectedClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 // const STATUSTYPE_INTERVIEW_WAITINGLIST = 4;
                                 'url' => '/recruitment/registration/updateStatus/$id/4',
                                 'title' => 'Lista de Espera (entrevista)',
@@ -342,8 +340,8 @@ return array(
                                 'description' => '',
                                 'class' => 'fa fa-file-text-o bg-blue',
                                 'fntype' => 'selectedAjaxClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 // const STATUSTYPE_INTERVIEW_APPROVED = 5;
                                 'url' => '/recruitment/registration/updateStatus/$id/5',
                                 'title' => 'Aprovar',
@@ -351,8 +349,8 @@ return array(
                                 'description' => 'Aprovar candidato',
                                 'class' => 'fa fa-check bg-green',
                                 'fntype' => 'selectedAjaxClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 // const STATUSTYPE_INTERVIEW_DISAPPROVED = 6;
                                 'url' => '/recruitment/registration/updateStatus/$id/6',
                                 'title' => 'Reprovar',
@@ -360,8 +358,8 @@ return array(
                                 'description' => 'Reprovar Candidato',
                                 'class' => 'fa fa-close bg-red',
                                 'fntype' => 'selectedAjaxClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 // const STATUSTYPE_VOLUNTEER = 7;
                                 'url' => '/recruitment/registration/updateStatus/$id/7',
                                 'title' => 'Voluntário',
@@ -369,8 +367,8 @@ return array(
                                 'description' => 'Altera a situação do candidato para voluntário regular',
                                 'class' => 'fa fa-user bg-green',
                                 'fntype' => 'selectedAjaxClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 // const STATUSTYPE_CALLEDFOR_TESTCLASS = 8;
                                 'url' => '/recruitment/registration/updateStatus/$id/8',
                                 'title' => 'Convocar (aula teste)',
@@ -378,8 +376,8 @@ return array(
                                 'description' => 'Convoca o candidato para aula teste',
                                 'class' => 'fa fa-graduation-cap bg-green',
                                 'fntype' => 'ajaxPostSelectedClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 // const STATUSTYPE_TESTCLASS_WAITINGLIST = 10;
                                 'url' => '/recruitment/registration/updateStatus/$id/10',
                                 'title' => 'Lista de Espera (aula teste)',
@@ -387,8 +385,8 @@ return array(
                                 'description' => '',
                                 'class' => 'fa fa-file-text-o bg-blue',
                                 'fntype' => 'selectedAjaxClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 // const STATUSTYPE_CANCELED_REGISTRATION = 2;
                                 'url' => '/recruitment/registration/updateStatus/$id/2',
                                 'title' => 'Cancelar Inscrição',
@@ -396,28 +394,28 @@ return array(
                                 'description' => 'Invalida a inscrição do candidato',
                                 'class' => 'fa fa-trash bg-red',
                                 'fntype' => 'selectedAjaxClick',
-                            ),
-                        ),
-                        'pages' => array(
-                            array(
+                            ],
+                        ],
+                        'pages' => [
+                            [
                                 'label' => 'Volunteer',
                                 'route' => 'recruitment/interview',
                                 'action' => 'volunteer',
                                 'resource' => 'Recruitment\Controller\Interview',
                                 'privilege' => 'volunteer',
                                 'icon' => 'fa fa-user',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Formulários',
                         'route' => 'recruitment/registration',
                         'action' => 'registration-forms',
                         'resource' => 'Recruitment\Controller\Registration',
                         'privilege' => 'registration-forms',
                         'icon' => 'fa fa-file-text-o',
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Student Candidate Access',
                         'route' => 'recruitment/registration',
                         'action' => 'access',
@@ -444,8 +442,8 @@ return array(
                                 ],
                             ]
                         ],
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Volunteer Candidate Access',
                         'route' => 'recruitment/registration',
                         'action' => 'volunteer-access',
@@ -462,7 +460,7 @@ return array(
                                 'icon' => 'fa fa-user',
                             ]
                         ],
-                    ),
+                    ],
                     [
                         'label' => 'Student interview',
                         'route' => 'recruitment/interview',
@@ -547,8 +545,8 @@ return array(
                             ]
                         ],
                     ]
-                ),
-            ),
-        ),
-    ),
-);
+                ],
+            ],
+        ],
+    ],
+];

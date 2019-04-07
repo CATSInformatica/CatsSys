@@ -2,135 +2,135 @@
 
 namespace FinancialManagement;
 
-return array(
-    'controllers' => array(
-        'factories' => array(
+return [
+    'controllers' => [
+        'factories' => [
             'FinancialManagement\Controller\CashFlow' => Factory\Controller\CashFlowControllerFactory::class,
             'FinancialManagement\Controller\MonthlyPayment' => Factory\Controller\MonthlyPaymentControllerFactory::class
-        ),
-    ),
-    'router' => array(
-        'routes' => array(
-            'financial-management' => array(
+        ],
+    ],
+    'router' => [
+        'routes' => [
+            'financial-management' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/financial-management',
-                ),
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'cash-flow' => array(
+                'child_routes' => [
+                    'cash-flow' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/cash-flow[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'FinancialManagement\Controller\CashFlow',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                    'monthly-payment' => array(
+                            ],
+                        ],
+                    ],
+                    'monthly-payment' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/monthly-payment[/:action]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'FinancialManagement\Controller\MonthlyPayment',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    ),
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
     // Doctrine configuration
-    'doctrine' => array(
-        'driver' => array(
-            'financial_management_driver' => array(
+    'doctrine' => [
+        'driver' => [
+            'financial_management_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(
+                'paths' => [
                     __DIR__ . '/../src/FinancialManagement/Entity',
-                ),
-            ),
-            'orm_default' => array(
-                'drivers' => array(
+                ],
+            ],
+            'orm_default' => [
+                'drivers' => [
                     'FinancialManagement\Entity' => 'financial_management_driver',
-                ),
-            ),
-        ),
-    ),
-    'view_manager' => array(
-        'strategies' => array(
+                ],
+            ],
+        ],
+    ],
+    'view_manager' => [
+        'strategies' => [
             'ViewJsonStrategy',
-        ),
-        'template_path_stack' => array(
+        ],
+        'template_path_stack' => [
             __DIR__ . '/../view/',
-        ),
-        'template_map' => array(
-        ),
+        ],
+        'template_map' => [
+        ],
         'display_exceptions' => true,
-    ),
-    'navigation' => array(
-        'default' => array(
-            array(
+    ],
+    'navigation' => [
+        'default' => [
+            [
                 'label' => 'Financial Management',
                 'uri' => '#',
                 'icon' => 'fa fa-money',
                 'order' => 11,
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Exp. and rev. analysis',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'index',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
                         'privilege' => 'index',
                         'icon' => 'fa fa-bar-chart',
-                        'pages' => array(
-                            array(
+                        'pages' => [
+                            [
                                 'label' => 'Get Month Balances',
                                 'route' => 'financial-management/cash-flow',
                                 'action' => 'get-month-balances',
                                 'icon' => 'fa fa-list-alt',
-                            ),
-                            array(
+                            ],
+                            [
                                 'label' => 'Get Filtered Cash Flows',
                                 'route' => 'financial-management/cash-flow',
                                 'action' => 'get-filtered-cash-flows',
                                 'icon' => 'fa fa-list-alt',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Open month balance',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'open-month-balance',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
                         'privilege' => 'open-month-balance',
                         'icon' => 'fa fa-calendar-plus-o',
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Close month balance',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'close-month-balance',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
                         'privilege' => 'close-month-balance',
                         'icon' => 'fa fa-calendar-times-o',
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Show month balances',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'month-balances',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
                         'privilege' => 'month-balances',
                         'icon' => 'fa fa-calendar',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/financial-management/cash-flow/delete-month-balance/$id',
                                 'id' => 'month-balance-delete',
                                 'title' => 'Remover',
@@ -138,26 +138,26 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                                 'hideOnSuccess' => true,
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Add exp. and rev.',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'add-cash-flow',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
                         'privilege' => 'add-cash-flow',
                         'icon' => 'fa fa-usd',
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Show exp. and rev.',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'cash-flows',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
                         'privilege' => 'cash-flows',
                         'icon' => 'fa fa-th-list',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/financial-management/cash-flow/delete-cash-flow/$id',
                                 'id' => 'cash-flow-delete',
                                 'title' => 'Remover',
@@ -165,42 +165,42 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                                 'hideOnSuccess' => true,
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/financial-management/cash-flow/edit-cash-flow/$id',
                                 'title' => 'Editar fluxo de caixa',
                                 'id' => 'cash-flow-edit',
                                 'description' => 'Permite editar o fluxo de caixa selecionado',
                                 'class' => 'fa fa-pencil-square-o bg-blue',
                                 'fntype' => 'selectedHttpClick',
-                            ),
-                        ),
-                        'pages' => array(
-                            array(
+                            ],
+                        ],
+                        'pages' => [
+                            [
                                 'label' => 'Edit cash flow',
                                 'route' => 'school-management/cash-flow',
                                 'action' => 'edit-cash-flow',
                                 'icon' => 'fa fa-pencil-square-o bg-blue',
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Create exp. and rev. types',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'create-cash-flow-type',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
                         'privilege' => 'create-cash-flow-type',
                         'icon' => 'fa fa-plus',
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Show exp. and rev. types',
                         'route' => 'financial-management/cash-flow',
                         'action' => 'cash-flow-types',
                         'resource' => 'FinancialManagement\Controller\CashFlow',
                         'privilege' => 'cash-flow-types',
                         'icon' => 'fa fa-th-list',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/financial-management/cash-flow/delete-cash-flow-type/$id',
                                 'id' => 'cash-flow-type-delete',
                                 'title' => 'Remover',
@@ -208,25 +208,25 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                                 'hideOnSuccess' => true,
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/financial-management/cash-flow/edit-cash-flow-type/$id',
                                 'title' => 'Editar tipo de fluxo de caixa',
                                 'id' => 'cash-flow-type-edit',
                                 'description' => 'Permite editar o tipo de fluxo de caixa selecionado',
                                 'class' => 'fa fa-pencil-square-o bg-blue',
                                 'fntype' => 'selectedHttpClick',
-                            ),
-                        ),
-                        'pages' => array(
-                            array(
+                            ],
+                        ],
+                        'pages' => [
+                            [
                                 'label' => 'Edit cash flow type',
                                 'route' => 'school-management/cash-flow',
                                 'action' => 'edit-cash-flow-type',
                                 'icon' => 'fa fa-pencil-square-o bg-blue',
-                            ),
-                        ),
-                    ),
+                            ],
+                        ],
+                    ],
                     [
                         'label' => 'Monthly payment',
                         'route' => 'financial-management/monthly-payment',
@@ -253,8 +253,8 @@ return array(
                             ]
                         ],
                     ]
-                ),
-            ),
-        ),
-    ),
-);
+                ],
+            ],
+        ],
+    ],
+];

@@ -2,123 +2,123 @@
 
 namespace Documents;
 
-return array(
-    'controllers' => array(
-        'factories' => array(
+return [
+    'controllers' => [
+        'factories' => [
             'Documents\Controller\StudentBgConfig' => Factory\Controller\StudentBgConfigControllerFactory::class,
             'Documents\Controller\GeneratePdf' => Factory\Controller\GeneratePdfControllerFactory::class,
             'Documents\Controller\StudentAnswersSheets' => Factory\Controller\StudentAnswersSheetsControllerFactory::class,
-        ),
-    ),
-    'router' => array(
-        'routes' => array(
-            'documents' => array(
+        ],
+    ],
+    'router' => [
+        'routes' => [
+            'documents' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/documents',
-                ),
+                ],
                 'may_terminate' => true,
-                'child_routes' => array(
-                    'student-bg-config' => array(
+                'child_routes' => [
+                    'student-bg-config' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/student-bg-config[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Documents\Controller\StudentBgConfig',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                    'generate-pdf' => array(
+                            ],
+                        ],
+                    ],
+                    'generate-pdf' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/generate-pdf/:action[/:id]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Documents\Controller\GeneratePdf',
-                            ),
-                        ),
-                    ),
+                            ],
+                        ],
+                    ],
                     'student-answers-sheets' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/student-answers-sheets/:action[/:id]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Documents\Controller\StudentAnswersSheets',
-                            ),
-                        ),
+                            ],
+                        ],
                     ],
-                ),
-            ),
-        ),
-    ),
-    'view_manager' => array(
-        'strategies' => array(
+                ],
+            ],
+        ],
+    ],
+    'view_manager' => [
+        'strategies' => [
             'ViewJsonStrategy',
-        ),
-        'template_path_stack' => array(
+        ],
+        'template_path_stack' => [
             __DIR__ . '/../view/',
-        ),
-        'template_map' => array(
+        ],
+        'template_map' => [
             'student-bg-configs/template' => __DIR__ . '/../view/templates/student-bg-configs.phtml',
             'student-bg-config-form/template' => __DIR__ . '/../view/templates/student-bg-config-form.phtml',
             'students-board-form/template' => __DIR__ . '/../view/templates/students-board-form.phtml',
             'student-id-cards/template' => __DIR__ . '/../view/templates/student-id-cards.phtml',
-        ),
+        ],
         'display_exceptions' => true,
-    ),
-    'doctrine' => array(
-        'driver' => array(
-            'documents_driver' => array(
+    ],
+    'doctrine' => [
+        'driver' => [
+            'documents_driver' => [
                 'class' => 'Doctrine\ORM\Mapping\Driver\AnnotationDriver',
                 'cache' => 'array',
-                'paths' => array(
+                'paths' => [
                     __DIR__ . '/../src/Documents/Entity',
-                ),
-            ),
-            'orm_default' => array(
-                'drivers' => array(
+                ],
+            ],
+            'orm_default' => [
+                'drivers' => [
                     'Documents\Entity' => 'documents_driver',
-                ),
-            ),
-        ),
-    ),
-    'navigation' => array(
-        'default' => array(
-            array(
+                ],
+            ],
+        ],
+    ],
+    'navigation' => [
+        'default' => [
+            [
                 'label' => 'Documents',
                 'uri' => '#',
                 'icon' => 'fa fa-files-o',
                 'order' => 8,
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Show background configs',
                         'route' => 'documents/student-bg-config',
                         'action' => 'index',
                         'resource' => 'Documents\Controller\StudentBgConfig',
                         'privilege' => 'index',
                         'icon' => 'fa fa-files-o',
-                        'toolbar' => array(
-                            array(
+                        'toolbar' => [
+                            [
                                 'url' => '/documents/student-bg-config/edit/$id',
                                 'id' => 'student-bg-config-edit',
                                 'title' => 'Editar',
                                 'description' => 'Permite editar a configuração de fundo selecionada',
                                 'class' => 'fa fa-pencil-square-o bg-blue',
                                 'fntype' => 'selectedHttpClick',
-                            ),
-                            array(
+                            ],
+                            [
                                 'url' => '/documents/student-bg-config/delete/$id',
                                 'id' => 'student-bg-config-delete',
                                 'title' => 'Remover',
@@ -126,33 +126,33 @@ return array(
                                 'class' => 'fa fa-trash-o bg-red',
                                 'fntype' => 'selectedAjaxClick',
                                 'hideOnSuccess' => true,
-                            ),
-                        ),
-                    ),
-                    array(
+                            ],
+                        ],
+                    ],
+                    [
                         'label' => 'Create a background config',
                         'route' => 'documents/student-bg-config',
                         'action' => 'create',
                         'resource' => 'Documents\Controller\StudentBgConfig',
                         'privilege' => 'create',
                         'icon' => 'fa fa-file-o'
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Generate Student ID Cards',
                         'route' => 'documents/generate-pdf',
                         'action' => 'student-id-card',
                         'resource' => 'Documents\Controller\GeneratePdf',
                         'privilege' => 'student-id-card',
                         'icon' => 'fa fa-file-pdf-o'
-                    ),
-                    array(
+                    ],
+                    [
                         'label' => 'Generate Students Board',
                         'route' => 'documents/generate-pdf',
                         'action' => 'students-board',
                         'resource' => 'Documents\Controller\GeneratePdf',
                         'privilege' => 'students-board',
                         'icon' => 'fa fa-file-pdf-o'
-                    ),
+                    ],
                     [
                         'label' => 'Student answers sheets',
                         'route' => 'documents/student-answers-sheets',
@@ -161,8 +161,8 @@ return array(
                         'privilege' => 'index',
                         'icon' => 'fa fa-chevron-circle-down',
                     ]
-                ),
-            ),
-        ),
-    ),
-);
+                ],
+            ],
+        ],
+    ],
+];

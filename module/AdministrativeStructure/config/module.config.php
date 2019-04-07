@@ -10,66 +10,66 @@ return [
             'AdministrativeStructure\Controller\Documents' => Factory\Controller\DocumentsControllerFactory::class,
         ],
     ],
-    'router' => array(
-        'routes' => array(
-            'administrative-structure' => array(
+    'router' => [
+        'routes' => [
+            'administrative-structure' => [
                 'type' => 'Literal',
-                'options' => array(
+                'options' => [
                     'route' => '/administrative-structure',
-                ),
+                ],
                 'may_terminate' => false,
-                'child_routes' => array(
-                    'department' => array(
+                'child_routes' => [
+                    'department' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/department[/:action[/:id]]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'AdministrativeStructure\Controller\Department',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                    'job' => array(
+                            ],
+                        ],
+                    ],
+                    'job' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/job[/:action[/:id]]',
-                            'contraints' => array(
+                            'contraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
                                 'id' => '[0-9]+',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'AdministrativeStructure\Controller\Job',
-                            ),
-                        ),
-                    ),
+                            ],
+                        ],
+                    ],
                     'documents' => [
                         'type' => 'Segment',
-                        'options' => array(
+                        'options' => [
                             'route' => '/documents[/:action]',
-                            'contraints' => array(
+                            'contraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'AdministrativeStructure\Controller\Documents',
-                            ),
-                        ),
+                            ],
+                        ],
                     ],
-                ),
-            ),
-        ),
-    ),
-    'view_manager' => array(
-        'template_map' => array(
-        ),
-        'template_path_stack' => array(
+                ],
+            ],
+        ],
+    ],
+    'view_manager' => [
+        'template_map' => [
+        ],
+        'template_path_stack' => [
             __DIR__ . '/../view/',
-        ),
+        ],
         'display_exceptions' => true,
-    ),
+    ],
     'navigation' => [
         'default' => [
             [

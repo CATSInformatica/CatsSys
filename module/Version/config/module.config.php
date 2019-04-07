@@ -10,8 +10,8 @@ namespace Version;
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'Version\Controller\VersionInfo' => Controller\VersionInfoController::class,
+        'factories' => array(
+            'Version\Controller\VersionInfo' => Factory\Controller\VersionInfoControllerFactory::class,
         ),
     ),
     'router' => array(

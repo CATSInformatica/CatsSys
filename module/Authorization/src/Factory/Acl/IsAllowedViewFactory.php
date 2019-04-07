@@ -20,7 +20,6 @@ use Zend\Authentication\AuthenticationService;
  */
 class IsAllowedViewFactory implements FactoryInterface
 {
-
     public function createService(ContainerInterface $container)
     {
         $auth = $container->get(AuthenticationService::class);
@@ -28,5 +27,4 @@ class IsAllowedViewFactory implements FactoryInterface
         $helper = new IsAllowedViewHelper($auth, $acl);
         return $helper;
     }
-
 }

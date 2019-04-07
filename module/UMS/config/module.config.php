@@ -4,8 +4,8 @@ namespace UMS;
 
 return array(
     'controllers' => array(
-        'invokables' => array(
-            'UMS\Controller\Index' => 'UMS\Controller\IndexController',
+        'factories' => array(
+            'UMS\Controller\Index' => Factory\Controller\IndexControllerFactory::class,
         )
     ),
     'router' => array(
