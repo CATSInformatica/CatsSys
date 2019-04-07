@@ -8,12 +8,10 @@
         "curso assistencial"
     ],
     "require": {
-        "php": ">=5.5",
-        "zendframework/zendframework": "^2.5",
-        "evandotpro/edp-module-layouts": "^1.0",
-        "neilime/zf2-twb-bundle": "2.*@stable",
-        "ircmaxell/random-lib": "^1.1",
+        "php": ">=7.1",
         "doctrine/doctrine-orm-module": "^1.1",
+        "evandotpro/edp-module-layouts": "^1.0",
+        "neilime/zf2-twb-bundle": "^3.3",
         "setasign/fpdf": "^1.8"
     }
 }

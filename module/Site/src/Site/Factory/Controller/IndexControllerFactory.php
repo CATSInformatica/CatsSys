@@ -23,6 +23,7 @@ use Authentication\Service\EmailSenderService;
 use Site\Controller\IndexController;
 use Zend\ServiceManager\FactoryInterface;
 use Zend\ServiceManager\ServiceLocatorInterface;
+use Authentication\Factory\Controller\Helper\CreateEmailSenderService;
 
 /**
  * Description of IndexControllerFactory
@@ -31,22 +32,21 @@ use Zend\ServiceManager\ServiceLocatorInterface;
  */
 class IndexControllerFactory implements FactoryInterface
 {
+    use CreateEmailSenderService;
 
     public function createService(ServiceLocatorInterface $serviceLocator)
     {
         $sl = $serviceLocator->getServiceLocator();
-        
+
         $emailOptions = $sl->get('config')['email']['contact'];
-        $emailService = new EmailSenderService();
-        
-        foreach ($emailOptions['to'] as $email => $name) {
-            $emailService->addTo($email, $name);
-        }   
-        
-        $emailService->setFrom($emailOptions['from'], $emailOptions['from_name']);
-        
+        $mailgunOptions = $sl->get('config')['mailgun'];
+        $emailService = $this->createEmailSenderService($mailgunOptions);
+
+        $emailService->setTo($emailOptions['to']['email'], $emailOptions['to']['name']);
+        $emailService->setFrom($emailOptions['from']['email'], $emailOptions['from']['name']);
+
         $controller = new IndexController($emailService);
-        
+
         $em = $sl->get('Doctrine\ORM\EntityManager');
         $controller->setEntityManager($em);
 

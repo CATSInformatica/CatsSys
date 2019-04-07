@@ -18,6 +18,9 @@
 
 namespace Authentication\Service;
 
+
+use Mailgun\Mailgun;
+
 /**
  * Implementa a funcionalidade de envio de emails.
  *
@@ -43,10 +46,10 @@ class EmailSenderService implements EmailSenderServiceInterface
      * @var string Endereço de email.
      */
     protected $from = null;
-    
+
     /**
      *
-     * @name string Nome a ser colocado no envio do email. *criado BIM
+     * @name string Nome a ser colocado no envio do email.
      */
     protected $name = false;
 
@@ -62,11 +65,12 @@ class EmailSenderService implements EmailSenderServiceInterface
      */
     protected $replyTo = [];
 
-    /**
-     *
-     * @var bool Define se o corpo do email aceitará conteúdo html ou apenas texto.
-     */
-    protected $isHtml = false;
+
+    public function __construct(Mailgun $mailgun, string $domain)
+    {
+        $this->mailgun = $mailgun;
+        $this->domain = $domain;
+    }
 
 
     /**
@@ -74,7 +78,6 @@ class EmailSenderService implements EmailSenderServiceInterface
      */
     public function send()
     {
-
         if ($this->subject === null) {
             throw new \RuntimeException('O assunto da mensagem não foi definido.');
         }
@@ -82,7 +85,7 @@ class EmailSenderService implements EmailSenderServiceInterface
         if ($this->body === null) {
             throw new \RuntimeException('O corpo da mensagem não foi definido.');
         }
-        
+
         if ($this->from === null) {
             throw new \RuntimeException('Nenhum remetente foi definido.');
         }
@@ -91,33 +94,19 @@ class EmailSenderService implements EmailSenderServiceInterface
             throw new \RuntimeException('Nenhum destinatário foi definido.');
         }
 
-        // faz a requisição de envio.
         try {
-            //define o caminho do conteúdo da requisição de email
-            $path = __DIR__ . '/../../../../../data/';
-            $fileOption = $path . 'email/' . microtime(true) . '.json';
-            //
-            $encodedContent = json_encode([
+            $data = [
+                'from' => sprintf("%s <%s>", $this->name, $this->from),
+                'to' => sprintf("%s <%s>", $this->to['name'], $this->to['email']),
                 'subject' => $this->subject,
-                'from' => [
-                    'email' => $this->from,
-                    'name' => $this->name,
-                ],
-                'to' => $this->to,
-                'replyTo' => $this->replyTo,
-                'isHtml' => $this->isHtml,
-                'body' => $this->body,
-            ], JSON_PRETTY_PRINT);
+                'html' => $this->body,
+            ];
 
-            //Coloca o array no arquivo
-            file_put_contents($fileOption, $encodedContent);
+            if($this->replyTo) {
+                $data['h:Reply-To'] = sprintf("%s <%s>", $this->replyTo['name'], $this->replyTo['email']);
+            }
 
-            $script = $path . 'script/sendEmail.php';
-
-            //Chama a thread de execuçao de email.
-            shell_exec("php $script $fileOption  > /dev/null 2>/dev/null & ");
-
-            return true;
+            $res = $this->mailgun->sendMessage($this->domain, $data);
         } catch (\Exception $ex) {
             return false;
         }
@@ -151,9 +140,9 @@ class EmailSenderService implements EmailSenderServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function addTo($email, $name)
+    public function setTo($email, $name)
     {
-        $this->to[] = [
+        $this->to = [
             'email' => $email,
             'name' => $name,
         ];
@@ -164,22 +153,12 @@ class EmailSenderService implements EmailSenderServiceInterface
     /**
      * {@inheritDoc}
      */
-    public function addReplyTo($email, $name = null)
+    public function setReplyTo($email, $name = null)
     {
-        $this->replyTo[] = [
+        $this->replyTo = [
             'email' => $email,
             'name' => $name
         ];
-
-        return $this;
-    }
-
-    /**
-     * {@inheritDoc}
-     */
-    public function setIsHtml($isHtml)
-    {
-        $this->isHtml = $isHtml;
 
         return $this;
     }

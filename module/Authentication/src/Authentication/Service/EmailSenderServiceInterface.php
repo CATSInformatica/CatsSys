@@ -22,18 +22,18 @@ namespace Authentication\Service;
 /**
  *
  * Interface para o envio de emails.
- * 
- * 
+ *
+ *
  * @author Márcio Dias <marciojr91@gmail.com>
  */
 interface EmailSenderServiceInterface
 {
-    
+
     public function send();
 
     /**
      * Define o assunto da mensagem.
-     * 
+     *
      * @param string $subject
      * @return EmailSenderServiceInterface Interface fluente.
      */
@@ -41,7 +41,7 @@ interface EmailSenderServiceInterface
 
     /**
      * Define o remetente da mensagem.
-     * 
+     *
      * @param string $from Endereço de email do remetente.
      * @param string $name Nome do remetente.
      * @return EmailSenderServiceInterface Interface fluente.
@@ -49,34 +49,27 @@ interface EmailSenderServiceInterface
     public function setFrom($from, $name = null);
 
     /**
-     * Adiciona um destinatário.
-     * 
+     * Define o destinatário.
+     *
      * @param string $email Endereço de email do destinatário.
      * @param string $name Nome do destinatário.
      * @return EmailSenderServiceInterface Interface fluente.
      */
-    public function addTo($email, $name);
-    
+    public function setTo($email, $name);
+
     /**
-     * Define os emails de resposta que serão exibidos para o(s) destinatários.
-     * 
+     * Define o email de resposta que será exibido para o destinatário.
+     *
      * @param string $email Email de resposta
      * @param string $name
      */
-    public function addReplyTo($email, $name = null);
+    public function setReplyTo($email, $name = null);
 
     /**
      * Define o corpo da menssagem.
-     * 
+     *
      * @param string $body Corpo da mensagem.
      * @return EmailSenderServiceInterface Interface fluente.
      */
     public function setBody($body);
-
-    /**
-     * 
-     * @param type $isHtml
-     * @return EmailSenderServiceInterface Interface fluente.
-     */
-    public function setIsHtml($isHtml);
 }

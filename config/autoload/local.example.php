@@ -16,19 +16,28 @@ return [
    ],
    'email' => [
         'recruitment' => [
-            'from' => 'name@yourdomain.com',
-            'from_name' => 'Your Name',
+            'from' => [
+                'email' => 'name@yourdomain.com',
+                'name' => 'Your Name',
+            ],
             'replyTo' => [
-                'replyto@yourdomain.com' => 'Reply name',
+                'email' => 'name@yourdomain.com',
+                'name' => 'Your Name',
             ],
         ],
         'contact' => [
-            /* lista de pares do tipo: email => nome */
-            'from' => 'name@yourdomain.com',
-            'from_name' => 'Your Name',
+            'from' => [
+                'email' => 'name@yourdomain.com',
+                'name' => 'Your Name',
+            ],
             'to' => [
-                'contact@exemple.com' => 'Recebedor de emails de contato',
+                'email' => 'name@yourdomain.com',
+                'name' => 'Your Name',
             ],
         ],
     ],
+    'mailgun' => [
+        'api_key' => 'key-example123456',
+        'domain' => 'somedomain.com.br',
+    ]
 ];

@@ -32,7 +32,7 @@ use Zend\View\Model\ViewModel;
 use Zend\View\Renderer\PhpRenderer as ViewRenderer;
 
 /**
- * 
+ *
  * @todo Fazer as actions de convocação e aceitação
  * Description of RegistrationController
  * @author marcio
@@ -60,7 +60,7 @@ class RegistrationController extends AbstractEntityActionController
 
     /**
      *
-     * @var ViewRenderer Necessário para criar o cartão de inscrição e colocá-lo no corpo do email. 
+     * @var ViewRenderer Necessário para criar o cartão de inscrição e colocá-lo no corpo do email.
      */
     protected $viewRenderer;
 
@@ -71,12 +71,12 @@ class RegistrationController extends AbstractEntityActionController
     }
 
     /**
-     * 
+     *
      * @todo criar índice no campo recruitmentType da entidade Recruitment
-     * 
-     * Exibe todas as inscrições do processo seletivo de alunos escolhido (inicialmente exibe o último 
+     *
+     * Exibe todas as inscrições do processo seletivo de alunos escolhido (inicialmente exibe o último
      * processo seletivo vigente).
-     * 
+     *
      * @return ViewModel
      */
     public function indexAction()
@@ -209,10 +209,10 @@ class RegistrationController extends AbstractEntityActionController
             ]);
         }
     }
-    
+
     public function volunteerCandidateAction() {
         try {
-            
+
             $this->layout('application-clean/layout');
 
             $volunteerContainer = new Container('volunteerCandidate');
@@ -242,8 +242,8 @@ class RegistrationController extends AbstractEntityActionController
                     $em->flush();
                 }
             }
-            
-            
+
+
             // Testes para decidir a situaçao dos blocos
             $currentRegistrationStatus = $registration->getCurrentRegistrationStatus();
             $currentRecStatus = $currentRegistrationStatus->getRecruitmentStatus()->getNumericStatusType();
@@ -264,22 +264,22 @@ class RegistrationController extends AbstractEntityActionController
             ];
 
             foreach ($registration->getRegistrationStatus() as $regStatus) {
-                switch ($regStatus->getRecruitmentStatus()->getNumericStatusType()) {  
+                switch ($regStatus->getRecruitmentStatus()->getNumericStatusType()) {
                     case RecruitmentStatus::STATUSTYPE_TESTCLASS_COMPLETE:
-                        $blockStatus['testClassWaitingList'] = false;  
+                        $blockStatus['testClassWaitingList'] = false;
                         $blockStatus['testClass'] = true;
-                        $blockStatus['testClassDone'] = true;  
+                        $blockStatus['testClassDone'] = true;
                         break;
                     case RecruitmentStatus::STATUSTYPE_CALLEDFOR_TESTCLASS:
-                        $blockStatus['testClassWaitingList'] = false;  
+                        $blockStatus['testClassWaitingList'] = false;
                         $blockStatus['testClass'] = true;
-                        $blockStatus['testClassDone'] = false;  
+                        $blockStatus['testClassDone'] = false;
                         $testClassDate = $currentRegistrationStatus->getTimestamp('d/m/Y');
                         break;
                     case RecruitmentStatus::STATUSTYPE_TESTCLASS_WAITINGLIST:
-                        $blockStatus['testClassWaitingList'] = true;  
+                        $blockStatus['testClassWaitingList'] = true;
                         $blockStatus['testClass'] = false;
-                        $blockStatus['testClassDone'] = false;  
+                        $blockStatus['testClassDone'] = false;
                         break;
                     case RecruitmentStatus::STATUSTYPE_INTERVIEWED:
                         $blockStatus['interviewWaitingList'] = false;
@@ -302,9 +302,9 @@ class RegistrationController extends AbstractEntityActionController
                         break;
                 }
             }
-            
-            switch ($currentRecStatus) {  
-                case RecruitmentStatus::STATUSTYPE_INTERVIEW_DISAPPROVED: 
+
+            switch ($currentRecStatus) {
+                case RecruitmentStatus::STATUSTYPE_INTERVIEW_DISAPPROVED:
                     $blockStatus['result'] = true;
                     $blockStatus['resultApproved'] = false;
                     break;
@@ -313,7 +313,7 @@ class RegistrationController extends AbstractEntityActionController
                     $blockStatus['resultApproved'] = true;
                     break;
             }
-            
+
 
             return new ViewModel([
                 'registration' => $registration,
@@ -374,7 +374,7 @@ class RegistrationController extends AbstractEntityActionController
             'form' => $form,
         ));
     }
-    
+
     public function volunteerAccessAction() {
         $this->layout('application-clean/layout');
         $request = $this->getRequest();
@@ -416,32 +416,32 @@ class RegistrationController extends AbstractEntityActionController
         return new ViewModel(array(
             'message' => $message,
             'form' => $form,
-        )); 
-        
+        ));
+
     }
 
     /**
-     * 
+     *
      * @todo
      *      - Concluir o template do comprovante de inscrição
      *      - Mostrar o comprovante de inscrição no navegador após concluir a inscrição.
      *      - Utilizar o Hydrator também para a coleção de cargos desejados (desiredJobs), se possível.
-     * 
+     *
      * Exibe o formulário de inscrição (alunos e voluntários) e faz a validação do envio.
-     * 
+     *
      * Uma nova inscrição poderá ser feita/será aceita se, e somente se, a seguintes condições forem satisfeitas
      *  - Existe um processo seletivo aberto \Recruitment\Entity\Recruitment
      *  - A pessoa que está se inscrevendo ainda não fez a inscrição no processo seletivo vigente
-     * 
+     *
      * Ao fazer a inscrição, caso a pessoa já possua cadastro, alguns dados pessoais serão atualizados
      * e uma nova inscrição será cadastrada, ou seja:
      *  - Update em Recruitment\Entity\Person
      *  - Insert em Recruitment\Entity\Registration
-     * 
+     *
      * Caso a pessoa não possua cadastro será criada uma nova pessoa e uma nova inscrição, ou seja:
      *  - Insert Recruitment\Entity\Person
      *  - Insert Recruitment\Entity\Registration
-     * 
+     *
      * @return ViewModel Formulário de inscrição
      */
     public function registrationFormAction()
@@ -483,14 +483,14 @@ class RegistrationController extends AbstractEntityActionController
                 new RegistrationForm($em, $type, $options));
 
         if ($request->isPost()) {
-            
+
             $registration = new Registration();
             $form->bind($registration);
             $data = $request->getPost();
             $form->setData($data);
-            
+
             if ($form->isValid()) {
-                
+
                 try {
                     // verifica se a pessoa já está cadastrada.
                     $this->adjustPerson($registration);
@@ -498,12 +498,12 @@ class RegistrationController extends AbstractEntityActionController
                     $this->updateRegistrationStatus(
                         $registration, RecruitmentStatus::STATUSTYPE_REGISTERED, $registration->getRegistrationDateAsDateTime()
                     );
-                    
+
                     if ($type === Recruitment::VOLUNTEER_RECRUITMENT_TYPE) {
                         $jobId = $data['registration']['desiredJob'];
                         $job = $em->find('AdministrativeStructure\Entity\Job', $jobId);
                         $registration->setDesiredJob($job);
-                        
+
                         if (isset($data['registration']['desiredJobs'])) {
                             $jobs = new ArrayCollection();
                             foreach ($data['registration']['desiredJobs'] as $jobId) {
@@ -514,10 +514,10 @@ class RegistrationController extends AbstractEntityActionController
                             $registration->setDesiredJobs($jobs);
                         }
                     }
-                    
+
                     // atribui a qual processo seletivo a inscrição pertence
                     $registration->setRecruitment($recruitment);
-                    
+
                     // salva no banco
                     $em->persist($registration);
                     $em->flush();
@@ -551,11 +551,8 @@ class RegistrationController extends AbstractEntityActionController
                         $this->emailService
                             ->setSubject($subject . ' 🚀')
                             ->setBody($emailBody)
-                            ->setIsHtml(true)
-                            ->addTo($person->getPersonEmail(), $person->getPersonFirstName());
-
-
-                        $this->emailService->send();
+                            ->setTo($person->getPersonEmail(), $person->getPersonFirstName())
+                            ->send();
 
                         //Pegar id do candidato
                         $id = $registration->getRegistrationId();
@@ -575,7 +572,7 @@ class RegistrationController extends AbstractEntityActionController
                     ));
                 } catch (Exception $ex) {
                     if ($ex instanceof UniqueConstraintViolationException) {
-                        
+
                         if ($type == Recruitment::STUDENT_RECRUITMENT_TYPE) {
                             $message = 'Já existe uma inscrição associada ao CPF informado. Por favor, consulte a área do candidato';
                         } else {
@@ -604,7 +601,7 @@ class RegistrationController extends AbstractEntityActionController
 
     /**
      * Busca todos as inscrições pro processo seletivo $rid com status atual $sid.
-     * 
+     *
      * @return JsonModel
      */
     public function getRegistrationsAction()
@@ -632,7 +629,7 @@ class RegistrationController extends AbstractEntityActionController
                         foreach($r->getDesiredJobs() as $j) {
                             $dJobs[] = $j->getJobName();
                         }
-                        
+
                         $result[] = [
                             'registrationId' => $r->getRegistrationId(),
                             'registrationNumber' => $r->getRegistrationNumber(),
@@ -654,7 +651,7 @@ class RegistrationController extends AbstractEntityActionController
             }
         } catch (\Exception $ex) {
         }
-        
+
         return new JsonModel($result);
     }
 
@@ -697,9 +694,9 @@ class RegistrationController extends AbstractEntityActionController
     }
 
     /**
-     * Altera a situação do candidato do processo seletivo de alunos para 
+     * Altera a situação do candidato do processo seletivo de alunos para
      * Confirmado.
-     * 
+     *
      * @return JsonModel
      */
     public function confirmationAction()
@@ -747,9 +744,9 @@ class RegistrationController extends AbstractEntityActionController
     }
 
     /**
-     * Altera a situação do candidato do processo seletivo de alunos para 
+     * Altera a situação do candidato do processo seletivo de alunos para
      * Desclassificado na Prova.
-     * 
+     *
      * @return JsonModel
      */
     public function examDisapproveAction()
@@ -798,9 +795,9 @@ class RegistrationController extends AbstractEntityActionController
     }
 
     /**
-     * Altera a situação do candidato do processo seletivo de alunos para 
+     * Altera a situação do candidato do processo seletivo de alunos para
      * Lista de Espera da Prova.
-     * 
+     *
      * @return JsonModel
      */
     public function examWaitingListAction()
@@ -848,9 +845,9 @@ class RegistrationController extends AbstractEntityActionController
     }
 
     /**
-     * Altera a situação do candidato do processo seletivo de alunos para 
+     * Altera a situação do candidato do processo seletivo de alunos para
      * Convocado.
-     * 
+     *
      * @return JsonModel
      */
     public function convocationAction()
@@ -901,9 +898,9 @@ class RegistrationController extends AbstractEntityActionController
     }
 
     /**
-     * Altera a situação do candidato do processo seletivo de alunos para 
+     * Altera a situação do candidato do processo seletivo de alunos para
      * Aprovado.
-     * 
+     *
      * @return JsonModel
      */
     public function acceptanceAction()
@@ -1017,14 +1014,14 @@ class RegistrationController extends AbstractEntityActionController
     }
 
     /**
-     * 
+     *
      * Método seguro para exibição da foto de perfil
-     * 
+     *
      * @todo Fazer validação por usuário:
      *  - Voluntário: acesso apenas ao seu
      *  - aluno: acesso apenas ao seu
      *  - RH: acesso a todos
-     * 
+     *
      * @return Image Foto do perfil do usuário. Caso não haja uma específica, utiliza as imagens padrões
      */
     public function photoAction()
@@ -1056,9 +1053,9 @@ class RegistrationController extends AbstractEntityActionController
 
     /**
      * @todo Fazer verificação por usuário de forma idêntica a action photo
-     * 
+     *
      * Altera a foto de perfil, aceita apenas imagens no formato jpg ou png
-     * 
+     *
      * @return ViewModel
      * @throws RuntimeException
      */

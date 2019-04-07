@@ -11,22 +11,22 @@
  * control, so do not include passwords or other sensitive information in this
  * file.
  */
-return array(
-    'doctrine' => array(
-        'connection' => array(
+return [
+    'doctrine' => [
+        'connection' => [
             // default connection name
-            'orm_default' => array(
+            'orm_default' => [
                 'driverClass' => 'Doctrine\DBAL\Driver\PDOMySql\Driver',
-                'params' => array(
+                'params' => [
                     'charset' => 'utf8', // extra
-                    'driverOptions' => array(
+                    'driverOptions' => [
                         1002 => 'SET NAMES utf8'
-                    ),
-                ),
-            ),
-        )
-    ),
-    'module_layouts' => array(
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'module_layouts' => [
         'Site' => 'layout/layout',
         'Authentication' => 'application/layout',
         'Authorization' => 'application/layout',
@@ -37,5 +37,5 @@ return array(
         'AdministrativeStructure' => 'application/layout',
         'Version' => 'application/layout',
         'FinancialManagement' => 'application/layout',
-    )
-);
+    ]
+];

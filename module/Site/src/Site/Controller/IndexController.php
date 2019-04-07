@@ -33,16 +33,16 @@ class IndexController extends AbstractEntityActionController
      * @var EmailSenderServiceInterface Permite acessar o serviço de envio de emails.
      */
     protected $emailService;
-    
+
     public function __construct(EmailSenderServiceInterface $emailService)
     {
         $this->emailService = $emailService;
     }
-    
-    
+
+
     /**
      * Página inicial do site
-     * 
+     *
      * @return ViewModel
      */
     public function indexAction()
@@ -50,32 +50,33 @@ class IndexController extends AbstractEntityActionController
         $em = $this->getEntityManager();
         $request = $this->getRequest();
         $message = null;
-        
+
         $contact = new Contact();
         $form = new ContactForm($em);
         $form->bind($contact);
 
         if ($request->isPost()) {
+
             $form->setData($request->getPost()->toArray());
 
-            if ($form->isValid()) {            
+            if ($form->isValid()) {
                 $contact->setDate(new DateTime('now'));
-                
-                $bodyHeader = 
+
+                $bodyHeader =
                           'Nome: ' . ($contact->getName() ? $contact->getName() : 'Anônimo') . "\n"
                         . 'Email: ' . ($contact->getEmail() ? $contact->getEmail() : '-') . "\n"
                         . 'Data: ' . $contact->getDate()->format("d/m/Y") . "\n"
                         . "\n";
-                    
-                $this->emailService->setSubject($contact->getSubject() . '[' . $contact->getPosition() . ']');
-                $this->emailService->setBody($bodyHeader . $contact->getMessage());
-                $this->emailService->setIsHtml(false);
 
-                $this->emailService->send(); 
-                
-                $em->persist($contact);                
+                $this
+                    ->emailService
+                    ->setSubject($contact->getSubject() . '[' . $contact->getPosition() . ']')
+                    ->setBody($bodyHeader . $contact->getMessage())
+                    ->send();
+
+                $em->persist($contact);
                 $em->flush();
-                
+
                 return new ViewModel(array(
                     'message' => $message,
                     'contactForm' => null
@@ -86,6 +87,6 @@ class IndexController extends AbstractEntityActionController
             'message' => $message,
             'contactForm' => $form,
         ));
-    }    
+    }
 
 }
