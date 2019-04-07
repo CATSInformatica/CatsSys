@@ -16,8 +16,6 @@ $modules = [
     'Authentication',
     //Authorizarion Module
     'Authorization',
-    //Site Module
-    'Site',
     //User Management Space Module
     'UMS',
     // Recruitment Module
@@ -32,6 +30,8 @@ $modules = [
     'Version',
     // FinancialManagement
     'FinancialManagement',
+    //Site Module
+    'Site',
 ];
 
 return [

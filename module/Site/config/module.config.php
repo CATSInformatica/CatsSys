@@ -64,11 +64,6 @@ return [
         ],
         'display_exceptions' => true,
     ],
-    'view_helpers' => [
-        'invokables' => [
-            'CaptchaImageViewHelper' => 'Recruitment\View\Helper\CaptchaImage',
-        ],
-    ],
     // Doctrine configuration
     'doctrine' => [
         'driver' => [

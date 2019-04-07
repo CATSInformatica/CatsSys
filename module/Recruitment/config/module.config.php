@@ -7,6 +7,8 @@
 
 namespace Recruitment;
 
+use Authorization\Factory\Acl\CaptchaViewFactory;
+
 return [
     'controllers' => [
         'factories' => [
@@ -162,8 +164,8 @@ return [
         'display_exceptions' => true,
     ],
     'view_helpers' => [
-        'invokables' => [
-            'CaptchaImageViewHelper' => 'Recruitment\View\Helper\CaptchaImage',
+        'factories' => [
+            'CaptchaImageViewHelper' => CaptchaViewFactory::class,
         ],
     ],
     // Doctrine configuration
