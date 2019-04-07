@@ -2,6 +2,9 @@
 
 namespace FinancialManagement;
 
+use Zend\Router\Http\Segment;
+use Zend\Router\Http\Literal;
+
 return [
     'controllers' => [
         'factories' => [
@@ -12,14 +15,14 @@ return [
     'router' => [
         'routes' => [
             'financial-management' => [
-                'type' => 'Literal',
+                'type' => Literal::class,
                 'options' => [
                     'route' => '/financial-management',
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
                     'cash-flow' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/cash-flow[/:action[/:id]]',
                             'constraints' => [
@@ -33,7 +36,7 @@ return [
                         ],
                     ],
                     'monthly-payment' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/monthly-payment[/:action]',
                             'constraints' => [

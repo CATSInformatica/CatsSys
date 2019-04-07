@@ -3,6 +3,8 @@
 $env = getenv('APP_ENV');
 
 $modules = [
+    'Zend\Router',
+    'Zend\Validator',
     // per-module layout
     'EdpModuleLayouts',
     // Twitter Bootstrap view helpers

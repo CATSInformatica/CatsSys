@@ -31,7 +31,7 @@ use Zend\Authentication\AuthenticationService;
  */
 class LoginControllerFactory implements FactoryInterface
 {
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $authService = $container->get(AuthenticationService::class);
         $controller = new LoginController($authService);

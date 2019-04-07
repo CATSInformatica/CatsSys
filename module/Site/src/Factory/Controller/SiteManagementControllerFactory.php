@@ -32,7 +32,7 @@ use Doctrine\ORM\EntityManager;
 class SiteManagementControllerFactory implements FactoryInterface
 {
 
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $controller = new SiteManagementController();
         $em = $container->get(EntityManager::class);

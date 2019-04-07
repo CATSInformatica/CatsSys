@@ -19,7 +19,6 @@
 
 namespace Site\Factory\Controller;
 
-use Authentication\Service\EmailSenderService;
 use Site\Controller\IndexController;
 use Zend\ServiceManager\Factory\FactoryInterface;
 use Interop\Container\ContainerInterface;
@@ -35,7 +34,7 @@ class IndexControllerFactory implements FactoryInterface
 {
     use CreateEmailSenderService;
 
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $emailOptions = $container->get('config')['email']['contact'];
         $mailgunOptions = $container->get('config')['mailgun'];

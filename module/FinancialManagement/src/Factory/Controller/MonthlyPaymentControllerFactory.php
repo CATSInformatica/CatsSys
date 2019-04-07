@@ -31,7 +31,7 @@ use Doctrine\ORM\EntityManager;
 class MonthlyPaymentControllerFactory implements FactoryInterface
 {
 
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $controller = new \FinancialManagement\Controller\MonthlyPaymentController();
         $em = $container->get(EntityManager::class);

@@ -21,7 +21,7 @@ use Doctrine\ORM\EntityManager;
 class AclDbFactory implements FactoryInterface
 {
 
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         return new AclDb($container->get(EntityManager::class));
     }

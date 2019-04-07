@@ -31,7 +31,7 @@ use Doctrine\ORM\EntityManager;
  */
 class CashFlowControllerFactory implements FactoryInterface
 {
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $controller = new CashFlowController();
         $em = $container->get(EntityManager::class);

@@ -2,74 +2,71 @@
 
 namespace Version;
 
-/*
- * To change this license header, choose License Headers in Project Properties.
- * To change this template file, choose Tools | Templates
- * and open the template in the editor.
- */
+use Zend\Router\Http\Segment;
+use Zend\Router\Http\Literal;
 
-return array(
-    'controllers' => array(
-        'factories' => array(
+return [
+    'controllers' => [
+        'factories' => [
             'Version\Controller\VersionInfo' => Factory\Controller\VersionInfoControllerFactory::class,
-        ),
-    ),
-    'router' => array(
-        'routes' => array(
-            'version' => array(
-                'type' => 'Literal',
-                'options' => array(
+        ],
+    ],
+    'router' => [
+        'routes' => [
+            'version' => [
+                'type' => Literal::class,
+                'options' => [
                     'route' => '/version',
-                ),
+                ],
                 'may_terminate' => false,
-                'child_routes' => array(
-                    'version-info' => array(
-                        'type' => 'Segment',
-                        'options' => array(
+                'child_routes' => [
+                    'version-info' => [
+                        'type' => Segment::class,
+                        'options' => [
                             'route' => '/version-info[/:action]',
-                            'constraints' => array(
+                            'constraints' => [
                                 'action' => '[a-zA-Z][a-zA-Z0-9_-]*',
-                            ),
-                            'defaults' => array(
+                            ],
+                            'defaults' => [
                                 'controller' => 'Version\Controller\VersionInfo',
                                 'action' => 'index',
-                            ),
-                        ),
-                    ),
-                ),
-            ),
-        ),
-    ),
-    'view_manager' => array(
-        'strategies' => array(
+                            ],
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
+    'view_manager' => [
+        'strategies' => [
             'ViewJsonStrategy',
             'Zend\View\Strategy\PhpRendererStrategy',
-        ),
-        'template_path_stack' => array(
+        ],
+        'template_path_stack' => [
             __DIR__ . '/../view/',
-        ),
-        'template_map' => array(
+        ],
+        'template_map' => [
 //            'profile/template' => __DIR__ . '/../view/templates/profile.phtml',
-        ),
+        ],
         'display_exceptions' => true,
-    ),
-    'navigation' => array(
-        'default' => array(
-            array(
+    ],
+    'navigation' => [
+        'default' => [
+            [
                 'label' => 'Version',
                 'uri' => '#',
                 'icon' => 'fa fa-file-code-o',
                 'resource' => 'Version\Controller\VersionInfo',
                 'order' => 1000,
-                'pages' => array(
-                    array(
+                'pages' => [
+                    [
                         'label' => 'Sobre',
                         'route' => 'version/version-info',
                         'action' => 'index',
                         'icon' => 'fa fa-file-text-o'
-                    ),
-                ),
-            ),
-        ),
-    ),
-);
+                    ],
+                ],
+            ],
+        ],
+    ],
+];

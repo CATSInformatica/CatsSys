@@ -2,6 +2,9 @@
 
 namespace SchoolManagement;
 
+use Zend\Router\Http\Segment;
+use Zend\Router\Http\Literal;
+
 return [
     'controllers' => [
         'factories' => [
@@ -18,14 +21,14 @@ return [
     'router' => [
         'routes' => [
             'school-management' => [
-                'type' => 'Literal',
+                'type' => Literal::class,
                 'options' => [
                     'route' => '/school-management',
                 ],
                 'may_terminate' => false,
                 'child_routes' => [
                     'enrollment' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/enrollment[/:action[/:id]]',
                             'constraints' => [
@@ -40,7 +43,7 @@ return [
                         ],
                     ],
                     'student-class' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/student-class[/:action[/:id]]',
                             'constraints' => [
@@ -55,7 +58,7 @@ return [
                         ],
                     ],
                     'school-warning' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/school-warning[/:action[/:sid[/:swid]]]',
                             'constraints' => [
@@ -71,7 +74,7 @@ return [
                         ],
                     ],
                     'school-attendance' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/school-attendance/:action[/:id]',
                             'constraints' => [
@@ -85,7 +88,7 @@ return [
                         ],
                     ],
                     'study-resources' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/study-resources[/:action]',
                             'constraints' => [
@@ -98,7 +101,7 @@ return [
                         ],
                     ],
                     'school-subject' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/school-subject[/:action[/:id]]',
                             'constraints' => [
@@ -113,7 +116,7 @@ return [
                         ],
                     ],
                     'school-exam' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/school-exam[/:action[/:id]]',
                             'constraints' => [
@@ -128,7 +131,7 @@ return [
                         ],
                     ],
                     'school-exam-result' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/school-exam-result[/:action[/:id]]',
                             'constraints' => [

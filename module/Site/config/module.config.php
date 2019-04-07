@@ -2,6 +2,9 @@
 
 namespace Site;
 
+use Zend\Router\Http\Segment;
+use Zend\Router\Http\Literal;
+
 return [
     'controllers' => [
         'factories' => [
@@ -13,7 +16,7 @@ return [
     'router' => [
         'routes' => [
             'home' => [
-                'type' => 'Zend\Mvc\Router\Http\Literal',
+                'type' => Literal::class,
                 'options' => [
                     'route' => '/',
                     'defaults' => [
@@ -27,14 +30,14 @@ return [
             // module. Simply drop new controllers in, and you can access them
             // using the path /site/:controller/:action
             'site' => [
-                'type' => 'Segment',
+                'type' => Segment::class,
                 'options' => [
                     'route' => '/site',
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
                     'site-management' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/site-management[/:action[/:id]]',
                             'constraints' => [

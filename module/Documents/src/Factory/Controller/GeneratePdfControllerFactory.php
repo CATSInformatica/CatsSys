@@ -31,7 +31,7 @@ use Doctrine\ORM\EntityManager;
  */
 class GeneratePdfControllerFactory implements FactoryInterface
 {
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $controller = new GeneratePdfController();
         $em = $container->get(EntityManager::class);

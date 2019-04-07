@@ -15,7 +15,7 @@ use Zend\View\Helper\Navigation as NavigationHelper;
 
 class NavigationViewFactory implements FactoryInterface
 {
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $session = new SessionContainer('User');
         $role = $session->activeRole;

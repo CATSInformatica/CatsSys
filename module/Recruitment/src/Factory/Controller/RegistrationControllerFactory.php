@@ -34,7 +34,7 @@ class RegistrationControllerFactory implements FactoryInterface
 {
     use CreateEmailSenderService;
 
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $config = $container->get('config');
         $emailOptions = $config['email']['recruitment'];

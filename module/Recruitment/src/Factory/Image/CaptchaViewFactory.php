@@ -19,7 +19,7 @@ use Recruitment\View\Helper\CaptchaImage;
  */
 class CaptchaViewFactory implements FactoryInterface
 {
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         return new CaptchaImage();
     }

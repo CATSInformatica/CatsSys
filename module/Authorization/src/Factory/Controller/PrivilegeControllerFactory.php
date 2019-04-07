@@ -31,7 +31,7 @@ use Doctrine\ORM\EntityManager;
  */
 class PrivilegeControllerFactory implements FactoryInterface
 {
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $controller = new PrivilegeController();
         $em = $container->get(EntityManager::class);

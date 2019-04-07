@@ -30,7 +30,7 @@ use Recruitment\Controller\CsvViewerController;
  */
 class CaptchaControllerFactory implements FactoryInterface
 {
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $controller = new CsvViewerController();
         return $controller;

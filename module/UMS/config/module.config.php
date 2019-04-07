@@ -3,6 +3,8 @@
 namespace UMS;
 
 use UMS\Factory\UserInfoViewFactory;
+use Zend\Router\Http\Segment;
+use Zend\Router\Http\Literal;
 
 return [
     'controllers' => [
@@ -13,7 +15,7 @@ return [
     'router' => [
         'routes' => [
             'ums' => [
-                'type' => 'Literal',
+                'type' => Literal::class,
                 'options' => [
                     'route' => '/ums',
                     'defaults' => [
@@ -24,7 +26,7 @@ return [
                 'may_terminate' => true,
                 'child_routes' => [
                     'default' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/default[/:action]',
                             'constraints' => [

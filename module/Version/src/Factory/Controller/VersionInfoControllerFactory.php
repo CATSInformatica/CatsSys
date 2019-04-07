@@ -14,7 +14,7 @@ use Version\Controller\VersionInfoController;
 
 class IndexControllerFactory implements FactoryInterface
 {
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         return new VersionInfoController();
     }

@@ -8,6 +8,8 @@
 namespace Recruitment;
 
 use Authorization\Factory\Acl\CaptchaViewFactory;
+use Zend\Router\Http\Segment;
+use Zend\Router\Http\Literal;
 
 return [
     'controllers' => [
@@ -24,7 +26,7 @@ return [
     'router' => [
         'routes' => [
             'recruitment' => [
-                'type' => 'Literal',
+                'type' => Literal::class,
                 'options' => [
                     'route' => '/recruitment',
                     'defaults' => [
@@ -36,7 +38,7 @@ return [
                 'may_terminate' => true,
                 'child_routes' => [
                     'recruitment' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/recruitment[/:action[/:id]]',
                             'constraints' => [
@@ -51,7 +53,7 @@ return [
                         ],
                     ],
                     'registration' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/registration[/:action[/:id[/:sid]]]',
                             'constraints' => [
@@ -68,7 +70,7 @@ return [
                         ],
                     ],
                     'captcha' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/captcha[/:action[/:id]]',
                             'constraints' => [
@@ -83,7 +85,7 @@ return [
                         ],
                     ],
                     'pre-interview' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/pre-interview[/:action]',
                             'constraints' => [
@@ -96,7 +98,7 @@ return [
                         ],
                     ],
                     'interview' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/interview[/:action[/:id]]',
                             'constraints' => [
@@ -109,7 +111,7 @@ return [
                         ],
                     ],
                     'address' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/address[/:action]',
                             'constraints' => [
@@ -121,7 +123,7 @@ return [
                         ],
                     ],
                     'csv-viewer' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/csv-viewer[/:action]',
                             'constraints' => [

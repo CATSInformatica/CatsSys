@@ -32,7 +32,7 @@ use Doctrine\ORM\EntityManager;
 class RoleControllerFactory implements FactoryInterface
 {
 
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $controller = new RoleController();
         $em = $container->get(EntityManager::class);

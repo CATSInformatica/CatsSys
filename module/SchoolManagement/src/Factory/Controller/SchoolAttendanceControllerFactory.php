@@ -31,7 +31,7 @@ use Doctrine\ORM\EntityManager;
  */
 class SchoolAttendanceControllerFactory implements FactoryInterface
 {
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $controller = new SchoolAttendanceController($container->get('ViewRenderer'));
         $em = $container->get(EntityManager::class);

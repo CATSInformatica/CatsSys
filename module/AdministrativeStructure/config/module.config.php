@@ -2,6 +2,9 @@
 
 namespace AdministrativeStructure;
 
+use Zend\Router\Http\Segment;
+use Zend\Router\Http\Literal;
+
 return [
     'controllers' => [
         'factories' => [
@@ -13,14 +16,14 @@ return [
     'router' => [
         'routes' => [
             'administrative-structure' => [
-                'type' => 'Literal',
+                'type' => Literal::class,
                 'options' => [
                     'route' => '/administrative-structure',
                 ],
                 'may_terminate' => false,
                 'child_routes' => [
                     'department' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/department[/:action[/:id]]',
                             'constraints' => [
@@ -34,7 +37,7 @@ return [
                         ],
                     ],
                     'job' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/job[/:action[/:id]]',
                             'contraints' => [
@@ -47,7 +50,7 @@ return [
                         ],
                     ],
                     'documents' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/documents[/:action]',
                             'contraints' => [

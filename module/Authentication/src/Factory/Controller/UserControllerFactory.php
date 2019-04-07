@@ -32,7 +32,7 @@ use Doctrine\ORM\EntityManager;
 class UserControllerFactory implements FactoryInterface
 {
 
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $controller = new UserController();
         $em = $container->get(EntityManager::class);

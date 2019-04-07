@@ -2,6 +2,9 @@
 
 namespace Documents;
 
+use Zend\Router\Http\Segment;
+use Zend\Router\Http\Literal;
+
 return [
     'controllers' => [
         'factories' => [
@@ -13,14 +16,14 @@ return [
     'router' => [
         'routes' => [
             'documents' => [
-                'type' => 'Literal',
+                'type' => Literal::class,
                 'options' => [
                     'route' => '/documents',
                 ],
                 'may_terminate' => true,
                 'child_routes' => [
                     'student-bg-config' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/student-bg-config[/:action[/:id]]',
                             'constraints' => [
@@ -34,7 +37,7 @@ return [
                         ],
                     ],
                     'generate-pdf' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/generate-pdf/:action[/:id]',
                             'constraints' => [
@@ -47,7 +50,7 @@ return [
                         ],
                     ],
                     'student-answers-sheets' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/student-answers-sheets/:action[/:id]',
                             'constraints' => [

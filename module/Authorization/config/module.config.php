@@ -8,6 +8,9 @@
 
 namespace Authorization;
 
+use Zend\Router\Http\Segment;
+use Zend\Router\Http\Literal;
+
 return [
     'controllers' => [
         'factories' => [
@@ -20,7 +23,7 @@ return [
     'router' => [
         'routes' => [
             'authorization' => [
-                'type' => 'Literal',
+                'type' => Literal::class,
                 'options' => [
                     'route' => '/authorization',
                     'defaults' => [
@@ -31,7 +34,7 @@ return [
                 'may_terminate' => true,
                 'child_routes' => [
                     'default' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/index[/:action]',
                             'constraints' => [
@@ -45,7 +48,7 @@ return [
                         ],
                     ],
                     'role' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/role[/:action[/:id]]',
                             'constraints' => [
@@ -60,7 +63,7 @@ return [
                         ],
                     ],
                     'resource' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/resource[/:action[/:id]]',
                             'constraints' => [
@@ -75,7 +78,7 @@ return [
                         ],
                     ],
                     'privilege' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/privilege[/:action[/:id]]',
                             'constraints' => [

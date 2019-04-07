@@ -20,7 +20,7 @@ use Zend\Authentication\AuthenticationService;
  */
 class IsAllowedViewFactory implements FactoryInterface
 {
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $auth = $container->get(AuthenticationService::class);
         $acl = $container->get('acl');

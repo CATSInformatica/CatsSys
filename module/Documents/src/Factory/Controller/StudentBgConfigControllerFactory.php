@@ -31,7 +31,7 @@ use Doctrine\ORM\EntityManager;
  */
 class StudentBgConfigControllerFactory implements FactoryInterface
 {
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $controller = new StudentBgConfigController();
         $em = $container->get(EntityManager::class);

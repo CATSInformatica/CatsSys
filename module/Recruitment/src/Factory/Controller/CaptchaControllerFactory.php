@@ -30,7 +30,7 @@ use Recruitment\Controller\CaptchaController;
  */
 class CaptchaControllerFactory implements FactoryInterface
 {
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $controller = new CaptchaController();
         return $controller;

@@ -32,7 +32,7 @@ use Doctrine\ORM\EntityManager;
 class DocumentsControllerFactory implements FactoryInterface
 {
 
-    public function createService(ContainerInterface $container)
+    public function __invoke(ContainerInterface $container, $requestedName, array $options = null)
     {
         $controller = new DocumentsController();
         $controller->setEntityManager($container->get(EntityManager::class));

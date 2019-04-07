@@ -9,6 +9,8 @@
 namespace Authentication;
 
 use Zend\Authentication\AuthenticationService;
+use Zend\Router\Http\Segment;
+use Zend\Router\Http\Literal;
 
 return [
    'service_manager' => [
@@ -25,7 +27,7 @@ return [
     'router' => [
         'routes' => [
             'authentication' => [
-                'type' => 'Literal',
+                'type' => Literal::class,
                 'options' => [
                     'route' => '/authentication',
                     'defaults' => [
@@ -37,7 +39,7 @@ return [
                 'may_terminate' => true,
                 'child_routes' => [
                     'login' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/login[/:action]',
                             'constraints' => [
@@ -50,7 +52,7 @@ return [
                         ],
                     ],
                     'user' => [
-                        'type' => 'Segment',
+                        'type' => Segment::class,
                         'options' => [
                             'route' => '/user[/:action[/:id]]',
                             'constraints' => [
