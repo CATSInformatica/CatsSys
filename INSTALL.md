@@ -110,7 +110,7 @@ Em caso de sucesso você verá a mensagem:
 
 > [OK] Database schema created successfully!
 
-### DML
+### DML e Arquvos
 
 **Importante: Os comandos de DML devem ser executandos FORA do container de php (abrindo o terminal na pasta catssys apenas).**
 
@@ -118,6 +118,14 @@ Dentro da pasta `catssys` digite ou cole o comando:
 
 ```
 cat ./data/dev-helpers/catssys_data_*.sql | mysql -h 127.0.0.1 -u catssys -pcatssys catssys --port=13306
+```
+
+Arquivos de exemplo:
+
+```
+cp ./public/docs/dummy.pdf ./public/docs/201812.pdf
+cp ./public/docs/dummy.pdf ./public/docs/201711.pdf
+cp ./public/docs/dummy.pdf ./public/docs/201621.pdf
 ```
 
 ## <a name="step-three"></a> Terceira Parte (Recomendado)

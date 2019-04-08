@@ -459,23 +459,6 @@ return [
                         'action' => 'index',
                         'icon' => 'fa fa-list-alt',
                         'toolbar' => [
-                            [
-                                'url' => '/school-management/school-subject/delete/$id',
-                                'title' => 'Remover',
-                                'id' => 'subject-delete',
-                                'description' => 'Permite remover a disciplina selecionada',
-                                'class' => 'fa fa-trash-o bg-red',
-                                'fntype' => 'selectedAjaxClick',
-                                'hideOnSuccess' => true,
-                            ],
-                            [
-                                'url' => '/school-management/school-subject/edit/$id',
-                                'title' => 'Editar',
-                                'id' => 'subject-edit',
-                                'description' => 'Permite editar a disciplina selecionada',
-                                'class' => 'fa fa-pencil-square-o bg-blue',
-                                'fntype' => 'selectedHttpClick',
-                            ],
                         ],
                         'pages' => [
                             [

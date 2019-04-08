@@ -218,6 +218,7 @@ class SchoolSubjectController extends AbstractEntityActionController
             $message = 'Erro inesperado. Entre com contato com o administrador do sistema. ' .
                 'Erro: ' . $ex->getMessage();
         }
+
         return new JsonModel(array(
             'message' => $message,
             'error' => true,
