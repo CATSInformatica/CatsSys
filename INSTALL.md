@@ -85,7 +85,7 @@ Abra o terminal na pasta `catssys` e verifique se o mapeamento está correto:
 
 E1:
 ```
-    php public/index.php orm:validate-schema
+    vendor/bin/doctrine-module orm:validate-schema
 ```
 
 Em caso de sucesso você verá a mensagem
@@ -96,14 +96,14 @@ Criar as tabelas do banco de dados (em caso de falha utilize o parâmetro `--for
 
 E2:
 ```
-    php public/index.php orm:schema-tool:create
+    vendor/bin/doctrine-module orm:schema-tool:create
 ```
 
 A medida que novos objetos que representam tabelas do banco de dados vão sendo criados é possível atualizar o esquema do banco. Primeiramente, é preciso utilizar o comando E1 para verificar se o objeto foi criado corretamente (validar o código antes de criar as tabelas) em seguida é utilizado o comando abaixo:
 
 E3:
 ```
-    php public/index.php orm:schema-tool:update --force
+    vendor/bin/doctrine-module orm:schema-tool:update --force
 ```
 
 Em caso de sucesso você verá a mensagem:
