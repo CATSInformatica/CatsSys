@@ -24,7 +24,8 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="exam_result",
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="registration_exam_unique", columns={"registration_id", "exam_id"})
+ *          @ORM\UniqueConstraint(name="registration_exam_unique", columns={"registration_id", "exam_id"}),
+ *          @ORM\UniqueConstraint(name="enrollment_exam_unique", columns={"enrollment_id", "exam_id"})
  *      }
  * )
  * @ORM\Entity
@@ -49,6 +50,14 @@ class ExamResult
      * @ORM\JoinColumn(name="registration_id", referencedColumnName="registration_id", nullable=true)
      */
     private $registration;
+
+    /**
+     *
+     * @var SchoolManagement\Entity\Enrollment
+     * @ORM\ManyToOne(targetEntity="SchoolManagement\Entity\Enrollment")
+     * @ORM\JoinColumn(name="enrollment_id", referencedColumnName="enrollment_id", nullable=true)
+     */
+    private $enrollment;
 
     /**
      *
@@ -80,6 +89,11 @@ class ExamResult
         return $this->registration;
     }
 
+    public function getEnrollment()
+    {
+        return $this->enrollment;
+    }
+
     public function getAnswers()
     {
         return $this->answers;
@@ -93,6 +107,12 @@ class ExamResult
     public function setRegistration($registration)
     {
         $this->registration = $registration;
+        return $this;
+    }
+
+    public function setEnrollment($enrollment)
+    {
+        $this->enrollment = $enrollment;
         return $this;
     }
 

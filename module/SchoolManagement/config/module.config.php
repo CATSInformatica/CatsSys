@@ -458,8 +458,7 @@ return [
                         'route' => 'school-management/school-subject',
                         'action' => 'index',
                         'icon' => 'fa fa-list-alt',
-                        'toolbar' => [
-                        ],
+                        'toolbar' => [],
                         'pages' => [
                             [
                                 'label' => 'Edit Subject',
@@ -637,22 +636,22 @@ return [
                             ]
                         ],
                     ],
-//                    [
-//                        'label' => 'Upload answers (class)',
-//                        'route' => 'school-management/school-exam-result',
-//                        'action' => 'upload-answers-by-class',
-//                        'icon' => 'fa fa-cloud-upload',
-//                        'toolbar' => [
-//                            [
-//                                'url' => '/school-management/school-exam-result/save-student-answers',
-//                                'title' => 'Salvar',
-//                                'id' => 'save-student-answers',
-//                                'description' => 'Salva as respostas dos alunos selecionados',
-//                                'class' => 'fa fa-hdd-o bg-green',
-//                                'fntype' => 'ajaxPostClick',
-//                            ]
-//                        ],
-//                    ],
+                    [
+                        'label' => 'Upload answers (class)',
+                        'route' => 'school-management/school-exam-result',
+                        'action' => 'upload-answers-by-class',
+                        'icon' => 'fa fa-cloud-upload',
+                        'toolbar' => [
+                            [
+                                'url' => '/school-management/school-exam-result/save-answers',
+                                'title' => 'Salvar',
+                                'id' => 'save-student-answers',
+                                'description' => 'Salva as respostas dos alunos selecionados',
+                                'class' => 'fa fa-hdd-o bg-green',
+                                'fntype' => 'ajaxPostClick',
+                            ]
+                        ],
+                    ],
                     [
                         'label' => 'Upload answers (rec)',
                         'route' => 'school-management/school-exam-result',
@@ -663,7 +662,7 @@ return [
                                 'url' => '/school-management/school-exam-result/save-answers',
                                 'title' => 'Salvar',
                                 'id' => 'save-answers',
-                                'description' => 'Salva as respostas dos alunos/candidatos selecionados',
+                                'description' => 'Salva as respostas dos candidatos selecionados',
                                 'class' => 'fa fa-hdd-o bg-green',
                                 'fntype' => 'ajaxPostClick',
                             ]

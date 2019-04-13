@@ -29,6 +29,8 @@ use SchoolManagement\Entity\ExamResult;
 use Zend\Json\Json;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Recruitment\Entity\Registration;
+use SchoolManagement\Entity\Enrollment;
 
 /**
  * Correção de simulados a partir das respostas dos alunos e do gabarito oficial
@@ -144,29 +146,40 @@ class SchoolExamResultController extends AbstractEntityActionController
 
         if ($request->isPost()) {
             $data = $request->getPost();
+            $regOrEnrollment = 'registration';
+            $referecedEntityClass = Registration::class;
+
             try {
 
                 $em = $this->getEntityManager();
                 $exam = $em->getReference('SchoolManagement\Entity\Exam', $data['exam']);
 
-                foreach ($data['individuals'] as $c) {
+                if($data['isStudent']) {
+                    $regOrEnrollment = 'enrollment';
+                    $referecedEntityClass = Enrollment::class;
+                }
 
-                    $registration = $em->getReference('Recruitment\Entity\Registration', $c['registration']);
+                foreach ($data['individuals'] as $c) {
+                    $registrationOrEnrolment = $em->getReference($referecedEntityClass, $c['registrationOrEnrollment']);
                     $encodedAnswers = Json::encode([
                             'answers' => $c['answers'],
                             'parallels' => $c['parallels'],
                     ]);
 
                     $answerEntity = $em->getRepository('SchoolManagement\Entity\ExamResult')->findOneBy([
-                        'registration' => $c['registration'],
                         'exam' => $data['exam'],
+                        $regOrEnrollment => $c['registrationOrEnrollment'],
                     ]);
 
-                    if ($answerEntity === null) {
+                    if (!$answerEntity) {
                         $answerEntity = new ExamResult();
-                        $answerEntity
-                            ->setExam($exam)
-                            ->setRegistration($registration);
+                        $answerEntity->setExam($exam);
+
+                        if($data['isStudent']) {
+                            $answerEntity->setEnrollment($registrationOrEnrolment);
+                        } else {
+                            $answerEntity->setRegistration($registrationOrEnrolment);
+                        }
                     }
 
                     $answerEntity->setAnswers($encodedAnswers);
@@ -196,9 +209,10 @@ class SchoolExamResultController extends AbstractEntityActionController
             if (!empty($data)) {
 
                 $em = $this->getEntityManager();
+                $regOrEnrollment = $data['isStudent'] ? 'enrollment' : 'registration';
                 $examResult = $em->getRepository('SchoolManagement\Entity\ExamResult')->findOneBy([
-                    'registration' => $data['registration'],
-                    'exam' => $data['exam']
+                    'exam' => $data['exam'],
+                    $regOrEnrollment => $data['registrationOrEnrollment']
                 ]);
 
                 $answers = null;
@@ -397,7 +411,6 @@ class SchoolExamResultController extends AbstractEntityActionController
         } catch (\Exception $ex) {
 
         }
-
 
         return [];
     }
