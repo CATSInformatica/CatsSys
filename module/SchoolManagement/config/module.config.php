@@ -668,6 +668,14 @@ return [
                             ]
                         ],
                     ],
+                    [
+                        'label' => 'Exam application result',
+                        'route' => 'school-management/school-exam-result',
+                        'action' => 'result',
+                        'icon' => 'fa fa-cloud-upload',
+                        'toolbar' => [
+                        ],
+                    ],
                 ],
             ],
             [
