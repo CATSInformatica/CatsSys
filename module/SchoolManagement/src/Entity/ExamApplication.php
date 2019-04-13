@@ -65,6 +65,14 @@ class ExamApplication
      */
     private $recruitment;
 
+    /**
+     *
+     * @var SchoolManagement\Entity\StudentClass
+     * @ORM\ManyToOne(targetEntity="SchoolManagement\Entity\StudentClass")
+     * @ORM\JoinColumn(name="class_id", referencedColumnName="class_id", nullable=true)
+     */
+    private $studentClass;
+
     const EXAM_APP_CREATED = 'Criado';
     const EXAM_APP_APPLIED = 'Aplicado';
 
@@ -115,6 +123,11 @@ class ExamApplication
         return $this->recruitment;
     }
 
+    public function getStudentClass()
+    {
+        return $this->studentClass;
+    }
+
     /**
      * @param string $name
      * @return ExamApplication
@@ -138,6 +151,12 @@ class ExamApplication
     public function setRecruitment($recruitment = null)
     {
         $this->recruitment = $recruitment;
+        return $this;
+    }
+
+    public function setStudentClass($studentClass = null)
+    {
+        $this->studentClass = $studentClass;
         return $this;
     }
 

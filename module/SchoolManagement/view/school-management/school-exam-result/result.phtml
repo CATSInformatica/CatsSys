@@ -6,35 +6,53 @@
         <div class="box-body">
             <div class="row">
                 <div class="col-md-8 col-md-offset-2 col-xs-12">
-                    <div class="col-md-12">
+                    <div class="col-md-6 col-xs-12">
                         <div class="form-group">
                             <label>Aplicação</label>
                             <select id="application" class="form-control">
                                 <?php foreach ($apps as $app): ?>
                                     <?php $r = $app->getRecruitment(); ?>
-                                    <option value="<?php echo $app->getExamApplicationId(); ?>"> <?php echo ' [' . (empty($r) ? 'SEM PSA' : $r->getRecruitmentYn())  . '] ' .  $app->getName(); ?>
+                                    <option value="<?php echo $app->getExamApplicationId(); ?>">
+                                        <?php echo ' [' . (empty($r) ? 'SEM PSA' : $r->getRecruitmentYn())  . '] ' .  $app->getName(); ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                     </div>
-                    <div class="col-md-12">
+                    <div class="col-md-6 col-xs-12">
                         <div class="form-group">
+                            <label>Simulado ou Processo Seletivo?</label>
+                            <select id="classExamOrRecruitmentExam" class="form-control">
+                                <option value="" selected disabled>Simulado ou PSA</option>
+                                <option value="simulado">Simulado</option>
+                                <option value="psa">Processo Seletivo</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12">
+                        <div class="form-group" id="simuladoSelect" style="display:none">
+                            <label>Turmas</label>
+                            <select id="examClass" class="form-control">
+                                <?php foreach ($classes as $cl): ?>
+                                    <option value="<?php echo $cl->getClassId(); ?>">  <?php echo $cl->getClassName(); ?></option>
+                                <?php endforeach; ?>
+                            </select>
+                        </div>
+                        <div class="form-group" id="psaSelect" style="display:none">
                             <label>Processo Seletivo de Alunos</label>
-                            <select id="recruitment" class="form-control" readonly>
+                            <select id="recruitment" class="form-control">
                                 <option value="<?php echo $rec['id']; ?>">  <?php echo $rec['desc']; ?>
                                 </option>
                             </select>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <br>
-                        <div class="col-md-6">
-                            <button id="fetch-new-data" class="btn btn-primary btn-flat btn-block"> <i class="fa fa-magic"></i> Carregar </button>
-                        </div>
-                        <div class="col-md-6">
-                            <button id="fetch-current-data" class="btn btn-default btn-flat btn-block"> <i class="fa fa-magic"></i> Resultado Salvo </button>
-                        </div>
+                </div>
+                <div class="col-md-8 col-md-offset-2 col-xs-12">
+                <div class="col-md-6">
+                        <button id="fetch-new-data" class="btn btn-primary btn-flat btn-block" disabled> <i class="fa fa-magic"></i> Carregar </button>
+                    </div>
+                    <div class="col-md-6">
+                        <button id="fetch-current-data" class="btn btn-default btn-flat btn-block" disabled> <i class="fa fa-magic"></i> Resultado Salvo </button>
                     </div>
                 </div>
             </div>
@@ -65,8 +83,18 @@
     <div class="box box-success" id="definitions">
         <div class="box-header with-border">
             <h3 class="box-title"><i class="fa fa-columns"></i> Resultado</h3>
+            <span>Clique no botão salvar para salvar a classificação da aplicação de prova</span>
         </div>
         <div class="box-body">
+            <div class="row">
+                <div class="col-md-8 col-md-offset-2">
+                    <button id="save-result" class="btn btn-app" disabled>
+                        <i class="fa fa-save"></i>
+                        Salvar
+                        <span class="badge bg-green" id="resultProgress">0/0</span>
+                    </button>
+                </div>
+            </div>
             <div class="row">
                 <div id="result-container" class="col-md-10 col-md-offset-1 col-xs-12">
                 </div>

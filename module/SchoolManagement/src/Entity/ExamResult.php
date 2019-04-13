@@ -28,7 +28,7 @@ use Doctrine\ORM\Mapping as ORM;
  *          @ORM\UniqueConstraint(name="enrollment_exam_unique", columns={"enrollment_id", "exam_id"})
  *      }
  * )
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="SchoolManagement\Entity\Repository\ExamResultRepository")
  * @author Márcio Dias <marciojr91@gmail.com>
  */
 class ExamResult

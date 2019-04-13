@@ -31,6 +31,7 @@ use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 use Recruitment\Entity\Registration;
 use SchoolManagement\Entity\Enrollment;
+use SchoolManagement\Entity\StudentClass;
 
 /**
  * Correção de simulados a partir das respostas dos alunos e do gabarito oficial
@@ -85,10 +86,10 @@ class SchoolExamResultController extends AbstractEntityActionController
 
             $applications = $em->getRepository('SchoolManagement\Entity\ExamApplication')
                 ->findBy([
-                'status' => ExamApplication::EXAM_APP_CREATED
+                    'status' => ExamApplication::EXAM_APP_CREATED
                 ], [
-                'examApplicationId' => 'desc',
-            ]);
+                    'examApplicationId' => 'desc',
+                ]);
 
             return new ViewModel([
                 'classes' => $classes,
@@ -116,16 +117,16 @@ class SchoolExamResultController extends AbstractEntityActionController
 
             $recruitments = $em->getRepository('Recruitment\Entity\Recruitment')->findBy([
                 'recruitmentType' => Recruitment::STUDENT_RECRUITMENT_TYPE
-                ], [
+            ], [
                 'recruitmentId' => 'desc'
             ]);
 
             $applications = $em->getRepository('SchoolManagement\Entity\ExamApplication')
                 ->findBy([
-                'status' => ExamApplication::EXAM_APP_CREATED
+                    'status' => ExamApplication::EXAM_APP_CREATED
                 ], [
-                'examApplicationId' => 'desc',
-            ]);
+                    'examApplicationId' => 'desc',
+                ]);
 
             return new ViewModel([
                 'recruitments' => $recruitments,
@@ -154,7 +155,7 @@ class SchoolExamResultController extends AbstractEntityActionController
                 $em = $this->getEntityManager();
                 $exam = $em->getReference('SchoolManagement\Entity\Exam', $data['exam']);
 
-                if($data['isStudent']) {
+                if ($data['isStudent']) {
                     $regOrEnrollment = 'enrollment';
                     $referecedEntityClass = Enrollment::class;
                 }
@@ -162,8 +163,8 @@ class SchoolExamResultController extends AbstractEntityActionController
                 foreach ($data['individuals'] as $c) {
                     $registrationOrEnrolment = $em->getReference($referecedEntityClass, $c['registrationOrEnrollment']);
                     $encodedAnswers = Json::encode([
-                            'answers' => $c['answers'],
-                            'parallels' => $c['parallels'],
+                        'answers' => $c['answers'],
+                        'parallels' => $c['parallels'],
                     ]);
 
                     $answerEntity = $em->getRepository('SchoolManagement\Entity\ExamResult')->findOneBy([
@@ -175,7 +176,7 @@ class SchoolExamResultController extends AbstractEntityActionController
                         $answerEntity = new ExamResult();
                         $answerEntity->setExam($exam);
 
-                        if($data['isStudent']) {
+                        if ($data['isStudent']) {
                             $answerEntity->setEnrollment($registrationOrEnrolment);
                         } else {
                             $answerEntity->setRegistration($registrationOrEnrolment);
@@ -239,10 +240,10 @@ class SchoolExamResultController extends AbstractEntityActionController
 
         $applications = $em->getRepository('SchoolManagement\Entity\ExamApplication')
             ->findBy([
-            'status' => ExamApplication::EXAM_APP_CREATED
+                'status' => ExamApplication::EXAM_APP_CREATED
             ], [
-            'examApplicationId' => 'desc',
-        ]);
+                'examApplicationId' => 'desc',
+            ]);
 
         return new ViewModel([
             'apps' => $applications,
@@ -264,8 +265,8 @@ class SchoolExamResultController extends AbstractEntityActionController
 
                 $exam = $em->find('SchoolManagement\Entity\Exam', $id);
                 $config = Json::decode($exam
-                            ->getContent()
-                            ->getConfig(), Json::TYPE_ARRAY);
+                    ->getContent()
+                    ->getConfig(), Json::TYPE_ARRAY);
                 $ansJson = $exam->getAnswers();
 
                 $answers = !empty($ansJson) ? Json::decode($exam->getAnswers()) : null;
@@ -299,7 +300,7 @@ class SchoolExamResultController extends AbstractEntityActionController
         $request = $this->getRequest();
 
         if ($request->isPost()) {
-            $data = (array) $request->getPost();
+            $data = (array)$request->getPost();
 
             if (!empty($data['templates'])) {
 
@@ -339,15 +340,16 @@ class SchoolExamResultController extends AbstractEntityActionController
     {
         try {
 
-
             $em = $this->getEntityManager();
 
             $applications = $em->getRepository('SchoolManagement\Entity\ExamApplication')
                 ->findBy([
-                'status' => ExamApplication::EXAM_APP_CREATED
+                    'status' => ExamApplication::EXAM_APP_CREATED
                 ], [
-                'examApplicationId' => 'desc',
-            ]);
+                    'examApplicationId' => 'desc',
+                ]);
+
+            $classes = $em->getRepository('SchoolManagement\Entity\StudentClass')->findByEndDateGratherThan(new DateTime());
 
             $lastRecruitment = $em->getRepository('Recruitment\Entity\Recruitment')->findNotEndedByTypeAsArray(Recruitment::STUDENT_RECRUITMENT_TYPE);
 
@@ -357,6 +359,7 @@ class SchoolExamResultController extends AbstractEntityActionController
             ];
 
             return new ViewModel([
+                'classes' => $classes,
                 'apps' => $applications,
                 'rec' => $rec
             ]);
@@ -377,30 +380,40 @@ class SchoolExamResultController extends AbstractEntityActionController
     public function getAllAnswersAction()
     {
         try {
-
             $examId = $this->params('id', false);
+            $isStudent = $this->getRequest()->getQuery('isStudent');
 
             if ($examId) {
-
                 $em = $this->getEntityManager();
-                $examAnswers = $em->getRepository('SchoolManagement\Entity\ExamResult')->findBy([
-                    'exam' => $examId
-                ]);
+                $examAnswers = $em->getRepository(ExamResult::class)->findAllAnswersForClassOrRecruitment($examId, (bool)$isStudent);
 
                 $answers = [];
-
                 foreach ($examAnswers as $ea) {
-                    $registration = $ea->getRegistration();
-                    $person = $registration->getPerson();
-                    $status = $registration->getCurrentRegistrationStatus()->getRecruitmentStatus()->getStatusType();
-                    $answers[] = [
-                        'registrationId' => $registration->getRegistrationId(),
-                        'registrationNumber' => $registration->getRegistrationNumber(),
-                        'currentStatus' => $status,
-                        'enrollment' => null,
+                    $data = [
                         'answers' => Json::decode($ea->getAnswers()),
-                        'birth' => $person->getPersonBirthday(),
                     ];
+
+                    if ($isStudent) {
+                        $enr = $ea->getEnrollment();
+                        $registration = $enr->getRegistration();
+                        $person = $registration->getPerson();
+
+                        $data['registrationOrEnrollment'] = $enr->getEnrollmentId();
+                        $data['birth'] = $person->getPersonBirthday();
+                        $data['fullname'] = $person->getPersonName();
+                    } else {
+                        $registration = $ea->getRegistration();
+                        $person = $registration->getPerson();
+                        $status = $registration->getCurrentRegistrationStatus()->getRecruitmentStatus()->getStatusType();
+
+                        $data['registrationOrEnrollment'] = $registration->getRegistrationId();
+                        $data['registrationNumber'] = $registration->getRegistrationNumber();
+                        $data['currentStatus'] = $status;
+                        $data['birth'] = $person->getPersonBirthday();
+                        $data['fullname'] = $person->getPersonName();
+                    }
+
+                    $answers[] = $data;
                 }
 
                 return new JsonModel([
@@ -408,9 +421,7 @@ class SchoolExamResultController extends AbstractEntityActionController
                     'answers' => $answers
                 ]);
             }
-        } catch (\Exception $ex) {
-
-        }
+        } catch (\Exception $ex) { }
 
         return [];
     }
@@ -422,45 +433,56 @@ class SchoolExamResultController extends AbstractEntityActionController
         if ($request->isPost()) {
             $data = $request->getPost();
 
-            if (!empty($data['results']) && !empty($data['application']) && !empty($data['recruitment'])) {
-
+            if (!empty($data['results']) && !empty($data['application']) && !empty($data['recruitmentOrClass'])) {
                 try {
-
                     $em = $this->getEntityManager();
+                    $app = $em->getReference(ExamApplication::class, $data['application']);
+                    $registrationOrEnrollment = 'registration';
+                    $referencedClass = Registration::class;
 
-                    $app = $em->getReference('SchoolManagement\Entity\ExamApplication', $data['application']);
-
-                    $rec = $em->getReference('Recruitment\Entity\Recruitment', $data['recruitment']);
-                    $app->setRecruitment($rec);
-
+                    if($data['isStudent']) {
+                        $studentClass = $em->getReference(StudentClass::class, $data['recruitmentOrClass']);
+                        $app->setStudentClass($studentClass);
+                        $registrationOrEnrollment = 'enrollment';
+                        $referencedClass = Enrollment::class;
+                    } else {
+                        $rec = $em->getReference(Recruitment::class, $data['recruitmentOrClass']);
+                        $app->setRecruitment($rec);
+                    }
 
                     foreach ($data['results'] as $result) {
 
-                        $appResult = $em->getRepository('SchoolManagement\Entity\ExamApplicationResult')->findOneBy([
+                        $appResult = $em->getRepository(ExamApplicationResult::class)->findOneBy([
                             'application' => $data['application'],
-                            'registration' => $result['registrationId']
+                            $registrationOrEnrollment => $result['registrationOrEnrollment']
                         ]);
 
                         if ($appResult === null) {
 
-                            $reg = $em->getReference('Recruitment\Entity\Registration', $result['registrationId']);
+                            $regOrEnroll = $em->getReference($referencedClass, $result['registrationOrEnrollment']);
                             $appResult = new ExamApplicationResult();
 
                             $appResult
                                 ->setApplication($app)
-                                ->setRegistration($reg)
                                 ->setResult(Json::encode([
-                                        'partialResult' => $result['partialResult'],
-                                        'result' => $result['result'],
-                                        'groups' => $result['groups'],
-                                        'position' => $result['position']
-                            ]));
-                        } else {
-                            $appResult->setResult(Json::encode([
                                     'partialResult' => $result['partialResult'],
                                     'result' => $result['result'],
                                     'groups' => $result['groups'],
                                     'position' => $result['position']
+                                ]));
+
+                            if($data['isStudent']) {
+                                $appResult->setEnrollment($regOrEnroll);
+                            } else {
+                                $appResult->setRegistration($regOrEnroll);
+                            }
+
+                        } else {
+                            $appResult->setResult(Json::encode([
+                                'partialResult' => $result['partialResult'],
+                                'result' => $result['result'],
+                                'groups' => $result['groups'],
+                                'position' => $result['position']
                             ]));
                         }
 
@@ -468,7 +490,6 @@ class SchoolExamResultController extends AbstractEntityActionController
                     }
 
                     $em->persist($app);
-
                     $em->flush();
 
                     return new JsonModel([
@@ -490,30 +511,40 @@ class SchoolExamResultController extends AbstractEntityActionController
     {
         $id = $this->params('id', false);
 
+        $isStudent = $this->getRequest()->getQuery('isStudent');
+
         if ($id) {
 
             $em = $this->getEntityManager();
-
-            $appResults = $em->getRepository('SchoolManagement\Entity\ExamApplicationResult')->findBy([
-                'application' => $id,
-            ]);
+            $appResults = $em->getRepository(ExamApplicationResult::class)->findAllAnswersForClassOrRecruitment($id, $isStudent);
 
             $results = [];
             foreach ($appResults as $res) {
-
-                $reg = $res->getRegistration();
                 $r = Json::decode($res->getResult(), Json::TYPE_ARRAY);
-                $status = $reg->getCurrentRegistrationStatus()->getRecruitmentStatus()->getStatusType();
-
-                $results[] = [
-                    'registrationId' => $reg->getRegistrationId(),
-                    'registrationNumber' => $reg->getRegistrationNumber(),
+                $data = [
                     'partialResult' => $r['partialResult'],
-                    'currentStatus' => $status,
                     'result' => $r['result'],
                     'groups' => $r['groups'],
                     'position' => $r['position']
                 ];
+
+                if ($isStudent) {
+                    $enr = $res->getEnrollment();
+                    $registration = $enr->getRegistration();
+                    $person = $registration->getPerson();
+
+                    $data['registrationOrEnrollment'] = $enr->getEnrollmentId();
+                    $data['fullname'] = $person->getPersonName();
+                } else {
+                    $reg = $res->getRegistration();
+                    $status = $reg->getCurrentRegistrationStatus()->getRecruitmentStatus()->getStatusType();
+
+                    $data['registrationOrEnrollment'] = $reg->getRegistrationId();
+                    $data['registrationNumber'] = $reg->getRegistrationNumber();
+                    $data['currentStatus'] = $status;
+                }
+
+                $results[] = $data;
             }
 
             return new JsonModel($results);

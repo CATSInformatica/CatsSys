@@ -24,10 +24,11 @@ use Doctrine\ORM\Mapping as ORM;
  *
  * @ORM\Table(name="exam_application_result",
  *      uniqueConstraints={
- *          @ORM\UniqueConstraint(name="registration_application_unique", columns={"registration_id", "exam_application_id"})
+ *          @ORM\UniqueConstraint(name="registration_application_unique", columns={"registration_id", "exam_application_id"}),
+ *          @ORM\UniqueConstraint(name="enrollment_application_unique", columns={"enrollment_id", "exam_application_id"})
  *      }
  * )
- * @ORM\Entity
+ * @ORM\Entity(repositoryClass="SchoolManagement\Entity\Repository\ExamApplicationResultRepository")
  * @author Márcio Dias <marciojr91@gmail.com>
  */
 class ExamApplicationResult
@@ -49,6 +50,14 @@ class ExamApplicationResult
      * @ORM\JoinColumn(name="registration_id", referencedColumnName="registration_id", nullable=true)
      */
     private $registration;
+
+    /**
+     *
+     * @var SchoolManagement\Entity\Enrollment
+     * @ORM\ManyToOne(targetEntity="SchoolManagement\Entity\Enrollment")
+     * @ORM\JoinColumn(name="enrollment_id", referencedColumnName="enrollment_id", nullable=true)
+     */
+    private $enrollment;
 
     /**
      *
@@ -80,6 +89,11 @@ class ExamApplicationResult
         return $this->registration;
     }
 
+    public function getEnrollment()
+    {
+        return $this->enrollment;
+    }
+
     public function getResult()
     {
         return $this->result;
@@ -93,6 +107,12 @@ class ExamApplicationResult
     public function setRegistration($registration)
     {
         $this->registration = $registration;
+        return $this;
+    }
+
+    public function setEnrollment($enrollment)
+    {
+        $this->enrollment = $enrollment;
         return $this;
     }
 

@@ -668,22 +668,6 @@ return [
                             ]
                         ],
                     ],
-                    [
-                        'label' => 'Exam application result',
-                        'route' => 'school-management/school-exam-result',
-                        'action' => 'result',
-                        'icon' => 'fa fa-cloud-upload',
-                        'toolbar' => [
-                            [
-                                'url' => '/school-management/school-exam-result/save-result',
-                                'title' => 'Salvar Resultado',
-                                'id' => 'save-result',
-                                'description' => 'Salva o resultado da aplicação de prova',
-                                'class' => 'fa fa-hdd-o bg-green',
-                                'fntype' => 'ajaxPostClick',
-                            ]
-                        ],
-                    ],
                 ],
             ],
             [
