@@ -24,7 +24,7 @@ class DefaultPdf extends FPDF
     {
         $this->SetXY(5, 5);
         // Logo
-        $this->Image(self::BASE_PATH . '/../../../../../public/img'
+        $this->Image(self::BASE_PATH . '/../../../..s/public/img'
                 . '/logo_prova.png', 10, 5, 28);
         // Arial bold 12
         $this->SetFont('Arial', 'B', 12);
