@@ -27,7 +27,7 @@ use FPDF;
  */
 class StudentsBoardPdf
 {
-    const BASE_PATH = __DIR__ . '/../../../../..';
+    const BASE_PATH = __DIR__ . '/../../../..';
 
     // Dimensões das margens da página (mm)
     const VERTICAL_MARGIN   = 12;
