@@ -44,7 +44,7 @@ class StudentInterviewForm extends Form implements InputFilterProviderInterface
 
         $this->add([
                 'name' => 'descIntro',
-                'type' => 'Multicheckbox',
+                'type' => 'multiCheckbox',
                 'options' => [
                     'label' => 'Para iniciar a entrevista, e manter o clima leve,
                 neste momento iniciaremos as apresentações.',
@@ -61,7 +61,7 @@ class StudentInterviewForm extends Form implements InputFilterProviderInterface
             ])
             ->add([
                 'name' => 'descSocioVul',
-                'type' => 'Multicheckbox',
+                'type' => 'multiCheckbox',
                 'options' => [
                     'label' => 'De acordo com as respostas da pré-entrevista, '
                     . 'peça para que o candidato comente o itens abaixo e, '
@@ -73,7 +73,7 @@ class StudentInterviewForm extends Form implements InputFilterProviderInterface
             ])
             ->add([
                 'name' => 'descStudent1',
-                'type' => 'Multicheckbox',
+                'type' => 'multiCheckbox',
                 'options' => [
                     'label' => 'Aqui as perguntas são diretas, o formato da conversa
                 será quase um quiz. O candidato irá se sentir pressionado e,
@@ -95,7 +95,7 @@ class StudentInterviewForm extends Form implements InputFilterProviderInterface
             ])
             ->add([
                 'name' => 'descStudent2',
-                'type' => 'Multicheckbox',
+                'type' => 'multiCheckbox',
                 'options' => [
                     'label' => 'Sobre as nossas atividades:',
                     'value_options' => [
