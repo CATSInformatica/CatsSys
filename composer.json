@@ -10,7 +10,7 @@
     "require": {
         "php": ">=7.1",
         "evandotpro/edp-module-layouts": "^1.0",
-        "doctrine/doctrine-orm-module": "^1.1",
+        "doctrine/doctrine-orm-module": "^2.1",
         "neilime/zf2-twb-bundle": "^3.3",
         "setasign/fpdf": "^1.8",
         "zendframework/zend-captcha": "^2.8",
