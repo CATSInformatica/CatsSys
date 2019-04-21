@@ -38,5 +38,4 @@ class JobControllerFactory implements FactoryInterface
         $controller->setEntityManager($container->get(EntityManager::class));
         return $controller;
     }
-
 }

@@ -28,8 +28,10 @@ class UserService
      */
     public static function verifyHashedPassword(User $user, $passwordGiven)
     {
-        $bcrypt = new Bcrypt(array('cost' => 10));
-        $bcrypt->setSalt( $user->getUserPasswordSalt());
+        $bcrypt = new Bcrypt([
+            'cost' => 10
+        ]);
+
         return $bcrypt->verify($passwordGiven, $user->getUserPassword());
     }
 
@@ -42,16 +44,11 @@ class UserService
      */
     public static function encryptPassword($password)
     {
-
-        $bcrypt = new Bcrypt(array('cost' => 10));
-        $passwordSalt = $bcrypt->create($password);
-        $bcrypt->setSalt($passwordSalt);
+        $bcrypt = new Bcrypt([
+            'cost' => 10
+        ]);
         $encryptedPassword  = $bcrypt->create($password);
 
-        return array(
-            'password' => $encryptedPassword,
-            'password_salt' => $passwordSalt,
-        );
+        return $encryptedPassword;
     }
-
 }

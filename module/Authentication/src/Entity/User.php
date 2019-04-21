@@ -2,12 +2,12 @@
 
 namespace Authentication\Entity;
 
-use Authentication\Service\UserService;
 use Authorization\Entity\Role;
 use DateTime;
 use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\ORM\Mapping as ORM;
+use Authentication\Service\UserService;
 
 /**
  * User
@@ -40,13 +40,6 @@ class User
      * @ORM\Column(name="user_password", type="string", length=60, nullable=false)
      */
     private $userPassword;
-
-    /**
-     * @var string
-     *
-     * @ORM\Column(name="user_password_salt", type="string", length=60, nullable=false)
-     */
-    private $userPasswordSalt;
 
     /**
      * @var boolean
@@ -121,9 +114,9 @@ class User
      */
     public function setUserPassword($userPassword)
     {
-        $pass = UserService::encryptPassword($userPassword);
-        $this->userPassword = $pass['password'];
-        return $this->setUserPasswordSalt($pass['password_salt']);
+        $this->userPassword = UserService::encryptPassword($userPassword);
+
+        return $this;
     }
 
     /**
@@ -134,30 +127,6 @@ class User
     public function getUserPassword()
     {
         return $this->userPassword;
-    }
-
-    /**
-     * Set userPasswordSalt
-     *
-     * @param string $userPasswordSalt
-     *
-     * @return User
-     */
-    public function setUserPasswordSalt($userPasswordSalt)
-    {
-        $this->userPasswordSalt = $userPasswordSalt;
-
-        return $this;
-    }
-
-    /**
-     * Get userPasswordSalt
-     *
-     * @return string
-     */
-    public function getUserPasswordSalt()
-    {
-        return $this->userPasswordSalt;
     }
 
     /**
@@ -243,5 +212,4 @@ class User
     {
         return $this->role;
     }
-
 }

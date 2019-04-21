@@ -10,7 +10,6 @@ use Zend\View\Model\ViewModel;
 
 class UserController extends AbstractEntityActionController
 {
-
     // R -retrieve 	CRUD
     public function indexAction()
     {

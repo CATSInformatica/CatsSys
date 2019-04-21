@@ -23,7 +23,6 @@ use AdministrativeStructure\Entity\Job;
 use AdministrativeStructure\Entity\Office;
 use AdministrativeStructure\Form\JobForm;
 use Authentication\Entity\User;
-use Authentication\Service\UserService;
 use Database\Controller\AbstractEntityActionController;
 use Doctrine\Common\Collections\ArrayCollection;
 use Exception;
@@ -41,7 +40,6 @@ use Zend\View\Model\ViewModel;
  */
 class JobController extends AbstractEntityActionController
 {
-
     /**
      * Exibe os cargos criados, o cargo superior e cargos subordinados.
      *
@@ -522,12 +520,10 @@ class JobController extends AbstractEntityActionController
             $user = new User();
             $userName = $person->getPersonEmail();
             $userPassword = preg_replace('/[.,-]/', '', $person->getPersonCpf());
-            $pass = UserService::encryptPassword($userPassword);
 
             $user
                 ->setUserName($userName)
-                ->setUserPassword($pass['password'])
-                ->setUserPasswordSalt($pass['password_salt'])
+                ->setUserPassword($userPassword)
                 ->setUserActive(true);
 
             $person->setUser($user);
