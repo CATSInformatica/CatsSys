@@ -26,6 +26,7 @@ use FinancialManagement\Entity\Repository\MonthlyBalanceRepository;
 use FinancialManagement\Entity\Repository\MonthlyPaymentRepository;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use Doctrine\DBAL\Exception\UniqueConstraintViolationException;
 
 /**
  * Permite manipular a mensalidade dos alunos de uma turma.
@@ -129,6 +130,13 @@ class MonthlyPaymentController extends AbstractDbalAndEntityActionController
                     'callback' => $payments
                 ]);
             } catch (Exception $ex) {
+
+                if($ex instanceof UniqueConstraintViolationException) {
+                    return new JsonModel([
+                        'message' => 'Mensalidade já cadastrada. Para alterar o valor, remova a mensalidade cadastrada.',
+                    ]);
+                }
+
                 return new JsonModel([
                     'message' => 'Erro ao salvar as mesalidades. Erro: ' . $ex->getMessage(),
                 ]);

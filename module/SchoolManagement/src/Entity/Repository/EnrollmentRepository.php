@@ -11,7 +11,6 @@ use Doctrine\ORM\EntityRepository;
  */
 class EnrollmentRepository extends EntityRepository
 {
-
     public function findAllCurrentStudents($params)
     {
         return $this->_em
@@ -19,7 +18,21 @@ class EnrollmentRepository extends EntityRepository
                     . 'FROM SchoolManagement\Entity\Enrollment e '
                     . 'JOIN e.registration r '
                     . 'JOIN r.person p '
-                    . 'WHERE e.class = :class AND e.enrollmentEndDate IS NULL '
+                    . 'WHERE e.class = :class AND e.enrollmentEndDate is NULL '
+                    . 'ORDER BY p.personFirstName ASC'
+                )
+                ->setParameters($params)
+                ->getResult();
+    }
+
+    public function findAllStudents($params)
+    {
+        return $this->_em
+                ->createQuery('SELECT e.enrollmentId, e.enrollmentEndDate, p.personFirstName, p.personLastName, r.registrationId '
+                    . 'FROM SchoolManagement\Entity\Enrollment e '
+                    . 'JOIN e.registration r '
+                    . 'JOIN r.person p '
+                    . 'WHERE e.class = :class '
                     . 'ORDER BY p.personFirstName ASC'
                 )
                 ->setParameters($params)

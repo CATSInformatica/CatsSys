@@ -28,6 +28,7 @@ use SchoolManagement\Form\StudentClassFilter;
 use SchoolManagement\Form\StudentClassForm;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
+use SchoolManagement\Entity\Enrollment;
 
 /**
  * Permite manipular turmas
@@ -169,9 +170,11 @@ class StudentClassController extends AbstractEntityActionController
                 try {
                     $em = $this->getEntityManager();
 
-                    $students = $em->getRepository('SchoolManagement\Entity\Enrollment')->findAllCurrentStudents(array(
-                        'class' => $data['id'],
-                    ));
+                    $all = $data['all'] ?? 0;
+                    $params = ['class' => $data['id']];
+
+                    $repo = $em->getRepository(Enrollment::class);
+                    $students = !$all ? $repo->findAllCurrentStudents($params) : $repo->findAllStudents($params);
 
                     return new JsonModel([
                         'students' => $students,
@@ -241,7 +244,7 @@ class StudentClassController extends AbstractEntityActionController
 
                 $students = $em->getRepository('SchoolManagement\Entity\Enrollment')->findByClass($id);
 
-                foreach($students as &$st) {
+                foreach ($students as &$st) {
                     $person = $em->getReference('Recruitment\Entity\Person', $st['personId']);
                     $address = $person->getAddresses()->toArray()[0];
                     $st['address'] = [

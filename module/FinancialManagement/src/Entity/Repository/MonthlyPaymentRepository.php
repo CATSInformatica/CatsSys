@@ -57,7 +57,6 @@ class MonthlyPaymentRepository extends EntityRepository
                 . 'mp.monthly_payment_type')
             ->from('enrollment', 'e')
             ->leftJoin('e', 'monthly_payment', 'mp', 'e.enrollment_id = mp.enrollment_id')
-            ->where('e.enrollment_enddate IS NULL')
             ->andWhere('e.class_id = ?')
             ->andWhere('mp.monthly_payment_month = ? OR mp.monthly_payment_month IS NULL')
             ->setParameters([$sclass, $month])

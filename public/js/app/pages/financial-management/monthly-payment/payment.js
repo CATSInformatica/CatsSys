@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -33,7 +33,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
         var WAITING_PAYMENT = 'AGUARDANDO PAGAMENTO';
         /**
          * Calendário para visualização da mesalidades
-         * 
+         *
          * @param {type} monthElement
          * @returns {undefined}
          */
@@ -78,7 +78,8 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                 url: '/school-management/student-class/getStudents',
                 type: 'POST',
                 data: {
-                    id: id
+                    id: id,
+                    all: 1
                 },
                 success: function (data) {
                     students = data.students;
@@ -91,7 +92,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
         };
         /**
          * Busca as mensalidades no mês month da turma sclass.
-         * 
+         *
          * @param int month
          * @returns {undefined}
          */
@@ -118,17 +119,20 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
         };
         /**
          * Organiza os nomes dos alunos e seus pagamentos.
-         * 
+         *
          * @param int month
          * @returns {undefined}
          */
         sortPaymentData = function (month) {
+            var sed = null;
             for (var i = 0; i < students.length; i++) {
                 if (typeof payments[students[i].enrollmentId] === "undefined") {
 
+                    sed = students[i].enrollmentEndDate;
+
                     payments[students[i].enrollmentId] = {
-                        name: students[i].personFirstName + " " +
-                                students[i].personLastName,
+                        name: students[i].personFirstName + " " + students[i].personLastName,
+                        enrollmentEndDate: sed ? moment(sed.date, "YYYY-MM-DD").format("DD/MM/YYYY") : null,
                         months: {
                             1: null,
                             2: null,
@@ -156,7 +160,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
         };
         /**
          * Exibe a tabela de mensalidades do mês escolhido.
-         * 
+         *
          * @param {type} month
          * @returns {undefined}
          */
@@ -181,8 +185,8 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                     .find("div.tab-content")
                     .find("#month-" + month + "-content")
                     .remove();
-            
-            var partial;            
+
+            var partial;
             for (var i in payments) {
                 partial = "" + i;
                 table += "<tr>" +
@@ -195,8 +199,9 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                         '</div>'
                         + "</td>" +
                         "<td style='vertical-align:middle; border-bottom: thin solid #777777; class='text-center'>" +
-                        payments[i].name
-                        + "</td>" +
+                        payments[i].name +
+                        (payments[i].enrollmentEndDate ? ("<br><br><span class='label label-danger'>DESMATRICULADO: "+ payments[i].enrollmentEndDate +"</span>") : '') +
+                        "</td>" +
                         "<td style='vertical-align:middle; border-bottom: thin solid #777777;' class='text-center payment-status'>" +
                         (payments[i].months[month].monthly_payment_id === NO_PAYMENT ? WAITING_PAYMENT : PAID)
                         + "</td>" +
@@ -344,7 +349,7 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
 
         /**
          * Cria uma instância do objeto de pagamento.
-         * 
+         *
          * @param Object data
          * @returns Object
          */
@@ -374,12 +379,12 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
 
         /**
          * Callback update
-         * 
-         * Altera 
+         *
+         * Altera
          *  - atributo data-id dos checkboxes utilizados
          *  - status do pagamento
          *  - valor pago
-         * 
+         *
          * @param {type} paymts
          * @param {type} status
          * @returns {undefined}

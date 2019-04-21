@@ -46,8 +46,8 @@ UNLOCK TABLES;
 
 LOCK TABLES `user` WRITE;
 INSERT INTO `user` VALUES
-(2,'fcadmin','$2y$10$JDJ5JDEwJEd2aHRFUnJ3N.3GAusoQDlpCMaJ9Bp.uLPAyhECLyrEe','$2y$10$GvhtERrw4T.CRjZn3HjNBuK.qahSBQahtVQc9gow151c16mkrJIje',1,'2015-12-12 11:08:24'),
-(3,'fcmember','$2y$10$JDJ5JDEwJDFHdTBXTDZlM.bNrNv0hRukZgy8DnqxTgHq71RoEg8hi','$2y$10$1Gu0WL6e0FNwVMXU38VtT.KlSGlFtsu6adEUOr9ZdwFqroxCgt4/O',1,'2016-01-04 19:49:56');
+(2,'fcadmin','$2y$10$PpaLxY0q8uoo7xE2PPA7x.kpHosfwWDrrJQ36neUAqE06wJtNgKbG',1,'2015-12-12 11:08:24'),
+(3,'fcmember','$2y$10$JDJ5JDEwJDFHdTBXTDZlM.bNrNv0hRukZgy8DnqxTgHq71RoEg8hi',1,'2016-01-04 19:49:56');
 UNLOCK TABLES;
 
 LOCK TABLES `user_has_role` WRITE;
