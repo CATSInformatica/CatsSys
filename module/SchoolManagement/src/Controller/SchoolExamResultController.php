@@ -342,7 +342,7 @@ class SchoolExamResultController extends AbstractEntityActionController
 
             $em = $this->getEntityManager();
 
-            $applications = $em->getRepository('SchoolManagement\Entity\ExamApplication')
+            $applications = $em->getRepository(ExamApplication::class)
                 ->findBy([
                     'status' => ExamApplication::EXAM_APP_CREATED
                 ], [

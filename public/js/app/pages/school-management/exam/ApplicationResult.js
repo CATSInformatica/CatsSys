@@ -24,7 +24,6 @@ define(["moment"], function(moment) {
         var sortGroupContainer = $("#sort-group-container")
         var recruitment = $("#recruitment")
         var studentClass = $("#examClass")
-        var numberOfExams
         var groups
         var groupOrder
         var answers
@@ -52,7 +51,6 @@ define(["moment"], function(moment) {
             $("#fetch-new-data").click(function() {
                 getExams().then(function(e) {
                     if (e.length) {
-                        numberOfExams = e.length
                         exams = {}
                         groups = []
                         resultContainer.html("")
@@ -89,17 +87,19 @@ define(["moment"], function(moment) {
                 getApplicationResult().then(function(results) {
                     if (results.length) {
                         // ordena o resultado antes de adicionar na tabela (1º, 2º, 3º, ...)
-                        createLoadedResultTable(
-                            results.sort(function(prev, next) {
-                                intPrev = parseInt(prev.position)
-                                intNext = parseInt(next.position)
-                                if (intPrev < intNext) {
-                                    return -1
-                                } else if (intNext < intPrev) {
-                                    return 1
-                                }
-                                return 0
-                            })
+                        sortedAnswers = results.sort(function(prev, next) {
+                            intPrev = parseInt(prev.position)
+                            intNext = parseInt(next.position)
+                            if (intPrev < intNext) {
+                                return -1
+                            } else if (intNext < intPrev) {
+                                return 1
+                            }
+                            return 0
+                        })
+                        createResultTable(
+                            sortedAnswers,
+                            sortedAnswers[0].groups
                         )
                     }
                 })
@@ -107,20 +107,19 @@ define(["moment"], function(moment) {
 
             $("#set-criteria").on("click", function() {
                 groupOrder = []
-
                 $("select[id^='criteria-group']").each(function() {
                     groupOrder.push(parseInt($(this).val()))
                 })
 
                 adjustAnswers()
-                calcResult()
-
                 console.log("exams", exams)
+                console.log("answers", answers)
                 console.log("groups", groups)
                 console.log("order", groupOrder)
-                console.log("answers", answers)
+
+                calcResult()
                 console.log("sortedAnswers", sortedAnswers)
-                createResultTable()
+                createResultTable(sortedAnswers, sortedAnswers[0].groups)
                 releaseSaveResult()
                 $("#resultProgress").text(
                     saveIndex + "/" + sortedAnswers.length
@@ -153,55 +152,6 @@ define(["moment"], function(moment) {
             $("#save-result").click(function() {
                 saveResults()
             })
-        }
-
-        createLoadedResultTable = function(results) {
-            var table =
-                "<table class='table table-condensed table-striped table-bordered'>"
-
-            table +=
-                "<thead><tr><th class='text-center'>POSIÇÃO</th><th class='text-center'>SITUAÇÃO</th><th class='text-center'>INSCRIÇÃO</th>"
-
-            gs = results[0].groups
-
-            table += gs
-                .map(function(g) {
-                    return "<th class='text-center'>" + g + "</th>"
-                })
-                .join("")
-
-            table += "<th class='text-center'>TOTAL</th></tr><thead><tbody>"
-
-            var tableContent = ""
-
-            // para cada resultado
-            for (var i = 0; i < results.length; i++) {
-                tableContent +=
-                    '<tr><td class="text-center">' +
-                    results[i].position +
-                    'º</td><td class="text-center">' +
-                    results[i].currentStatus +
-                    '</td><td class="text-center">' +
-                    results[i].registrationNumber +
-                    "</td>"
-                // para cada grupo, na ordem definida
-                for (var j = 0; j < gs.length; j++) {
-                    tableContent +=
-                        '<td class="text-center">' +
-                        results[i].partialResult[j] +
-                        "</td>"
-                }
-
-                tableContent +=
-                    '<td class="text-center">' +
-                    results[i].result +
-                    "</td></tr>"
-            }
-
-            table += tableContent
-            table += "</tbody></table>"
-
-            resultContainer.html(table)
         }
 
         getApplicationResult = function() {
@@ -264,17 +214,13 @@ define(["moment"], function(moment) {
                 ans = exams[examId].peopleAnswers
                 for (var i = 0; i < ans.length; i++) {
                     if (!answers[ans[i].registrationOrEnrollment]) {
-                        answers[ans[i].registrationOrEnrollment] = {
-                            registrationOrEnrollment:
-                                ans[i].registrationOrEnrollment,
-                            fullname: ans[i].fullname,
-                            registrationNumber: ans[i].registrationNumber || "",
-                            birth: ans[i].birth,
-                            currentStatus: ans[i].currentStatus || "",
-                            partialResult: [],
-                            result: 0,
-                            groups: []
-                        }
+                        answers[ans[i].registrationOrEnrollment] = createAnswer(
+                            ans[i].registrationOrEnrollment,
+                            ans[i].fullname,
+                            ans[i].registrationNumber,
+                            ans[i].birth,
+                            ans[i].currentStatus
+                        )
                     }
 
                     answers[ans[i].registrationOrEnrollment][examId] =
@@ -283,13 +229,63 @@ define(["moment"], function(moment) {
             })
         }
 
+        createAnswer = function(
+            registrationOrEnrollment,
+            fullname,
+            registrationNumber,
+            birth,
+            currentStatus
+        ) {
+            return {
+                registrationOrEnrollment: registrationOrEnrollment,
+                fullname: fullname,
+                registrationNumber: registrationNumber || "",
+                birth: birth,
+                currentStatus: currentStatus || "",
+                partialResult: [],
+                result: 0,
+                groups: []
+            }
+        }
+
+        calcScore = function(person, currentGroup, correctAnswers) {
+            var parallelIndx, parallel
+            var endAt
+            var score = 0
+
+            endAt = currentGroup.quantity + currentGroup.startAt
+            // para cada questão do grupo
+            for (var q = currentGroup.startAt; q < endAt; q++) {
+                // se é um grupo parelelo (ex: inglês e espanhol)
+                if (correctAnswers[q] instanceof Object) {
+                    parallelIndx = correctAnswers[q].parallel
+                    parallel = person.parallels[parallelIndx]
+                    if (
+                        correctAnswers[q].answers[parallel] === NULLIFIED ||
+                        person.answers[q] ===
+                            correctAnswers[q].answers[parallel]
+                    ) {
+                        score++
+                    }
+                    // se é um grupo normal
+                } else {
+                    if (
+                        correctAnswers[q] === NULLIFIED ||
+                        person.answers[q] === correctAnswers[q]
+                    ) {
+                        score++
+                    }
+                }
+            }
+
+            return score
+        }
+
         calcResult = function() {
             var currentGroup
             var score
             var correctAnswers
             var person
-            var parallelIndx, parallel
-            var endAt
 
             // para cada grupo, na ordem definida
             for (var i = 0; i < groupOrder.length; i++) {
@@ -297,6 +293,7 @@ define(["moment"], function(moment) {
                     currentGroup = groups[groupOrder[i]]
                     correctAnswers = exams[currentGroup.examId].answers
 
+                    // para cada aluno
                     Object.keys(answers).forEach(function(
                         registrationOrEnrollment
                     ) {
@@ -304,43 +301,33 @@ define(["moment"], function(moment) {
                             answers[registrationOrEnrollment][
                                 currentGroup.examId
                             ]
-
-                        // calcular a pontuaçao no grupo currentGroup
                         score = 0
 
-                        endAt = currentGroup.quantity + currentGroup.startAt
-                        for (var q = currentGroup.startAt; q < endAt; q++) {
-                            // corrigir
-                            if (correctAnswers[q] instanceof Object) {
-                                parallelIndx = correctAnswers[q].parallel
-                                parallel = person.parallels[parallelIndx]
-                                if (
-                                    correctAnswers[q].answers[parallel] ===
-                                        NULLIFIED ||
-                                    person.answers[q] ===
-                                        correctAnswers[q].answers[parallel]
-                                ) {
-                                    score++
-                                }
-                            } else {
-                                if (
-                                    correctAnswers[q] === NULLIFIED ||
-                                    person.answers[q] === correctAnswers[q]
-                                ) {
-                                    score++
-                                }
-                            }
+                        if (person) {
+                            score = calcScore(
+                                person,
+                                currentGroup,
+                                correctAnswers
+                            )
+                        } else {
+                            answers[registrationOrEnrollment][
+                                currentGroup.examId
+                            ] = null
                         }
 
+                        // define a pontuação do aluno registrationOrEnrollment como sendo score no grupo currentGroup
                         answers[registrationOrEnrollment].partialResult.push(
                             score
                         )
+                        // acrecenta na pontuação geral do aluno
                         answers[registrationOrEnrollment].result += score
+                        // salva o nome do grupo no objeto de respostas do aluno
                         answers[registrationOrEnrollment].groups.push(
                             currentGroup.name
                         )
                     })
                 } else {
+                    // salva a data de nascimento do aluno para casos de desempate
                     Object.keys(answers).forEach(function(
                         registrationOrEnrollment
                     ) {
@@ -349,6 +336,11 @@ define(["moment"], function(moment) {
                                 answers[registrationOrEnrollment].birth,
                                 "DD/MM/YYYY"
                             ).unix()
+                        )
+
+                        // salva o nome do grupo no objeto de respostas do aluno
+                        answers[registrationOrEnrollment].groups.push(
+                            CRITERIA.AGE_DESC
                         )
                     })
                 }
@@ -372,19 +364,15 @@ define(["moment"], function(moment) {
                 })
             })
 
+            // ordenação que considera ordem e zeros em grupos
             sortedAnswers.sort(function(answerA, answerB) {
                 var ret
 
-                // resultado A maior que resultado B
+                // Aluno A tem resultado final maior que Aluno B
                 if (answerA.result > answerB.result) {
+                    // Procura por zeros no aluno A
                     for (var i = 0; i < answerA.partialResult.length; i++) {
-                        if (
-                            !answerB.partialResult[i] &&
-                            answerA.partialResult[i]
-                        ) {
-                            return -1
-                        }
-
+                        // se o aluno A zerou e o aluno B não, o aluno A perde posição
                         if (
                             !answerA.partialResult[i] &&
                             answerB.partialResult[i]
@@ -392,16 +380,13 @@ define(["moment"], function(moment) {
                             return 1
                         }
                     }
+                    // caso contrário o aluno A está na frente
                     return -1
+                    // se o aluno B está na frente do aluno A
                 } else if (answerB.result > answerA.result) {
-                    for (var i = 0; i < answerA.partialResult.length; i++) {
-                        if (
-                            !answerA.partialResult[i] &&
-                            answerB.partialResult[i]
-                        ) {
-                            return 1
-                        }
-
+                    // Procura por zeros no aluno B
+                    for (var i = 0; i < answerB.partialResult.length; i++) {
+                        // se o aluno B zerou e o aluno A não, o aluno B perde posição
                         if (
                             !answerB.partialResult[i] &&
                             answerA.partialResult[i]
@@ -410,31 +395,39 @@ define(["moment"], function(moment) {
                         }
                     }
 
+                    // caso contrário o aluno B está na frente
                     return 1
+                    // se o aluno A está empatado com o aluno B
                 } else {
+                    // considera inicialmente empate completo
                     ret = 0
-                    // Resultados iguais
+                    // verifica quem tem maior pontuação em cada grupo
                     for (var i = 0; i < answerA.partialResult.length; i++) {
-                        if (
-                            answerA.partialResult[i] >
-                                answerB.partialResult[i] &&
-                            !ret
-                        ) {
-                            ret = -1
-                        } else if (
-                            answerB.partialResult[i] >
-                                answerA.partialResult[i] &&
-                            !ret
-                        ) {
-                            ret = 1
+                        // estão empatados
+                        if (!ret) {
+                            // o aluno A tem maior pontuação, A fica na frente de B
+                            if (
+                                answerA.partialResult[i] >
+                                answerB.partialResult[i]
+                            ) {
+                                ret = -1
+                                // o aluno B tem maior pontuação, B fica na frente de A
+                            } else if (
+                                answerB.partialResult[i] >
+                                answerA.partialResult[i]
+                            ) {
+                                ret = 1
+                            }
                         }
 
+                        // B está na frente, mas zerou em um grupo, A passa na frente
                         if (
                             ret > 0 &&
                             !answerB.partialResult[i] &&
                             answerA.partialResult[i]
                         ) {
                             return -1
+                            // A está na frente, mas zerou em um grupo, B passa na frente
                         } else if (
                             ret < 0 &&
                             !answerA.partialResult[i] &&
@@ -447,6 +440,8 @@ define(["moment"], function(moment) {
                     return ret
                 }
             })
+
+            formatEmptyScores()
         }
 
         addGroupsOf = function(examId) {
@@ -479,7 +474,7 @@ define(["moment"], function(moment) {
             }
         }
 
-        createResultTable = function() {
+        createResultTable = function(results, orderedGroups) {
             var table =
                 "<table class='table table-condensed table-striped table-bordered'>"
 
@@ -493,21 +488,9 @@ define(["moment"], function(moment) {
                     '<th class="text-center">SITUAÇÃO</th><th class="text-center">INSCRIÇÃO</th>'
             }
 
-            table += groupOrder
-                .map(function(i) {
-                    if (i !== CRITERIA.AGE_CODE) {
-                        return (
-                            "<th class='text-center'>" +
-                            groups[i].name +
-                            "</th>"
-                        )
-                    } else {
-                        return (
-                            "<th class='text-center'>" +
-                            CRITERIA.AGE_DESC +
-                            "</th>"
-                        )
-                    }
+            table += orderedGroups
+                .map(function(g) {
+                    return "<th class='text-center'>" + g + "</th>"
                 })
                 .join("")
 
@@ -516,52 +499,49 @@ define(["moment"], function(moment) {
             var tableContent = ""
 
             // para cada resultado
-            for (var i = 0; i < sortedAnswers.length; i++) {
-                sortedAnswers[i].position = i + 1
+            for (var i = 0; i < results.length; i++) {
+                results[i].position = i + 1
                 tableContent +=
                     '<tr><td class="text-center">' +
-                    sortedAnswers[i].position +
+                    results[i].position +
                     "º</td>"
 
                 if (isStudent) {
                     tableContent +=
                         '<td class="text-left">' +
-                        sortedAnswers[i].registrationOrEnrollment +
+                        results[i].registrationOrEnrollment +
                         '</td><td class="text-center">' +
-                        sortedAnswers[i].fullname +
+                        results[i].fullname +
                         "</td>"
                 } else {
                     tableContent +=
                         '<td class="text-center">' +
-                        sortedAnswers[i].currentStatus +
+                        results[i].currentStatus +
                         '</td><td class="text-center">' +
-                        sortedAnswers[i].registrationNumber +
+                        results[i].registrationNumber +
                         "</td>"
                 }
 
                 // para cada grupo, na ordem definida
-                for (
-                    var j = 0, partialResultIndex = 0;
-                    j < groupOrder.length;
-                    j++
-                ) {
-                    if (groupOrder[j] !== CRITERIA.AGE_CODE) {
+                for (var j = 0; j < orderedGroups.length; j++) {
+                    if (orderedGroups[j] !== CRITERIA.AGE_DESC) {
                         tableContent +=
                             '<td class="text-center">' +
-                            sortedAnswers[i].partialResult[partialResultIndex] +
+                            results[i].partialResult[j] +
                             "</td>"
-                        partialResultIndex++
                     } else {
                         tableContent +=
                             '<td class="text-center">' +
-                            sortedAnswers[i].birth +
+                            moment
+                                .unix(-results[i].partialResult[j])
+                                .format("DD/MM/YYYY") +
                             "</td>"
                     }
                 }
 
                 tableContent +=
                     '<td class="text-center">' +
-                    sortedAnswers[i].result +
+                    results[i].result +
                     "</td></tr>"
             }
 
@@ -569,6 +549,29 @@ define(["moment"], function(moment) {
             table += "</tbody></table>"
 
             resultContainer.html(table)
+        }
+
+        /**
+         * Caso o aluno não tenha feito uma das provas transforma o score 0 dos grupos em string vazia ''
+         */
+        formatEmptyScores = function() {
+            var registrationOrEnrollment, group, person, groupIndex;
+
+            for (var i = 0; i < sortedAnswers.length; i++) {
+                registrationOrEnrollment =
+                    sortedAnswers[i].registrationOrEnrollment
+
+                for (var j = 0; j < groupOrder.length; j++) {
+                    groupIndex = groupOrder[j]
+                    if (groupIndex !== CRITERIA.AGE_CODE) {
+                        group = groups[groupIndex]
+                        person = answers[registrationOrEnrollment][group.examId]
+                        if (!person) {
+                            sortedAnswers[i].partialResult[j] = ""
+                        }
+                    }
+                }
+            }
         }
 
         createSortList = function() {
@@ -650,7 +653,11 @@ define(["moment"], function(moment) {
         }
 
         setSaveProgress = function() {
-            $("#resultProgress").text(Math.min(saveIndex, sortedAnswers.length) + "/" + sortedAnswers.length);
+            $("#resultProgress").text(
+                Math.min(saveIndex, sortedAnswers.length) +
+                    "/" +
+                    sortedAnswers.length
+            )
         }
 
         releaseSaveResult = function() {

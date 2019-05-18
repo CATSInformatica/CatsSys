@@ -10,10 +10,23 @@
                         <div class="form-group">
                             <label>Aplicação</label>
                             <select id="application" class="form-control">
-                                <?php foreach ($apps as $app): ?>
-                                    <?php $r = $app->getRecruitment(); ?>
+                                <?php foreach ($apps as $app) : ?>
+                                    <?php
+                                    $s = $app->getStudentClass();
+                                    $r = $app->getRecruitment();
+
+                                    $sufix = '';
+
+                                    if ($s) {
+                                        $sufix .= ' | ' . $s->getClassName();
+                                    }
+                                    if ($r) {
+                                        $sufix .= ' | ' . $r->getRecruitmentYn();
+                                    }
+
+                                    ?>
                                     <option value="<?php echo $app->getExamApplicationId(); ?>">
-                                        <?php echo ' [' . (empty($r) ? 'SEM PSA' : $r->getRecruitmentYn())  . '] ' .  $app->getName(); ?>
+                                        <?php echo $app->getName() . $sufix;  ?>
                                     </option>
                                 <?php endforeach; ?>
                             </select>
@@ -33,22 +46,22 @@
                         <div class="form-group" id="simuladoSelect" style="display:none">
                             <label>Turmas</label>
                             <select id="examClass" class="form-control">
-                                <?php foreach ($classes as $cl): ?>
-                                    <option value="<?php echo $cl->getClassId(); ?>">  <?php echo $cl->getClassName(); ?></option>
+                                <?php foreach ($classes as $cl) : ?>
+                                    <option value="<?php echo $cl->getClassId(); ?>"> <?php echo $cl->getClassName(); ?></option>
                                 <?php endforeach; ?>
                             </select>
                         </div>
                         <div class="form-group" id="psaSelect" style="display:none">
                             <label>Processo Seletivo de Alunos</label>
                             <select id="recruitment" class="form-control">
-                                <option value="<?php echo $rec['id']; ?>">  <?php echo $rec['desc']; ?>
+                                <option value="<?php echo $rec['id']; ?>"> <?php echo $rec['desc']; ?>
                                 </option>
                             </select>
                         </div>
                     </div>
                 </div>
                 <div class="col-md-8 col-md-offset-2 col-xs-12">
-                <div class="col-md-6">
+                    <div class="col-md-6">
                         <button id="fetch-new-data" class="btn btn-primary btn-flat btn-block" disabled> <i class="fa fa-magic"></i> Carregar </button>
                     </div>
                     <div class="col-md-6">
@@ -67,7 +80,7 @@
         </div>
         <div class="box-body">
             <div class="row">
-                <div  class="col-md-10 col-md-offset-1 col-xs-12">
+                <div class="col-md-10 col-md-offset-1 col-xs-12">
                     <div id="sort-group-container">
 
                     </div>
@@ -105,10 +118,10 @@
 </section>
 
 <script>
-    appConfig = (function () {
+    appConfig = (function() {
         var scriptSrc = 'app/pages/school-management/exam/ApplicationResult';
         return {
-            getScriptSrc: function () {
+            getScriptSrc: function() {
                 return scriptSrc;
             }
         };
