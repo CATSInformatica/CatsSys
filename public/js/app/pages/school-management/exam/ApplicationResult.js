@@ -248,6 +248,27 @@ define(["moment"], function(moment) {
             }
         }
 
+        /**
+         * Calcula a pontuação do aluno em um grupo de questões. Ex: Matemática e suas Tecnologias.
+         *
+         *
+         * Para grupos comuns (Ex: Matemática)
+         *
+         * Soma ponto se:
+         *  1. questão anulada
+         *  2. o aluno acertou a resposta
+         *
+         * Para grupos que possuem opções paralelas. Ex: Linguagens (Inglês e Espanhol)
+         *
+         * Soma ponto se:
+         *  1. questão anulada
+         *  2. o aluno, no grupo paralelo escolhido, (por exemplo, inglês) acertou a resposta
+         *
+         * Não soma ponto se a questão não está anulada e:
+         *  1. o aluno preencheu o grupo paralelo corretamente, mas errou a resposta
+         *  2. o aluno não preencheu o grupo corretamente (não pintou se queria inglês ou espanhol ou
+         *  pintou multiplas vezes, ex: pintou inglês e espanhol)
+         */
         calcScore = function(person, currentGroup, correctAnswers) {
             var parallelIndx, parallel
             var endAt
@@ -260,11 +281,10 @@ define(["moment"], function(moment) {
                 if (correctAnswers[q] instanceof Object) {
                     parallelIndx = correctAnswers[q].parallel
                     parallel = person.parallels[parallelIndx]
-                    if (
-                        correctAnswers[q].answers[parallel] === NULLIFIED ||
-                        person.answers[q] ===
-                            correctAnswers[q].answers[parallel]
-                    ) {
+                    console.log('parallel', parallel, person.answers[q], correctAnswers[q].answers[parallel])
+
+
+                    if (correctAnswers[q].answers[parallel] === NULLIFIED || correctAnswers[q].answers[parallel] && person.answers[q] === correctAnswers[q].answers[parallel]) {
                         score++
                     }
                     // se é um grupo normal

@@ -73,6 +73,9 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
     var loadedCsvData = null;
     var parallels;
     var isStudent = null;
+    var EMPTY_PARALLEL = 'NENHUM'
+    var ANSWER_SEPARATOR = '|'
+    var BASE_ANSWER_CODE = 'A'.charCodeAt();
 
     /**
      * grupos de questões no formato:
@@ -173,14 +176,20 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
          * @returns {undefined}
          */
         addDataToTable = function () {
-            var studentRow, parsDesc;
+            var studentRow, parsDesc, p;
             Object.keys(loadedAnswers).forEach(function (filename) {
                 studentRow = peopleTable.find('tr.student-' + loadedAnswers[filename].registrationOrEnrollment);
 
                 if (parallels.length) {
 
                     parsDesc = loadedAnswers[filename].parallels.map(function (par, indx) {
-                        return parallels[indx][par].name;
+                        p = parallels[indx][par];
+
+                        if(p) {
+                            return p.name;
+                        } else {
+                            return par
+                        }
                     }).join(', ');
 
                     studentRow.find('td.language-option').text(parsDesc);
@@ -203,10 +212,9 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         readAnswers = function () {
 
             var objFg;
-            var ans;
+            var ans, ansArr;
             var registrationOrEnrollment;
-            var par;
-            var enrollment;
+            var par, parOption;
             var questionCounter;
 
             // le as respostas de cada candidato/aluno
@@ -214,24 +222,35 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
                 // le a matricula/inscrição
                 objFg = fileGroups[mapToFileGroup.registrationOrEnrollment];
-
-                if (isStudent) {
-                    enrollment = parseInt(loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount).map(function (item) {
-                        return (item.toUpperCase().charCodeAt(0) - 'A'.charCodeAt(0));
-                    }).join(''));
-
-                    registrationOrEnrollment = peopleTable.find('tr[data-enrollment="' + enrollment + '"]').attr('data-enrollment');
-                } else {
-                    registrationOrEnrollment = parseInt(loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount).map(function (item) {
-                        return (item.toUpperCase().charCodeAt(0) - 'A'.charCodeAt(0));
-                    }).join(''));
-                }
+                registrationOrEnrollment = parseInt(
+                    loadedCsvData[i]
+                    .slice(objFg.startAt, objFg.startAt + objFg.amount)
+                    .map(function (item) {
+                        return (item.toUpperCase().charCodeAt(0) - BASE_ANSWER_CODE);
+                    })
+                    .join('')
+                );
 
                 // indica qual foi(ram) a(s) opçao(oes) escolhida(s) pelo candidato
-                par = [];
+                par = []
                 for (var j = 0; j < mapToFileGroup.parallel.length; j++) {
                     objFg = fileGroups[mapToFileGroup.parallel[j]];
-                    par.push(loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount).join("").toUpperCase().charCodeAt() - 'A'.charCodeAt());
+                    parOption = loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount).join('')
+                    if(parOption.length == 1) {
+                        par.push(parOption.toUpperCase().charCodeAt() - BASE_ANSWER_CODE)
+                    } else {
+                        if(!parOption.length) {
+                            par.push(EMPTY_PARALLEL);
+                        } else {
+                            par.push(parOption
+                                .split(ANSWER_SEPARATOR)
+                                .map(function(a) {
+                                    return parallels[j][a.toUpperCase().charCodeAt() - BASE_ANSWER_CODE].name
+                                })
+                                .join(ANSWER_SEPARATOR)
+                            );
+                        }
+                    }
                 }
 
                 loadedAnswers[loadedCsvData[i][0]] = {
@@ -241,14 +260,14 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                     parallels: par
                 };
 
-                ans = loadedAnswers[loadedCsvData[i][0]].answers;
-                questionCounter = chosenExam.content.questionsStartAtNumber;
+                ans = loadedAnswers[loadedCsvData[i][0]].answers
+                questionCounter = chosenExam.content.questionsStartAtNumber
 
                 loadedSubjects.forEach(function (subject) {
                     group = mapToFileGroup[subject.name];
                     objFg = fileGroups[group];
 
-                    var ansArr = loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount);
+                    ansArr = loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount)
 
                     for(var q = 0; q < ansArr.length; q++, questionCounter++) {
                         ans[questionCounter] = ansArr[q];
@@ -289,7 +308,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         drawGroups = function () {
 
             var groups = $("#groups");
-            var letterCode = 'A'.charCodeAt();
+            var letterCode = BASE_ANSWER_CODE
             groups.html('');
 
             //Grupos do Arquivo
@@ -541,7 +560,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         toggleDetailsRow = function ($tr) {
 
             var filename = $tr.find('td.filename').text();
-            var questionFirstNumber = chosenExam.content.questionsStartAtNumber;
+            var questionFirstNumber = chosenExam.content.questionsStartAtNumber, p;
             var ans = null, registrationOrEnrollment = isStudent ? $tr.data('enrollment') : $tr.data('registration');
             var nextRow = $tr.next('tr');
             var len;
@@ -561,7 +580,8 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                         // prev parallels
                         if(parallels.length) {
                             nextRow += '<h5 class="text-center"><b>Grupos Paralelos</b>: ' + resp.parallels.map(function (i, index) {
-                                return parallels[index][i].name;
+                                p = parallels[index][i]
+                                return p ? p.name : i
                             }).join(', ') + '</h5>';
                         }
 
