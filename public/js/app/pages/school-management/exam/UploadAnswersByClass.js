@@ -115,10 +115,13 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         loaded: 'CARREGADO',
         saved: 'SALVO'
     };
+    var comments = [];
+    var mapPersonToFile = {}
+    var people
 
     var UploadAnswersModule = (function () {
 
-        var people = null;
+        people = null
 
         initListeners = function () {
             isStudent = $("#studentClass").length;
@@ -136,6 +139,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                     try {
                         loadedCsvData = $.csv
                                 .toArrays(event.target.result, {separator: ";"});
+
                     } catch (e) {
                         bootbox.alert("Erro: O arquivo deve estar no formato <b>csv</b> e utilizar \"<b>;</b>\" como separador.");
                     }
@@ -163,12 +167,22 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
             });
 
             $("#adjust-groups").click(function () {
-                $(this).prop('disabled', true);
-                adjustGroups();
-                readAnswers();
-                addDataToTable();
+                $(this).prop('disabled', true)
+                adjustGroups()
+                readAnswers()
+                addDataToTable()
+                addComments()
             });
         };
+
+        addComments = function() {
+
+            var formattedComments = comments.map(function(comment) {
+                return '<li><span class=\'label label-'+ comment.type +'\'>Aviso:</span> '+ comment.text +'.</li>'
+            })
+
+            $("#import-comments").html(formattedComments.join(''))
+        }
 
         /**
          * Done
@@ -179,6 +193,17 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
             var studentRow, parsDesc, p;
             Object.keys(loadedAnswers).forEach(function (filename) {
                 studentRow = peopleTable.find('tr.student-' + loadedAnswers[filename].registrationOrEnrollment);
+
+                if(!studentRow.length) {
+                    comments.push({
+                        text: 'A matrícula: ' + loadedAnswers[filename].registrationOrEnrollment +
+                        ' do arquivo '+ filename +' não foi encontrada. O aluno pode ter sido desmatriculado ou a matrícula não é válida',
+                        type: 'danger'
+                    })
+                    return;
+                }
+
+
 
                 if (parallels.length) {
 
@@ -202,6 +227,8 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                 }
 
             });
+
+
         };
 
         /**
@@ -216,6 +243,8 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
             var registrationOrEnrollment;
             var par, parOption;
             var questionCounter;
+            var filename;
+            mapPersonToFile = {}
 
             // le as respostas de cada candidato/aluno
             for (var i = 1; i < loadedCsvData.length; i++) {
@@ -236,6 +265,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                 for (var j = 0; j < mapToFileGroup.parallel.length; j++) {
                     objFg = fileGroups[mapToFileGroup.parallel[j]];
                     parOption = loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount).join('')
+
                     if(parOption.length == 1) {
                         par.push(parOption.toUpperCase().charCodeAt() - BASE_ANSWER_CODE)
                     } else {
@@ -253,14 +283,19 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                     }
                 }
 
-                loadedAnswers[loadedCsvData[i][0]] = {
-                    filename: loadedCsvData[i][0],
+                filename = loadedCsvData[i][0]
+
+                checkDuplicatedRegistrationOrEnrollment(registrationOrEnrollment, filename)
+                checkDuplicatedFile(filename, registrationOrEnrollment)
+
+                loadedAnswers[filename] = {
+                    filename: filename,
                     registrationOrEnrollment: registrationOrEnrollment,
                     answers: {},
                     parallels: par
                 };
 
-                ans = loadedAnswers[loadedCsvData[i][0]].answers
+                ans = loadedAnswers[filename].answers
                 questionCounter = chosenExam.content.questionsStartAtNumber
 
                 loadedSubjects.forEach(function (subject) {
@@ -275,9 +310,44 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                 });
             }
 
-            console.log('loadedAnswers', loadedAnswers);
+            checkSameAmountOfPeopleAndFiles()
 
+            console.log('loadedAnswers', loadedAnswers);
         };
+
+        checkSameAmountOfPeopleAndFiles = function() {
+            var peopleNum = Object.keys(mapPersonToFile).length, rows = Object.keys(loadedAnswers).length, type;
+            type = peopleNum < rows ? 'danger' : 'primary';
+            comments.push({
+                text: 'Arquivos escaneados: ' + rows + ' . Alunos diferentes importados: ' + peopleNum,
+                type: type
+            });
+        }
+
+        checkDuplicatedRegistrationOrEnrollment = function(registrationOrEnrollment, filename) {
+            if(mapPersonToFile[registrationOrEnrollment]) {
+                comments.push({
+                    text: 'Matrícula '+
+                    registrationOrEnrollment +
+                    ' duplicada nos arquivos: ' +
+                    filename + ' e ' + mapPersonToFile[registrationOrEnrollment],
+                    type: 'danger'
+                });
+            }
+
+            mapPersonToFile[registrationOrEnrollment] = filename
+        }
+
+        checkDuplicatedFile = function(filename, registrationOrEnrollment) {
+            if(loadedAnswers[filename]) {
+                comments.push({
+                    text: 'o arquivo ' + filename +
+                    ' foi processado mais de uma vez. Matrícula anterior: ' + loadedAnswers[filename].registrationOrEnrollment +
+                    '. Matrícula atual: ' + registrationOrEnrollment,
+                    type: 'danger'
+                });
+            }
+        }
 
         /**
          * Associa os grupos do arquivo com os grupos do sistema
@@ -440,8 +510,6 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
          * @returns {undefined}
          */
         fetchData = function () {
-
-            loadedPeople = [];
             var groupId = $("#studentClass").val() || $("#studentRecruitment").val();
             applicationId = $("#application").val();
             var examId = parseInt($("#exam").val());
@@ -454,7 +522,6 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
                 if (isStudent) {
                     getStudents(groupId).then(function (data) {
-                        loadedPeople = data.students;
                         people = data.students;
                         createStudentTable();
                         readSubjects();
@@ -465,7 +532,6 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                     });
                 } else {
                     getCandidates(groupId).then(function (data) {
-                        loadedPeople = data.candidates;
                         people = data.candidates;
                         createCandidateTable();
                         readSubjects();
@@ -515,6 +581,18 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                         parallels.push(parallel);
                     }
                 }
+            }
+
+            if(parallels.length) {
+                comments.push({
+                    text: 'O arquivo csv possui grupos paralelos (Exemplo: inglês e espanhol). Se o simulado não possui grupos paralelos remova a coluna de idioma do csv',
+                    type: 'primary'
+                })
+            } else {
+                comments.push({
+                    text: 'O arquivo csv não possui grupos paralelos (Exemplo: inglês e espanhol). Se o simulado possui grupos paralelos é necessário que o template de correção seja refeito com a opção de idioma',
+                    type: 'primary'
+                })
             }
         };
 
