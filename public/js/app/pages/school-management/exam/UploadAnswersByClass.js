@@ -207,16 +207,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
                 if (parallels.length) {
 
-                    parsDesc = loadedAnswers[filename].parallels.map(function (par, indx) {
-                        p = parallels[indx][par];
-
-                        if(p) {
-                            return p.name;
-                        } else {
-                            return par
-                        }
-                    }).join(', ');
-
+                    parsDesc = getParallelName(loadedAnswers[filename].parallels)
                     studentRow.find('td.language-option').text(parsDesc);
                 }
 
@@ -638,57 +629,65 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         toggleDetailsRow = function ($tr) {
 
             var filename = $tr.find('td.filename').text();
-            var questionFirstNumber = chosenExam.content.questionsStartAtNumber, p;
+            var questionFirstNumber = chosenExam.content.questionsStartAtNumber;
             var ans = null, registrationOrEnrollment = isStudent ? $tr.data('enrollment') : $tr.data('registration');
             var nextRow = $tr.next('tr');
-            var len;
+            var resp, len = 0, prevParallel = '', curParallel = '', prevFile = '', curFile = ''
 
             if (filename !== "") {
                 ans = loadedAnswers[filename].answers;
+                curFile = filename
             }
 
             if (!nextRow.length || !nextRow.hasClass('details-row')) {
+
                 // adiciona a linha de descriçao
                 getPrevAnswers(registrationOrEnrollment, chosenExam.examId).then(function (prevAnswers) {
 
-                    var resp = prevAnswers.examAnswers;
-                    nextRow = '<tr class="details-row"><td colspan="6"><div class="content"><h4 class="text-center">Respostas</h4><hr>';
+                    len = 0
+                    resp = prevAnswers.examAnswers
                     if (resp) {
-
-                        // prev parallels
-                        if(parallels.length) {
-                            nextRow += '<h5 class="text-center"><b>Grupos Paralelos</b>: ' + resp.parallels.map(function (i, index) {
-                                p = parallels[index][i]
-                                return p ? p.name : i
-                            }).join(', ') + '</h5>';
-                        }
-
-                        nextRow += '<table class="table table-condensed table-bordered table-striped">' +
-                                    '<thead>'+
-                                        '<tr>'+
-                                        '<th class="text-center">Nº</th>'+
-                                        '<th class="text-center">Resposta</th>'+
-                                        '<th class="text-center">Resposta Anteriores</th>'+
-                                        '</tr>'+
-                                    '</thead>'+
-                                    '<tbody>';
-
-                        if (ans) {
-                            len = Object.keys(ans).length;
-                        } else if (resp) {
-                            len = Object.keys(resp.answers).length;
-                        } else {
-                            len = 0;
-                        }
-
-                        for (var i = 0; i < len; i++) {
-                            nextRow += '<tr><td class="text-center">' + (questionFirstNumber + i) + '</td><td class="text-center">' +
-                                    (ans ? ans[questionFirstNumber + i] : '-') + '</td><td class="text-center">' + (resp ? resp.answers[questionFirstNumber + i] : '-') + '</td></tr>';
-                        }
-
-                        nextRow += '</tbody></table>';
-
+                        len = Object.keys(resp.answers).length;
+                        prevParallel = getParallelName(resp.parallels)
+                        prevFile = resp.filename || ''
                     }
+                    if (ans) {
+                        len = Object.keys(ans).length;
+                        curParallel = getParallelName(loadedAnswers[filename].parallels)
+                    }
+
+                    nextRow = '<tr class="details-row"><td colspan="6"><div class="content"><h4 class="text-center">Respostas</h4><hr>'
+                    nextRow += '<table class="table table-condensed table-bordered table-striped">'+
+                        '<thead>'+
+                        '<tr>'+
+                            '<th class="text-center"></th>'+
+                            '<th class="text-center">Importado</th>'+
+                            '<th class="text-center">Salvo</th>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<th class="text-center">Arquivos</th>'+
+                            '<th class="text-center">'+ curFile +'</th>'+
+                            '<th class="text-center">'+ prevFile +'</th>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<th class="text-center">Grupos Paralelos</th>'+
+                            '<th class="text-center">'+ curParallel +'</th>'+
+                            '<th class="text-center">'+ prevParallel +'</th>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<th class="text-center">Nº</th>'+
+                            '<th class="text-center"></th>'+
+                            '<th class="text-center"></th>'+
+                        '</tr>'+
+                    '</thead>'+
+                    '<tbody>';
+
+                    for (var i = 0; i < len; i++) {
+                        nextRow += '<tr><td class="text-center">' + (questionFirstNumber + i) + '</td><td class="text-center">' +
+                                (ans ? ans[questionFirstNumber + i] : '-') + '</td><td class="text-center">' + (resp ? resp.answers[questionFirstNumber + i] : '-') + '</td></tr>';
+                    }
+
+                    nextRow += '</tbody></table>';
 
                     nextRow += '</div></td></tr>';
                     $tr.after(nextRow);
@@ -698,6 +697,13 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                 nextRow.remove();
             }
         };
+
+        getParallelName = function(parallelVar) {
+            return parallelVar.map(function (i, index) {
+                p = parallels[index][i]
+                return p ? p.name : i
+            }).join(', ');
+        }
 
         /**
          * Busca respostas já salvas no sistema para um aluno escolhido.

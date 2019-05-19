@@ -165,6 +165,7 @@ class SchoolExamResultController extends AbstractEntityActionController
                     $encodedAnswers = Json::encode([
                         'answers' => $c['answers'],
                         'parallels' => $c['parallels'],
+                        'filename' => $c['filename']
                     ]);
 
                     $answerEntity = $em->getRepository('SchoolManagement\Entity\ExamResult')->findOneBy([
