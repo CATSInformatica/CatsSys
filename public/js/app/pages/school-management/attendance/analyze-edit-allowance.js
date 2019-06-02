@@ -1,4 +1,4 @@
-/* 
+/*
  * Copyright (C) 2016 Márcio Dias <marciojr91@gmail.com>
  *
  * This program is free software: you can redistribute it and/or modify
@@ -15,19 +15,18 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(['moment', 'datetimepicker', 'datatable'], function (moment) {
-    analyzeEditAllowance = (function () {
+define(["moment", "datetimepicker", "datatable"], function(moment) {
+    analyzeEditAllowance = (function() {
+        var attendanceMonth = $("#attendanceMonth")
+        var attendanceStudentsByMonth = {}
+        var attendanceContainer = $("#attendanceContainer")
 
-        var attendanceMonth = $("#attendanceMonth");
-        var attendanceStudentsByMonth = {};
-        var attendanceContainer = $("#attendanceContainer");
+        var allowanceMonth = $("#allowanceMonth")
+        var allowanceStudentsByMonth = {}
+        var allowanceStudents = $("#allowanceStudents")
 
-        var allowanceMonth = $("#allowanceMonth");
-        var allowanceStudentsByMonth = {};
-        var allowanceStudents = $("#allowanceStudents");
-
-        var anTables = {};
-        var studentData = {};
+        var anTables = {}
+        var studentData = {}
 
         var ATTENDANCE_TYPES = {
             ATTENDANCE_BEGIN: 1,
@@ -35,52 +34,50 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
             ATTENDANCE_ALLOWANCE_BEGIN: 3,
             ATTENDANCE_ALLOWANCE_END: 4,
             ATTENDANCE_ALLOWANCE_FULL: 5
-        };
-
+        }
 
         /**
          * Calendário para controle da assiduidade
-         * 
+         *
          * @param {type} monthElement
          * @returns {undefined}
          */
-        initAttendanceMonthpicker = function (monthElement) {
-
+        initAttendanceMonthpicker = function(monthElement) {
             monthElement.datetimepicker({
-                format: 'MMMM',
+                format: "MMMM",
                 inline: true,
-                viewMode: 'months',
-                locale: 'pt-br',
+                viewMode: "months",
+                locale: "pt-br",
                 useCurrent: false,
                 defaultDate: moment("1", "D")
-            });
+            })
 
-            monthElement.on("dp.change", function (e) {
-                var startDate = e.date.format('YYYY-MM-DD');
+            monthElement.on("dp.change", function(e) {
+                var startDate = e.date.format("YYYY-MM-DD")
                 var endDate = e.date
-                        .add(1, 'months')
-                        .subtract(1, 'days')
-                        .format('YYYY-MM-DD');
+                    .add(1, "months")
+                    .subtract(1, "days")
+                    .format("YYYY-MM-DD")
 
                 if (monthElement.is(allowanceMonth)) {
-                    searchAllowanceBetween(startDate, endDate);
+                    searchAllowanceBetween(startDate, endDate)
                 } else if (monthElement.is(attendanceMonth)) {
-                    searchAttendanceBetween(startDate, endDate);
+                    searchAttendanceBetween(startDate, endDate)
                 }
-            });
+            })
 
-            var start = moment().format("YYYY-MM-01");
+            var start = moment().format("YYYY-MM-01")
             var end = moment(start, "YYYY-MM-DD")
-                    .add(1, 'months')
-                    .subtract(1, 'days')
-                    .format("YYYY-MM-DD");
+                .add(1, "months")
+                .subtract(1, "days")
+                .format("YYYY-MM-DD")
 
             if (monthElement.is(allowanceMonth)) {
-                searchAllowanceBetween(start, end);
+                searchAllowanceBetween(start, end)
             } else if (monthElement.is(attendanceMonth)) {
-                searchAttendanceBetween(start, end);
+                searchAttendanceBetween(start, end)
             }
-        };
+        }
 
         /**
          * Busca as faltas e abonos no intervalo especificado (intervalo = mês).
@@ -88,12 +85,12 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
          * @param {type} end
          * @returns {undefined}
          */
-        searchAttendanceBetween = function (start, end) {
-            var attr = start.split('-')[1];
+        searchAttendanceBetween = function(start, end) {
+            var attr = start.split("-")[1]
             if (typeof attendanceStudentsByMonth[attr] === "undefined") {
-                attendanceStudentsByMonth[attr] = true;
+                attendanceStudentsByMonth[attr] = true
 
-                var sclass = $("#sclass").val();
+                var sclass = $("#sclass").val()
 
                 $.ajax({
                     url: "/school-management/school-attendance/analysis",
@@ -103,189 +100,290 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                         beginDate: start,
                         endDate: end
                     },
-                    success: function (response) {
-                        studentData[attr] = response.data;
-                        showMonthAttendance(attr);
+                    success: function(response) {
+                        studentData[attr] = response.data
+                        showMonthAttendance(attr)
                     },
-                    error: function (textStatus) {
-                        console.log(textStatus);
+                    error: function(textStatus) {
+                        console.log(textStatus)
                     }
-                });
+                })
             } else {
-                $("#nav_tab_" + attr).tab("show");
+                $("#nav_tab_" + attr).tab("show")
             }
-        };
+        }
 
         /**
          * Exibe a tabela de assiduidade dos alunos.
-         * 
+         *
          * @param {type} month
          * @param {type} data
          * @returns {undefined}
          */
-        showMonthAttendance = function (month) {
-
-            var tab = "tab_" + month;
-
-            attendanceContainer
-                    .find(".nav-tabs")
-                    .append("<li><a id='nav_" + tab + "' href='#" + tab +
-                            "' data-toggle='tab' aria-expanded='true'>" +
-                            moment(month, "MM").format("MMMM") + "</a></li>");
-
-            var table = mountAnalysisTable(month);
+        showMonthAttendance = function(month) {
+            var tab = "tab_" + month
 
             attendanceContainer
-                    .find(".tab-content")
-                    .append("<div id='" + tab + "' class='tab-pane'><div class='table-responsive'>" +
-                            table +
-                            "</div></div>");
+                .find(".nav-tabs")
+                .append(
+                    "<li><a id='nav_" +
+                        tab +
+                        "' href='#" +
+                        tab +
+                        "' data-toggle='tab' aria-expanded='true'>" +
+                        moment(month, "MM").format("MMMM") +
+                        "</a></li>"
+                )
 
-            $("#nav_" + tab).tab("show");
+            var table = mountAnalysisTable(month)
+
+            attendanceContainer
+                .find(".tab-content")
+                .append(
+                    "<div id='" +
+                        tab +
+                        "' class='tab-pane'><div class='table-responsive'>" +
+                        table +
+                        "</div></div>"
+                )
+
+            $("#nav_" + tab).tab("show")
 
             anTables["table-" + month] = $("#table_" + month).DataTable({
-                dom: 'flript',
+                dom: "flript",
                 paging: false,
-                order: [[10, 'asc']]
-            });
-        };
+                order: [[10, "asc"]]
+            })
+        }
 
         /**
          * Faz os cálculos dos valores de presença dos alunos.
-         * 
+         *
          * @param String month
          * @returns {String}
          */
-        mountAnalysisTable = function (month) {
+        mountAnalysisTable = function(month) {
 
-            var ret = getDaysArrayByMonth(month);
+            var table = ""
+            var tr = ""
+            var percent, realPercent;
+            result = calculateStudentAttendance(month)
 
-            var days = ret.days;
-            var arrMax = ret.daysOfTheWeek;
-            var table = "";
-            var tr = "";
-            var max = sum(arrMax);
-            var achieved;
+            $.each(studentData[month], function(enroll, content) {
+                tr += "<tr data-student='" + enroll + "'>"
+                tr += "<td class='details-control'></td>"
+                tr +=
+                    "<td class='text-right'>" +
+                    ("0000" + enroll).substring(enroll.length) +
+                    "</td>"
+                tr += "<td>" + content.name + "</td>"
 
-            $.each(studentData[month], function (enroll, content) {
-
-                tr += "<tr data-student='" + enroll + "'>";
-                tr += "<td class='details-control'></td>";
-                tr += "<td class='text-right'>" +
-                        ("0000" + enroll).substring(enroll.length) + "</td>";
-                tr += "<td>" + content.name + "</td>";
-
-                var arrCurrent = [0, 0, 0, 0, 0, 0, 0];
-
-                studentData[month][enroll].sortedByWeekDays = {};
-
-                var sit;
-                // foreach day of the month
-                $.each(days, function (day, dayOfWeek) {
-
-                    if (dayOfWeek !== "0") {
-
-                        if (typeof studentData[month][enroll].sortedByWeekDays[dayOfWeek] === "undefined") {
-                            studentData[month][enroll].sortedByWeekDays[dayOfWeek] = [];
-                        }
-
-                        /**
-                         * Existe falta ou abono do dia 'day'
-                         */
-                        if (content.hasOwnProperty(day)) {
-
-                            sit = content[day];
-                            studentData[month][enroll].sortedByWeekDays[dayOfWeek].push({
-                                date: day,
-                                situation: sit
-                            });
-
-                            /**
-                             * Se possui abono integral ganha 
-                             * presença completa do dia
-                             * 
-                             */
-                            if (sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_FULL)) {
-                                arrCurrent[dayOfWeek] += 1;
-                            } else {
-
-                                /**
-                                 * Se possui abono do início do dia ou 
-                                 * não possui falta do início do dia
-                                 * ganha presença parcial
-                                 */
-                                if (sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_BEGIN)
-                                        || !sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_BEGIN)) {
-                                    arrCurrent[dayOfWeek] += 0.5;
-                                }
-
-                                /**
-                                 * Se possui abono do final do dia ou 
-                                 * não possui falta do final do dia
-                                 * ganha presença parcial
-                                 */
-                                if (sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END)
-                                        || !sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_END)) {
-                                    arrCurrent[dayOfWeek] += 0.5;
-                                }
-                            }
-                        } else {
-                            //Não existe falta nem abono, aluno presente.
-                            arrCurrent[dayOfWeek] += 1;
-                            studentData[month][enroll].sortedByWeekDays[dayOfWeek].push({
-                                date: day,
-                                situation: null
-                            });
-                        }
-                    }
-                });
-                achieved = sum(arrCurrent);
+                percent = (content.achieved / result.max) * 100
+                realPercent = result.realMax > 0 ? ((content.realAchieved / result.realMax) * 100) : 0;
 
                 tr +=
-                        "<td class='text-center'>" + arrCurrent[1] + "</td>" +
-                        "<td class='text-center'>" + arrCurrent[2] + "</td>" +
-                        "<td class='text-center'>" + arrCurrent[3] + "</td>" +
-                        "<td class='text-center'>" + arrCurrent[4] + "</td>" +
-                        "<td class='text-center'>" + arrCurrent[5] + "</td>" +
-                        "<td class='text-center'>" + arrCurrent[6] + "</td>" +
-                        "<td class='text-center'>" + achieved + "/" + max +
-                        "<td class='text-center'>" + ((achieved / max) * 100).toFixed(2) + "% " +
-                        "</tr>";
+                    "<td class='text-center'>" +
+                    content.dayStatus[1] +
+                    "</td>" +
+                    "<td class='text-center'>" +
+                    content.dayStatus[2] +
+                    "</td>" +
+                    "<td class='text-center'>" +
+                    content.dayStatus[3] +
+                    "</td>" +
+                    "<td class='text-center'>" +
+                    content.dayStatus[4] +
+                    "</td>" +
+                    "<td class='text-center'>" +
+                    content.dayStatus[5] +
+                    "</td>" +
+                    "<td class='text-center'>" +
+                    content.dayStatus[6] +
+                    "</td>" +
+                    "<td class='text-center'>" +
+                    content.achieved +
+                    "/" +
+                    result.max +
+                    "</td>" +
+                    "<td class='text-center'>" +
+                    percent.toFixed(2) +
+                    "%</td>" +
+                    "<td class='text-center'>" +
+                    content.realAchieved +
+                    "/" +
+                    result.realMax +
+                    "</td>" +
+                    "<td class='text-center'>" +
+                    realPercent.toFixed(2) +
+                    "% </td>" +
+                    "</tr>"
+            })
 
-            });
+            table =
+                "<table id='table_" +
+                month +
+                "' data-month='" +
+                month +
+                "' class='table table-condensed table-bordered table-hover'><thead>" +
+                "<tr>" +
+                "<th></th>" +
+                "<th class='text-center'>Matrícula</th>" +
+                "<th class='text-center'>Aluno</th>" +
+                "<th class='text-center'>Segunda (" +
+                result.maxWeekDay[1] +
+                ")</th>" +
+                "<th class='text-center'>Terça (" +
+                result.maxWeekDay[2] +
+                ")</th> " +
+                "<th class='text-center'>Quarta (" +
+                result.maxWeekDay[3] +
+                ")</th> " +
+                "<th class='text-center'>Quinta (" +
+                result.maxWeekDay[4] +
+                ")</th> " +
+                "<th class='text-center'>Sexta (" +
+                result.maxWeekDay[5] +
+                ")</th> " +
+                "<th class='text-center'>Sábado (" +
+                result.maxWeekDay[6] +
+                ")</th> " +
+                "<th class='text-center'>Total Potencial (" +
+                result.max +
+                ")</th> " +
+                "<th class='text-center'> % Potencial </th> " +
+                "<th class='text-center'>Total Real (" +
+                result.realMax +
+                ")</th> " +
+                "<th class='text-center'> % Real </th> " +
+                "</tr>" +
+                "</thead><body>"
 
-            table = "<table id='table_" + month
-                    + "' data-month='" + month + "' class='table table-condensed table-bordered table-hover'><thead>" +
-                    "<tr>" +
-                    "<th></th>" +
-                    "<th class='text-center'>Matrícula</th>" +
-                    "<th class='text-center'>Aluno</th>" +
-                    "<th class='text-center'>Segunda (" + arrMax[1] + ")</th>" +
-                    "<th class='text-center'>Terça (" + arrMax[2] + ")</th> " +
-                    "<th class='text-center'>Quarta (" + arrMax[3] + ")</th> " +
-                    "<th class='text-center'>Quinta (" + arrMax[4] + ")</th> " +
-                    "<th class='text-center'>Sexta (" + arrMax[5] + ")</th> " +
-                    "<th class='text-center'>Sábado (" + arrMax[6] + ")</th> " +
-                    "<th class='text-center'>Total (" + max + ")</th> " +
-                    "<th class='text-center'> % </th> " +
-                    "</tr>" +
-                    "</thead><body>";
+            table += tr
+            table += "</body></table>"
 
-            table += tr;
-            table += "</body></table>";
+            return table
+        }
 
-            return table;
-        };
+        calculateStudentAttendance = function(month) {
+            var ret = getDaysArrayByMonth(month)
+            var days = ret.days
+            var dayStatus, allDayStatus = {};
+            var result = {
+                max: sum(ret.daysOfTheWeek),
+                maxWeekDay: ret.daysOfTheWeek,
+                realMax: 0
+            }
+            $.each(studentData[month], function(enroll, content) {
+                studentData[month][enroll].sortedByWeekDays = {}
+                dayStatus = [0, 0, 0, 0, 0, 0, 0]
+
+                var sit, realAchieved = 0
+                // foreach day of the month
+                $.each(days, function(day, dayOfWeek) {
+                    // ignores sunday
+                    if (dayOfWeek === "0") {
+                        return
+                    }
+
+                    if (
+                        !studentData[month][enroll].sortedByWeekDays[dayOfWeek]
+                    ) {
+                        studentData[month][enroll].sortedByWeekDays[
+                            dayOfWeek
+                        ] = []
+                    }
+
+                    /**
+                     * Existe falta ou abono do dia 'day'
+                     */
+                    if (content.hasOwnProperty(day)) {
+                        allDayStatus[day] = 1;
+                        console.log('day', day);
+                        sit = content[day]
+                        studentData[month][enroll].sortedByWeekDays[
+                            dayOfWeek
+                        ].push({
+                            date: day,
+                            situation: sit
+                        })
+
+                        /**
+                         * Se possui abono integral ganha
+                         * presença completa do dia
+                         *
+                         */
+                        if (
+                            sit.hasOwnProperty(
+                                ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_FULL
+                            )
+                        ) {
+                            dayStatus[dayOfWeek] += 1
+                            realAchieved += 1
+                        } else {
+                            /**
+                             * Se possui abono do início do dia ou
+                             * não possui falta do início do dia
+                             * ganha presença parcial
+                             */
+                            if (
+                                sit.hasOwnProperty(
+                                    ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_BEGIN
+                                ) ||
+                                !sit.hasOwnProperty(
+                                    ATTENDANCE_TYPES.ATTENDANCE_BEGIN
+                                )
+                            ) {
+                                dayStatus[dayOfWeek] += 0.5
+                                realAchieved += 0.5
+                            }
+
+                            /**
+                             * Se possui abono do final do dia ou
+                             * não possui falta do final do dia
+                             * ganha presença parcial
+                             */
+                            if (
+                                sit.hasOwnProperty(
+                                    ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END
+                                ) ||
+                                !sit.hasOwnProperty(
+                                    ATTENDANCE_TYPES.ATTENDANCE_END
+                                )
+                            ) {
+                                dayStatus[dayOfWeek] += 0.5
+                                realAchieved += 0.5
+                            }
+                        }
+                    } else {
+                        //Não existe falta nem abono, aluno presente.
+                        dayStatus[dayOfWeek] += 1
+                        studentData[month][enroll].sortedByWeekDays[
+                            dayOfWeek
+                        ].push({
+                            date: day,
+                            situation: null
+                        })
+                    }
+                })
+                studentData[month][enroll].dayStatus = dayStatus
+                studentData[month][enroll].achieved = sum(dayStatus)
+                studentData[month][enroll].realAchieved = realAchieved
+            })
+
+            console.log('allDayStatus', allDayStatus);
+
+            result.realMax = Object.keys(allDayStatus).length
+            return result;
+        }
 
         /**
          * Utilizado pelo editar abono.
-         * 
+         *
          * @param {type} start
          * @param {type} end
          * @returns {undefined}
          */
-        searchAllowanceBetween = function (start, end) {
-
+        searchAllowanceBetween = function(start, end) {
             /**
              * send the dates with ajax
              * the return must be organized by dates
@@ -297,9 +395,9 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
              * @returns {undefined}
              */
 
-            var attr = start.split('-')[1];
+            var attr = start.split("-")[1]
             if (typeof allowanceStudentsByMonth[attr] === "undefined") {
-                allowanceStudentsByMonth[attr] = [];
+                allowanceStudentsByMonth[attr] = []
 
                 $.ajax({
                     url: "/school-management/school-attendance/getAllowance",
@@ -308,22 +406,21 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                         start: start,
                         end: end
                     },
-                    success: function (data) {
-                        var allowance = data.allowance;
-                        var content = [];
-                        var lastDate = "";
-                        var lastIndx = -1;
+                    success: function(data) {
+                        var allowance = data.allowance
+                        var content = []
+                        var lastDate = ""
+                        var lastIndx = -1
                         for (var i = 0; i < allowance.length; i++) {
-
-                            var mdate = moment(allowance[i].date.date);
+                            var mdate = moment(allowance[i].date.date)
 
                             if (lastDate !== mdate.format("DDMMYYYY")) {
-                                lastDate = mdate.format("DDMMYYYY");
-                                lastIndx++;
+                                lastDate = mdate.format("DDMMYYYY")
+                                lastIndx++
                                 content.push({
                                     date: mdate,
                                     students: []
-                                });
+                                })
                             }
 
                             content[lastIndx].students.push({
@@ -334,257 +431,325 @@ define(['moment', 'datetimepicker', 'datatable'], function (moment) {
                                 className: allowance[i].className,
                                 name: allowance[i].name,
                                 personId: allowance[i].personId
-                            });
+                            })
                         }
 
-                        showMonthAllowances(attr, content);
-                        allowanceStudentsByMonth[attr] = content;
+                        showMonthAllowances(attr, content)
+                        allowanceStudentsByMonth[attr] = content
                     },
-                    error: function (textStatus) {
-                        console.log(textStatus);
+                    error: function(textStatus) {
+                        console.log(textStatus)
                     }
-                });
+                })
             } else {
-                moveMonthAllowancesUp(attr);
+                moveMonthAllowancesUp(attr)
             }
-        };
+        }
 
         /**
          * Arrasta os abonos do mês para o topo ao clicar no calendário.
-         * 
+         *
          * @param {type} month
          * @returns {undefined}
          */
-        moveMonthAllowancesUp = function (month) {
+        moveMonthAllowancesUp = function(month) {
             allowanceStudents
-                    .find("#month-" + month)
-                    .hide()
-                    .detach()
-                    .prependTo(allowanceStudents)
-                    .slideDown("fast");
-        };
+                .find("#month-" + month)
+                .hide()
+                .detach()
+                .prependTo(allowanceStudents)
+                .slideDown("fast")
+        }
 
         /**
          * Exibe os abonos do mês.
-         * 
+         *
          * @param {type} month
          * @param {type} content
          * @returns {undefined}
          */
-        showMonthAllowances = function (month, content) {
+        showMonthAllowances = function(month, content) {
+            var monthTemplate =
+                "<div class='box box-solid' style='display:none;' id='month-" +
+                month +
+                "'>" +
+                "<div class='box-header with-border'>" +
+                "<h3 class='box-title'>" +
+                moment(month, "MM").format("MMMM") +
+                "</h3>" +
+                "<div class='box-tools pull-right'>" +
+                "<button type='button' class='btn btn-box-tool' data-widget='collapse'>" +
+                "<i class='fa fa-minus'></i>" +
+                "</button>" +
+                "</div>" +
+                "</div>" +
+                "<div class='box-body'>" +
+                "<div class='box-group' id='accordion-" +
+                month +
+                "'>"
 
-            var monthTemplate = "<div class='box box-solid' style='display:none;' id='month-" + month + "'>" +
-                    "<div class='box-header with-border'>" +
-                    "<h3 class='box-title'>" + moment(month, "MM").format("MMMM") + "</h3>" +
-                    "<div class='box-tools pull-right'>" +
-                    "<button type='button' class='btn btn-box-tool' data-widget='collapse'>" +
-                    "<i class='fa fa-minus'></i>" +
-                    "</button>" +
-                    "</div>" +
-                    "</div>" +
-                    "<div class='box-body'>" +
-                    "<div class='box-group' id='accordion-" + month + "'>";
-
-            var enrId;
+            var enrId
 
             for (var l = 0; l < content.length; l++) {
-                var md = content[l].date;
-                var stds = content[l].students;
-                monthTemplate += "<div class='panel box box-primary'>" +
-                        "<div class='box-header with-border'>" +
-                        "<h4 class='box-title'>" +
-                        "<a data-toggle='collapse' data-parent='#accordion-" + l +
-                        "' href='#collapse-" + md.format("DDMMYYYY") +
-                        "' aria-expanded='false' class='collapsed'>" +
-                        md.format("LL") +
-                        "</a>" +
-                        "</h4>" +
-                        "</div>" +
-                        "<div id='collapse-" + md.format("DDMMYYYY") +
-                        "' class='panel-collapse collapse' aria-expanded='false' style='height: 0px;'>" +
-                        "<div class='box-body'>";
+                var md = content[l].date
+                var stds = content[l].students
+                monthTemplate +=
+                    "<div class='panel box box-primary'>" +
+                    "<div class='box-header with-border'>" +
+                    "<h4 class='box-title'>" +
+                    "<a data-toggle='collapse' data-parent='#accordion-" +
+                    l +
+                    "' href='#collapse-" +
+                    md.format("DDMMYYYY") +
+                    "' aria-expanded='false' class='collapsed'>" +
+                    md.format("LL") +
+                    "</a>" +
+                    "</h4>" +
+                    "</div>" +
+                    "<div id='collapse-" +
+                    md.format("DDMMYYYY") +
+                    "' class='panel-collapse collapse' aria-expanded='false' style='height: 0px;'>" +
+                    "<div class='box-body'>"
 
-                monthTemplate += "<ul class='users-list clearfix'>";
+                monthTemplate += "<ul class='users-list clearfix'>"
                 for (var i = 0; i < stds.length; i++) {
-                    enrId = "" + stds[i].enrollmentId;
+                    enrId = "" + stds[i].enrollmentId
 
-                    monthTemplate += "<li id='entity-" + stds[i].attendanceId + "' class='cats-row' data-mindex='" + month +
-                            "' data-dindex='" + l + "' data-sindex='" + i + "' data-id='" + stds[i].attendanceId + "'>" +
-                            "<img src='/recruitment/registration/photo/" + stds[i].personId + "' alt='" +
-                            stds[i].name + "' width='64'>" +
-                            "<p class='users-list-name'> " + ("0000" + enrId).substring(enrId.length) +
-                            " - " + stds[i].name + " <br>(" + stds[i].attendanceType + ") <br>" +
-                            stds[i].className +
-                            "</p>" +
-//                            "<span class='users-list-date'><b> " + stds[i].className + "</b></span>" +
-                            "</li>";
+                    monthTemplate +=
+                        "<li id='entity-" +
+                        stds[i].attendanceId +
+                        "' class='cats-row' data-mindex='" +
+                        month +
+                        "' data-dindex='" +
+                        l +
+                        "' data-sindex='" +
+                        i +
+                        "' data-id='" +
+                        stds[i].attendanceId +
+                        "'>" +
+                        "<img src='/recruitment/registration/photo/" +
+                        stds[i].personId +
+                        "' alt='" +
+                        stds[i].name +
+                        "' width='64'>" +
+                        "<p class='users-list-name'> " +
+                        ("0000" + enrId).substring(enrId.length) +
+                        " - " +
+                        stds[i].name +
+                        " <br>(" +
+                        stds[i].attendanceType +
+                        ") <br>" +
+                        stds[i].className +
+                        "</p>" +
+                        //                            "<span class='users-list-date'><b> " + stds[i].className + "</b></span>" +
+                        "</li>"
                 }
-                monthTemplate += "</ul></div></div></div>";
+                monthTemplate += "</ul></div></div></div>"
             }
 
-            monthTemplate += "</div></div></div>";
-            monthTemplate = $(monthTemplate);
+            monthTemplate += "</div></div></div>"
+            monthTemplate = $(monthTemplate)
 
-            allowanceStudents.prepend(monthTemplate);
-            monthTemplate.slideDown("fast");
-        };
+            allowanceStudents.prepend(monthTemplate)
+            monthTemplate.slideDown("fast")
+        }
 
         /**
          * Busca os dias do mês para a listagem dos abonos de cada dia.
-         * 
+         *
          * @param {type} month
          * @returns {analyze-edit-allowance_L18.analyze-edit-allowance_L19.getDaysArrayByMonth.analyze-edit-allowanceAnonym$8}
          */
-        getDaysArrayByMonth = function (month) {
-
-            var daysInMonth = moment(month, "MM").daysInMonth();
-            var days = {};
-            var daysOfTheWeek = [0, 0, 0, 0, 0, 0, 0];
+        getDaysArrayByMonth = function(month) {
+            var daysInMonth = moment(month, "MM").daysInMonth()
+            var days = {}
+            var daysOfTheWeek = [0, 0, 0, 0, 0, 0, 0]
 
             while (daysInMonth) {
-                var current = moment(month, "MM").date(daysInMonth);
-                days[current.format("YYYYMMDD")] = current.format("e");
-                daysOfTheWeek[current.format("e")]++;
-                daysInMonth--;
+                var current = moment(month, "MM").date(daysInMonth)
+                days[current.format("YYYYMMDD")] = current.format("e")
+                daysOfTheWeek[current.format("e")]++
+                daysInMonth--
             }
 
             return {
                 days: days,
                 daysOfTheWeek: daysOfTheWeek
-            };
-        };
+            }
+        }
 
         /**
          * Soma os valores do array, utilzado na análise.
          * @param {type} arr
          * @returns {Number}
          */
-        sum = function (arr) {
-            var sum = 0;
+        sum = function(arr) {
+            var sum = 0
             for (var i = 1; i < arr.length; i++) {
-                sum += arr[i];
+                sum += arr[i]
             }
-            return sum;
-        };
+            return sum
+        }
 
         /**
          * Exibir mais informações ao clicar na linha de algum aluno.
          * @returns {undefined}
          */
-        initTableListeners = function () {
-            $("#attendanceContainer").on("click", "table tr td.details-control", function () {
-                var tr = $(this).closest("tr");
-                var student = tr.data("student");
-                var month = tr.closest("table").data("month");
-                var row = anTables["table-" + month].row(tr);
-                var detailContent = null;
+        initTableListeners = function() {
+            $("#attendanceContainer").on(
+                "click",
+                "table tr td.details-control",
+                function() {
+                    var tr = $(this).closest("tr")
+                    var student = tr.data("student")
+                    var month = tr.closest("table").data("month")
+                    var row = anTables["table-" + month].row(tr)
+                    var detailContent = null
 
-                if (row.child.isShown()) {
-                    tr.removeClass("details");
-                    row.child.hide();
-                } else {
-                    tr.addClass("details");
-                    detailContent = getDetailsOf(studentData[month][student].sortedByWeekDays);
-                    row.child(detailContent).show();
+                    if (row.child.isShown()) {
+                        tr.removeClass("details")
+                        row.child.hide()
+                    } else {
+                        tr.addClass("details")
+                        detailContent = getDetailsOf(
+                            studentData[month][student].sortedByWeekDays
+                        )
+                        row.child(detailContent).show()
+                    }
                 }
-            });
-        };
+            )
+        }
 
         /**
          * Monta a visão detalhada da assiduidade de um aluno
-         * 
+         *
          * @returns {undefined}
          */
-        getDetailsOf = function (att) {
-
-            var content = "<h3 class='text-center'>Detalhamento</h3><hr><div class='container'>";
-            var doubleCounter;
+        getDetailsOf = function(att) {
+            var content =
+                "<h3 class='text-center'>Detalhamento</h3><hr><div class='container'>"
+            var doubleCounter
             // Segunda à Sábado
-            $.each(att, function (weekDay, attAll) {
-                content += "<div class='col-lg-4 col-md-6 col-sm-6 col-xs-12'><h4>" + moment(weekDay, "e").format("dddd") + "</h4>";
-                content += "<div class='catssys-list-box'>";
-                doubleCounter = 0;
+            $.each(att, function(weekDay, attAll) {
+                content +=
+                    "<div class='col-lg-4 col-md-6 col-sm-6 col-xs-12'><h4>" +
+                    moment(weekDay, "e").format("dddd") +
+                    "</h4>"
+                content += "<div class='catssys-list-box'>"
+                doubleCounter = 0
                 for (var i = 0; i < attAll.length; i++) {
-                    content += "<label>" + moment(attAll[i].date, "YYYYMMDD").format("L") + ":</label> ";
+                    content +=
+                        "<label>" +
+                        moment(attAll[i].date, "YYYYMMDD").format("L") +
+                        ":</label> "
                     if (attAll[i].situation === null) {
-                        content += "PRESENÇA | PRESENÇA";
-                    } else if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_FULL)) {
-                        content += "ABONO | ABONO";
+                        content += "PRESENÇA | PRESENÇA"
+                    } else if (
+                        attAll[i].situation.hasOwnProperty(
+                            ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_FULL
+                        )
+                    ) {
+                        content += "ABONO | ABONO"
                     } else {
-                        if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_BEGIN)) {
-                            content += "ABONO | ";
-                            if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END)) {
-                                content += "ABONO";
-                            } else if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_END)) {
-                                content += "FALTA";
+                        if (
+                            attAll[i].situation.hasOwnProperty(
+                                ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_BEGIN
+                            )
+                        ) {
+                            content += "ABONO | "
+                            if (
+                                attAll[i].situation.hasOwnProperty(
+                                    ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END
+                                )
+                            ) {
+                                content += "ABONO"
+                            } else if (
+                                attAll[i].situation.hasOwnProperty(
+                                    ATTENDANCE_TYPES.ATTENDANCE_END
+                                )
+                            ) {
+                                content += "FALTA"
                             } else {
-                                content += "PRESENÇA";
+                                content += "PRESENÇA"
                             }
-                        } else if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_BEGIN)) {
-                            content += "FALTA | ";
-                            if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END)) {
-                                content += "ABONO";
-                            } else if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_END)) {
-                                content += "FALTA &crarr;";
-                                doubleCounter++;
+                        } else if (
+                            attAll[i].situation.hasOwnProperty(
+                                ATTENDANCE_TYPES.ATTENDANCE_BEGIN
+                            )
+                        ) {
+                            content += "FALTA | "
+                            if (
+                                attAll[i].situation.hasOwnProperty(
+                                    ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END
+                                )
+                            ) {
+                                content += "ABONO"
+                            } else if (
+                                attAll[i].situation.hasOwnProperty(
+                                    ATTENDANCE_TYPES.ATTENDANCE_END
+                                )
+                            ) {
+                                content += "FALTA &crarr;"
+                                doubleCounter++
                             } else {
-                                content += "PRESENÇA";
+                                content += "PRESENÇA"
                             }
                         } else {
-                            content += "PRESENÇA | ";
-                            if (attAll[i].situation.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END)) {
-                                content += "ABONO";
+                            content += "PRESENÇA | "
+                            if (
+                                attAll[i].situation.hasOwnProperty(
+                                    ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END
+                                )
+                            ) {
+                                content += "ABONO"
                             } else {
-                                content += "FALTA";
+                                content += "FALTA"
                             }
                         }
                     }
-                    content += "<br>";
+                    content += "<br>"
                 }
 
-                content += "<label>Total: " + doubleCounter + "</label>";
-                content += "</div></div>";
-            });
+                content += "<label>Dias de Falta: " + doubleCounter + "</label>"
+                content += "</div></div>"
+            })
 
+            content += "</div>"
 
-            content += "</div>";
-
-            return content;
-        };
+            return content
+        }
 
         return {
-            init: function () {
-
-                moment.locale("pt-br");
+            init: function() {
+                moment.locale("pt-br")
 
                 // edit allowance
                 if (allowanceMonth.length > 0) {
-                    initAttendanceMonthpicker(allowanceMonth);
+                    initAttendanceMonthpicker(allowanceMonth)
                 }
 
                 // analyze
                 if (attendanceMonth.length > 0) {
-                    initAttendanceMonthpicker(attendanceMonth);
-                    initTableListeners();
+                    initAttendanceMonthpicker(attendanceMonth)
+                    initTableListeners()
                 }
             },
-            getCallbackOf: function (selectedItemId) {
-
+            getCallbackOf: function(selectedItemId) {
                 switch (selectedItemId) {
-                    case 'allowance-delete':
+                    case "allowance-delete":
                         return {
-                            exec: function (params) {
-                                allowanceStudents.find("#entity-" + params.id)
-                                        .slideUp("fast", function () {
-                                            $(this).remove();
-                                        });
+                            exec: function(params) {
+                                allowanceStudents
+                                    .find("#entity-" + params.id)
+                                    .slideUp("fast", function() {
+                                        $(this).remove()
+                                    })
                             }
-                        };
+                        }
                 }
             }
-        };
+        }
+    })()
 
-    }());
-
-    return analyzeEditAllowance;
-});
+    return analyzeEditAllowance
+})
