@@ -23,7 +23,6 @@ use Recruitment\Service\AddressService;
 use Recruitment\Service\PersonService;
 use Recruitment\Service\RegistrationStatusService;
 use RuntimeException;
-use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\Form\View\Helper\Captcha\Image;
 use Zend\Json\Json;
 use Zend\Session\Container;
@@ -1093,18 +1092,8 @@ class RegistrationController extends AbstractEntityActionController
 
                 $targetFile = $targetDir . $targetName;
 
-                $uploadAdapter = new HttpAdapter();
-
-                $uploadAdapter->addFilter('File\Rename', array(
-                    'target' => $targetFile,
-                    'overwrite' => true
-                ));
-
-                $uploadAdapter->setDestination($targetDir);
-
-                if (!$uploadAdapter->receive()) {
-                    $messages = implode('\n', $uploadAdapter->getMessages());
-                    throw new RuntimeException("Error: " . $messages);
+                if(!move_uploaded_file($file['tmp_name'], $targetFile)) {
+                    throw new Exception('Não foi possível salvar a foto');
                 }
 
                 $person->setPersonPhoto($targetName);

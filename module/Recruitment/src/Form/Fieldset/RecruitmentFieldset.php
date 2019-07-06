@@ -24,6 +24,11 @@ use DoctrineModule\Stdlib\Hydrator\DoctrineObject as DoctrineHydrator;
 use Recruitment\Entity\Recruitment;
 use Zend\Form\Fieldset;
 use Zend\InputFilter\InputFilterProviderInterface;
+use AdministrativeStructure\Entity\Job;
+use Recruitment\Validator\DateGratherThan;
+use Recruitment\Filter\DateToFormat;
+use Zend\Validator\File\Size;
+use Zend\Validator\File\Extension;
 
 /**
  * Modela os campos da entidade \Recruitment\Entity\Recruitment
@@ -32,7 +37,6 @@ use Zend\InputFilter\InputFilterProviderInterface;
  */
 class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterface
 {
-
     public function __construct(ObjectManager $obj, $name = null, $options = array())
     {
         parent::__construct($name, $options);
@@ -43,24 +47,24 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
         $openJobOptions = $this->getJobs($obj);
 
         $this->add(array(
-                'name' => 'recruitmentNumber',
-                'type' => 'Zend\Form\Element\Select',
-                'options' => array(
-                    'label' => 'Número do processo seletivo',
-                    'empty_option' => 'Escolha entre 1º e 9º',
-                    'value_options' => array(
-                        1 => '1º',
-                        2 => '2º',
-                        3 => '3º',
-                        4 => '4º',
-                        5 => '5º',
-                        6 => '6º',
-                        7 => '7º',
-                        8 => '8º',
-                        9 => '9º',
-                    ),
+            'name' => 'recruitmentNumber',
+            'type' => 'Zend\Form\Element\Select',
+            'options' => array(
+                'label' => 'Número do processo seletivo',
+                'empty_option' => 'Escolha entre 1º e 9º',
+                'value_options' => array(
+                    1 => '1º',
+                    2 => '2º',
+                    3 => '3º',
+                    4 => '4º',
+                    5 => '5º',
+                    6 => '6º',
+                    7 => '7º',
+                    8 => '8º',
+                    9 => '9º',
                 ),
-            ))
+            ),
+        ))
             ->add(array(
                 'name' => 'recruitmentYear',
                 'type' => 'Zend\Form\Element\Select',
@@ -196,8 +200,8 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 'attributes' => [
                     'rows' => 6,
                     'placeholder' => 'As inscrições estão abertas de 01 de Dezembro de 2016 a 25 de Janeiro de 2017. '
-                    . 'Para fazer sua inscrição, o candidato deve preencher um formulário de indentificação. Após prencher o formulário o candidato passa a ter acesso a area de acompanhamento de '
-                    . 'inscrição, onde poderá acompanhar cada etapa do processo seletivo.',
+                        . 'Para fazer sua inscrição, o candidato deve preencher um formulário de indentificação. Após prencher o formulário o candidato passa a ter acesso a area de acompanhamento de '
+                        . 'inscrição, onde poderá acompanhar cada etapa do processo seletivo.',
                 ]
             ])
             ->add(array(
@@ -231,8 +235,8 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 'attributes' => [
                     'rows' => 6,
                     'placeholder' => 'Para completar a inscrição no processo seletivo de alunos o candidato deve comparecer ao campus da UNIFEI (bairro Pinheirinho), '
-                    . 'Bloco I (prédio da Elétrica), sala I.1.2.47, levando consigo o RG, 2kg de alimento (exceto sal, açucar e farinha) ou 1kg de ração para animais (cachorro ou gato). '
-                    . 'Todos os itens arrecadados serão doados ao final do processo seletivo.',
+                        . 'Bloco I (prédio da Elétrica), sala I.1.2.47, levando consigo o RG, 2kg de alimento (exceto sal, açucar e farinha) ou 1kg de ração para animais (cachorro ou gato). '
+                        . 'Todos os itens arrecadados serão doados ao final do processo seletivo.',
                 ]
             ])
             ->add(array(
@@ -255,8 +259,8 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 'attributes' => [
                     'rows' => 6,
                     'placeholder' => 'A prova será aplicada no campus da UNIFEI (Av. BPS, 1303, Pinheirinho Itajubá/MG) no Bloco I (prédio da elétrica), das 13h30min às 18h30min.'
-                    . 'O candidato deverá portar o cartão recebido na etapa de confirmação, documento com foto e caneta esferográfica preta. Por favor, consulte a seção IV do edital para verificar todas as '
-                    . 'instruções para o dia de prova.'
+                        . 'O candidato deverá portar o cartão recebido na etapa de confirmação, documento com foto e caneta esferográfica preta. Por favor, consulte a seção IV do edital para verificar todas as '
+                        . 'instruções para o dia de prova.'
                 ]
             ])
             ->add(array(
@@ -279,8 +283,8 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 'attributes' => [
                     'rows' => 6,
                     'placeholder' => 'O resultado da prova será disponibilizado no dia 11/05. Para visualizá-lo o candidato deverá acessar a área de acompanhamento de inscrição.'
-                    . ' Os candidatos aprovados deverão consultar o edital e verificar os documentos necessários parar a etapa de pré-entrevista. '
-                    . 'Candidados na lista de espera poderão ser convocados caso haja desistência de candidatos convocados.',
+                        . ' Os candidatos aprovados deverão consultar o edital e verificar os documentos necessários parar a etapa de pré-entrevista. '
+                        . 'Candidados na lista de espera poderão ser convocados caso haja desistência de candidatos convocados.',
                 ]
             ])
             ->add(array(
@@ -303,7 +307,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 'attributes' => [
                     'rows' => 6,
                     'placeholder' => 'A lista dos candidatos convocados para pré-entrevista será divulgada no dia 11/07 pelo site do CATS. Caso se faça necessário, '
-                    . 'uma segunda chamada será feita. Os candidatos convocados deverão preencher o formulário on-line disponibilizado na área de acompanhamento de inscrição.',
+                        . 'uma segunda chamada será feita. Os candidatos convocados deverão preencher o formulário on-line disponibilizado na área de acompanhamento de inscrição.',
                 ]
             ])
             ->add(array(
@@ -337,7 +341,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 'attributes' => [
                     'rows' => 6,
                     'data-student-placeholder' => 'Os candidatos convocados deverão comparecer ao campus da UNIFEI para a entrevista. O dia de entrevista é definido pela colocação na prova. '
-                    . 'As datas e documentos exigidos para a entrevista podem ser conferidos no edital (seção VIII).',
+                        . 'As datas e documentos exigidos para a entrevista podem ser conferidos no edital (seção VIII).',
                     'data-volunteer-placeholder' => 'Os candidatos convocados deverão comparecer ao campus da UNIFEI para a entrevista. O dia de entrevista é agendado mediante a convocação do candidato.',
                     'class' => 'undefined-placeholder',
                 ]
@@ -373,7 +377,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 'attributes' => [
                     'rows' => 6,
                     'data-student-placeholder' => 'O resultado da entrevista será liberado no dia 20/07. Os candidatos aprovados deverão aguardar o período de matrícula e aqueles em lista de espera '
-                    . 'poderão ser chamados caso haja desistência de candidatos aprovados.',
+                        . 'poderão ser chamados caso haja desistência de candidatos aprovados.',
                     'data-volunteer-placeholder' => 'O resultado será liberado no dia 20/07. Os candidatos aprovados deverão aguardar o contato de um voluntário do CATS.',
                     'class' => 'undefined-placeholder',
                 ]
@@ -409,10 +413,9 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 'attributes' => [
                     'rows' => 6,
                     'placeholder' => 'A matrícula do candidato aprovado na entrevista deverá ser realizada no período de 01/08/2016 a 10/08/2016. '
-                    . 'O custo da matrícula é de R$30,00 (trinta reais). Menores de 18 anos deverão estar acompanhados de um responsável.',
+                        . 'O custo da matrícula é de R$30,00 (trinta reais). Menores de 18 anos deverão estar acompanhados de um responsável.',
                 ]
-            ])
-        ;
+            ]);
     }
 
     protected function getYears()
@@ -437,8 +440,9 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
      * @param ObjectManager $obj - entity manager
      * @return array
      */
-    protected function getJobs(ObjectManager $obj) {
-        $jobs = $obj->getRepository('\AdministrativeStructure\Entity\Job')->findBy([
+    protected function getJobs(ObjectManager $obj)
+    {
+        $jobs = $obj->getRepository(Job::class)->findBy([
             'isAvailable' => true
         ]);
         $jobsNames = [];
@@ -452,6 +456,31 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
 
     public function getInputFilterSpecification()
     {
+        /*
+
+        $targetDir = self::PUBLIC_NOTICE_DIR;
+
+        $targetFile = $targetDir . $filename;
+
+        if (file_exists($targetFile)) {
+            throw new RuntimeException('Arquivo do edital já existe. '
+            . 'Por favor entre em contato com o administrador do sistema.');
+        }
+
+        $uploadAdapter = new HttpAdapter();
+
+        $uploadAdapter->addFilter('File\Rename', array(
+            'target' => $targetFile,
+            'overwrite' => false
+        ));
+
+        $uploadAdapter->setDestination($targetDir);
+
+        if (!$uploadAdapter->receive($fileContainer['name'])) {
+            $messages = implode('\n', $uploadAdapter->getMessages());
+            throw new \RuntimeException($messages);
+        }
+*/
         return [
             'recruitmentNumber' => [
                 'required' => true,
@@ -465,7 +494,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                     [
-                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'name' => DateToFormat::class,
                         'options' => [
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
@@ -480,7 +509,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ]
                     ],
                     [
-                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'name' => DateGratherThan::class,
                         'options' => [
                             'format' => 'Y-m-d',
                             'inclusive' => true,
@@ -494,7 +523,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                     [
-                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'name' => DateToFormat::class,
                         'options' => [
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
@@ -509,7 +538,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ]
                     ],
                     [
-                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'name' => DateGratherThan::class,
                         'options' => [
                             'format' => 'Y-m-d',
                             'compareWith' => [
@@ -521,10 +550,10 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                 ],
             ],
             'recruitmentPublicNotice' => [
-                'required' => false,
+                'required' => true,
                 'validators' => [
                     [
-                        'name' => 'Zend\Validator\File\Extension',
+                        'name' => Extension::class,
                         'options' => [
                             'extension' => [
                                 'pdf',
@@ -532,7 +561,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ],
                     ],
                     [
-                        'name' => 'Zend\Validator\File\Size',
+                        'name' => Size::class,
                         'options' => [
                             'min' => '1000',
                             'max' => '5000000',
@@ -564,7 +593,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                     [
-                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'name' => DateToFormat::class,
                         'options' => [
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
@@ -579,7 +608,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ]
                     ],
                     [
-                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'name' => DateGratherThan::class,
                         'options' => [
                             'format' => 'Y-m-d',
                             'compareWith' => [
@@ -596,7 +625,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                     [
-                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'name' => DateToFormat::class,
                         'options' => [
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
@@ -611,7 +640,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ]
                     ],
                     [
-                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'name' => DateGratherThan::class,
                         'options' => [
                             'format' => 'Y-m-d',
                             'compareWith' => [
@@ -632,7 +661,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                     [
-                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'name' => DateToFormat::class,
                         'options' => [
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
@@ -647,7 +676,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ]
                     ],
                     [
-                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'name' => DateGratherThan::class,
                         'options' => [
                             'format' => 'Y-m-d',
                             'compareWith' => [
@@ -668,7 +697,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                     [
-                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'name' => DateToFormat::class,
                         'options' => [
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
@@ -683,7 +712,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ]
                     ],
                     [
-                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'name' => DateGratherThan::class,
                         'options' => [
                             'format' => 'Y-m-d',
                             'compareWith' => [
@@ -704,7 +733,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                     [
-                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'name' => DateToFormat::class,
                         'options' => [
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
@@ -719,7 +748,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ]
                     ],
                     [
-                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'name' => DateGratherThan::class,
                         'options' => [
                             'format' => 'Y-m-d',
                             'compareWith' => [
@@ -740,7 +769,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                     [
-                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'name' => DateToFormat::class,
                         'options' => [
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
@@ -755,7 +784,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ]
                     ],
                     [
-                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'name' => DateGratherThan::class,
                         'options' => [
                             'format' => 'Y-m-d',
                             'compareWith' => [
@@ -773,7 +802,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                     [
-                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'name' => DateToFormat::class,
                         'options' => [
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
@@ -788,7 +817,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ]
                     ],
                     [
-                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'name' => DateGratherThan::class,
                         'options' => [
                             'format' => 'Y-m-d',
                             'compareWith' => [
@@ -809,7 +838,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                     [
-                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'name' => DateToFormat::class,
                         'options' => [
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
@@ -824,7 +853,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ]
                     ],
                     [
-                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'name' => DateGratherThan::class,
                         'options' => [
                             'format' => 'Y-m-d',
                             'compareWith' => [
@@ -845,7 +874,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                     [
-                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'name' => DateToFormat::class,
                         'options' => [
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
@@ -860,7 +889,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ]
                     ],
                     [
-                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'name' => DateGratherThan::class,
                         'options' => [
                             'format' => 'Y-m-d',
                             'compareWith' => [
@@ -878,7 +907,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                     ['name' => 'StripTags'],
                     ['name' => 'StringTrim'],
                     [
-                        'name' => 'Recruitment\Filter\DateToFormat',
+                        'name' => DateToFormat::class,
                         'options' => [
                             'inputFormat' => 'd/m/Y',
                             'outputFormat' => 'Y-m-d'
@@ -893,7 +922,7 @@ class RecruitmentFieldset extends Fieldset implements InputFilterProviderInterfa
                         ]
                     ],
                     [
-                        'name' => 'Recruitment\Validator\DateGratherThan',
+                        'name' => DateGratherThan::class,
                         'options' => [
                             'format' => 'Y-m-d',
                             'compareWith' => [

@@ -14,8 +14,8 @@ $this
 <section class="content">
     <p><?php echo $this->message; ?></p>
     <div class="row">
-        <?php if ($this->form !== null): 
-                
+        <?php if ($this->form !== null):
+
             ?>
             <div class="col-xs-12 col-md-6 col-md-offset-3">
                 <?php
@@ -36,7 +36,7 @@ $this
                     <?php echo $this->formRow($fs->get('recruitmentEndDate')); ?>
                 </div>
                 <div class="col-xs-12 col-md-12">
-                    <div class="form-group 
+                    <div class="form-group
                     <?php
                     echo $this->formElementErrors($fs->get('recruitmentPublicNotice')) !== "" ? 'has-error' : '';
                     ?>" >
@@ -46,7 +46,7 @@ $this
                             <?php echo $this->formElement($fs->get('recruitmentPublicNotice')); ?>
                             <span class="form-control btn-file-name">Nenhum arquivo selecionado</span>
                         </div>
-                        
+
                         <?php echo $this->formElementErrors($fs->get('recruitmentPublicNotice')); ?>
                     </div>
                     <p>Obs.: Tente manter o arquivo do edital com menos de 1MB. Assim, os candidatos poderão acessá-lo mais rapidamente em redes <em>Wi-Fi</em>.
@@ -73,7 +73,7 @@ $this
                 </div>
                 <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('recruitmentStudentTarget')); ?>
-                    <p class="text-center">Quanto maior o número, maior é a capacidade de aprendizado do candidato</p>
+                    <p class="text-center">Quanto maior o número, mais preparado para o vestibular é o candidato</p>
                 </div>
 
                 <div class="col-xs-12 col-md-12">
@@ -118,31 +118,31 @@ $this
                 <div class="col-xs-12 col-md-6 specific-field type-student">
                     <?php echo $this->formRow($fs->get('interviewEndDate')); ?>
                 </div>
-                
+
                 <div class="col-xs-12 col-md-12">
                     <?php echo $this->formRow($fs->get('interviewDescription')); ?>
                 </div>
-                
+
                 <div class="col-xs-12 col-md-12 specific-field type-volunteer">
                     <?php echo $this->formRow($fs->get('testClassDescription')); ?>
                 </div>
-                
+
                 <div class="col-xs-12 col-md-12">
                     <?php echo $this->formRow($fs->get('resultDate')); ?>
                 </div>
-                
+
                 <div class="col-xs-12 col-md-12">
                     <?php echo $this->formRow($fs->get('resultDescription')); ?>
                 </div>
-                
+
                 <div class="col-xs-12 col-md-6 specific-field type-student">
                     <?php echo $this->formRow($fs->get('enrollmentStartDate')); ?>
                 </div>
-                
+
                 <div class="col-xs-12 col-md-6 specific-field type-student">
                     <?php echo $this->formRow($fs->get('enrollmentEndDate')); ?>
                 </div>
-                
+
                 <div class="col-xs-12 col-md-12 specific-field type-student">
                     <?php echo $this->formRow($fs->get('enrollmentDescription')); ?>
                 </div>

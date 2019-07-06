@@ -34,6 +34,7 @@ use Exception;
  */
 class StudentBgConfigController extends AbstractEntityActionController
 {
+    const IMG_DIR = __DIR__ . '/../../../../public/img/';
 
     /**
      * Exibe em uma tabela todas as configurações cadastradas
@@ -75,17 +76,16 @@ class StudentBgConfigController extends AbstractEntityActionController
             $form->bind($bgConfig);
 
             if ($request->isPost()) {
-                $file = $request->getFiles()->toArray();
-                $post = array_merge_recursive(
+                $data = array_merge_recursive(
                     $request->getPost()->toArray(),
-                    $file
+                    $request->getFiles()->toArray()
                 );
-                $form->setData($post);
+                $form->setData($data);
 
                 if ($form->isValid()) {
                     $bgImgNewName = 'bg' . time() . '.png';
-                    move_uploaded_file($file['bg_img']['tmp_name'], './public/img/' . $bgImgNewName);
-                    chmod('./public/img/' . $bgImgNewName, 0775);
+                    move_uploaded_file($data['bg_img']['tmp_name'], self::IMG_DIR . $bgImgNewName);
+                    chmod($bgImgNewName, 0775);
                     $bgConfig->setStudentBgConfigImg($bgImgNewName);
 
                     $em->persist($bgConfig);
@@ -127,25 +127,20 @@ class StudentBgConfigController extends AbstractEntityActionController
                 $form->get('submit')->setAttribute('value', 'Editar configuração de fundo');
 
                 if ($request->isPost()) {
-                    $file = $request->getFiles()->toArray();
-                    $post = array_merge_recursive(
+                    $data = array_merge_recursive(
                         $request->getPost()->toArray(),
-                        $file
+                        $request->getFiles()->toArray()
                     );
-                    $form->setData($post);
+                    $form->setData($data);
 
                     if ($form->isValid()) {
-                        $imgDirectory = './public/img/';
-
                         // Outra imagem foi carregada
-                        if (isset($file['bg_img']) && !empty($file['bg_img']['tmp_name'])) {
+                        if (isset($data['bg_img']) && !empty($data['bg_img']['tmp_name'])) {
                             // Remove a imagem anterior
-                            unlink($imgDirectory . $img);
-
+                            unlink(self::IMG_DIR . $img);
                             $bgImgNewName = 'bg' . time() . '.png';
-                            move_uploaded_file($file['bg_img']['tmp_name'], $imgDirectory . $bgImgNewName);
-                            chmod($imgDirectory . $bgImgNewName, 0775);
-
+                            move_uploaded_file($data['bg_img']['tmp_name'], self::IMG_DIR . $bgImgNewName);
+                            chmod($bgImgNewName, 0775);
                             $bgConfig->setStudentBgConfigImg($bgImgNewName);
                         }
 
@@ -182,7 +177,7 @@ class StudentBgConfigController extends AbstractEntityActionController
                 $bgConfig = $em->getReference('Documents\Entity\StudentBgConfig', $id);
 
                 // Remove a imagem
-                unlink('./public/img/' . $bgConfig->getStudentBgConfigImg());
+                unlink(self::IMG_DIR . $bgConfig->getStudentBgConfigImg());
 
                 $em->remove($bgConfig);
                 $em->flush();
@@ -207,5 +202,4 @@ class StudentBgConfigController extends AbstractEntityActionController
             ));
         }
     }
-
 }

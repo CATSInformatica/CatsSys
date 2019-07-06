@@ -25,7 +25,6 @@ use Recruitment\Entity\Recruitment;
 use Recruitment\Entity\Repository\RecruitmentRepository;
 use Recruitment\Form\RecruitmentForm;
 use RuntimeException;
-use Zend\File\Transfer\Adapter\Http as HttpAdapter;
 use Zend\View\Model\JsonModel;
 use Zend\View\Model\ViewModel;
 
@@ -36,8 +35,7 @@ use Zend\View\Model\ViewModel;
  */
 class RecruitmentController extends AbstractEntityActionController
 {
-
-    const PUBLIC_NOTICE_DIR = './public/docs/';
+    const PUBLIC_NOTICE_DIR = __DIR__ . '/../../../../public/docs/';
 
     public function indexAction()
     {
@@ -75,7 +73,6 @@ class RecruitmentController extends AbstractEntityActionController
      */
     public function createAction()
     {
-
         try {
             $request = $this->getRequest();
             $em = $this->getEntityManager();
@@ -85,194 +82,46 @@ class RecruitmentController extends AbstractEntityActionController
             $form->bind($recruitment);
 
             if ($request->isPost()) {
-                $fileContainer = $request->getFiles()->toArray();
-                $file = $fileContainer['recruitment']['recruitmentPublicNotice'];
-                $data = $request->getPost();
+                $data = array_merge_recursive(
+                    $request->getPost()->toArray(),
+                    $request->getFiles()->toArray()
+                );
                 $form->setData($data);
 
-                if ($form->isValid() && !$file['error'] && $file['size']) {
+                if ($form->isValid()) {
 
-                    try {
+                    $targetDir = self::PUBLIC_NOTICE_DIR;
+                    $filename = $data['recruitment']['recruitmentYear']
+                        . $data['recruitment']['recruitmentNumber']
+                        . $data['recruitment']['recruitmentType']
+                        . '.pdf';
 
-                        $targetDir = self::PUBLIC_NOTICE_DIR;
-
-                        $filename = $data['recruitment']['recruitmentYear']
-                            . $data['recruitment']['recruitmentNumber']
-                            . $data['recruitment']['recruitmentType']
-                            . '.pdf';
-
-                        $targetFile = $targetDir . $filename;
-
-                        if (file_exists($targetFile)) {
-                            throw new RuntimeException('Arquivo do edital já existe. '
-                            . 'Por favor entre em contato com o administrador do sistema.');
-                        }
-
-                        $recruitment->setRecruitmentPublicNotice($filename);
-
-                        $em->persist($recruitment);
-                        $em->flush();
-
-                        $uploadAdapter = new HttpAdapter();
-
-                        $uploadAdapter->addFilter('File\Rename', array(
-                            'target' => $targetFile,
-                            'overwrite' => false
-                        ));
-
-                        $uploadAdapter->setDestination($targetDir);
-
-                        if (!$uploadAdapter->receive($fileContainer['name'])) {
-                            $messages = implode('\n', $uploadAdapter->getMessages());
-                            throw new \RuntimeException($messages);
-                        }
-
-                        return $this->redirect()->toRoute('recruitment/recruitment', array('action' => 'index'));
-                    } catch (Exception $ex) {
-                        if ($ex instanceof UniqueConstraintViolationException) {
-                            return new ViewModel(array(
-                                'message' => 'Este processo seletivo já foi cadastrado.',
-                                'form' => null,
-                            ));
-                        }
-
-                        return new ViewModel(array(
-                            'message' => $ex->getMessage(),
-                            'form' => null,
-                        ));
+                    if (!move_uploaded_file($data['recruitment']['recruitmentPublicNotice']['tmp_name'], $targetDir . $filename)) {
+                        throw new \RuntimeException('Não foi possível salvar o arquivo');
                     }
-                }
 
-                return new ViewModel(array(
-                    'message' => ($file['error'] || !$file['size']) ? 'O upload do edital não pode ser feito. Por favor tente novamente.' : null,
-                    'form' => $form
-                ));
+                    $recruitment->setRecruitmentPublicNotice($filename);
+                    $em->persist($recruitment);
+                    $em->flush();
+
+                    return $this->redirect()->toRoute('recruitment/recruitment', ['action' => 'index']);
+                }
+            }
+            return new ViewModel(['form' => $form]);
+        } catch (\Throwable $ex) {
+            if ($ex instanceof UniqueConstraintViolationException) {
+                return new ViewModel([
+                    'message' => 'Este processo seletivo já foi cadastrado.',
+                    'form' => null,
+                ]);
             }
 
-            return new ViewModel(array(
-                'form' => $form
-            ));
-        } catch (\Throwable $ex) {
-            return new ViewModel(array(
-                'form' => null,
+            return new ViewModel([
                 'message' => $ex->getMessage(),
-            ));
+                'form' => null,
+            ]);
         }
     }
-
-    // public function editAction()
-    // {
-    //     try {
-    //         $id = $this->params('id', false);
-    //         $em = $this->getEntityManager();
-
-    //         if ($id) {
-    //             $form = new RecruitmentForm($em);
-    //             $recruitment = $em->find('Recruitment\Entity\Recruitment', $id);
-
-    //             $currentDate = new \DateTime();
-    //             $beginDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getRecruitmentBeginDate());
-    //             if ($beginDate <= $currentDate) {
-    //                 return new ViewModel(array(
-    //                     'message' => 'Não é possível editar processos seletivos concluídos ou em andamento. Por favor, consulte o administrador do sistema.',
-    //                     'form' => null,
-    //                 ));
-    //             }
-
-    //             $form->bind($recruitment);
-
-    //             $openJobsIds = [];
-    //             foreach ($recruitment->getOpenJobs() as $openJob) {
-    //                 $openJobsIds[] = $openJob->getJobId();
-    //             }
-    //             $form->get('recruitment')->get('openJobs')->setValue($openJobsIds);
-
-    //             $request = $this->getRequest();
-    //             if ($request->isPost()) {
-    //                 $publicNotice = $recruitment->getRecruitmentPublicNotice();
-    //                 $fileContainer = $request->getFiles()->toArray();
-    //                 $file = $fileContainer['recruitment']['recruitmentPublicNotice'];
-    //                 $data = $request->getPost();
-    //                 $form->setData($data);
-
-    //                 if ($form->isValid() && !$file['error'] && $file['size']) {
-    //                     try {
-
-    //                         $filename = $data['recruitment']['recruitmentYear']
-    //                             . $data['recruitment']['recruitmentNumber']
-    //                             . $data['recruitment']['recruitmentType']
-    //                             . '.pdf';
-
-    //                         $recruitment->setRecruitmentPublicNotice($filename);
-
-    //                         foreach ($data['recruitment']['openJobs'] as $jobId) {
-    //                             $job = $em->find('AdministrativeStructure\Entity\Job', $jobId);
-    //                             $recruitment->addOpenJob($job);
-    //                         }
-
-    //                         $em->persist($recruitment);
-    //                         $em->flush();
-
-    //                         $targetDir = self::PUBLIC_NOTICE_DIR;
-    //                         $targetFile = $targetDir . $filename;
-
-    //                         if (file_exists($targetFile)) {
-    //                             unlink(self::PUBLIC_NOTICE_DIR . $publicNotice);
-    //                         }
-
-    //                         $uploadAdapter = new HttpAdapter();
-
-    //                         $uploadAdapter->addFilter('File\Rename', array(
-    //                             'target' => $targetFile,
-    //                             'overwrite' => true
-    //                         ));
-
-    //                         $uploadAdapter->setDestination($targetDir);
-
-    //                         if (!$uploadAdapter->receive($fileContainer['name'])) {
-    //                             $messages = implode('\n', $uploadAdapter->getMessages());
-    //                             throw new \RuntimeException($messages);
-    //                         }
-
-    //                         return $this->redirect()->toRoute('recruitment/recruitment', array('action' => 'index'));
-    //                     } catch (\Thrownable $ex) {
-    //                         if ($ex instanceof UniqueConstraintViolationException) {
-    //                             return new ViewModel(array(
-    //                                 'message' => 'Este processo seletivo já foi cadastrado.',
-    //                                 'form' => null,
-    //                             ));
-    //                         }
-
-    //                         return new ViewModel(array(
-    //                             'message' => 'Erro inesperado: ' . $ex->getMessage(),
-    //                             'form' => null,
-    //                         ));
-    //                     }
-    //                 }
-
-    //                 return new ViewModel(array(
-    //                     'message' => ($file['error'] || !$file['size']) ? 'O upload do edital não pode ser feito. Por favor tente novamente.' : null,
-    //                     'form' => $form
-    //                 ));
-    //             }
-
-    //             return new ViewModel(array(
-    //                 'form' => $form,
-    //                 'message' => null,
-    //             ));
-    //         }
-
-    //         return new ViewModel(array(
-    //             'form' => null,
-    //             'message' => 'Nenhum Processo Seletivo foi escolhido',
-    //         ));
-    //     } catch (\Exception $ex) {
-    //         return new ViewModel(array(
-    //             'form' => null,
-    //             'message' => $ex->getMessage(),
-    //         ));
-    //     }
-    // }
 
     /**
      * Remove um processo seletivo cadastrado se ele ainda não tiver iniciado.
@@ -286,11 +135,11 @@ class RecruitmentController extends AbstractEntityActionController
         if ($id) {
             try {
                 $em = $this->getEntityManager();
-                $recruitment = $em->getReference('Recruitment\Entity\Recruitment', $id);
+                $recruitment = $em->getReference(Recruitment::class, $id);
                 $currentDate = new \DateTime();
                 $beginDate = \DateTime::createFromFormat('d/m/Y', $recruitment->getRecruitmentBeginDate());
                 if ($currentDate < $beginDate) {
-                    unlink(self::PUBLIC_NOTICE_DIR . $recruitment->getRecruitmentPublicNotice());
+                    unlink(RecruitmentFieldset::PUBLIC_NOTICE_DIR . $recruitment->getRecruitmentPublicNotice());
                     $em->remove($recruitment);
                     $em->flush();
 
@@ -301,7 +150,7 @@ class RecruitmentController extends AbstractEntityActionController
 
                 return new JsonModel(array(
                     'message' => 'Não é possivel remover processos seletivos em andamento.'
-                    . ' Entre em contato com o administrador do sistema.'
+                        . ' Entre em contato com o administrador do sistema.'
                 ));
             } catch (\Exception $ex) {
                 return new JsonModel(array(
