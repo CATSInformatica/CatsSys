@@ -19,12 +19,93 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
     var loadedExams;
     var applicationId;
+
+    /**
+     * prova escolhida, no formato:
+     *
+     * {
+     *   "examId":41,
+     *   "name":"1º Vestibulinho 2019",
+     *   "date":{
+     *      "date":"2019-02-03 00:00:00.000000",
+     *      "timezone_type":3,
+     *      "timezone":"UTC"
+     *   },
+     *   "startTime":{ ... },
+     *   "endTime":{...},
+     *   "answers":{
+     *      "1":{
+     *         "parallel":"0",
+     *         "answers":[
+     *            "D",
+     *            "D"
+     *         ]
+     *      },
+     *      ....
+     *      "5":{
+     *         "parallel":"0",
+     *         "answers":[
+     *            "ANULADA",
+     *            "B"
+     *         ]
+     *      },
+     *      "6":"E",
+     *      "7":"E",
+     *      ...
+     *      "90": "D"
+     *   },
+     *   "content":{
+     *      "questionsStartAtNumber":1,
+     *      "groups": [
+     *          "id": 3,
+     *           "groupName": "LINGUAGENS, CÓDIGOS E SUAS TECNOLOGIAS",
+     *           "subgroups": [
+     *              [], // array para grupos paralelos
+     *              {}, // objetos para grupos normais
+     *              ...
+     *           ]
+     *      ]
+     *   }
+     */
     var chosenExam;
     var loadedSubjects;
-    var loadedPeople;
     var loadedAnswers = {};
     var loadedCsvData = null;
     var parallels;
+    var isStudent = null;
+    var EMPTY_PARALLEL = 'NENHUM'
+    var ANSWER_SEPARATOR = '|'
+    var BASE_ANSWER_CODE = 'A'.charCodeAt();
+
+    /**
+     * grupos de questões no formato:
+     * {
+     *      "1-LINGUAGENS, CÓDIGOS E SUAS TECNOLOGIAS": {
+     *          "startAt":1,
+     *          "amount":22
+     *      },
+     *      "2-CIÊNCIAS DA NATUREZA E SUAS TECNOLOGIAS": {
+     *          "startAt":23,
+     *          "amount":23
+     *      },
+     *      "3-CIÊNCIAS HUMANAS E SUAS TECNOLOGIAS": {
+     *          "startAt":46,
+     *          "amount":22
+     *      },
+     *      "4-MATEMÁTICA E SUAS TECNOLOGIAS": {
+     *          "startAt":68,
+     *          "amount":23
+     *      },
+     *      "5-INSCRIÇÃO": {
+     *          "startAt":91,
+     *          "amount":5
+     *      },
+     *      "6-IDIOMA": {
+     *          "startAt": 96,
+     *          "amount":1
+     *      }
+     * }
+     */
     var fileGroups;
     var alreadyMounted = false;
     var mapToFileGroup;
@@ -34,12 +115,17 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         loaded: 'CARREGADO',
         saved: 'SALVO'
     };
+    var comments = [];
+    var mapPersonToFile = {}
+    var people
 
     var UploadAnswersModule = (function () {
 
-        var people = null;
+        people = null
 
         initListeners = function () {
+            isStudent = $("#studentClass").length;
+
             $("#application").change(getExams);
             $("#fetch-data").click(fetchData);
 
@@ -53,6 +139,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                     try {
                         loadedCsvData = $.csv
                                 .toArrays(event.target.result, {separator: ";"});
+
                     } catch (e) {
                         bootbox.alert("Erro: O arquivo deve estar no formato <b>csv</b> e utilizar \"<b>;</b>\" como separador.");
                     }
@@ -69,23 +156,33 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                     return;
                 }
 
-                if (!alreadyMounted) {
+                if (alreadyMounted) {
+                    addDataToTable();
+                } else {
                     mountGroups();
                     drawGroups();
                     alreadyMounted = true;
                     $("#adjust-groups").prop('disabled', false);
-                } else {
-                    addDataToTable();
                 }
             });
 
             $("#adjust-groups").click(function () {
-                $(this).prop('disabled', true);
-                adjustGroups();
-                readAnswers();
-                addDataToTable();
+                $(this).prop('disabled', true)
+                adjustGroups()
+                readAnswers()
+                addDataToTable()
+                addComments()
             });
         };
+
+        addComments = function() {
+
+            var formattedComments = comments.map(function(comment) {
+                return '<li><span class=\'label label-'+ comment.type +'\'>Aviso:</span> '+ comment.text +'.</li>'
+            })
+
+            $("#import-comments").html(formattedComments.join(''))
+        }
 
         /**
          * Done
@@ -93,16 +190,22 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
          * @returns {undefined}
          */
         addDataToTable = function () {
-            var studentRow, parsDesc;
+            var studentRow, parsDesc, p;
             Object.keys(loadedAnswers).forEach(function (filename) {
-                studentRow = peopleTable.find('tr.student-' + loadedAnswers[filename].registration);
+                studentRow = peopleTable.find('tr.student-' + loadedAnswers[filename].registrationOrEnrollment);
+
+                if(!studentRow.length) {
+                    comments.push({
+                        text: 'A matrícula/inscrição: ' + loadedAnswers[filename].registrationOrEnrollment +
+                        ' do arquivo '+ filename +' não foi encontrada. O aluno/candidato pode ter sido desmatriculado/não convocado ou a matrícula/inscrição não é válida',
+                        type: 'danger'
+                    })
+                    return;
+                }
 
                 if (parallels.length) {
 
-                    parsDesc = loadedAnswers[filename].parallels.map(function (par, indx) {
-                        return parallels[indx][par].name;
-                    }).join(', ');
-
+                    parsDesc = getParallelName(loadedAnswers[filename].parallels)
                     studentRow.find('td.language-option').text(parsDesc);
                 }
 
@@ -111,64 +214,81 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                 if (!studentRow.hasClass('cats-selected-row')) {
                     studentRow.trigger('click');
                 }
-
             });
         };
 
         /**
-         * Done
+         * Lê as respostas de cada aluno/candidato
          *
          * @returns {undefined}
          */
         readAnswers = function () {
 
             var objFg;
-            var ans;
-            var registration;
-            var par;
-            var enrollment;
+            var ans, ansArr;
+            var registrationOrEnrollment;
+            var par, parOption;
             var questionCounter;
+            var filename;
+            mapPersonToFile = {}
 
             // le as respostas de cada candidato/aluno
             for (var i = 1; i < loadedCsvData.length; i++) {
 
-                // le a matricula/inscriçao
-                objFg = fileGroups[mapToFileGroup.registration];
-
-                if ($("#studentClass").length) {
-                    enrollment = parseInt(loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount).map(function (item) {
-                        return (item.toUpperCase().charCodeAt(0) - 'A'.charCodeAt(0));
-                    }).join(''));
-
-                    registration = peopleTable.find('tr[data-enrollment="' + enrollment + '"]').attr('data-registration');
-                } else {
-                    registration = parseInt(loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount).map(function (item) {
-                        return (item.toUpperCase().charCodeAt(0) - 'A'.charCodeAt(0));
-                    }).join(''));
-                }
+                // le a matricula/inscrição
+                objFg = fileGroups[mapToFileGroup.registrationOrEnrollment];
+                registrationOrEnrollment = parseInt(
+                    loadedCsvData[i]
+                    .slice(objFg.startAt, objFg.startAt + objFg.amount)
+                    .map(function (item) {
+                        return (item.toUpperCase().charCodeAt(0) - BASE_ANSWER_CODE);
+                    })
+                    .join('')
+                );
 
                 // indica qual foi(ram) a(s) opçao(oes) escolhida(s) pelo candidato
-                par = [];
+                par = []
                 for (var j = 0; j < mapToFileGroup.parallel.length; j++) {
                     objFg = fileGroups[mapToFileGroup.parallel[j]];
-                    par.push(loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount).join("").toUpperCase().charCodeAt() - 'A'.charCodeAt());
+                    parOption = loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount).join('')
+
+                    if(parOption.length == 1) {
+                        par.push(parOption.toUpperCase().charCodeAt() - BASE_ANSWER_CODE)
+                    } else {
+                        if(!parOption.length) {
+                            par.push(EMPTY_PARALLEL);
+                        } else {
+                            par.push(parOption
+                                .split(ANSWER_SEPARATOR)
+                                .map(function(a) {
+                                    return parallels[j][a.toUpperCase().charCodeAt() - BASE_ANSWER_CODE].name
+                                })
+                                .join(ANSWER_SEPARATOR)
+                            );
+                        }
+                    }
                 }
 
-                loadedAnswers[loadedCsvData[i][0]] = {
-                    filename: loadedCsvData[i][0],
-                    registration: registration,
+                filename = loadedCsvData[i][0]
+
+                checkDuplicatedRegistrationOrEnrollment(registrationOrEnrollment, filename)
+                checkDuplicatedFile(filename, registrationOrEnrollment)
+
+                loadedAnswers[filename] = {
+                    filename: filename,
+                    registrationOrEnrollment: registrationOrEnrollment,
                     answers: {},
                     parallels: par
                 };
 
-                ans = loadedAnswers[loadedCsvData[i][0]].answers;
-                questionCounter = chosenExam.content.questionsStartAtNumber;
+                ans = loadedAnswers[filename].answers
+                questionCounter = chosenExam.content.questionsStartAtNumber
 
                 loadedSubjects.forEach(function (subject) {
                     group = mapToFileGroup[subject.name];
                     objFg = fileGroups[group];
 
-                    var ansArr = loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount);
+                    ansArr = loadedCsvData[i].slice(objFg.startAt, objFg.startAt + objFg.amount)
 
                     for(var q = 0; q < ansArr.length; q++, questionCounter++) {
                         ans[questionCounter] = ansArr[q];
@@ -176,12 +296,47 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                 });
             }
 
-            console.log('loadedAnswers', loadedAnswers);
+            checkSameAmountOfPeopleAndFiles()
 
+            console.log('loadedAnswers', loadedAnswers);
         };
 
+        checkSameAmountOfPeopleAndFiles = function() {
+            var peopleNum = Object.keys(mapPersonToFile).length, rows = Object.keys(loadedAnswers).length, type;
+            type = peopleNum < rows ? 'danger' : 'primary';
+            comments.push({
+                text: 'Arquivos escaneados: ' + rows + ' . Alunos diferentes importados: ' + peopleNum,
+                type: type
+            });
+        }
+
+        checkDuplicatedRegistrationOrEnrollment = function(registrationOrEnrollment, filename) {
+            if(mapPersonToFile[registrationOrEnrollment]) {
+                comments.push({
+                    text: 'Matrícula '+
+                    registrationOrEnrollment +
+                    ' duplicada nos arquivos: ' +
+                    filename + ' e ' + mapPersonToFile[registrationOrEnrollment],
+                    type: 'danger'
+                });
+            }
+
+            mapPersonToFile[registrationOrEnrollment] = filename
+        }
+
+        checkDuplicatedFile = function(filename, registrationOrEnrollment) {
+            if(loadedAnswers[filename]) {
+                comments.push({
+                    text: 'o arquivo ' + filename +
+                    ' foi processado mais de uma vez. Matrícula anterior: ' + loadedAnswers[filename].registrationOrEnrollment +
+                    '. Matrícula atual: ' + registrationOrEnrollment,
+                    type: 'danger'
+                });
+            }
+        }
+
         /**
-         * Done
+         * Associa os grupos do arquivo com os grupos do sistema
          *
          * @returns {undefined}
          */
@@ -193,7 +348,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                 mapToFileGroup[key.name] = $("#subject-external-group" + key.id).val();
             });
 
-            mapToFileGroup.registration = $("#registration-external-group").val();
+            mapToFileGroup.registrationOrEnrollment = $("#registration-external-group").val();
 
             mapToFileGroup.parallel = [];
             for (var i = 0; i < parallels.length; i++) {
@@ -202,22 +357,22 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         };
 
         /**
-         * Done
+         * Monta o grupo de selects que associam as matérias do sistema com os grupos do arquivo importado
          *
          * @returns {undefined}
          */
         drawGroups = function () {
 
             var groups = $("#groups");
-            var letterCode = 'A'.charCodeAt();
+            var letterCode = BASE_ANSWER_CODE
             groups.html('');
 
-            //external options
+            //Grupos do Arquivo
             externalOptions = Object.keys(fileGroups).map(function (item) {
                 return '<option value="' + item + '">' + item + '</option>';
             }).join('');
 
-            // subject groups
+            // Matérias do Sistema
             var subjectGroups = loadedSubjects.map(function (key) {
                 return '<div class="col-md-6 col-xs-12"><div class="form-group"><label>' + key.name + '</label><select id="subject-external-group' + key.id + '" class="form-control">' +
                         externalOptions +
@@ -230,7 +385,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                 $(this).find('option').eq(i).prop('selected', true);
             });
 
-            // registration groupletter
+            // Matrícula ou Inscrição
             groups.append('<div class="col-md-6 col-xs-12"><div class="form-group"><label>Matricula ou Inscrição (0 = A, 2 = B, ..., 9 = J)</label>' +
                     '<select id="registration-external-group" class="form-control">' +
                     externalOptions +
@@ -239,7 +394,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
             groups.find("#registration-external-group option").eq(loadedSubjects.length).prop('selected', true);
 
-            // parallels group
+            // Opções de Idioma
             for (var i = 0; i < parallels.length; i++) {
 
                 desc = parallels[i].map(function (p, index) {
@@ -247,20 +402,51 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                 }).join(', ');
 
                 groups.append(
-                        '<div class="col-md-6 col-xs-12"><div class="form-group"><label>Grupo paralelo ' + (i + 1) + ': (' + desc + ')</label>' +
-                        '<select id="parallel-external-group' + i + '" class="form-control">' +
-                        externalOptions +
-                        '</select></div></div>'
-                        );
+                    '<div class="col-md-6 col-xs-12"><div class="form-group"><label>Grupo paralelo ' + (i + 1) + ': (' + desc + ')</label>' +
+                    '<select id="parallel-external-group' + i + '" class="form-control">' +
+                    externalOptions +
+                    '</select></div></div>'
+                );
             }
 
-            groups.find("select[id^='parallel-external-group']").each(function (i) {
-                $(this).find('option').eq(loadedSubjects.length + i + 1).prop('selected', true);
-            });
+            if(parallels.length) {
+                groups.find("select[id^='parallel-external-group']").each(function (i) {
+                    $(this).find('option').eq(loadedSubjects.length + i + 1).prop('selected', true);
+                });
+            }
         };
 
         /**
-         * Done
+         * Lê os grupos de questões do arquivo. Ex: Matrícula, Idioma, Ciências da Natureza, ...
+         * Ignora o primeiro grupo (nome do arquivo)
+         *
+         *
+         * fileGroups := {
+         *      "1-LINGUAGENS, CÓDIGOS E SUAS TECNOLOGIAS": {
+         *          "startAt":1,
+         *          "amount":22
+         *      },
+         *      "2-CIÊNCIAS DA NATUREZA E SUAS TECNOLOGIAS": {
+         *          "startAt":23,
+         *          "amount":23
+         *      },
+         *      "3-CIÊNCIAS HUMANAS E SUAS TECNOLOGIAS": {
+         *          "startAt":46,
+         *          "amount":22
+         *      },
+         *      "4-MATEMÁTICA E SUAS TECNOLOGIAS": {
+         *          "startAt":68,
+         *          "amount":23
+         *      },
+         *      "5-INSCRIÇÃO": {
+         *          "startAt":91,
+         *          "amount":5
+         *      },
+         *      "6-IDIOMA": {
+         *          "startAt": 96,
+         *          "amount":1
+         *      }
+         * }
          *
          * @returns {undefined}
          */
@@ -283,7 +469,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         };
 
         /**
-         * Done
+         * Busca provas a partir de uma aplicação de prova
          *
          * @returns {undefined}
          */
@@ -305,13 +491,11 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         };
 
         /**
-         * Done
+         * Busca alunos ou candidatos
          *
          * @returns {undefined}
          */
         fetchData = function () {
-
-            loadedPeople = [];
             var groupId = $("#studentClass").val() || $("#studentRecruitment").val();
             applicationId = $("#application").val();
             var examId = parseInt($("#exam").val());
@@ -322,9 +506,8 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
             if (examId !== "") {
 
-                if ($("#studentClass").length) {
+                if (isStudent) {
                     getStudents(groupId).then(function (data) {
-                        loadedPeople = data.students;
                         people = data.students;
                         createStudentTable();
                         readSubjects();
@@ -335,7 +518,6 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                     });
                 } else {
                     getCandidates(groupId).then(function (data) {
-                        loadedPeople = data.candidates;
                         people = data.candidates;
                         createCandidateTable();
                         readSubjects();
@@ -352,7 +534,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         };
 
         /**
-         * Done
+         *
          *
          * @returns {undefined}
          */
@@ -386,10 +568,22 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                     }
                 }
             }
+
+            if(parallels.length) {
+                comments.push({
+                    text: 'O arquivo csv possui grupos paralelos (Exemplo: inglês e espanhol). Se o simulado não possui grupos paralelos remova a coluna de idioma do csv',
+                    type: 'primary'
+                })
+            } else {
+                comments.push({
+                    text: 'O arquivo csv não possui grupos paralelos (Exemplo: inglês e espanhol). Se o simulado possui grupos paralelos é necessário que o template de correção seja refeito com a opção de idioma',
+                    type: 'primary'
+                })
+            }
         };
 
         /**
-         * Done
+         * Cria a tabela com alunos e suas respostas.
          *
          * @returns {undefined}
          */
@@ -399,12 +593,18 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
             var partialId;
             var tbody = people.map(function (student) {
                 partialId = "" + student.enrollmentId;
-                return '<tr class="student-' + student.registrationId + ' cats-row" data-enrollment="' +
-                        student.enrollmentId + '" data-registration="' + student.registrationId + '"><td class="details-control"></td><td class="text-center">' +
-                        ("00000" + partialId).substring(partialId.length) +
-                        '</td><td>' + student.personFirstName + ' ' + student.personLastName +
-                        '</td><td class="text-center filename"></td><td class="text-center language-option">---</td><td class="text-center op-status"> ' +
-                        status.empty + ' </td></tr>';
+                return '<tr class="student-' + partialId + ' cats-row" data-enrollment="' + student.enrollmentId + '">'+
+                        '<td class="details-control"></td>'+
+                        '<td class="text-center">' +
+                            ("00000" + partialId).substring(partialId.length) +
+                        '</td>'+
+                        '<td>' +
+                            student.personFirstName + ' ' + student.personLastName +
+                        '</td>' +
+                        '<td class="text-center filename"></td>'+
+                        '<td class="text-center language-option">---</td>'+
+                        '<td class="text-center op-status"> ' + status.empty + ' </td>' +
+                    '</tr>';
             }).join('');
 
             peopleTable.find('tbody').html(tbody);
@@ -416,7 +616,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         };
 
         /**
-         * Done
+         * Exibe detalhes das respostas de um aluno selecionado.
          *
          * @param {type} $tr
          * @returns {undefined}
@@ -425,48 +625,64 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
             var filename = $tr.find('td.filename').text();
             var questionFirstNumber = chosenExam.content.questionsStartAtNumber;
-            var ans = null, registration = $tr.data('registration');
+            var ans = null, registrationOrEnrollment = isStudent ? $tr.data('enrollment') : $tr.data('registration');
             var nextRow = $tr.next('tr');
-            var len;
+            var resp, len = 0, prevParallel = '', curParallel = '', prevFile = '', curFile = ''
 
             if (filename !== "") {
                 ans = loadedAnswers[filename].answers;
+                curFile = filename
             }
 
             if (!nextRow.length || !nextRow.hasClass('details-row')) {
+
                 // adiciona a linha de descriçao
-                getPrevAnswers(registration, chosenExam.examId).then(function (prevAnswers) {
+                getPrevAnswers(registrationOrEnrollment, chosenExam.examId).then(function (prevAnswers) {
 
-                    var resp = prevAnswers.examAnswers;
-                    nextRow = '<tr class="details-row"><td colspan="6"><div class="content"><h4 class="text-center">Respostas</h4><hr>';
+                    len = 0
+                    resp = prevAnswers.examAnswers
                     if (resp) {
-
-                        // prev parallels
-                        nextRow += '<h5 class="text-center"><b>Grupos Paralelos</b>: ' + resp.parallels.map(function (i, index) {
-                            return parallels[index][i].name;
-                        }).join(', ') + '</h5>';
-
-                        nextRow += '<table class="table table-condensed table-bordered table-striped">' +
-                                '<thead><tr><th class="text-center">Nº</th><th class="text-center">Resposta</th><th class="text-center">Resposta Anteriores</th></tr></thead><tbody>';
-
-                        if (ans) {
-                            len = Object.keys(ans).length;
-                        } else if (resp) {
-                            len = Object.keys(resp.answers).length;
-                        } else {
-                            len = 0;
-                        }
-
-                        console.log('len', len);
-
-                        for (var i = 0; i < len; i++) {
-                            nextRow += '<tr><td class="text-center">' + (questionFirstNumber + i) + '</td><td class="text-center">' +
-                                    (ans ? ans[questionFirstNumber + i] : '-') + '</td><td class="text-center">' + (resp ? resp.answers[questionFirstNumber + i] : '-') + '</td></tr>';
-                        }
-
-                        nextRow += '</tbody></table>';
-
+                        len = Object.keys(resp.answers).length;
+                        prevParallel = getParallelName(resp.parallels)
+                        prevFile = resp.filename || ''
                     }
+                    if (ans) {
+                        len = Object.keys(ans).length;
+                        curParallel = getParallelName(loadedAnswers[filename].parallels)
+                    }
+
+                    nextRow = '<tr class="details-row"><td colspan="6"><div class="content"><h4 class="text-center">Respostas</h4><hr>'
+                    nextRow += '<table class="table table-condensed table-bordered table-striped">'+
+                        '<thead>'+
+                        '<tr>'+
+                            '<th class="text-center"></th>'+
+                            '<th class="text-center">Importado</th>'+
+                            '<th class="text-center">Salvo</th>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<th class="text-center">Arquivos</th>'+
+                            '<th class="text-center">'+ curFile +'</th>'+
+                            '<th class="text-center">'+ prevFile +'</th>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<th class="text-center">Grupos Paralelos</th>'+
+                            '<th class="text-center">'+ curParallel +'</th>'+
+                            '<th class="text-center">'+ prevParallel +'</th>'+
+                        '</tr>'+
+                        '<tr>'+
+                            '<th class="text-center">Nº</th>'+
+                            '<th class="text-center"></th>'+
+                            '<th class="text-center"></th>'+
+                        '</tr>'+
+                    '</thead>'+
+                    '<tbody>';
+
+                    for (var i = 0; i < len; i++) {
+                        nextRow += '<tr><td class="text-center">' + (questionFirstNumber + i) + '</td><td class="text-center">' +
+                                (ans ? ans[questionFirstNumber + i] : '-') + '</td><td class="text-center">' + (resp ? resp.answers[questionFirstNumber + i] : '-') + '</td></tr>';
+                    }
+
+                    nextRow += '</tbody></table>';
 
                     nextRow += '</div></td></tr>';
                     $tr.after(nextRow);
@@ -477,22 +693,30 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
             }
         };
 
+        getParallelName = function(parallelVar) {
+            return parallelVar.map(function (i, index) {
+                p = parallels[index][i]
+                return p ? p.name : i
+            }).join(', ');
+        }
+
         /**
-         *
+         * Busca respostas já salvas no sistema para um aluno escolhido.
          */
-        getPrevAnswers = function (registration, examId) {
+        getPrevAnswers = function (registrationOrEnrollment, examId) {
             return $.ajax({
                 url: '/school-management/school-exam-result/get-answers',
                 type: 'POST',
                 data: {
-                    registration: registration,
-                    exam: examId
+                    registrationOrEnrollment: registrationOrEnrollment,
+                    exam: examId,
+                    isStudent: isStudent
                 }
             });
         };
 
         /**
-         * Done
+         * Cria tabela de respostas de candidatos.
          *
          * @returns {undefined}
          */
@@ -515,7 +739,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         };
 
         /**
-         * Done
+         * Busca alunos da turma escolhida.
          *
          * @param {type} classId
          * @returns {jqXHR} promise
@@ -531,7 +755,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         };
 
         /**
-         * Done
+         * Busca candidados do processo seletivo escolhido.
          *
          * @param {type} recId
          * @returns {jqXHR}
@@ -551,7 +775,8 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
             var data = {
                 exam: chosenExam.examId,
-                individuals: []
+                individuals: [],
+                isStudent: isStudent
             };
 
             var filename;
@@ -571,6 +796,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
             getDataOf: function (element) {
                 switch (element) {
                     case 'save-answers':
+                    case 'save-student-answers':
                         return getSelectedIndividuals();
                         break;
                     default:
@@ -581,18 +807,18 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
 
                 switch (element) {
                     case 'save-answers':
+                    case 'save-student-answers':
                         return {
                             exec: function (data) {
                                 if (data.individuals) {
                                     var row;
                                     data.individuals.forEach(function (ind) {
-                                        row = peopleTable.find('tr.student-' + ind.registration);
+                                        row = peopleTable.find('tr.student-' + ind.registrationOrEnrollment);
                                         row.find('td.op-status').text(status.saved);
                                     });
                                 }
                             }
                         };
-                        break;
                     default:
                         return {
                             exec: function () {
