@@ -32,6 +32,10 @@ class UserService
             'cost' => 10
         ]);
 
+        if (!$user->getUserActive()) {
+            return false;
+        }
+
         return $bcrypt->verify($passwordGiven, $user->getUserPassword());
     }
 
