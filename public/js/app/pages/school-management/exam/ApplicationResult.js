@@ -42,7 +42,10 @@ define(["moment"], function(moment) {
 
         var NULLIFIED = "ANULADA"
 
+        var comments
+
         initListeners = function() {
+            comments = []
             currentApplicationId = ApplicationElel.val()
             ApplicationElel.change(function() {
                 currentApplicationId = ApplicationElel.val()
@@ -64,11 +67,28 @@ define(["moment"], function(moment) {
                             exams[examId] = e[i]
                             addGroupsOf(examId)
                             defs.push(loadAnswers(examId))
+
+                            // comentários
+                            if (!e[i].answers) {
+                                comments.push({
+                                    text:
+                                        "É necessário salvar o gabarito da prova <b>" +
+                                        e[i].name +
+                                        "</b> antes de calcular o resultado. Item do menu <b>Exam Result > Answers template</b>",
+                                    type: "danger"
+                                })
+                            }
                         }
 
                         $.when(defs).then(function() {
                             $("#set-criteria").prop("disabled", false)
                             createSortList()
+                        })
+                    } else {
+                        comments.push({
+                            text:
+                                "A aplicação de prova indicada não possui provas associadas",
+                            type: "danger"
                         })
                     }
                 })
@@ -112,11 +132,13 @@ define(["moment"], function(moment) {
                 })
 
                 adjustAnswers()
+
                 console.log("exams", exams)
                 console.log("answers", answers)
                 console.log("groups", groups)
                 console.log("order", groupOrder)
 
+                addComments()
                 calcResult()
                 console.log("sortedAnswers", sortedAnswers)
                 createResultTable(sortedAnswers, sortedAnswers[0].groups)
@@ -152,6 +174,20 @@ define(["moment"], function(moment) {
             $("#save-result").click(function() {
                 saveResults()
             })
+        }
+
+        addComments = function() {
+            var formattedComments = comments.map(function(comment) {
+                return (
+                    "<li><span class='label label-" +
+                    comment.type +
+                    "'>Aviso</span> " +
+                    comment.text +
+                    ".</li>"
+                )
+            })
+
+            $("#import-comments").html(formattedComments.join(""))
         }
 
         getApplicationResult = function() {
@@ -193,6 +229,16 @@ define(["moment"], function(moment) {
                 }
             ).then(
                 function(ans) {
+                    if (!ans.answers.length) {
+                        comments.push({
+                            text:
+                                "É necessário salvar as respostas dos alunos/candidatos da prova <b>" +
+                                exams[ans.examId].name +
+                                "</b> antes de calcular o resultado. Item do menu <b>Exam Result > Upload answers (class) ou Upload answers (rec)</b>",
+                            type: "danger"
+                        })
+                    }
+
                     exams[ans.examId].peopleAnswers = ans.answers
                     def.resolve()
                 },
@@ -281,10 +327,19 @@ define(["moment"], function(moment) {
                 if (correctAnswers[q] instanceof Object) {
                     parallelIndx = correctAnswers[q].parallel
                     parallel = person.parallels[parallelIndx]
-                    console.log('parallel', parallel, person.answers[q], correctAnswers[q].answers[parallel])
+                    console.log(
+                        "parallel",
+                        parallel,
+                        person.answers[q],
+                        correctAnswers[q].answers[parallel]
+                    )
 
-
-                    if (correctAnswers[q].answers[parallel] === NULLIFIED || correctAnswers[q].answers[parallel] && person.answers[q] === correctAnswers[q].answers[parallel]) {
+                    if (
+                        correctAnswers[q].answers[parallel] === NULLIFIED ||
+                        (correctAnswers[q].answers[parallel] &&
+                            person.answers[q] ===
+                                correctAnswers[q].answers[parallel])
+                    ) {
                         score++
                     }
                     // se é um grupo normal
@@ -575,7 +630,7 @@ define(["moment"], function(moment) {
          * Caso o aluno não tenha feito uma das provas transforma o score 0 dos grupos em string vazia ''
          */
         formatEmptyScores = function() {
-            var registrationOrEnrollment, group, person, groupIndex;
+            var registrationOrEnrollment, group, person, groupIndex
 
             for (var i = 0; i < sortedAnswers.length; i++) {
                 registrationOrEnrollment =

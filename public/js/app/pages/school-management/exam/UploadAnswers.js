@@ -139,14 +139,15 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
                     try {
                         loadedCsvData = $.csv
                                 .toArrays(event.target.result, {separator: ";"});
-
+                        if(!Array.isArray(loadedCsvData) || loadedCsvData[0].length < 2) {
+                            throw 'O arquivo deve estar no formato <b>csv</b> e utilizar \"<b>;</b>\" como separador.'
+                        }
                     } catch (e) {
-                        bootbox.alert("Erro: O arquivo deve estar no formato <b>csv</b> e utilizar \"<b>;</b>\" como separador.");
+                        bootbox.alert(e.toString())
                     }
                 };
                 reader.onerror = function () {
-                    bootbox.alert("Não foi possível abrir o arquivo <b>" +
-                            file.name + "<br>");
+                    bootbox.alert("Não foi possível abrir o arquivo <b>" + file.name + "<br>");
                 };
             });
 
@@ -178,7 +179,7 @@ define(['bootbox', 'jquerycsv'], function (bootbox) {
         addComments = function() {
 
             var formattedComments = comments.map(function(comment) {
-                return '<li><span class=\'label label-'+ comment.type +'\'>Aviso:</span> '+ comment.text +'.</li>'
+                return '<li><span class=\'label label-'+ comment.type +'\'>Aviso</span> '+ comment.text +'.</li>'
             })
 
             $("#import-comments").html(formattedComments.join(''))
