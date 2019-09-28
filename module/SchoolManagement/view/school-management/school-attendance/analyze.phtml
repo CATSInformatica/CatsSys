@@ -14,6 +14,38 @@
             </div>
         </div>
 
+        <p>Observações:</p>
+
+        <ol>
+            <li>
+                <b>Total Real de Faltas</b>: Soma das faltas do aluno no mês - abonos em dias de falta.
+                Pode ser visto clicando em <code>?</code> ao lado do nome do aluno e contando os dias de Falta.
+            </li>
+            <li>
+                <b>Total Potencial</b>: Soma da quantidade de dias do mês ignorando domingos.
+                Pode ser visto no cabeçalho da coluna <b><i>Total Potencial</i></b> entre parênteses.</li>
+            <li>
+                <b>Presença Potencial</b>: <b>Total Potencial</b> - <b>Total Real de Faltas</b>.
+                Pode ser visto em cada linha da coluna <b><i>Total Potencial</i></b> no lado esquerdo do símbolo <code>/</code>.
+            </li>
+            <li>
+                <b>% Potencial</b>: (<b>Presença Potencial</b> / <b>Total Potencial</b>) * <b>100</b>.
+                Pode ser visto em cada linha da coluna <b><i>% Potencial</i></b>.
+            </li>
+            <li>
+                <b>Total Real</b>: Soma de dias do mês (ignorando domingos) em que existem listas de presença no sistema.
+                Pode ser visto entre parênteses no cabeçalho da coluna <b><i>Total Real</i></b>.
+            </li>
+            <li>
+                <b>Presença Real</b>: <b>Total Real</b> - <b>Total Real de Faltas</b>.
+                Pode ser visto em cada linha da coluna <b><i>Total Real</i></b> no lado esquerdo do símbolo <code>/</code>.
+            </li>
+            <li>
+                <b>% Real</b>: (<b>Presença Real</b> / <b>Total Real</b>) * <b>100</b>.
+                Pode ser visto em cada linha da coluna <b><i>% Real</i></b>
+            </li>
+        </ol>
+
         <div class="container-fluid">
             <div id="attendanceContainer" class="nav-tabs-custom">
                 <ul class="nav nav-tabs">

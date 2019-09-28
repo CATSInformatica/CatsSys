@@ -29,11 +29,11 @@ define(["moment", "datetimepicker", "datatable"], function(moment) {
         var studentData = {}
 
         var ATTENDANCE_TYPES = {
-            ATTENDANCE_BEGIN: 1,
-            ATTENDANCE_END: 2,
-            ATTENDANCE_ALLOWANCE_BEGIN: 3,
-            ATTENDANCE_ALLOWANCE_END: 4,
-            ATTENDANCE_ALLOWANCE_FULL: 5
+            ATTENDANCE_BEGIN: 1, // falta no inicio do dia
+            ATTENDANCE_END: 2, // falta no fim do dia
+            ATTENDANCE_ALLOWANCE_BEGIN: 3, // abono de inicio de dia
+            ATTENDANCE_ALLOWANCE_END: 4,  // abono de final de dia
+            ATTENDANCE_ALLOWANCE_FULL: 5 // abono de dia completo
         }
 
         /**
@@ -163,10 +163,9 @@ define(["moment", "datetimepicker", "datatable"], function(moment) {
          * @returns {String}
          */
         mountAnalysisTable = function(month) {
-
             var table = ""
             var tr = ""
-            var percent, realPercent;
+            var percent, realPercent
             result = calculateStudentAttendance(month)
 
             $.each(studentData[month], function(enroll, content) {
@@ -179,7 +178,10 @@ define(["moment", "datetimepicker", "datatable"], function(moment) {
                 tr += "<td>" + content.name + "</td>"
 
                 percent = (content.achieved / result.max) * 100
-                realPercent = result.realMax > 0 ? ((content.realAchieved / result.realMax) * 100) : 0;
+                realPercent =
+                    result.realMax > 0
+                        ? (content.realAchieved / result.realMax) * 100
+                        : 0
 
                 tr +=
                     "<td class='text-center'>" +
@@ -267,42 +269,34 @@ define(["moment", "datetimepicker", "datatable"], function(moment) {
         calculateStudentAttendance = function(month) {
             var ret = getDaysArrayByMonth(month)
             var days = ret.days
-            var dayStatus, allDayStatus = {};
+            var dayStatus
             var result = {
                 max: sum(ret.daysOfTheWeek),
                 maxWeekDay: ret.daysOfTheWeek,
-                realMax: 0
+                realMax: calcNumberOfListsInMonth(month, days)
             }
+
+            // for each student in the month 'month'
             $.each(studentData[month], function(enroll, content) {
-                studentData[month][enroll].sortedByWeekDays = {}
+                studentData[month][enroll].sortedByWeekDays = {
+                    "1": [],
+                    "2": [],
+                    "3": [],
+                    "4": [],
+                    "5": [],
+                    "6": []
+                }
                 dayStatus = [0, 0, 0, 0, 0, 0, 0]
+                var sit, absence = 0;
 
-                var sit, realAchieved = 0
-                // foreach day of the month
+                // for each day of the month
                 $.each(days, function(day, dayOfWeek) {
-                    // ignores sunday
-                    if (dayOfWeek === "0") {
-                        return
-                    }
-
-                    if (
-                        !studentData[month][enroll].sortedByWeekDays[dayOfWeek]
-                    ) {
-                        studentData[month][enroll].sortedByWeekDays[
-                            dayOfWeek
-                        ] = []
-                    }
-
                     /**
-                     * Existe falta ou abono do dia 'day'
+                     * No mês 'month' (e.g. 08) e para o aluno com matrícula 'enroll' (e.g. 514), existe falta ou abono no dia 'day' (e.g. day = 20190902)
                      */
                     if (content.hasOwnProperty(day)) {
-                        allDayStatus[day] = 1;
-                        console.log('day', day);
                         sit = content[day]
-                        studentData[month][enroll].sortedByWeekDays[
-                            dayOfWeek
-                        ].push({
+                        studentData[month][enroll].sortedByWeekDays[dayOfWeek].push({
                             date: day,
                             situation: sit
                         })
@@ -312,68 +306,62 @@ define(["moment", "datetimepicker", "datatable"], function(moment) {
                          * presença completa do dia
                          *
                          */
-                        if (
-                            sit.hasOwnProperty(
-                                ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_FULL
-                            )
-                        ) {
+                        if (sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_FULL)) {
                             dayStatus[dayOfWeek] += 1
-                            realAchieved += 1
                         } else {
-                            /**
-                             * Se possui abono do início do dia ou
-                             * não possui falta do início do dia
-                             * ganha presença parcial
-                             */
-                            if (
-                                sit.hasOwnProperty(
-                                    ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_BEGIN
-                                ) ||
-                                !sit.hasOwnProperty(
-                                    ATTENDANCE_TYPES.ATTENDANCE_BEGIN
-                                )
-                            ) {
-                                dayStatus[dayOfWeek] += 0.5
-                                realAchieved += 0.5
+                            if(sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_BEGIN) || !sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_BEGIN)) {
+                                //  Possui abono ou não faltou: ganha 1/2 presença
+                                dayStatus[dayOfWeek] += 0.5;
+                            } else {
+                                //  faltou e não possui abono
+                                absence += 0.5;
                             }
 
-                            /**
-                             * Se possui abono do final do dia ou
-                             * não possui falta do final do dia
-                             * ganha presença parcial
-                             */
-                            if (
-                                sit.hasOwnProperty(
-                                    ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END
-                                ) ||
-                                !sit.hasOwnProperty(
-                                    ATTENDANCE_TYPES.ATTENDANCE_END
-                                )
-                            ) {
+                            if(sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_ALLOWANCE_END) || !sit.hasOwnProperty(ATTENDANCE_TYPES.ATTENDANCE_END)) {
+                                //  Possui abono ou não faltou: ganha 1/2 presença
                                 dayStatus[dayOfWeek] += 0.5
-                                realAchieved += 0.5
+                            } else {
+                                //  faltou e não possui abono
+                                absence += 0.5;
                             }
                         }
                     } else {
                         //Não existe falta nem abono, aluno presente.
                         dayStatus[dayOfWeek] += 1
-                        studentData[month][enroll].sortedByWeekDays[
-                            dayOfWeek
-                        ].push({
+                        studentData[month][enroll].sortedByWeekDays[dayOfWeek].push({
                             date: day,
                             situation: null
                         })
                     }
                 })
+
                 studentData[month][enroll].dayStatus = dayStatus
                 studentData[month][enroll].achieved = sum(dayStatus)
-                studentData[month][enroll].realAchieved = realAchieved
+                studentData[month][enroll].realAchieved = result.realMax - absence;
             })
 
-            console.log('allDayStatus', allDayStatus);
+            return result
+        }
 
-            result.realMax = Object.keys(allDayStatus).length
-            return result;
+        /**
+         * Calcula o número de listas em um mes
+         */
+        calcNumberOfListsInMonth = function(month, possibleDays) {
+
+            var allDayStatus = {}
+
+            $.each(studentData[month], function(enroll, content) {
+                $.each(possibleDays, function(day) {
+                    /**
+                     * No mês 'month' (e.g. 08) e para o aluno com matrícula 'enroll' (e.g. 514), existe falta ou abono no dia 'day' (e.g. day = 20190902)
+                     */
+                    if (content.hasOwnProperty(day)) {
+                        allDayStatus[day] = 1
+                    }
+                });
+            });
+
+            return Object.keys(allDayStatus).length;
         }
 
         /**
@@ -567,8 +555,12 @@ define(["moment", "datetimepicker", "datatable"], function(moment) {
 
             while (daysInMonth) {
                 var current = moment(month, "MM").date(daysInMonth)
-                days[current.format("YYYYMMDD")] = current.format("e")
-                daysOfTheWeek[current.format("e")]++
+                var weekDayNumber = current.format("e")
+                if (weekDayNumber !== "0") {
+                    days[current.format("YYYYMMDD")] = weekDayNumber
+                    daysOfTheWeek[current.format("e")]++
+                }
+
                 daysInMonth--
             }
 
