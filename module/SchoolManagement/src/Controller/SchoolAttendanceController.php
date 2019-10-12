@@ -248,6 +248,10 @@ class SchoolAttendanceController extends AbstractDbalAndEntityActionController
                     throw new \Exception('Nenhuma data foi escolhida.');
                 }
 
+                if(empty($data['class_id'])) {
+                    throw new \Exception('Nenhuma turma foi escolhida.');
+                }
+
                 $date = new \DateTime($data['date']);
                 $conn = $this->getDbalConnection();
 

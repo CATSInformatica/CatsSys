@@ -48,7 +48,9 @@ class AttendanceRepository extends EntityRepository
     }
 
     /**
-     * Salva a lista de presença (salva as faltas) de uma data específica no banco de dados.
+     * Salva a lista de presença de uma data específica no banco de dados.
+     *
+     * Salva faltas dos alunos e adiciona uma linha com enrollment_id = null indicando que é um dia letivo
      *
      * @param Connection $conn
      * @param DateTime $date Data da lista de presença
@@ -58,34 +60,40 @@ class AttendanceRepository extends EntityRepository
      */
     public static function insertNewList(Connection $conn, DateTime $date, array $types, array $students = [])
     {
-        $conn->beginTransaction();
         try {
 
-            foreach ($types as $type) {
-                $conn->delete('attendance',
-                    [
-                    'attendance_date' => $date,
-                    'attendance_type_id' => $type,
-                    ], [
-                    'date',
-                    PDO::PARAM_INT,
-                ]);
-            }
+            $conn->beginTransaction();
 
-            foreach ($students as $student) {
-                $conn->insert('attendance',
+            foreach ($types as $type) {
+                $conn->delete(
+                    'attendance',
                     [
-                    'enrollment_id' => $student['id'],
-                    'attendance_type_id' => $student['type'],
-                    'attendance_date' => $date,
+                        'attendance_date' => $date,
+                        'attendance_type_id' => $type,
                     ],
                     [
-                    PDO::PARAM_INT,
-                    PDO::PARAM_INT,
-                    'date'
+                        'date',
+                        PDO::PARAM_INT,
                     ]
                 );
             }
+
+            foreach ($students as $student) {
+                $conn->insert(
+                    'attendance',
+                    [
+                        'enrollment_id' => $student['id'],
+                        'attendance_type_id' => $student['type'],
+                        'attendance_date' => $date,
+                    ],
+                    [
+                        PDO::PARAM_INT,
+                        PDO::PARAM_INT,
+                        'date'
+                    ]
+                );
+            }
+
             $conn->commit();
         } catch (Exception $ex) {
             $conn->rollBack();
@@ -95,15 +103,17 @@ class AttendanceRepository extends EntityRepository
 
     public static function insertNewAttendance(Connection $conn, $enrollment, $attendanceType, \DateTime $date)
     {
-        $conn->insert('attendance',
+        $conn->insert(
+            'attendance',
             [
-            'enrollment_id' => $enrollment,
-            'attendance_type_id' => $attendanceType,
-            'attendance_date' => $date,
-            ], [
-            PDO::PARAM_INT,
-            PDO::PARAM_INT,
-            'date'
+                'enrollment_id' => $enrollment,
+                'attendance_type_id' => $attendanceType,
+                'attendance_date' => $date,
+            ],
+            [
+                PDO::PARAM_INT,
+                PDO::PARAM_INT,
+                'date'
             ]
         );
     }
@@ -114,7 +124,7 @@ class AttendanceRepository extends EntityRepository
         $qb = $this->_em->createQueryBuilder();
 
         $qb->select("a.attendanceId, e.enrollmentId, CONCAT(CONCAT(p.personFirstName, ' '), p.personLastName) as name,"
-                . " p.personId, at.attendanceTypeId, at.attendanceType, a.date, c.className")
+            . " p.personId, at.attendanceTypeId, at.attendanceType, a.date, c.className")
             ->from('SchoolManagement\Entity\Attendance', 'a')
             ->join('a.attendanceType', 'at')
             ->join('a.enrollment', 'e')
@@ -165,5 +175,4 @@ class AttendanceRepository extends EntityRepository
 
         return $list;
     }
-
 }
