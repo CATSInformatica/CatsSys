@@ -1,4 +1,4 @@
-/* 
+/*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
  * and open the template in the editor.
@@ -28,6 +28,9 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
         var datesV2 = [];
         // and allowance
         var students = [];
+        var stdClassValue = null;
+
+
         // generateList
         initDateCopy = function () {
             add.click(addAttendanceDate);
@@ -77,13 +80,14 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
         applyLoadListsListener = function () {
 
             $("#generatev2").click(function () {
+                stdClassValue = $("select[name=schoolClasses]").val()
                 // define os valores de datesV2 e typesV2
                 initConfigV2();
                 if (datesV2.length > 0 && typesV2.length > 0) {
-                    var stPromise = getStudents($("select[name=schoolClasses]").val());
+                    var stPromise = getStudents(stdClassValue);
                     stPromise.then(function () {
                         var promise = getLists({
-                            classId: $("select[name=schoolClasses]").val(),
+                            classId: stdClassValue,
                             dates: datesV2,
                             types: typesV2
                         });
@@ -120,7 +124,7 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
 
         /**
          * Monta a tabela de listas de presença.
-         * 
+         *
          * @returns {undefined}
          */
         createAttendanceV2Table = function () {
@@ -174,9 +178,9 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
 
         /**
          * Organiza os tipos de presença do dia selecionado.
-         * 
+         *
          * Obs.: Apenas faltas são salvas.
-         * 
+         *
          * @returns Object
          */
         getSelectedDateDataV2 = function () {
@@ -200,7 +204,8 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
                 return {
                     date: date,
                     types: typesV2,
-                    students: listModel
+                    students: listModel,
+                    class_id: stdClassValue
                 };
             }
             return {};
@@ -250,7 +255,7 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
 
         /**
          * Formata a lista para envio.
-         * 
+         *
          * @param {type} index
          * @returns {unresolved}
          */
@@ -275,12 +280,13 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
             return {
                 date: date,
                 types: types,
-                students: stds
+                students: stds,
+                class_id: stdClassValue
             };
         };
 
         /**
-         * 
+         *
          * @param {type} classId
          * @returns {jqXHR} promise
          */
@@ -326,27 +332,23 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
             attendanceLists.html("");
         };
         createLists = function () {
-            var index;
-            index = lists[1].indexOf("");
-            if (index > 0) {
-                lists[1] = lists[1].slice(1, index);
-            }
-            index = lists[2].indexOf("");
-            if (index > 0) {
-                lists[2] = lists[2].slice(1, index);
-            }
-            index = lists[3].indexOf("");
-            if (index > 0) {
-                lists[3] = lists[3].slice(1, index);
-            }
 
-            var attendanceTypesIds = lists[1];
-            var attendanceTypesNames = lists[2];
-            var dates = [];
+            stdClassValue = lists[0][1];
+            lists[1].shift();
+            lists[2].shift();
+            lists[3].shift();
 
-            for (var i = 0; i < lists[3].length; i++) {
-                dates.push(lists[3][i].substring(2));
-            }
+            var attendanceTypesIds = lists[1].filter(function(el) {
+                return el;
+            });
+            var attendanceTypesNames = lists[2].filter(function(el) {
+                return el;
+            });
+            var dates = lists[3].filter(function(el) {
+                return el
+            }).map(function(el) {
+                return el.substring(2);
+            })
 
             // config
             $("#schoolClass")
@@ -359,10 +361,12 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
                     .data("id", JSON.stringify(dates))
                     .next().find("em").text(dates.join(", "));
             // foreach day
-            for (var d = 0; d < dates.length; d++) {
+            for (day = 0; day < dates.length; day++) {
+                console.log('day', day);
+                console.log('ids', attendanceTypesIds);
 
                 var sm = {
-                    date: moment(dates[d], "DD/MM/YYYY").format("YYYY-MM-DD"),
+                    date: moment(dates[day], "DD/MM/YYYY").format("YYYY-MM-DD"),
                     types: attendanceTypesIds,
                     typeNames: attendanceTypesNames,
                     students: []
@@ -376,11 +380,12 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
                         types: []
                     };
                     // foreach attendanceType
-                    for (var a = 0; a < attendanceTypesIds.length; a++) {
+                    for (atendanceType = 0; atendanceType < attendanceTypesIds.length; atendanceType++) {
+                        sit = lists[i][2 + atendanceType + day * (attendanceTypesIds.length + 1)]
 
                         student.types.push({
-                            id: attendanceTypesIds[a],
-                            status: lists[i][2 + a + d * (attendanceTypesIds.length + 1)].toUpperCase() === "X"
+                            id: attendanceTypesIds[atendanceType],
+                            status: sit && sit.toUpperCase() === "X"
                         });
                     }
 
@@ -388,7 +393,7 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
                 }
 
                 listModels.push(sm);
-                showList(sm, d);
+                showList(sm, day);
             }
         };
 
@@ -474,12 +479,12 @@ define(['masks', 'moment', 'datetimepicker', 'datatable'], function (masks, mome
             var template = "";
             var promise;
             // Students
-            var stdClass = studentClass.val();
+            stdClassValue = studentClass.val();
             studentClass.change(function () {
-                promise = getStudents(stdClass);
+                promise = getStudents(stdClassValue);
                 promise.then(insertStudents);
             });
-            promise = getStudents(stdClass);
+            promise = getStudents(stdClassValue);
             promise.then(insertStudents);
             // Calendar
             $("#allowanceDate").datetimepicker({
