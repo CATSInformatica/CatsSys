@@ -49,13 +49,9 @@ class StudentInterviewForm extends Form implements InputFilterProviderInterface
                     'label' => 'Para iniciar a entrevista, e manter o clima leve,
                 neste momento iniciaremos as apresentações.',
                     'value_options' => [
-                        'Apresentem-se, falem sobre si mesmo, o que estuda, onde
-                    estuda, quais atividades exerce.',
-                        'Pergunte ao candidato como ele conheceu o CATS e o que ele sabe sobre nós, e posteriormente, explique nosso funcionamento de modo geral.',
-                        'Fale para o candidato sobre a entrevista, explique sobre
-                     esse momento inicial de apresentação, sobre o segundo
-                     momento sobre a situação socioeconômica/vulnerabilidade, e um terceiro
-                     sobre o candidato como estudante.'
+                        'Apresentem-se (falem sobre vocês, o que e onde estudam e atividades que exercem no CATS).',
+                        'Pergunte ao candidato como ele conheceu o CATS e explique sobre o funcionamento de modo geral (horários de aulas, monitorias, simulados, banca de redações).',
+                        'Fale para o candidato que a entrevista será somente uma conversa e que ele deve ser sincero em todas as respostas.'
                     ]
                 ]
             ])
@@ -75,21 +71,15 @@ class StudentInterviewForm extends Form implements InputFilterProviderInterface
                 'name' => 'descStudent1',
                 'type' => 'multiCheckbox',
                 'options' => [
-                    'label' => 'Aqui as perguntas são diretas, o formato da conversa
-                será quase um quiz. O candidato irá se sentir pressionado e,
-                provavelmente, ficará nervoso ou mais tímido.
-                Esses sentimentos podem interferir negativamente nas
-                respostas. Fique atento para não tornar o clima muito pesado.',
+                    'label' => 'SOBRE O CATS',
                     'value_options' => [
-                        'Por que quer ser aluno?',
-                        'Quais são seus objetivos?',
-                        'Por que quer ingressar no ensino superior?',
-                        'Já possui algum curso ou área em mente?',
-                        'O que você acha que precisa fazer para conseguir alcançar
-                    os seus objetivos (com a rotina que possui)?',
-                        'Caso o candidato trabalhe ou esteja no 3º ano do ensino
-                    médio verificar se ele terá tempo e disposição para estudar',
-                        'Vai conseguir dar conta? Como?',
+                        'Por que quer ser aluno do CATS?',
+                        // 'Quais são seus objetivos?',
+                        // 'Por que quer ingressar no ensino superior?',
+                        // 'Já possui algum curso ou área em mente?',
+                        // 'O que você acha que precisa fazer para conseguir alcançar os seus objetivos (com a rotina que possui)?',
+                        // 'Caso o candidato trabalhe ou esteja no 3º ano do ensino médio verificar se ele terá tempo e disposição para estudar',
+                        // 'Vai conseguir dar conta? Como?',
                     ],
                 ]
             ])
@@ -102,15 +92,14 @@ class StudentInterviewForm extends Form implements InputFilterProviderInterface
                         'Você frequentará as aulas de sábado?',
                         'Você frequentará as monitorias?',
                         'Você frequentará os simulados?',
-                        'Você acredita que será capaz de manter o pagamento durante
-                    o ano da mensalidade? Você assume o compromisso de manter
-                    um diálogo com o diretor financeiro, caso não possa pagar?',
-                        'Você acredita merecer a dedicação de todos os voluntários?
-                     Por quê?',
-                        'Por que devemos escolher você dentre tantos outros
-                    candidatos?',
-                        'Se ex-aluno, por que dar esta oportunidade a você
-                    novamente?',
+                        'Levando em consideração sua rotina e as atividades do CATS, acha que vai conseguir
+conciliar? (Enfatizar para candidatos que trabalham ou que estejam no 3º ano)',
+                        '(Primeiramente explicar sobre o pagamento da mensalidade) Você falaria com o diretor
+financeiro ou com algum voluntário caso não conseguisse pagar a mensalidade?',
+                        'Você acredita merecer a dedicação de todos os voluntários? Por quê?',
+                        'Por que devemos escolher você dentre tantos outros candidatos?',
+                        'Se ex-aluno, por que te dar esta oportunidade novamente?',
+                        'Se você não entrar no CATS, o que irá fazer?',
                     ],
                 ]
         ]);

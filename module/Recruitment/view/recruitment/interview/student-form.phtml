@@ -19,12 +19,12 @@
                             </div>
                         </div>
                     </div>
-                    <div class="box-body" id="candidate-info" 
+                    <div class="box-body" id="candidate-info"
                          data-regid="<?php echo (isset($this->regId)) ? $this->regId : '-1'; ?>">
                         <p><?php echo $this->person->getPersonName(); ?></p>
-                        
+
                         <p><?php echo $message; ?></p>
-                        
+
                         <div class="col-md-4 col-xs-12">
                             <?php echo $this->formRow($interview->get('interviewStartTime')); ?>
                         </div>
@@ -66,12 +66,20 @@
                                         <?php echo $this->formRow($interview->get('interviewHomeSitComm')); ?>
                                     </div>
                                     <div class="col-md-12 col-xs-12">
+                                        <?php echo $this->formRow($interview->get('interviewHomeSitCommGrade')); ?>
+                                    </div>
+                                </div>
+                                <div class="col-md-12 col-xs-12">
+                                    <div class="col-md-12 col-xs-12">
                                         <?php echo $this->formRow($interview->get('interviewExpComm')); ?>
                                     </div>
                                 </div>
                                 <div class="col-md-12 col-xs-12">
                                     <div class="col-md-12 col-xs-12">
                                         <?php echo $this->formRow($interview->get('interviewFamIncComm')); ?>
+                                    </div>
+                                    <div class="col-md-12 col-xs-12">
+                                        <?php echo $this->formRow($interview->get('interviewFamIncCommInc')); ?>
                                     </div>
                                     <div class="col-md-12 col-xs-12">
                                         <?php echo $this->formRow($interview->get('interviewFamProbComm')); ?>
@@ -108,6 +116,21 @@
                                     </div>
                                     <div class="col-md-12 col-xs-12">
                                         <?php echo $this->formRow($interview->get('interviewStudExpComm')); ?>
+                                    </div>
+                                </div>
+
+                                <div class="col-md-12 col-xs-12">
+                                    <div class="col-md-12 col-xs-12">
+                                        <?php echo $this->formRow($interview->get('interviewStudWhichCourse')); ?>
+                                    </div>
+                                    <div class="col-md-12 col-xs-12">
+                                        <?php echo $this->formRow($interview->get('interviewStudWhyStd')); ?>
+                                    </div>
+                                    <div class="col-md-12 col-xs-12">
+                                        <?php echo $this->formRow($interview->get('interviewStudRoutine')); ?>
+                                    </div>
+                                    <div class="col-md-12 col-xs-12">
+                                        <?php echo $this->formRow($interview->get('interviewStudRoutineEnough')); ?>
                                     </div>
                                 </div>
 

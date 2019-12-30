@@ -95,6 +95,20 @@ class StudentInterview
      */
     private $interviewHomeSitComm;
 
+    const INTERVIEW_HOME_SIT_COMM_GRADE_1 = 1;
+    const INTERVIEW_HOME_SIT_COMM_GRADE_2 = 2;
+    const INTERVIEW_HOME_SIT_COMM_GRADE_3 = 3;
+    const INTERVIEW_HOME_SIT_COMM_GRADE_4 = 4;
+    const INTERVIEW_HOME_SIT_COMM_GRADE_5 = 5;
+
+    /**
+     * Situação da casa e localização.
+     *
+     * @var int
+     * @ORM\Column(name="student_interview_homesitcomm_grade", type="integer", nullable=true);
+     */
+    private $interviewHomeSitCommGrade;
+
     /**
      * Bens e despesas básicas.
      *
@@ -104,7 +118,7 @@ class StudentInterview
     private $interviewExpComm;
 
     /**
-     * Membros da família e renda.
+     * Quem mora na sua casa.
      *
      * @var string
      * @ORM\Column(name="student_interview_faminccomm", type="string", length=500, nullable=true);
@@ -112,7 +126,15 @@ class StudentInterview
     private $interviewFamIncComm;
 
     /**
-     * Problemas com os membros (Procure por vícios, drogas. Doenças graves ou crônicas.)
+     * Quem contribui com a renda.
+     *
+     * @var string
+     * @ORM\Column(name="student_interview_faminccomm_inc", type="string", length=500, nullable=true);
+     */
+    private $interviewFamIncCommInc;
+
+    /**
+     * Tem algum problema familiar? (Problema com vícios, drogas, doenças, violência etc)
      *
      * @var string
      * @ORM\Column(name="student_interview_famprobcomm", type="string", length=500, nullable=true);
@@ -120,7 +142,7 @@ class StudentInterview
     private $interviewFamProbComm;
 
     /**
-     * Membros da família e sua relação e pensamento sobre os estudos/trabalho
+     * Como é sua relação com sua família? Eles te apoiam a estudar? Tem pressão para trabalhar?
      *
      * @var string
      * @ORM\Column(name="student_interview_famsuppcomm", type="string", length=500, nullable=true);
@@ -128,7 +150,7 @@ class StudentInterview
     private $interviewFamSuppComm;
 
     /**
-     * Trabalhos do candidato e rotina atual (atividades e hábitos).
+     * Você não tem condição de pagar um cursinho? (Levar em conta cada caso para fazer essa pergunta).
      *
      * @var string
      * @ORM\Column(name="student_interview_routcomm", type="string", length=500, nullable=true);
@@ -144,7 +166,7 @@ class StudentInterview
     private $interviewSecondarySchool;
 
     /**
-     * Histórico escolar e comportamento como aluno.
+     * Como era seu comportamento como aluno?
      *
      * @var string
      * @ORM\Column(name="student_interview_studbehacomm", type="string", length=500, nullable=true);
@@ -160,7 +182,7 @@ class StudentInterview
     private $interviewCoursComm;
 
     /**
-     * Rotina de estudos e melhores formas de estudar (horas por semana, agenda, estudar por tarefas).
+     * Você já fez cursos extracurriculares? (curso técnico, curso de idiomas, etc).
      *
      * @var string
      * @ORM\Column(name="student_interview_studwaycomm", type="string", length=500, nullable=true);
@@ -174,6 +196,38 @@ class StudentInterview
      * @ORM\Column(name="student_interview_studexpcomm", type="string", length=500, nullable=true);
      */
     private $interviewStudExpComm;
+
+    /**
+     * Já tem algum curso em mente? Alguma faculdade específica?
+     *
+     * @var string
+     * @ORM\Column(name="student_intervew_studwhichcourse", type="string", length=500, nullable=true);
+     */
+    private $interviewStudWhichCourse;
+
+    /**
+     * Por que quer ingressar no ensino superior? Qual a importância disso para você?
+     *
+     * @var string
+     * @ORM\Column(name="student_intervew_studwhystd", type="string", length=500, nullable=true);
+     */
+    private $interviewStudWhyStd;
+
+    /**
+     * Já tem algum curso em mente? Alguma faculdade específica?
+     *
+     * @var string
+     * @ORM\Column(name="student_intervew_studroutine", type="string", length=500, nullable=true);
+     */
+    private $interviewStudRoutine;
+
+    /**
+     * Já tem algum curso em mente? Alguma faculdade específica?
+     *
+     * @var string
+     * @ORM\Column(name="student_intervew_studroutineenough", type="string", length=500, nullable=true);
+     */
+    private $interviewStudRoutineEnough;
 
     /**
      * Comentário dos entrevistadores sobre o perfil de estudante do candidato.
@@ -664,12 +718,32 @@ seu contexto social.';
 
     /**
      *
+     * @return string
+     */
+    public function getInterviewHomeSitCommGrade()
+    {
+        return $this->interviewHomeSitCommGrade;
+    }
+
+    /**
+     *
      * @param string $interviewHomeSitComm
      * @return \Recruitment\Entity\StudentInterview
      */
     public function setInterviewHomeSitComm($interviewHomeSitComm)
     {
         $this->interviewHomeSitComm = $interviewHomeSitComm;
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $interviewHomeSitCommGrade
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewHomeSitCommGrade($interviewHomeSitCommGrade)
+    {
+        $this->interviewHomeSitCommGrade = $interviewHomeSitCommGrade;
         return $this;
     }
 
@@ -704,12 +778,32 @@ seu contexto social.';
 
     /**
      *
+     * @return string
+     */
+    public function getInterviewFamIncCommInc()
+    {
+        return $this->interviewFamIncCommInc;
+    }
+
+    /**
+     *
      * @param string $interviewFamIncComm
      * @return \Recruitment\Entity\StudentInterview
      */
     public function setInterviewFamIncComm($interviewFamIncComm)
     {
         $this->interviewFamIncComm = $interviewFamIncComm;
+        return $this;
+    }
+
+    /**
+     *
+     * @param string $interviewFamIncCommInc
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewFamIncCommInc($interviewFamIncCommInc)
+    {
+        $this->interviewFamIncCommInc = $interviewFamIncCommInc;
         return $this;
     }
 
@@ -855,6 +949,89 @@ seu contexto social.';
 
     /**
      *
+     * @return string
+     */
+    public function getInterviewStudWhichCourse()
+    {
+        return $this->interviewStudWhichCourse;
+    }
+
+    /**
+     *
+     * @param string $interviewStudWhichCourse
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewStudWhichCourse($interviewStudWhichCourse)
+    {
+        $this->interviewStudWhichCourse = $interviewStudWhichCourse;
+        return $this;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getInterviewStudWhyStd()
+    {
+        return $this->interviewStudWhyStd;
+    }
+
+    /**
+     *
+     * @param string $interviewStudWhyStd
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewStudWhyStd($interviewStudWhyStd)
+    {
+        $this->interviewStudWhyStd = $interviewStudWhyStd;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getInterviewStudRoutine()
+    {
+        return $this->interviewStudRoutine;
+    }
+
+    /**
+     *
+     * @param string $interviewStudRoutine
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewStudRoutine($interviewStudRoutine)
+    {
+        $this->interviewStudRoutine = $interviewStudRoutine;
+
+        return $this;
+    }
+
+    /**
+     *
+     * @return string
+     */
+    public function getInterviewStudRoutineEnough()
+    {
+        return $this->interviewStudRoutineEnough;
+    }
+
+    /**
+     *
+     * @param string $interviewStudRoutineEnough
+     * @return \Recruitment\Entity\StudentInterview
+     */
+    public function setInterviewStudRoutineEnough($interviewStudRoutineEnough)
+    {
+        $this->interviewStudRoutineEnough = $interviewStudRoutineEnough;
+
+        return $this;
+    }
+
+    /**
+     *
      * @param string $interviewerCommentStudent
      * @return \Recruitment\Entity\StudentInterview
      */
@@ -907,6 +1084,21 @@ seu contexto social.';
             self::TOTAL_INCOME_FOURTOEIGHT_SALARY => self::TOTAL_INCOME_FOURTOEIGHT_SALARY,
             self::TOTAL_INCOME_EIGHTTOSIXTEEN_SALARY => self::TOTAL_INCOME_EIGHTTOSIXTEEN_SALARY,
             self::TOTAL_INCOME_MORETHANSIXTEEN_SALARY => self::TOTAL_INCOME_MORETHANSIXTEEN_SALARY,
+        ];
+    }
+
+    /**
+     *
+     * @return array
+     */
+    public static function getInterviewHomeSitCommGradeArray()
+    {
+        return [
+            self::INTERVIEW_HOME_SIT_COMM_GRADE_1 => self::INTERVIEW_HOME_SIT_COMM_GRADE_1,
+            self::INTERVIEW_HOME_SIT_COMM_GRADE_2 => self::INTERVIEW_HOME_SIT_COMM_GRADE_2,
+            self::INTERVIEW_HOME_SIT_COMM_GRADE_3 => self::INTERVIEW_HOME_SIT_COMM_GRADE_3,
+            self::INTERVIEW_HOME_SIT_COMM_GRADE_4 => self::INTERVIEW_HOME_SIT_COMM_GRADE_4,
+            self::INTERVIEW_HOME_SIT_COMM_GRADE_5 => self::INTERVIEW_HOME_SIT_COMM_GRADE_5,
         ];
     }
 
@@ -1079,25 +1271,25 @@ seu contexto social.';
     {
         return [
             self::MAX_POSITION_BUSINESSMAN => self::MAX_POSITION_BUSINESSMAN . ': ' .
-            self::MAX_POSITION_BUSINESSMAN_DESC,
+                self::MAX_POSITION_BUSINESSMAN_DESC,
             self::MAX_POSITION_HIGH_ADMINISTRADOR => self::MAX_POSITION_HIGH_ADMINISTRADOR . ': ' .
-            self::MAX_POSITION_HIGH_ADMINISTRADOR_DESC,
+                self::MAX_POSITION_HIGH_ADMINISTRADOR_DESC,
             self::MAX_POSITION_LIBERAL_AUTONOMOUS => self::MAX_POSITION_LIBERAL_AUTONOMOUS . ': ' .
-            self::MAX_POSITION_LIBERAL_AUTONOMOUS_DESC,
+                self::MAX_POSITION_LIBERAL_AUTONOMOUS_DESC,
             self::MAX_POSITION_ADMINISTRATOR => self::MAX_POSITION_ADMINISTRATOR . ': ' .
-            self::MAX_POSITION_ADMINISTRATOR_DESC,
+                self::MAX_POSITION_ADMINISTRATOR_DESC,
             self::MAX_POSITION_PRODUCTION => self::MAX_POSITION_PRODUCTION . ': ' .
-            self::MAX_POSITION_PRODUCTION_DESC,
+                self::MAX_POSITION_PRODUCTION_DESC,
             self::MAX_POSITION_AUTONOMOUS => self::MAX_POSITION_AUTONOMOUS . ': ' .
-            self::MAX_POSITION_AUTONOMOUS_DESC,
+                self::MAX_POSITION_AUTONOMOUS_DESC,
             self::MAX_POSITION_SMALL_PRODUCERS => self::MAX_POSITION_SMALL_PRODUCERS . ': ' .
-            self::MAX_POSITION_SMALL_PRODUCERS_DESC,
+                self::MAX_POSITION_SMALL_PRODUCERS_DESC,
             self::MAX_POSITION_DOMESTICS => self::MAX_POSITION_DOMESTICS . ': ' .
-            self::MAX_POSITION_DOMESTICS_DESC,
+                self::MAX_POSITION_DOMESTICS_DESC,
             self::MAX_POSITION_RURAL_WORKER => self::MAX_POSITION_RURAL_WORKER . ': ' .
-            self::MAX_POSITION_RURAL_WORKER_DESC,
+                self::MAX_POSITION_RURAL_WORKER_DESC,
             self::MAX_POSITION_STUDENTOROTHER => self::MAX_POSITION_STUDENTOROTHER . ': ' .
-            self::MAX_POSITION_STUDENTOROTHER_DESC,
+                self::MAX_POSITION_STUDENTOROTHER_DESC,
         ];
     }
 
@@ -1350,15 +1542,15 @@ seu contexto social.';
     {
         return [
             self::VULNERABILITY_HIGH => '[8,00 a 10,00] ' . self::VULNERABILITY_HIGH .
-            ': ' . self::VULNERABILITY_HIGH_DESC,
+                ': ' . self::VULNERABILITY_HIGH_DESC,
             self::VULNERABILITY_MIDDLE => '[6,00 a 7,99] ' . self::VULNERABILITY_MIDDLE .
-            ': ' . self::VULNERABILITY_MIDDLE_DESC,
+                ': ' . self::VULNERABILITY_MIDDLE_DESC,
             self::VULNERABILITY_LOW => '[4,00 a 5,99] ' . self::VULNERABILITY_LOW .
-            ': ' . self::VULNERABILITY_LOW_DESC,
+                ': ' . self::VULNERABILITY_LOW_DESC,
             self::VULNERABILITY_TEMPORARY => '[2,00 a 3,99] ' . self::VULNERABILITY_TEMPORARY .
-            ': ' . self::VULNERABILITY_TEMPORARY_DESC,
+                ': ' . self::VULNERABILITY_TEMPORARY_DESC,
             self::VULNERABILITY_NONE => '[0,00 a 1,99] ' . self::VULNERABILITY_NONE .
-            ': ' . self::VULNERABILITY_NONE_DESC,
+                ': ' . self::VULNERABILITY_NONE_DESC,
         ];
     }
 
@@ -1434,15 +1626,15 @@ seu contexto social.';
     {
         return [
             self::INTERVIEW_STUDENT_ADVANCED => '[8,00 a 10,00] ' . self::INTERVIEW_STUDENT_ADVANCED . ': ' .
-            self::INTERVIEW_STUDENT_ADVANCED_DESC,
+                self::INTERVIEW_STUDENT_ADVANCED_DESC,
             self::INTERVIEW_STUDENT_MODERATE => '[6,00 a 7,99] ' . self::INTERVIEW_STUDENT_MODERATE . ': ' .
-            self::INTERVIEW_STUDENT_MODERATE_DESC,
+                self::INTERVIEW_STUDENT_MODERATE_DESC,
             self::INTERVIEW_STUDENT_COMMON => '[4,00 a 5,99] ' . self::INTERVIEW_STUDENT_COMMON . ': ' .
-            self::INTERVIEW_STUDENT_COMMON_DESC,
+                self::INTERVIEW_STUDENT_COMMON_DESC,
             self::INTERVIEW_STUDENT_PROBLEMATIC => '[2,00 a 3,99] ' . self::INTERVIEW_STUDENT_PROBLEMATIC . ': ' .
-            self::INTERVIEW_STUDENT_PROBLEMATIC_DESC,
+                self::INTERVIEW_STUDENT_PROBLEMATIC_DESC,
             self::INTERVIEW_STUDENT_NOTMET => '[0,00 a 1,99] ' . self::INTERVIEW_STUDENT_NOTMET . ': ' .
-            self::INTERVIEW_STUDENT_NOTMET_DESC,
+                self::INTERVIEW_STUDENT_NOTMET_DESC,
         ];
     }
 
@@ -1567,14 +1759,12 @@ seu contexto social.';
             self::MAX_POSITION_STUDENTOROTHER => 0,
         ];
 
-        $grade = (
-            $interviewTotalIncomeArr[$iti]
+        $grade = ($interviewTotalIncomeArr[$iti]
             + $interviewNumberOfFamilyMembersArr[$inofm]
             + $interviewMaxScholarityArr[$ims]
             + $interviewHomeTypeArr[$iht]
             + $interviewHomeSituationArr[$ihs]
-            + $interviewMaxPositionArr[$imp]
-            ) / 6;
+            + $interviewMaxPositionArr[$imp]) / 6;
 
         return $grade;
     }
@@ -1638,5 +1828,4 @@ seu contexto social.';
         $this->intervewChemicalDependency = $intervewChemicalDependency;
         return $this;
     }
-
 }

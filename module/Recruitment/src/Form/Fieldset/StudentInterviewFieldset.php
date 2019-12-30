@@ -84,17 +84,26 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'name' => 'interviewHomeSitComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Situação da casa e localização (Verificar a infraestrutura, acabamento, localização e afins, além de perguntar se a casa é própria, cedida, alugada ou financiada. Falar pro candidato dar uma nota de 1 a 5 para a casa levando em consideração os parâmetros anteriores)',
+                    'label' => 'Como é a sua casa no que diz respeito a infraestrutura, acabamento e localização? Casa própria, cedida, alugada ou financiada?',
                 ],
                 'attributes' => [
                     'rows' => 2,
                 ]
             ])
             ->add([
+                'name' => 'interviewHomeSitCommGrade',
+                'type' => 'radio',
+                'options' => [
+                    'label' => 'Dê uma nota de 1 a 5 para sua casa.',
+                    'value_options' => StudentInterview::getInterviewHomeSitCommGradeArray(),
+                ],
+            ])
+            ->add([
                 'name' => 'interviewExpComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Bens e despesas básicas',
+                    'label' => 'Quais são os bens? Quais são as despesas? (reforçar o que foi visto na pré-entrevista e
+investigar outros possíveis bens/despesas)',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -104,8 +113,17 @@ class StudentInterviewFieldset extends Fieldset implements InputFilterProviderIn
                 'name' => 'interviewFamIncComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Membros da família e renda (quantidade de membros, contribuição com a renda,
-grau de escolaridade e profissão)',
+                    'label' => 'Quem mora na sua casa? O que cada pessoa faz? (estuda, trabalha etc)',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewFamIncCommInc',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Dessas pessoas, quem contribui com a renda? Alguém de fora contribui com a renda? (Ex.: avós, tios, etc)',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -115,7 +133,7 @@ grau de escolaridade e profissão)',
                 'name' => 'interviewFamProbComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Problemas com os membros (Procure por vícios, drogas. Doenças graves ou crônicas, gastos com saúde)',
+                    'label' => 'Tem algum problema familiar? (Problema com vícios, drogas, doenças, violência etc)',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -125,7 +143,7 @@ grau de escolaridade e profissão)',
                 'name' => 'interviewFamSuppComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Membros da família e sua relação e pensamento sobre os estudos/trabalho',
+                    'label' => 'Como é sua relação com sua família? Eles te apoiam a estudar? Tem pressão para trabalhar?',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -135,7 +153,7 @@ grau de escolaridade e profissão)',
                 'name' => 'interviewRoutComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Trabalhos do candidato e rotina atual (atividades e hábitos)',
+                    'label' => 'Você não tem condição de pagar um cursinho? (Levar em conta cada caso para fazer essa pergunta).',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -145,7 +163,7 @@ grau de escolaridade e profissão)',
                 'name' => 'interviewSecondarySchool',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Escola em que cursou ensino fundamental e médio (Verificar se já fez cursinho ou ensino superior)',
+                    'label' => 'Onde cursou o Ensino Fundamental e o Ensino Médio? Era escola particular ou pública? (Se for particular, questionar se tinha bolsa)',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -155,7 +173,7 @@ grau de escolaridade e profissão)',
                 'name' => 'interviewStudBehaComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Histórico escolar e comportamento como aluno',
+                    'label' => 'Como era seu comportamento como aluno?',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -165,7 +183,7 @@ grau de escolaridade e profissão)',
                 'name' => 'interviewCoursComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Cursos técnicos, profissionalizantes, de idioma etc',
+                    'label' => 'Você já fez algum cursinho pré-vestibular ou já ingressou no ensino superior?',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -175,7 +193,7 @@ grau de escolaridade e profissão)',
                 'name' => 'interviewStudWayComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Rotina de estudos e melhores formas de estudar (horas por semana, agenda, estudar por tarefas)',
+                    'label' => 'Você já fez cursos extracurriculares? (curso técnico, curso de idiomas, etc).',
                 ],
                 'attributes' => [
                     'rows' => 2,
@@ -185,18 +203,59 @@ grau de escolaridade e profissão)',
                 'name' => 'interviewStudExpComm',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Verifique se o candidato já fez simulados, '
-                    . 'vestibulares e concursos...',
+                    'label' => 'Você já fez simulados, vestibulares ou ENEM?',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            // adicionadas 12/2019
+            ->add([
+                'name' => 'interviewStudWhichCourse',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Já tem algum curso em mente? Alguma faculdade específica?',
                 ],
                 'attributes' => [
                     'rows' => 2,
                 ]
             ])
             ->add([
+                'name' => 'interviewStudWhyStd',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Por que quer ingressar no ensino superior? Qual a importância disso para você?',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewStudRoutine',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Como é o seu dia (rotina)? Tem algum momento reservado para os estudos? Se sim, utiliza cronogramas ou algum método específico?',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            ->add([
+                'name' => 'interviewStudRoutineEnough',
+                'type' => 'textarea',
+                'options' => [
+                    'label' => 'Acha que a rotina de estudos atual é suficiente para alcançar seus objetivos? Se não, o que você acha que precisa fazer para melhorar?',
+                ],
+                'attributes' => [
+                    'rows' => 2,
+                ]
+            ])
+            // /adicionadas 12/2019
+            ->add([
                 'name' => 'interviewerCommentStudent',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Comentários e visões do entrevistador (sobre os objetivos do candidato)',
+                    'label' => 'Comentários e visões do entrevistador',
                 ],
                 'attributes' => [
                     'rows' => 10,
@@ -206,7 +265,7 @@ grau de escolaridade e profissão)',
                 'name' => 'interviewerOurActivities',
                 'type' => 'textarea',
                 'options' => [
-                    'label' => 'Comentários e visões do entrevistador (sobre nossas atividades)',
+                    'label' => 'Comentários e visões do entrevistador',
                 ],
                 'attributes' => [
                     'rows' => 10,
