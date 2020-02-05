@@ -19,6 +19,7 @@
 namespace Recruitment\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use Recruitment\Entity\Recruitment;
 
 /**
  * Contém consultas específicas para a entidade Recruitment.
@@ -51,16 +52,17 @@ class RecruitmentRepository extends EntityRepository
     public function findByTypeAndBetweenBeginAndEndDates($type, \DateTime $date)
     {
         return $this->_em
-                ->createQuery('SELECT r FROM Recruitment\Entity\Recruitment r '
+            ->createQuery(
+                'SELECT r FROM Recruitment\Entity\Recruitment r '
                     . 'WHERE r.recruitmentType = :type AND '
                     . ':date BETWEEN r.recruitmentBeginDate and r.recruitmentEndDate'
-                )
-                ->setParameters(array(
-                    'type' => $type,
-                    'date' => $date,
-                ))
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
+            )
+            ->setParameters(array(
+                'type' => $type,
+                'date' => $date,
+            ))
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
     }
 
     /**
@@ -76,29 +78,34 @@ class RecruitmentRepository extends EntityRepository
      * @param \DateTime $date data de consulta
      * @return array|null
      */
-    public function findNotEndedByTypeAsArray($type, \DateTime $date = null) {
+    public function findNotEndedByTypeAsArray($type, \DateTime $date = null)
+    {
 
-        if($date == null) {
+        if ($date == null) {
             $date = new \DateTime();
         }
 
         $edate = clone $date;
-        $edate->sub(new \DateInterval('P30D'));
+
+        if ($type == Recruitment::STUDENT_RECRUITMENT_TYPE) {
+            $edate->sub(new \DateInterval('P30D'));
+        }
 
         return $this->_em
-                ->createQuery('SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
+            ->createQuery(
+                'SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
                     . 'r.recruitmentEndDate, r.recruitmentPublicNotice '
                     . 'FROM Recruitment\Entity\Recruitment r '
                     . 'WHERE r.recruitmentType = :type AND '
                     . ':sdate >= r.recruitmentBeginDate and :edate <= r.resultDate'
-                )
-                ->setParameters(array(
-                    'type' => $type,
-                    'sdate' => $date,
-                    'edate' => $edate,
-                ))
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
+            )
+            ->setParameters(array(
+                'type' => $type,
+                'sdate' => $date,
+                'edate' => $edate,
+            ))
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
     }
 
     /**
@@ -117,18 +124,19 @@ class RecruitmentRepository extends EntityRepository
     public function findByTypeAndBetweenBeginAndEndDatesAsArray($type, \DateTime $date)
     {
         return $this->_em
-                ->createQuery('SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
+            ->createQuery(
+                'SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
                     . 'r.recruitmentEndDate, r.recruitmentPublicNotice '
                     . 'FROM Recruitment\Entity\Recruitment r '
                     . 'WHERE r.recruitmentType = :type AND '
                     . ':date BETWEEN r.recruitmentBeginDate and r.recruitmentEndDate'
-                )
-                ->setParameters(array(
-                    'type' => $type,
-                    'date' => $date,
-                ))
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
+            )
+            ->setParameters(array(
+                'type' => $type,
+                'date' => $date,
+            ))
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
     }
 
     /**
@@ -140,16 +148,17 @@ class RecruitmentRepository extends EntityRepository
     public function findLastClosed($type)
     {
         return $this->_em
-                ->createQuery('SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
+            ->createQuery(
+                'SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
                     . 'r.recruitmentEndDate, r.recruitmentSocioeconomicTarget, r.recruitmentVulnerabilityTarget, r.recruitmentStudentTarget '
                     . 'FROM Recruitment\Entity\Recruitment r '
                     . 'WHERE r.recruitmentType = :type AND '
                     . 'r.recruitmentEndDate < CURRENT_DATE() '
                     . 'ORDER BY r.recruitmentId DESC'
-                )
-                ->setParameter('type', $type)
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
+            )
+            ->setParameter('type', $type)
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
     }
 
     /**
@@ -161,15 +170,16 @@ class RecruitmentRepository extends EntityRepository
     public function findLastOpened($type)
     {
         return $this->_em
-                ->createQuery('SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
+            ->createQuery(
+                'SELECT r.recruitmentId, r.recruitmentNumber, r.recruitmentYear, r.recruitmentBeginDate, '
                     . 'r.recruitmentBeginDate, r.recruitmentSocioeconomicTarget, r.recruitmentVulnerabilityTarget, r.recruitmentStudentTarget '
                     . 'FROM Recruitment\Entity\Recruitment r '
                     . 'WHERE r.recruitmentType = :type AND '
                     . 'r.recruitmentBeginDate < CURRENT_DATE() '
                     . 'ORDER BY r.recruitmentId DESC'
-                )
-                ->setParameter('type', $type)
-                ->setMaxResults(1)
-                ->getOneOrNullResult();
+            )
+            ->setParameter('type', $type)
+            ->setMaxResults(1)
+            ->getOneOrNullResult();
     }
 }
