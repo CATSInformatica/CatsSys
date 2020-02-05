@@ -1,6 +1,6 @@
 <section class="content">
     <div class="row">
-        <?php if (!$message): ?>
+        <?php if (!$message) : ?>
             <div class="col-md-10 col-md-offset-1 col-xs-12">
                 <div class="box">
                     <div class="box-header with-border">
@@ -28,36 +28,44 @@
                                     <th class='text-center'>SITUAÇÃO</th>
                                     <th class='text-center'>INSCRIÇÃO</th>
 
-                                    <?php foreach ($gs as $g): ?>
-                                        <th class='text-center'><?php echo $g; ?></th>
+                                    <?php foreach ($gs as $g) : ?>
+                                        <?php if ($g != 'NASCIMENTO') : ?>
+                                            <th class='text-center'><?php echo $g; ?></th>
+                                        <?php endif; ?>
                                     <?php endforeach; ?>
                                     <th class='text-center'>TOTAL</th>
                                 </tr>
-                            <thead>
-                            <tbody>
-                                <?php foreach ($results as $result): ?>
+                                <thead>
+                                <tbody>
+                                    <?php foreach ($results as $result) : ?>
 
-                                    <?php $class = $result['registrationNumber'] !== $num ? '' : 'cats-selected-bg'; ?>
+                                        <?php $class = $result['registrationNumber'] !== $num ? '' : 'cats-selected-bg'; ?>
 
-                                    <tr>
-                                        <td class="text-center <?php echo $class; ?>"> <?php echo $result['position']; ?>º</td>
-                                        <td class="text-center <?php echo $class; ?>"> <?php echo $result['registrationNumber'] !== $num ? '' : $status; ?> </td>
-                                        <td class="text-center <?php echo $class; ?>"> <?php echo $result['registrationNumber']; ?></td>
-                                        <?php foreach ($result['partialResult'] as $pRes): ?>
-                                            <?php if ($pRes >= 0): ?>
-                                                <td class="text-center <?php echo $class; ?>"><?php echo $pRes; ?></td>
-                                            <?php endif; ?>
-                                        <?php endforeach; ?>
-                                        <td class="text-center <?php echo $class; ?>"> <?php echo $result['result']; ?></td>
-                                    </tr>
-                                <?php endforeach; ?>
-                            </tbody>
+                                        <tr>
+                                            <td class="text-center <?php echo $class; ?>">
+                                                <?php echo $result['position']; ?>º
+                                            </td>
+                                            <td class="text-center <?php echo $class; ?>">
+                                                <?php echo $result['registrationNumber'] !== $num ? '' : $status; ?>
+                                            </td>
+                                            <td class="text-center <?php echo $class; ?>">
+                                                <?php echo $result['registrationNumber']; ?>
+                                            </td>
+                                            <?php foreach ($result['partialResult'] as $pRes) : ?>
+                                                <?php if ($pRes >= 0) : ?>
+                                                    <td class="text-center <?php echo $class; ?>"><?php echo $pRes; ?></td>
+                                                <?php endif; ?>
+                                            <?php endforeach; ?>
+                                            <td class="text-center <?php echo $class; ?>"> <?php echo $result['result']; ?></td>
+                                        </tr>
+                                    <?php endforeach; ?>
+                                </tbody>
                         </table>
                     </div>
                 </div>
             </div>
-        <?php else: ?>
-        <h3 class="text-center"><?php echo $message; ?>.</h3>
+        <?php else : ?>
+            <h3 class="text-center"><?php echo $message; ?>.</h3>
         <?php endif; ?>
     </div>
 </section>

@@ -15,8 +15,8 @@
  * along with this program.  If not, see <http://www.gnu.org/licenses/>.
  */
 
-define(["moment"], function(moment) {
-    var ApplicationResultModule = (function() {
+define(["moment"], function (moment) {
+    var ApplicationResultModule = (function () {
         var currentApplicationId = null
         var exams
         var ApplicationElel = $("#application")
@@ -44,15 +44,15 @@ define(["moment"], function(moment) {
 
         var comments
 
-        initListeners = function() {
+        initListeners = function () {
             comments = []
             currentApplicationId = ApplicationElel.val()
-            ApplicationElel.change(function() {
+            ApplicationElel.change(function () {
                 currentApplicationId = ApplicationElel.val()
                 sortedAnswers = null
             })
-            $("#fetch-new-data").click(function() {
-                getExams().then(function(e) {
+            $("#fetch-new-data").click(function () {
+                getExams().then(function (e) {
                     if (e.length) {
                         exams = {}
                         groups = []
@@ -80,7 +80,7 @@ define(["moment"], function(moment) {
                             }
                         }
 
-                        $.when(defs).then(function() {
+                        $.when(defs).then(function () {
                             $("#set-criteria").prop("disabled", false)
                             createSortList()
                         })
@@ -94,7 +94,7 @@ define(["moment"], function(moment) {
                 })
             })
 
-            $("#fetch-current-data").click(function() {
+            $("#fetch-current-data").click(function () {
                 sortedAnswers = null
                 exams = {}
                 groups = []
@@ -104,10 +104,10 @@ define(["moment"], function(moment) {
                 sortGroupContainer.html("")
                 $("#set-criteria").prop("disabled", true)
 
-                getApplicationResult().then(function(results) {
+                getApplicationResult().then(function (results) {
                     if (results.length) {
                         // ordena o resultado antes de adicionar na tabela (1º, 2º, 3º, ...)
-                        sortedAnswers = results.sort(function(prev, next) {
+                        sortedAnswers = results.sort(function (prev, next) {
                             intPrev = parseInt(prev.position)
                             intNext = parseInt(next.position)
                             if (intPrev < intNext) {
@@ -125,9 +125,9 @@ define(["moment"], function(moment) {
                 })
             })
 
-            $("#set-criteria").on("click", function() {
+            $("#set-criteria").on("click", function () {
                 groupOrder = []
-                $("select[id^='criteria-group']").each(function() {
+                $("select[id^='criteria-group']").each(function () {
                     groupOrder.push(parseInt($(this).val()))
                 })
 
@@ -143,12 +143,10 @@ define(["moment"], function(moment) {
                 console.log("sortedAnswers", sortedAnswers)
                 createResultTable(sortedAnswers, sortedAnswers[0].groups)
                 releaseSaveResult()
-                $("#resultProgress").text(
-                    saveIndex + "/" + sortedAnswers.length
-                )
+                $("#resultProgress").text('0/' + sortedAnswers.length);
             })
 
-            $("#classExamOrRecruitmentExam").change(function() {
+            $("#classExamOrRecruitmentExam").change(function () {
                 switch ($(this).val()) {
                     case APPLICATION_TYPES.PSA:
                         isStudent = 0
@@ -171,13 +169,14 @@ define(["moment"], function(moment) {
                 }
             })
 
-            $("#save-result").click(function() {
-                saveResults()
+            $("#save-result").click(function () {
+                console.log('sortedAnswers', sortedAnswers);
+                saveResults(0);
             })
         }
 
-        addComments = function() {
-            var formattedComments = comments.map(function(comment) {
+        addComments = function () {
+            var formattedComments = comments.map(function (comment) {
                 return (
                     "<li><span class='label label-" +
                     comment.type +
@@ -190,10 +189,10 @@ define(["moment"], function(moment) {
             $("#import-comments").html(formattedComments.join(""))
         }
 
-        getApplicationResult = function() {
+        getApplicationResult = function () {
             return $.ajax(
                 "/school-management/school-exam-result/get-result/" +
-                    currentApplicationId,
+                currentApplicationId,
                 {
                     type: "GET",
                     dataType: "json",
@@ -204,10 +203,10 @@ define(["moment"], function(moment) {
             )
         }
 
-        getExams = function() {
+        getExams = function () {
             return $.ajax(
                 "/school-management/school-exam/get-exams/" +
-                    currentApplicationId,
+                currentApplicationId,
                 {
                     type: "GET",
                     dataType: "json"
@@ -215,7 +214,7 @@ define(["moment"], function(moment) {
             )
         }
 
-        loadAnswers = function(examId) {
+        loadAnswers = function (examId) {
             var def = $.Deferred()
 
             return $.ajax(
@@ -228,7 +227,7 @@ define(["moment"], function(moment) {
                     datatype: "json"
                 }
             ).then(
-                function(ans) {
+                function (ans) {
                     if (!ans.answers.length) {
                         comments.push({
                             text:
@@ -242,7 +241,7 @@ define(["moment"], function(moment) {
                     exams[ans.examId].peopleAnswers = ans.answers
                     def.resolve()
                 },
-                function() {
+                function () {
                     def.reject()
                 }
             )
@@ -253,10 +252,10 @@ define(["moment"], function(moment) {
         /**
          * Organiza as respostas para cada prova da aplicação
          */
-        adjustAnswers = function() {
+        adjustAnswers = function () {
             answers = {}
 
-            Object.keys(exams).forEach(function(examId) {
+            Object.keys(exams).forEach(function (examId) {
                 ans = exams[examId].peopleAnswers
                 for (var i = 0; i < ans.length; i++) {
                     if (!answers[ans[i].registrationOrEnrollment]) {
@@ -275,7 +274,7 @@ define(["moment"], function(moment) {
             })
         }
 
-        createAnswer = function(
+        createAnswer = function (
             registrationOrEnrollment,
             fullname,
             registrationNumber,
@@ -315,7 +314,7 @@ define(["moment"], function(moment) {
          *  2. o aluno não preencheu o grupo corretamente (não pintou se queria inglês ou espanhol ou
          *  pintou multiplas vezes, ex: pintou inglês e espanhol)
          */
-        calcScore = function(person, currentGroup, correctAnswers) {
+        calcScore = function (person, currentGroup, correctAnswers) {
             var parallelIndx, parallel
             var endAt
             var score = 0
@@ -338,7 +337,7 @@ define(["moment"], function(moment) {
                         correctAnswers[q].answers[parallel] === NULLIFIED ||
                         (correctAnswers[q].answers[parallel] &&
                             person.answers[q] ===
-                                correctAnswers[q].answers[parallel])
+                            correctAnswers[q].answers[parallel])
                     ) {
                         score++
                     }
@@ -356,7 +355,7 @@ define(["moment"], function(moment) {
             return score
         }
 
-        calcResult = function() {
+        calcResult = function () {
             var currentGroup
             var score
             var correctAnswers
@@ -369,12 +368,12 @@ define(["moment"], function(moment) {
                     correctAnswers = exams[currentGroup.examId].answers
 
                     // para cada aluno
-                    Object.keys(answers).forEach(function(
+                    Object.keys(answers).forEach(function (
                         registrationOrEnrollment
                     ) {
                         person =
                             answers[registrationOrEnrollment][
-                                currentGroup.examId
+                            currentGroup.examId
                             ]
                         score = 0
 
@@ -403,7 +402,7 @@ define(["moment"], function(moment) {
                     })
                 } else {
                     // salva a data de nascimento do aluno para casos de desempate
-                    Object.keys(answers).forEach(function(
+                    Object.keys(answers).forEach(function (
                         registrationOrEnrollment
                     ) {
                         answers[registrationOrEnrollment].partialResult.push(
@@ -423,7 +422,7 @@ define(["moment"], function(moment) {
 
             sortedAnswers = []
 
-            Object.keys(answers).forEach(function(registrationOrEnrollment) {
+            Object.keys(answers).forEach(function (registrationOrEnrollment) {
                 sortedAnswers.push({
                     registrationOrEnrollment: registrationOrEnrollment,
                     fullname: answers[registrationOrEnrollment].fullname,
@@ -440,7 +439,7 @@ define(["moment"], function(moment) {
             })
 
             // ordenação que considera ordem e zeros em grupos
-            sortedAnswers.sort(function(answerA, answerB) {
+            sortedAnswers.sort(function (answerA, answerB) {
                 var ret
 
                 // Aluno A tem resultado final maior que Aluno B
@@ -519,7 +518,7 @@ define(["moment"], function(moment) {
             formatEmptyScores()
         }
 
-        addGroupsOf = function(examId) {
+        addGroupsOf = function (examId) {
             var groupContent = exams[examId].content.groups
             var subgroups
             var quantity
@@ -549,7 +548,7 @@ define(["moment"], function(moment) {
             }
         }
 
-        createResultTable = function(results, orderedGroups) {
+        createResultTable = function (results, orderedGroups) {
             var table =
                 "<table class='table table-condensed table-striped table-bordered'>"
 
@@ -564,7 +563,7 @@ define(["moment"], function(moment) {
             }
 
             table += orderedGroups
-                .map(function(g) {
+                .map(function (g) {
                     return "<th class='text-center'>" + g + "</th>"
                 })
                 .join("")
@@ -629,7 +628,7 @@ define(["moment"], function(moment) {
         /**
          * Caso o aluno não tenha feito uma das provas transforma o score 0 dos grupos em string vazia ''
          */
-        formatEmptyScores = function() {
+        formatEmptyScores = function () {
             var registrationOrEnrollment, group, person, groupIndex
 
             for (var i = 0; i < sortedAnswers.length; i++) {
@@ -649,7 +648,7 @@ define(["moment"], function(moment) {
             }
         }
 
-        createSortList = function() {
+        createSortList = function () {
             sortGroupContainer.html("")
             var options
             for (var i = 0; i < groups.length; i++) {
@@ -667,23 +666,23 @@ define(["moment"], function(moment) {
             for (; criteria < groups.length; criteria++) {
                 sortGroupContainer.append(
                     "<div class='col-md-6'><div class='form-group'><label>Critério " +
-                        (criteria + 1) +
-                        "</label><select id='criteria-group" +
-                        criteria +
-                        "' class='form-control'>" +
-                        options +
-                        "</select></div></div>"
+                    (criteria + 1) +
+                    "</label><select id='criteria-group" +
+                    criteria +
+                    "' class='form-control'>" +
+                    options +
+                    "</select></div></div>"
                 )
             }
 
             sortGroupContainer.append(
                 "<div class='col-md-6'><div class='form-group'><label>Critério " +
-                    (criteria + 1) +
-                    "</label><select id='criteria-group" +
-                    (criteria + 1) +
-                    "' class='form-control'>" +
-                    options +
-                    "</select></div></div>"
+                (criteria + 1) +
+                "</label><select id='criteria-group" +
+                (criteria + 1) +
+                "' class='form-control'>" +
+                options +
+                "</select></div></div>"
             )
             // seleciona critérios padrões
             for (criteria = 0; criteria < groups.length; criteria++) {
@@ -696,55 +695,53 @@ define(["moment"], function(moment) {
                 .val(CRITERIA.AGE_CODE)
         }
 
-        saveResults = function() {
-            var results = sortedAnswers.slice(saveIndex, saveIndex + 4)
-            setSaveProgress()
+        saveResults = function (currentIndex) {
+            var results = sortedAnswers.slice(currentIndex, currentIndex + 4)
+            setSaveProgress(currentIndex);
+
             if (!results.length) {
                 releaseSaveResult()
                 return
             }
 
+            sendSave(results, currentIndex);
+        }
+
+        sendSave = function (results, currentIndex) {
             $.ajax({
                 url: "/school-management/school-exam-result/save-result",
                 type: "POST",
                 data: {
-                    recruitmentOrClass: isStudent
-                        ? studentClass.val()
-                        : recruitment.val(),
+                    index: currentIndex,
+                    recruitmentOrClass: isStudent ? studentClass.val() : recruitment.val(),
                     isStudent: isStudent,
                     application: currentApplicationId,
                     results: results
                 }
             }).then(
-                function(resp) {
-                    saveIndex += 4
-                    saveResults()
+                function (resp) {
+                    saveResults(currentIndex + 4)
                 },
-                function(err) {
+                function (err) {
                     console.log("error", err)
                     releaseSaveResult()
                 }
             )
         }
 
-        setSaveProgress = function() {
-            $("#resultProgress").text(
-                Math.min(saveIndex, sortedAnswers.length) +
-                    "/" +
-                    sortedAnswers.length
-            )
+        setSaveProgress = function (currentIndex) {
+            $("#resultProgress").text(Math.min(currentIndex, sortedAnswers.length) + "/" + sortedAnswers.length)
         }
 
-        releaseSaveResult = function() {
-            saveIndex = 0
+        releaseSaveResult = function () {
             $("#save-result").prop("disabled", false)
         }
 
         return {
-            init: function() {
+            init: function () {
                 initListeners()
             },
-            getDataOf: function(element) {
+            getDataOf: function (element) {
                 switch (element) {
                     default:
                         return {}

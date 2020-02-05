@@ -301,7 +301,7 @@ class SchoolExamResultController extends AbstractEntityActionController
         $request = $this->getRequest();
 
         if ($request->isPost()) {
-            $data = (array)$request->getPost();
+            $data = (array) $request->getPost();
 
             if (!empty($data['templates'])) {
 
@@ -386,7 +386,7 @@ class SchoolExamResultController extends AbstractEntityActionController
 
             if ($examId) {
                 $em = $this->getEntityManager();
-                $examAnswers = $em->getRepository(ExamResult::class)->findAllAnswersForClassOrRecruitment($examId, (bool)$isStudent);
+                $examAnswers = $em->getRepository(ExamResult::class)->findAllAnswersForClassOrRecruitment($examId, (bool) $isStudent);
 
                 $answers = [];
                 foreach ($examAnswers as $ea) {
@@ -422,7 +422,8 @@ class SchoolExamResultController extends AbstractEntityActionController
                     'answers' => $answers
                 ]);
             }
-        } catch (\Exception $ex) { }
+        } catch (\Exception $ex) {
+        }
 
         return [];
     }
@@ -441,7 +442,7 @@ class SchoolExamResultController extends AbstractEntityActionController
                     $registrationOrEnrollment = 'registration';
                     $referencedClass = Registration::class;
 
-                    if($data['isStudent']) {
+                    if ($data['isStudent']) {
                         $studentClass = $em->getReference(StudentClass::class, $data['recruitmentOrClass']);
                         $app->setStudentClass($studentClass);
                         $registrationOrEnrollment = 'enrollment';
@@ -449,6 +450,10 @@ class SchoolExamResultController extends AbstractEntityActionController
                     } else {
                         $rec = $em->getReference(Recruitment::class, $data['recruitmentOrClass']);
                         $app->setRecruitment($rec);
+                    }
+
+                    if (empty($data['index'])) {
+                        $em->getRepository(ExamApplicationResult::class)->deleteAllOfApplication($data['application']);
                     }
 
                     foreach ($data['results'] as $result) {
@@ -472,12 +477,11 @@ class SchoolExamResultController extends AbstractEntityActionController
                                     'position' => $result['position']
                                 ]));
 
-                            if($data['isStudent']) {
+                            if ($data['isStudent']) {
                                 $appResult->setEnrollment($regOrEnroll);
                             } else {
                                 $appResult->setRegistration($regOrEnroll);
                             }
-
                         } else {
                             $appResult->setResult(Json::encode([
                                 'partialResult' => $result['partialResult'],

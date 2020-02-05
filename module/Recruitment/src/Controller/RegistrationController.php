@@ -1152,7 +1152,6 @@ class RegistrationController extends AbstractEntityActionController
 
             $results = [];
             foreach ($appResults as $res) {
-
                 $appReg = $res->getRegistration();
                 $r = Json::decode($res->getResult(), Json::TYPE_ARRAY);
 

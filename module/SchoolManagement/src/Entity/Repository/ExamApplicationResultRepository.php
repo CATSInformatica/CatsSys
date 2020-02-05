@@ -3,6 +3,7 @@
 namespace SchoolManagement\Entity\Repository;
 
 use Doctrine\ORM\EntityRepository;
+use SchoolManagement\Entity\ExamApplicationResult;
 
 /**
  * Repositorio para ExamApplicationResult
@@ -34,5 +35,19 @@ class ExamApplicationResultRepository extends EntityRepository
                 'app' => $appId,
             ])
             ->getResult();
+    }
+
+    public function deleteAllOfApplication(int $applicationId)
+    {
+        $qb = $this
+            ->_em
+            ->createQueryBuilder();
+
+        $qb
+            ->delete(ExamApplicationResult::class, 'a')
+            ->where('a.application = :application')
+            ->setParameter('application', $applicationId)
+            ->getQuery()
+            ->execute();
     }
 }
